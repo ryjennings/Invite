@@ -8,6 +8,9 @@
 
 #import "AppDelegate.h"
 
+#import <FacebookSDK/FacebookSDK.h>
+#import <Parse/Parse.h>
+
 @interface AppDelegate ()
 
 @end
@@ -16,7 +19,16 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+
+    [Parse setApplicationId:@"bDCtNhAgLH0h8TClwos5BxTLJ9q2gIs19uG8dSjD"
+                  clientKey:@"XRnFQGL8mad8vS1iVt1JDxT1UPInSsffw0JLDOWK"];
+    
+    // [Optional] Track statistics around application opens.
+    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
+    // Logs 'install' and 'app activate' App Events.
+    [FBAppEvents activateApp];
+    
     return YES;
 }
 
@@ -122,6 +134,16 @@
             abort();
         }
     }
+}
+
+#pragma mark - Facebook
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    // attempt to extract a token from the url
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
 }
 
 @end
