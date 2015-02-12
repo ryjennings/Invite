@@ -11,12 +11,28 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import <Parse/Parse.h>
 
+NSString *const ClassPersonKey = @"Person";
+
+NSString *const GenderKey = @"gender";
+NSString *const LocaleKey = @"locale";
+NSString *const FacebookIDKey = @"facebook_id";
+NSString *const LastNameKey = @"last_name";
+NSString *const TimezoneKey = @"timezone";
+NSString *const EmailKey = @"email";
+NSString *const FacebookLinkKey = @"facebook_link";
+NSString *const FullNameKey = @"full_name";
+NSString *const FirstNameKey = @"first_name";
+
+// Keys used by Facebook
+NSString *const IDKey = @"id";
+NSString *const LinkKey = @"link";
+NSString *const NameKey = @"name";
+
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
@@ -129,7 +145,7 @@
         NSError *error = nil;
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
             // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+#warning abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
@@ -144,6 +160,28 @@
          annotation:(id)annotation {
     // attempt to extract a token from the url
     return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+}
+
+#pragma mark - NSUserDefaults
+
+- (void)removeObjectForKey:(NSString *)key
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:key];
+    [defaults synchronize];
+}
+
+- (void)setObject:(id)object forKey:(NSString *)key
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:object forKey:key];
+    [defaults synchronize];
+}
+
+- (id)objectForKey:(NSString *)key
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:key];
 }
 
 @end
