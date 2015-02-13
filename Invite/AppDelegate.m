@@ -12,6 +12,7 @@
 #import <Parse/Parse.h>
 
 NSString *const ClassPersonKey = @"Person";
+NSString *const ClassEventKey = @"Event";
 
 NSString *const GenderKey = @"gender";
 NSString *const LocaleKey = @"locale";
@@ -22,6 +23,8 @@ NSString *const EmailKey = @"email";
 NSString *const FacebookLinkKey = @"facebook_link";
 NSString *const FullNameKey = @"full_name";
 NSString *const FirstNameKey = @"first_name";
+NSString *const EventsKey = @"events";
+NSString *const ParseObjectIDKey = @"parse_object_id";
 
 // Keys used by Facebook
 NSString *const IDKey = @"id";
@@ -182,6 +185,19 @@ NSString *const NameKey = @"name";
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     return [defaults objectForKey:key];
+}
+
+#pragma mark - User
+
+- (void)clearUser
+{
+    _inviteUser = nil;
+    [self removeObjectForKey:EmailKey];
+}
+
++ (AppDelegate *)app
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 @end

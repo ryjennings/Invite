@@ -9,6 +9,7 @@
 #import "DashboardViewController.h"
 
 #import "AppDelegate.h"
+#import "Event.h"
 
 @interface DashboardViewController ()
 @property (nonatomic, weak) IBOutlet UIButton *addNewEventButton;
@@ -21,16 +22,18 @@
 {
     [super viewDidLoad];
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-
     [_addNewEventButton setTitle:NSLocalizedString(@"dashboard_button_addnewevent", nil) forState:UIControlStateNormal];
     [_settingsButton setTitle:NSLocalizedString(@"navigation_button_settings", nil)];
+}
+
+- (IBAction)settings:(id)sender
+{
     
 }
 
-- (void)settings:(id)sender
+- (IBAction)addNewEvent:(id)sender
 {
-    
+    [Event addEventToUser:[AppDelegate app].inviteUser];
 }
 
 @end

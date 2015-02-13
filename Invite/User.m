@@ -8,19 +8,9 @@
 
 #import "User.h"
 
-#import "AppDelegate.h"
+#import "Event.h"
 
 @interface User ()
-
-@property (nonatomic, strong) NSString *gender;
-@property (nonatomic, strong) NSString *locale;
-@property (nonatomic, strong) NSString *facebookID;
-@property (nonatomic, strong) NSString *lastName;
-@property (nonatomic, assign) long timezone;
-@property (nonatomic, strong) NSString *email;
-@property (nonatomic, strong) NSString *facebookLink;
-@property (nonatomic, strong) NSString *fullName;
-@property (nonatomic, strong) NSString *firstName;
 
 @property (nonatomic, assign) BOOL userCreated;
 
@@ -49,11 +39,9 @@
 
 - (BOOL)checkForUser
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    
     // If the email is in NSUserDefaults, check for user in Core Data
     
-    NSString *email = [appDelegate objectForKey:EmailKey];
+    NSString *email = [[AppDelegate app] objectForKey:EmailKey];
     if (email) {
         NSManagedObject *user = [self fetchUserFromCoreDataWithEmail:email];
         if (!_userCreated && user) {
@@ -62,10 +50,24 @@
             // Create local user from Core Data
             
             [self userFromCoreDataUser:user];
+            [self grabParseObjectForEmail:email];
         }
         return YES;
     }
     return NO;
+}
+
+- (void)grabParseObjectForEmail:(NSString *)email
+{
+    PFQuery *query = [PFQuery queryWithClassName:ClassPersonKey];
+    [query whereKey:EmailKey equalTo:email];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        
+        if (object) {
+            _parse = object;
+        }
+        
+    }];
 }
 
 - (void)userFromCoreDataUser:(NSManagedObject *)user
@@ -80,11 +82,15 @@
     _fullName = [user valueForKey:FullNameKey];
     _firstName = [user valueForKey:FirstNameKey];
     
+    [AppDelegate app].inviteUser = self;
+//    _parse = [PFObject objectWithoutDataWithObjectId:[user valueForKey:ParseObjectIDKey]];
+    
     _userCreated = YES;
 }
 
 - (void)createLocalCoreDataUserFromParseObject:(PFObject *)object
 {
+    _parse = object;
     _gender = [object objectForKey:GenderKey];
     _locale = [object objectForKey:LocaleKey];
     _facebookID = [object objectForKey:FacebookIDKey];
@@ -132,25 +138,29 @@
 
 - (void)createParseUser
 {
-    PFObject *person = [PFObject objectWithClassName:ClassPersonKey];
-    person[GenderKey] = _gender;
-    person[LocaleKey] = _locale;
-    person[FacebookIDKey] = _facebookID;
-    person[LastNameKey] = _lastName;
-    person[TimezoneKey] = [NSNumber numberWithLong:_timezone];
-    person[EmailKey] = _email;
-    person[FacebookLinkKey] = _facebookLink;
-    person[FullNameKey] = _fullName;
-    person[FirstNameKey] = _firstName;
-    [person saveInBackground];
+    PFObject *object = [PFObject objectWithClassName:ClassPersonKey];
+    
+    _parse = object;
+    
+    object[GenderKey] = _gender;
+    object[LocaleKey] = _locale;
+    object[FacebookIDKey] = _facebookID;
+    object[LastNameKey] = _lastName;
+    object[TimezoneKey] = [NSNumber numberWithLong:_timezone];
+    object[EmailKey] = _email;
+    object[FacebookLinkKey] = _facebookLink;
+    object[FullNameKey] = _fullName;
+    object[FirstNameKey] = _firstName;
+    
+    [object saveInBackground];
 }
 
 - (void)createCoreDataUser
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:ClassPersonKey inManagedObjectContext:[[AppDelegate app] managedObjectContext]];
+    NSManagedObject *object = [[NSManagedObject alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:[[AppDelegate app] managedObjectContext]];
     
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:ClassPersonKey inManagedObjectContext:appDelegate.managedObjectContext];
-    NSManagedObject *object = [[NSManagedObject alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:appDelegate.managedObjectContext];
+    _core = object;
     
     [object setValue:_gender forKey:GenderKey];
     [object setValue:_locale forKey:LocaleKey];
@@ -161,22 +171,21 @@
     [object setValue:_facebookLink forKey:FacebookLinkKey];
     [object setValue:_fullName forKey:FullNameKey];
     [object setValue:_firstName forKey:FirstNameKey];
+    [object setValue:_parse.objectId forKey:ParseObjectIDKey];
     
-    [appDelegate saveContext];
+    [[AppDelegate app] saveContext];
 }
 
 - (NSManagedObject *)fetchUserFromCoreDataWithEmail:(NSString *)email
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:ClassPersonKey
-                                              inManagedObjectContext:appDelegate.managedObjectContext];
+                                              inManagedObjectContext:[[AppDelegate app] managedObjectContext]];
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"email == %@", email]];
     
     NSError *error = nil;
-    NSArray *result = [appDelegate.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSArray *result = [[[AppDelegate app] managedObjectContext] executeFetchRequest:fetchRequest error:&error];
     
     if (error) {
         NSLog(@"Unable to execute fetch request.");
@@ -194,8 +203,15 @@
 
 - (void)addEmailToDefaults
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate setObject:_email forKey:EmailKey];
+    [[AppDelegate app] setObject:_email forKey:EmailKey];
 }
+
+//- (NSManagedObject *)core
+//{
+//    if (!_core) {
+//        _core = [self fetchUserFromCoreDataWithEmail:_email];
+//    }
+//    return _core;
+//}
 
 @end

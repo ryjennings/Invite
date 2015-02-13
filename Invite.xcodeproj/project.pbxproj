@@ -33,6 +33,7 @@
 		073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073274021A892BFB007700B3 /* LaunchScreen.xib */; };
 		073274101A892BFB007700B3 /* InviteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0732740F1A892BFB007700B3 /* InviteTests.m */; };
 		0755CE491A8D22E500FF05B7 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755CE481A8D22E500FF05B7 /* User.m */; };
+		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,8 @@
 		0732740F1A892BFB007700B3 /* InviteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InviteTests.m; sourceTree = "<group>"; };
 		0755CE471A8D22E500FF05B7 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		0755CE481A8D22E500FF05B7 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		0786EB7B1A8E70ED006FDCA6 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
+		0786EB7C1A8E70ED006FDCA6 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		07C2098C1A8C2159002B3961 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -169,6 +172,8 @@
 				071F694C1A8C143F009A8380 /* DashboardViewController.m */,
 				0755CE471A8D22E500FF05B7 /* User.h */,
 				0755CE481A8D22E500FF05B7 /* User.m */,
+				0786EB7B1A8E70ED006FDCA6 /* Event.h */,
+				0786EB7C1A8E70ED006FDCA6 /* Event.m */,
 				073273FD1A892BFB007700B3 /* Main.storyboard */,
 				071F694E1A8C1A3D009A8380 /* Localizable.strings */,
 				073274001A892BFB007700B3 /* Images.xcassets */,
@@ -310,6 +315,7 @@
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
 				073273F31A892BFB007700B3 /* main.m in Sources */,
+				0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */,
 				073273FC1A892BFB007700B3 /* LoginViewController.m in Sources */,
 				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
 				0722A31B1A8D368F005CF082 /* CoreData.m in Sources */,

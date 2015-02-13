@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-#import "User.h"
+@class User;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -19,7 +19,9 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-@property (nonatomic, strong) User *user;
+@property (nonatomic, strong) User *inviteUser;
+
++ (AppDelegate *)app;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
@@ -27,6 +29,8 @@
 - (void)removeObjectForKey:(NSString *)key;
 - (void)setObject:(id)object forKey:(NSString *)key;
 - (id)objectForKey:(NSString *)key;
+
+- (void)clearUser;
 
 @end
 

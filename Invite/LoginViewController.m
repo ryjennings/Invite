@@ -74,25 +74,23 @@ NSString *const Dashboard = @"DashboardViewController";
     [query whereKey:EmailKey equalTo:email];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-              
-        if (![appDelegate objectForKey:EmailKey]) {
+        if (![[AppDelegate app] objectForKey:EmailKey]) {
 
-            appDelegate.user = [User shared];
+            [AppDelegate app].inviteUser = [User shared];
 
             if (!object) {
 
                 // User does not exist in Parse database...
                 // Create local, Core Data and Parse users
                 
-                [appDelegate.user createLocalParseCoreDataUserFromFacebookUser:user];
+                [[AppDelegate app].inviteUser createLocalParseCoreDataUserFromFacebookUser:user];
                 
             } else {
                 
                 // User found in Parse database...
                 // Create local and Core Data users
                 
-                [appDelegate.user createLocalCoreDataUserFromParseObject:object];
+                [[AppDelegate app].inviteUser createLocalCoreDataUserFromParseObject:object];
                 
             }
 
@@ -109,8 +107,7 @@ NSString *const Dashboard = @"DashboardViewController";
 
 - (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate removeObjectForKey:EmailKey];
+    [[AppDelegate app] clearUser];
 }
 
 @end

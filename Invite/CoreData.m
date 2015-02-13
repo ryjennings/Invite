@@ -17,10 +17,8 @@
 
 + (void)createUserFromFacebookUser:(id<FBGraphUser>)user
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:ClassPersonKey inManagedObjectContext:appDelegate.managedObjectContext];
-    NSManagedObject *object = [[NSManagedObject alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:appDelegate.managedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:ClassPersonKey inManagedObjectContext:[[AppDelegate app] managedObjectContext]];
+    NSManagedObject *object = [[NSManagedObject alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:[[AppDelegate app] managedObjectContext]];
 
     [object setValue:[user objectForKey:GenderKey] forKey:GenderKey];
     [object setValue:[user objectForKey:LocaleKey] forKey:LocaleKey];
@@ -32,7 +30,7 @@
     [object setValue:[user objectForKey:NameKey] forKey:FullNameKey];
     [object setValue:[user objectForKey:FirstNameKey] forKey:FirstNameKey];
 
-    [appDelegate saveContext];
+    [[AppDelegate app] saveContext];
 }
 
 @end
