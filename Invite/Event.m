@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 
 NSString *const EventDateKey = @"date";
+NSString *const EventPersonsKey = @"persons";
 
 @interface Event ()
 
@@ -30,6 +31,7 @@ NSString *const EventDateKey = @"date";
     PFObject *parseEvent = [PFObject objectWithClassName:ClassEventKey];
     event.parseEvent = parseEvent;
     parseEvent[EventDateKey] = event.date;
+    [parseEvent addObject:user.parse forKey:EventPersonsKey];
     [user.parse addObject:parseEvent forKey:EventsKey];
     [PFObject saveAllInBackground:@[parseEvent, user.parse]];
     

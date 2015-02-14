@@ -50,14 +50,14 @@
             // Create local user from Core Data
             
             [self userFromCoreDataUser:user];
-            [self grabParseObjectForEmail:email];
+            [self parseObjectWithEmail:email];
         }
         return YES;
     }
     return NO;
 }
 
-- (void)grabParseObjectForEmail:(NSString *)email
+- (void)parseObjectWithEmail:(NSString *)email
 {
     PFQuery *query = [PFQuery queryWithClassName:ClassPersonKey];
     [query whereKey:EmailKey equalTo:email];
@@ -83,7 +83,6 @@
     _firstName = [user valueForKey:FirstNameKey];
     
     [AppDelegate app].inviteUser = self;
-//    _parse = [PFObject objectWithoutDataWithObjectId:[user valueForKey:ParseObjectIDKey]];
     
     _userCreated = YES;
 }
@@ -105,7 +104,7 @@
     [self createCoreDataUser];
 
     // Add email to NSUserDefaults
-    [self addEmailToDefaults];
+    [[AppDelegate app] setObject:_email forKey:EmailKey];
 
     _userCreated = YES;
 }
@@ -131,7 +130,7 @@
     [self createCoreDataUser];
     
     // Add email to NSUserDefaults
-    [self addEmailToDefaults];
+    [[AppDelegate app] setObject:_email forKey:EmailKey];
 
     _userCreated = YES;
 }
@@ -187,31 +186,9 @@
     NSError *error = nil;
     NSArray *result = [[[AppDelegate app] managedObjectContext] executeFetchRequest:fetchRequest error:&error];
     
-    if (error) {
-        NSLog(@"Unable to execute fetch request.");
-        NSLog(@"%@, %@", error, error.localizedDescription);
-    } else {
-        NSLog(@"%@", result);
-    }
+    if (error) NSLog(@"%@, %@", error, error.localizedDescription);
     
-    if (result.count > 0) {
-        return [result objectAtIndex:0];
-    } else {
-        return nil;
-    }
+    return result.count > 0 ? [result objectAtIndex:0] : nil;
 }
-
-- (void)addEmailToDefaults
-{
-    [[AppDelegate app] setObject:_email forKey:EmailKey];
-}
-
-//- (NSManagedObject *)core
-//{
-//    if (!_core) {
-//        _core = [self fetchUserFromCoreDataWithEmail:_email];
-//    }
-//    return _core;
-//}
 
 @end

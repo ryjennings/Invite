@@ -12,7 +12,6 @@
 #import <Parse/Parse.h>
 
 #import "AppDelegate.h"
-#import "CoreData.h"
 #import "DashboardViewController.h"
 #import "User.h"
 
