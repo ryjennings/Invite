@@ -17,6 +17,6 @@ extern NSString *const EventsKey;
 
 @interface Event : NSObject
 
-+ (Event *)addEventToUser:(User *)user;
++ (Event *)createEvent;
 
 @end

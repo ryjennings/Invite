@@ -33,7 +33,7 @@
 
 - (IBAction)addNewEvent:(id)sender
 {
-    [Event addEventToUser:[AppDelegate app].inviteUser];
+    [Event createEvent];
 }
 
 @end

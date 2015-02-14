@@ -15,31 +15,33 @@ NSString *const EventPersonsKey = @"persons";
 
 @interface Event ()
 
-@property (nonatomic, strong) PFObject *parseEvent;
+@property (nonatomic, strong) PFObject *parse;
+@property (nonatomic, strong) NSManagedObject *core;
 @property (nonatomic, strong) NSDate *date;
 
 @end
 
 @implementation Event
 
-+ (Event *)addEventToUser:(User *)user
++ (Event *)createEvent
 {
     Event *event = [[Event alloc] init];
     event.date = [NSDate date];
     
     // Add to Parse
     PFObject *parseEvent = [PFObject objectWithClassName:ClassEventKey];
-    event.parseEvent = parseEvent;
+    event.parse = parseEvent;
     parseEvent[EventDateKey] = event.date;
-    [parseEvent addObject:user.parse forKey:EventPersonsKey];
-    [user.parse addObject:parseEvent forKey:EventsKey];
-    [PFObject saveAllInBackground:@[parseEvent, user.parse]];
+    [parseEvent addObject:[AppDelegate app].inviteUser.parse forKey:EventPersonsKey];
+    [[AppDelegate app].inviteUser.parse addObject:parseEvent forKey:EventsKey];
+    [PFObject saveAllInBackground:@[parseEvent, [AppDelegate app].inviteUser.parse]];
     
     // Add to Core Data
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:ClassEventKey inManagedObjectContext:[[AppDelegate app] managedObjectContext]];
     NSManagedObject *coreEvent = [[NSManagedObject alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:[[AppDelegate app] managedObjectContext]];
+    event.core = coreEvent;
     [coreEvent setValue:event.date forKey:EventDateKey];
-    [[user.core mutableSetValueForKey:EventsKey] addObject:coreEvent];
+    [[[AppDelegate app].inviteUser.core mutableSetValueForKey:EventsKey] addObject:coreEvent];
     [[AppDelegate app] saveContext];
 
     return event;

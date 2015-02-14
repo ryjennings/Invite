@@ -82,14 +82,14 @@ NSString *const Dashboard = @"DashboardViewController";
                 // User does not exist in Parse database...
                 // Create local, Core Data and Parse users
                 
-                [[AppDelegate app].inviteUser createLocalParseCoreDataUserFromFacebookUser:user];
+                [[AppDelegate app].inviteUser allUsersFromFacebookUser:user];
                 
             } else {
                 
                 // User found in Parse database...
                 // Create local and Core Data users
                 
-                [[AppDelegate app].inviteUser createLocalCoreDataUserFromParseObject:object];
+                [[AppDelegate app].inviteUser localAndCoreUsersFromParseObject:object];
                 
             }
 

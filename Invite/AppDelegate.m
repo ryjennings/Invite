@@ -24,7 +24,6 @@ NSString *const FacebookLinkKey = @"facebook_link";
 NSString *const FullNameKey = @"full_name";
 NSString *const FirstNameKey = @"first_name";
 NSString *const EventsKey = @"events";
-NSString *const ParseObjectIDKey = @"parse_object_id";
 
 // Keys used by Facebook
 NSString *const IDKey = @"id";

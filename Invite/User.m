@@ -10,12 +10,6 @@
 
 #import "Event.h"
 
-@interface User ()
-
-@property (nonatomic, assign) BOOL userCreated;
-
-@end
-
 @implementation User
 
 + (instancetype)shared
@@ -28,15 +22,6 @@
     return sharedInstance;
 }
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        _userCreated = NO;
-    }
-    return self;
-}
-
 - (BOOL)checkForUser
 {
     // If the email is in NSUserDefaults, check for user in Core Data
@@ -44,15 +29,15 @@
     NSString *email = [[AppDelegate app] objectForKey:EmailKey];
     if (email) {
         NSManagedObject *user = [self fetchUserFromCoreDataWithEmail:email];
-        if (!_userCreated && user) {
+        if (user) {
             
-            // If email, assume Core Data and Parse user exist
-            // Create local user from Core Data
+            // If email, assume Core Data and Parse exist
+            // Create local user from Core Data, and get Parse object with email
             
-            [self userFromCoreDataUser:user];
+            [self localUserFromCoreDataUser:user];
             [self parseObjectWithEmail:email];
+            return YES;
         }
-        return YES;
     }
     return NO;
 }
@@ -70,7 +55,7 @@
     }];
 }
 
-- (void)userFromCoreDataUser:(NSManagedObject *)user
+- (void)localUserFromCoreDataUser:(NSManagedObject *)user
 {
     _gender = [user valueForKey:GenderKey];
     _locale = [user valueForKey:LocaleKey];
@@ -83,13 +68,12 @@
     _firstName = [user valueForKey:FirstNameKey];
     
     [AppDelegate app].inviteUser = self;
-    
-    _userCreated = YES;
 }
 
-- (void)createLocalCoreDataUserFromParseObject:(PFObject *)object
+- (void)localAndCoreUsersFromParseObject:(PFObject *)object
 {
     _parse = object;
+    
     _gender = [object objectForKey:GenderKey];
     _locale = [object objectForKey:LocaleKey];
     _facebookID = [object objectForKey:FacebookIDKey];
@@ -105,14 +89,10 @@
 
     // Add email to NSUserDefaults
     [[AppDelegate app] setObject:_email forKey:EmailKey];
-
-    _userCreated = YES;
 }
 
-- (void)createLocalParseCoreDataUserFromFacebookUser:(id<FBGraphUser>)user
+- (void)allUsersFromFacebookUser:(id<FBGraphUser>)user
 {
-    // Set local properties
-    
     _gender = [user objectForKey:GenderKey];
     _locale = [user objectForKey:LocaleKey];
     _facebookID = [user objectForKey:IDKey];
@@ -131,8 +111,6 @@
     
     // Add email to NSUserDefaults
     [[AppDelegate app] setObject:_email forKey:EmailKey];
-
-    _userCreated = YES;
 }
 
 - (void)createParseUser
@@ -170,7 +148,6 @@
     [object setValue:_facebookLink forKey:FacebookLinkKey];
     [object setValue:_fullName forKey:FullNameKey];
     [object setValue:_firstName forKey:FirstNameKey];
-    [object setValue:_parse.objectId forKey:ParseObjectIDKey];
     
     [[AppDelegate app] saveContext];
 }

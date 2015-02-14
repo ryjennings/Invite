@@ -24,7 +24,6 @@ extern NSString *const FacebookLinkKey;
 extern NSString *const FullNameKey;
 extern NSString *const FirstNameKey;
 extern NSString *const EventsKey;
-extern NSString *const ParseObjectIDKey;
 
 // Keys used by Facebook
 extern NSString *const IDKey;
@@ -49,7 +48,7 @@ extern NSString *const NameKey;
 + (instancetype)shared;
 - (BOOL)checkForUser;
 
-- (void)createLocalCoreDataUserFromParseObject:(PFObject *)object;
-- (void)createLocalParseCoreDataUserFromFacebookUser:(id<FBGraphUser>)user;
+- (void)localAndCoreUsersFromParseObject:(PFObject *)object;
+- (void)allUsersFromFacebookUser:(id<FBGraphUser>)user;
 
 @end
