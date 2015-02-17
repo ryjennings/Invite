@@ -8,30 +8,10 @@
 
 #import "AppDelegate.h"
 
-#import <FacebookSDK/FacebookSDK.h>
-#import <Parse/Parse.h>
-
-NSString *const ClassPersonKey = @"Person";
-NSString *const ClassEventKey = @"Event";
-
-NSString *const GenderKey = @"gender";
-NSString *const LocaleKey = @"locale";
-NSString *const FacebookIDKey = @"facebook_id";
-NSString *const LastNameKey = @"last_name";
-NSString *const TimezoneKey = @"timezone";
-NSString *const EmailKey = @"email";
-NSString *const FacebookLinkKey = @"facebook_link";
-NSString *const FullNameKey = @"full_name";
-NSString *const FirstNameKey = @"first_name";
-NSString *const EventsKey = @"events";
-
-// Keys used by Facebook
-NSString *const IDKey = @"id";
-NSString *const LinkKey = @"link";
-NSString *const NameKey = @"name";
+#import "StringConstants.h"
+#import "User.h"
 
 @interface AppDelegate ()
-
 @end
 
 @implementation AppDelegate
@@ -190,13 +170,32 @@ NSString *const NameKey = @"name";
 
 - (void)clearUser
 {
-    _inviteUser = nil;
-    [self removeObjectForKey:EmailKey];
+    _user = nil;
+    [self removeObjectForKey:EMAIL_KEY];
 }
 
 + (AppDelegate *)app
 {
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
++ (User *)user
+{
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (!delegate.user) {
+        delegate.user = [User shared];
+    }
+    return delegate.user;
+}
+
++ (PFObject *)parseUser
+{
+    return ((AppDelegate *)[[UIApplication sharedApplication] delegate]).user.parse;
+}
+
++ (NSManagedObject *)coreUser
+{
+    return ((AppDelegate *)[[UIApplication sharedApplication] delegate]).user.core;
 }
 
 @end

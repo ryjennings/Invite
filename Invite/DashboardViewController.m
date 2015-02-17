@@ -10,6 +10,7 @@
 
 #import "AppDelegate.h"
 #import "Event.h"
+#import "StringConstants.h"
 
 @interface DashboardViewController ()
 @property (nonatomic, weak) IBOutlet UIButton *addNewEventButton;
@@ -31,9 +32,13 @@
     
 }
 
-- (IBAction)addNewEvent:(id)sender
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    [Event createEvent];
+    if ([segue.identifier isEqualToString:ADD_NEW_EVENT_SEGUE]) {
+        [AppDelegate user].eventPrototype = [Event createPrototype];
+    }
 }
 
 @end

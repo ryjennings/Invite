@@ -13,9 +13,8 @@
 
 #import "AppDelegate.h"
 #import "DashboardViewController.h"
+#import "StringConstants.h"
 #import "User.h"
-
-NSString *const Dashboard = @"DashboardViewController";
 
 @interface LoginViewController () <FBLoginViewDelegate>
 
@@ -41,19 +40,19 @@ NSString *const Dashboard = @"DashboardViewController";
 
 - (void)showDashboard
 {
-    DashboardViewController *controller = (DashboardViewController *)[self.storyboard instantiateViewControllerWithIdentifier:Dashboard];
+    DashboardViewController *controller = (DashboardViewController *)[self.storyboard instantiateViewControllerWithIdentifier:DASHBOARD_VIEW_CONTROLLER];
     self.navigationController.viewControllers = @[controller];
 }
 
 - (void)pushDashboard
 {
-    DashboardViewController *controller = (DashboardViewController *)[self.storyboard instantiateViewControllerWithIdentifier:Dashboard];
+    DashboardViewController *controller = (DashboardViewController *)[self.storyboard instantiateViewControllerWithIdentifier:DASHBOARD_VIEW_CONTROLLER];
     [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (void)showFacebookLogin
 {
-    FBLoginView *loginView = [[FBLoginView alloc] initWithReadPermissions:@[EmailKey]];
+    FBLoginView *loginView = [[FBLoginView alloc] initWithReadPermissions:@[EMAIL_KEY]];
     loginView.center = self.view.center;
     loginView.delegate = self;
     [self.view addSubview:loginView];
@@ -67,32 +66,32 @@ NSString *const Dashboard = @"DashboardViewController";
 
 - (void)loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user
 {
-    NSString *email = [user objectForKey:EmailKey];
+    NSString *email = [user objectForKey:EMAIL_KEY];
     
-    PFQuery *query = [PFQuery queryWithClassName:ClassPersonKey];
-    [query whereKey:EmailKey equalTo:email];
+    PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
+    [query whereKey:EMAIL_KEY equalTo:email];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         
-        if (![[AppDelegate app] objectForKey:EmailKey]) {
-
-            [AppDelegate app].inviteUser = [User shared];
+        if (![[AppDelegate app] objectForKey:EMAIL_KEY]) {
 
             if (!object) {
 
                 // User does not exist in Parse database...
                 // Create local, Core Data and Parse users
                 
-                [[AppDelegate app].inviteUser allUsersFromFacebookUser:user];
+                [[AppDelegate user] createAllUsersFromFacebookUser:user];
                 
             } else {
                 
                 // User found in Parse database...
                 // Create local and Core Data users
                 
-                [[AppDelegate app].inviteUser localAndCoreUsersFromParseObject:object];
+                [[AppDelegate user] createLocalAndCoreUsersFromParseObject:object];
                 
             }
-
+            
+            [[AppDelegate user] checkForEvents];
+            
             [self pushDashboard];
             
         }

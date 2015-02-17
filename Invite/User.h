@@ -11,24 +11,7 @@
 #import <Parse/Parse.h>
 
 #import "AppDelegate.h"
-
-extern NSString *const ClassPersonKey;
-
-extern NSString *const GenderKey;
-extern NSString *const LocaleKey;
-extern NSString *const FacebookIDKey;
-extern NSString *const LastNameKey;
-extern NSString *const TimezoneKey;
-extern NSString *const EmailKey;
-extern NSString *const FacebookLinkKey;
-extern NSString *const FullNameKey;
-extern NSString *const FirstNameKey;
-extern NSString *const EventsKey;
-
-// Keys used by Facebook
-extern NSString *const IDKey;
-extern NSString *const LinkKey;
-extern NSString *const NameKey;
+@class Event;
 
 @interface User : NSObject
 
@@ -45,10 +28,16 @@ extern NSString *const NameKey;
 @property (nonatomic, strong) NSString *fullName;
 @property (nonatomic, strong) NSString *firstName;
 
-+ (instancetype)shared;
-- (BOOL)checkForUser;
+@property (nonatomic, strong) Event *eventPrototype;
+@property (nonatomic, strong) NSArray *events;
+@property (nonatomic, strong) NSArray *friends;
 
-- (void)localAndCoreUsersFromParseObject:(PFObject *)object;
-- (void)allUsersFromFacebookUser:(id<FBGraphUser>)user;
++ (instancetype)shared;
+
+- (BOOL)checkForUser;
+- (void)checkForEvents;
+
+- (void)createLocalAndCoreUsersFromParseObject:(PFObject *)object;
+- (void)createAllUsersFromFacebookUser:(id<FBGraphUser>)user;
 
 @end

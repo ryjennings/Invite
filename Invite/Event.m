@@ -9,9 +9,7 @@
 #import "Event.h"
 
 #import "AppDelegate.h"
-
-NSString *const EventDateKey = @"date";
-NSString *const EventPersonsKey = @"persons";
+#import "StringConstants.h"
 
 @interface Event ()
 
@@ -23,6 +21,30 @@ NSString *const EventPersonsKey = @"persons";
 
 @implementation Event
 
++ (Event *)createPrototype
+{
+    Event *proto = [[Event alloc] init];
+    return proto;
+}
+
++ (void)addInvitees:(NSString *)inviteesString toPrototype:(Event *)proto
+{
+    NSArray *components = [inviteesString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *invitees = [components componentsJoinedByString:@""];
+    NSArray *addresses = [invitees componentsSeparatedByString:@","];
+    
+    PFObject *parseEvent = [PFObject objectWithClassName:CLASS_EVENT_KEY];
+    parseEvent[EVENT_CREATOR_KEY] = [AppDelegate user].parse;
+    
+    for (NSString *address in addresses) {
+        [parseEvent addObject:address forKey:EVENT_INVITEES_KEY];
+    }
+    
+    [[AppDelegate parseUser] addObject:parseEvent forKey:EVENTS_KEY];
+    [PFObject saveAllInBackground:@[parseEvent, [AppDelegate parseUser]]];
+}
+
+/*
 + (Event *)createEvent
 {
     Event *event = [[Event alloc] init];
@@ -46,5 +68,6 @@ NSString *const EventPersonsKey = @"persons";
 
     return event;
 }
+ */
 
 @end

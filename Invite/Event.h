@@ -12,11 +12,11 @@
 
 #import "User.h"
 
-extern NSString *const ClassEventKey;
-extern NSString *const EventsKey;
-
 @interface Event : NSObject
 
-+ (Event *)createEvent;
++ (Event *)createPrototype;
+//+ (Event *)createEvent;
+
++ (void)addInvitees:(NSString *)inviteesString toPrototype:(Event *)proto;
 
 @end

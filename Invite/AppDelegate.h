@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import <FacebookSDK/FacebookSDK.h>
+#import <Parse/Parse.h>
 
 @class User;
 
@@ -19,9 +21,12 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-@property (nonatomic, strong) User *inviteUser;
+@property (nonatomic, strong) User *user;
 
 + (AppDelegate *)app;
++ (User *)user;
++ (PFObject *)parseUser;
++ (NSManagedObject *)coreUser;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
