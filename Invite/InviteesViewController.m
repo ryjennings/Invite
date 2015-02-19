@@ -55,7 +55,7 @@
 
 - (IBAction)addNewEvent:(id)sender
 {
-    [Event addInvitees:_emailTextField.text toPrototype:[AppDelegate user].eventPrototype];
+    [Event createEventWithInvitees:_emailTextField.text];
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 

@@ -14,8 +14,9 @@
 @interface Event ()
 
 @property (nonatomic, strong) PFObject *parse;
-@property (nonatomic, strong) NSManagedObject *core;
-@property (nonatomic, strong) NSDate *date;
+
+@property (nonatomic, strong) NSDate *parseObjectID;
+@property (nonatomic, strong) NSArray *invitees;
 
 @end
 
@@ -27,7 +28,7 @@
     return proto;
 }
 
-+ (void)addInvitees:(NSString *)inviteesString toPrototype:(Event *)proto
++ (void)createEventWithInvitees:(NSString *)inviteesString
 {
     NSArray *components = [inviteesString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *invitees = [components componentsJoinedByString:@""];

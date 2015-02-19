@@ -146,21 +146,21 @@
 
 #pragma mark - NSUserDefaults
 
-- (void)removeObjectForKey:(NSString *)key
++ (void)removeObjectForKey:(NSString *)key
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:key];
     [defaults synchronize];
 }
 
-- (void)setObject:(id)object forKey:(NSString *)key
++ (void)setObject:(id)object forKey:(NSString *)key
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:object forKey:key];
     [defaults synchronize];
 }
 
-- (id)objectForKey:(NSString *)key
++ (id)objectForKey:(NSString *)key
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     return [defaults objectForKey:key];
@@ -168,10 +168,11 @@
 
 #pragma mark - User
 
-- (void)clearUser
++ (void)clearUser
 {
-    _user = nil;
-    [self removeObjectForKey:EMAIL_KEY];
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    delegate.user = nil;
+    [AppDelegate removeObjectForKey:EMAIL_KEY];
 }
 
 + (AppDelegate *)app
@@ -191,11 +192,6 @@
 + (PFObject *)parseUser
 {
     return ((AppDelegate *)[[UIApplication sharedApplication] delegate]).user.parse;
-}
-
-+ (NSManagedObject *)coreUser
-{
-    return ((AppDelegate *)[[UIApplication sharedApplication] delegate]).user.core;
 }
 
 @end

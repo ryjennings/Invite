@@ -16,7 +16,6 @@
 @interface User : NSObject
 
 @property (nonatomic, strong) PFObject *parse;
-@property (nonatomic, strong) NSManagedObject *core;
 
 @property (nonatomic, strong) NSString *gender;
 @property (nonatomic, strong) NSString *locale;
@@ -34,10 +33,9 @@
 
 + (instancetype)shared;
 
-- (BOOL)checkForUser;
-- (void)checkForEvents;
+- (void)loadParseUser:(PFObject *)user;
+- (void)createParseUserFromFacebookUser:(id<FBGraphUser>)user;
 
-- (void)createLocalAndCoreUsersFromParseObject:(PFObject *)object;
-- (void)createAllUsersFromFacebookUser:(id<FBGraphUser>)user;
+- (void)checkForNewEventsWhereUserIsInvitee;
 
 @end

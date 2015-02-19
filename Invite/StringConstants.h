@@ -39,3 +39,7 @@
 
 // Table cell identifiers
 #define INVITEE_CELL_IDENTIFIER @"InviteeCellIdentifier"
+
+// Notifications
+#define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"
+#define DELETE_USER_NOTIFICATION @"DeleteUserNotifcation"

@@ -26,16 +26,15 @@
 + (AppDelegate *)app;
 + (User *)user;
 + (PFObject *)parseUser;
-+ (NSManagedObject *)coreUser;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
-- (void)removeObjectForKey:(NSString *)key;
-- (void)setObject:(id)object forKey:(NSString *)key;
-- (id)objectForKey:(NSString *)key;
++ (void)removeObjectForKey:(NSString *)key;
++ (void)setObject:(id)object forKey:(NSString *)key;
++ (id)objectForKey:(NSString *)key;
 
-- (void)clearUser;
++ (void)clearUser;
 
 @end
 

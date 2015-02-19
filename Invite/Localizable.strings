@@ -10,3 +10,5 @@
 
 "dashboard_button_addnewevent" = "Add a new event";
 "navigation_button_settings" = "Settings";
+"alert_cannotlogin_title" = "Unable to Log In to Facebook";
+"alert_cannotlogin_message" = "Please try to again.";

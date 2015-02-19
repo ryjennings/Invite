@@ -18,24 +18,23 @@
 
 @interface LoginViewController () <FBLoginViewDelegate>
 
-@property (nonatomic, assign) BOOL userExists;
+@property (nonatomic, assign) BOOL receivedUser;
 
 @end
 
 @implementation LoginViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
-    if ([[User shared] checkForUser]) {
-        
-        [self showDashboard];
-        
-    } else {
-        
-        [self showFacebookLogin];
-        
-    }
+    _receivedUser = NO;
+    
+    [self showFacebookLogin];
+    
+    // Notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userCreated:) name:USER_CREATED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteUser:) name:DELETE_USER_NOTIFICATION object:nil];
 }
 
 - (void)showDashboard
@@ -64,38 +63,35 @@
 
 #pragma mark - Facebook
 
-- (void)loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user
+- (void)loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)facebookUser
 {
-    NSString *email = [user objectForKey:EMAIL_KEY];
+    // REMEBER: This method gets called twice for some reason...
     
-    PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
-    [query whereKey:EMAIL_KEY equalTo:email];
-    [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        
-        if (![[AppDelegate app] objectForKey:EMAIL_KEY]) {
+    if (!_receivedUser) {
 
-            if (!object) {
+        _receivedUser = YES;
+
+        PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
+        [query whereKey:EMAIL_KEY equalTo:[facebookUser objectForKey:EMAIL_KEY]];
+        [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseUser, NSError *error) {
+            
+            if (!parseUser) {
 
                 // User does not exist in Parse database...
-                // Create local, Core Data and Parse users
+                // Create Parse user
                 
-                [[AppDelegate user] createAllUsersFromFacebookUser:user];
+                [[AppDelegate user] createParseUserFromFacebookUser:facebookUser];
                 
             } else {
                 
-                // User found in Parse database...
-                // Create local and Core Data users
-                
-                [[AppDelegate user] createLocalAndCoreUsersFromParseObject:object];
+                [[AppDelegate user] loadParseUser:parseUser];
                 
             }
             
-            [[AppDelegate user] checkForEvents];
+            [[AppDelegate user] checkForNewEventsWhereUserIsInvitee];
             
-            [self pushDashboard];
-            
-        }
-    }];
+        }];
+    }
 }
 
 - (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView
@@ -105,7 +101,29 @@
 
 - (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView
 {
-    [[AppDelegate app] clearUser];
+    [AppDelegate clearUser];
+}
+
+- (void)userCreated:(NSNotification *)notification
+{
+    [self pushDashboard];
+}
+
+- (void)deleteUser:(NSNotification *)notification
+{
+    [AppDelegate clearUser];
+    [self showAlert];
+}
+
+- (void)showAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"alert_cannotlogin_title", nil) message:NSLocalizedString(@"alert_cannotlogin_message", nil) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [FBSession.activeSession closeAndClearTokenInformation];
+        [alert dismissViewControllerAnimated:YES completion:nil];
+    }];
+    [alert addAction:ok];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end

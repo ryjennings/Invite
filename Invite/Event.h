@@ -17,6 +17,6 @@
 + (Event *)createPrototype;
 //+ (Event *)createEvent;
 
-+ (void)addInvitees:(NSString *)inviteesString toPrototype:(Event *)proto;
++ (void)createEventWithInvitees:(NSString *)inviteesString;
 
 @end
