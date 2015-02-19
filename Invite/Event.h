@@ -17,6 +17,6 @@
 + (Event *)createPrototype;
 //+ (Event *)createEvent;
 
-+ (void)createEventWithInvitees:(NSString *)inviteesString;
++ (void)createEventWithEmailAddresses:(NSArray *)emailAddresses;
 
 @end

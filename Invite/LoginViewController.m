@@ -75,7 +75,7 @@
         [query whereKey:EMAIL_KEY equalTo:[facebookUser objectForKey:EMAIL_KEY]];
         [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseUser, NSError *error) {
             
-            if (!parseUser) {
+            if (![parseUser objectForKey:FACEBOOK_ID_KEY]) {
 
                 // User does not exist in Parse database...
                 // Create Parse user
@@ -88,7 +88,7 @@
                 
             }
             
-            [[AppDelegate user] checkForNewEventsWhereUserIsInvitee];
+            [[AppDelegate user] checkForEventsWhereUserIsInvited];
             
         }];
     }

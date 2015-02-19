@@ -25,6 +25,7 @@
 #define FULL_NAME_KEY @"full_name"
 #define FIRST_NAME_KEY @"first_name"
 #define EVENTS_KEY @"events"
+#define OBJECTID_KEY @"objectId"
 
 // Keys used by Facebook
 #define ID_KEY @"id"

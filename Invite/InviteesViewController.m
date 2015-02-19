@@ -55,7 +55,11 @@
 
 - (IBAction)addNewEvent:(id)sender
 {
-    [Event createEventWithInvitees:_emailTextField.text];
+    NSArray *components = [_emailTextField.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *string = [components componentsJoinedByString:@""];
+    NSArray *emailAddresses = [string componentsSeparatedByString:@","];
+
+    [Event createEventWithEmailAddresses:emailAddresses];
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 

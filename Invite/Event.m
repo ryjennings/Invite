@@ -28,21 +28,52 @@
     return proto;
 }
 
-+ (void)createEventWithInvitees:(NSString *)inviteesString
++ (void)createEventWithEmailAddresses:(NSArray *)emailAddresses
 {
-    NSArray *components = [inviteesString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSString *invitees = [components componentsJoinedByString:@""];
-    NSArray *addresses = [invitees componentsSeparatedByString:@","];
+    NSMutableArray *mutable = [emailAddresses mutableCopy];
+
+    // First, make sure an email address does not match an existing Invite user, if so remove address from invitees
+
+    PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
+    [query whereKey:EMAIL_KEY containedIn:emailAddresses];
     
-    PFObject *parseEvent = [PFObject objectWithClassName:CLASS_EVENT_KEY];
-    parseEvent[EVENT_CREATOR_KEY] = [AppDelegate user].parse;
+    // Return all Persons who are also invitees
     
-    for (NSString *address in addresses) {
-        [parseEvent addObject:address forKey:EVENT_INVITEES_KEY];
-    }
-    
-    [[AppDelegate parseUser] addObject:parseEvent forKey:EVENTS_KEY];
-    [PFObject saveAllInBackground:@[parseEvent, [AppDelegate parseUser]]];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *persons, NSError *error) {
+        
+        NSMutableArray *objectsToSave = [NSMutableArray array];
+
+        // Create new event
+        
+        PFObject *event = [PFObject objectWithClassName:CLASS_EVENT_KEY];
+        event[EVENT_CREATOR_KEY] = [AppDelegate parseUser];
+        [objectsToSave addObject:event];
+
+        for (PFObject *person in persons) {
+            NSString *email = [person objectForKey:EMAIL_KEY];
+            if ([mutable containsObject:email]) {
+                [mutable removeObject:email];
+            }
+            // Add person to event invitees
+            [event addObject:person forKey:EVENT_INVITEES_KEY];
+        }
+        
+        // Second, create a new Person for each remaining email
+        
+        for (NSString *emailAddress in emailAddresses) {
+            PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
+            person[EMAIL_KEY] = emailAddress;
+            [objectsToSave addObject:person];
+
+            // Add person to event invitees
+            [event addObject:person forKey:EVENT_INVITEES_KEY];
+        }
+        
+        [[AppDelegate parseUser] addObject:event forKey:EVENTS_KEY];
+        [objectsToSave addObject:[AppDelegate parseUser]];
+        
+        [PFObject saveAllInBackground:objectsToSave];
+    }];
 }
 
 /*

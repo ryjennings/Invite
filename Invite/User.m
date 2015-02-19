@@ -39,17 +39,7 @@
 
 - (void)createUserFromObject:(id)object
 {
-    NSString *idKey = ID_KEY;
-    NSString *linkKey = LINK_KEY;
-    NSString *nameKey = NAME_KEY;
-    BOOL includeParse = YES;
-    
-    if ([object isKindOfClass:[PFObject class]]) {
-        idKey = FACEBOOK_ID_KEY;
-        linkKey = FACEBOOK_LINK_KEY;
-        nameKey = FULL_NAME_KEY;
-        includeParse = NO;
-    }
+    BOOL parseObject = [object isKindOfClass:[PFObject class]];
     
     _gender = [object objectForKey:GENDER_KEY];
     _locale = [object objectForKey:LOCALE_KEY];
@@ -57,77 +47,97 @@
     _timezone = (long)[object objectForKey:TIMEZONE_KEY];
     _email = [object objectForKey:EMAIL_KEY];
     _firstName = [object objectForKey:FIRST_NAME_KEY];
-    _events = [object objectForKey:EVENTS_KEY];
 
-    _facebookID = [object objectForKey:idKey];
-    _facebookLink = [object objectForKey:linkKey];
-    _fullName = [object objectForKey:nameKey];
+    _facebookID = [object objectForKey:parseObject ? FACEBOOK_ID_KEY : ID_KEY];
+    _facebookLink = [object objectForKey:parseObject ? FACEBOOK_LINK_KEY : LINK_KEY];
+    _fullName = [object objectForKey:parseObject ? FULL_NAME_KEY : NAME_KEY];
 
-    if (includeParse) {
+    if (!parseObject) {
         
         [self createParseUser];
+        
+    } else {
+        
+        _events = [object objectForKey:EVENTS_KEY];
         
     }
 }
 
 - (void)createParseUser
 {
-    PFObject *object = [PFObject objectWithClassName:CLASS_PERSON_KEY];
+    // First, check to make sure a dummy user wasn't created with the same email address
     
-    _parse = object;
-    
-    object[GENDER_KEY] = _gender;
-    object[LOCALE_KEY] = _locale;
-    object[FACEBOOK_ID_KEY] = _facebookID;
-    object[LAST_NAME_KEY] = _lastName;
-    object[TIMEZONE_KEY] = [NSNumber numberWithLong:_timezone];
-    object[EMAIL_KEY] = _email;
-    object[FACEBOOK_LINK_KEY] = _facebookLink;
-    object[FULL_NAME_KEY] = _fullName;
-    object[FIRST_NAME_KEY] = _firstName;
-    
-    [object saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
+    [query whereKey:EMAIL_KEY equalTo:_email];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *match, NSError *error) {
         
-        if (succeeded)
-        {
-            [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
+        PFObject *person;
+        
+        if (match) {
+            
+            person = match;
+            
+        } else {
+            
+            person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
+            person[EMAIL_KEY] = _email;
+            
         }
-        else
-        {
-            [[NSNotificationCenter defaultCenter] postNotificationName:DELETE_USER_NOTIFICATION object:self];
-        }
+        
+        _parse = person;
+
+        person[GENDER_KEY] = _gender;
+        person[LOCALE_KEY] = _locale;
+        person[FACEBOOK_ID_KEY] = _facebookID;
+        person[LAST_NAME_KEY] = _lastName;
+        person[TIMEZONE_KEY] = [NSNumber numberWithLong:_timezone];
+        person[FACEBOOK_LINK_KEY] = _facebookLink;
+        person[FULL_NAME_KEY] = _fullName;
+        person[FIRST_NAME_KEY] = _firstName;
+        
+        [person saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
+            } else {
+                [[NSNotificationCenter defaultCenter] postNotificationName:DELETE_USER_NOTIFICATION object:self];
+            }
+        }];
     }];
 }
 
 #pragma mark - Events
 
-- (void)checkForNewEventsWhereUserIsInvitee
+- (void)checkForEventsWhereUserIsInvited
 {
-    PFQuery *query = [PFQuery queryWithClassName:CLASS_EVENT_KEY];
-    [query whereKey:EVENT_INVITEES_KEY equalTo:_email];
-    
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        for (PFObject *event in objects) {
-            
-            // If user is invited to an event, and their email address was used, replace email with Person objectId
-            NSMutableArray *invitees = [event objectForKey:EVENT_INVITEES_KEY];
-            if ([invitees indexOfObject:_email]) {
-                [invitees removeObject:_email];                
-                [invitees addObject:[PFObject objectWithoutDataWithClassName:CLASS_PERSON_KEY objectId:_parse.objectId]];
-                NSMutableArray *events = [NSMutableArray arrayWithArray:_events];
-                [events addObject:event];
-                _events = events;
-            }
-            
-            // Add event to user's events
-            [_parse addObject:event forKey:EVENTS_KEY];
-            
-            // Parse: save event and user
-            [event saveInBackground];
-        }
-        [_parse saveInBackground];
+    NSMutableArray *currentEventObjectIds = [NSMutableArray array];
+    [_events enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
+        [currentEventObjectIds addObject:event.objectId];
     }];
     
+    PFQuery *query = [PFQuery queryWithClassName:CLASS_EVENT_KEY];
+    [query whereKey:EVENT_INVITEES_KEY equalTo:_parse];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *events, NSError *error) {
+        
+        NSMutableArray *mutableEvents = [_events mutableCopy];
+        
+        [events enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
+            if (![currentEventObjectIds containsObject:event.objectId]) {
+
+                // Add event to user's events
+                [_parse addObject:event forKey:EVENTS_KEY];
+                
+                [mutableEvents addObject:event]; // Add to local
+
+            }
+        }];
+        
+        _events = mutableEvents;
+        
+        [_parse saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            NSLog(@"checkForEventsWhereUserIsInvited succeeded %@", [NSNumber numberWithBool:succeeded]);
+        }];
+    }];
 }
 
 @end

@@ -36,6 +36,6 @@
 - (void)loadParseUser:(PFObject *)user;
 - (void)createParseUserFromFacebookUser:(id<FBGraphUser>)user;
 
-- (void)checkForNewEventsWhereUserIsInvitee;
+- (void)checkForEventsWhereUserIsInvited;
 
 @end
