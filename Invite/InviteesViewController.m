@@ -8,18 +8,34 @@
 
 #import "InviteesViewController.h"
 
+#import "AppDelegate.h"
 #import "Event.h"
 #import "StringConstants.h"
 
-@interface InviteesViewController ()
+@interface InviteesViewController () <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UITextField *emailTextField;
+@property (nonatomic, strong) NSArray *friends;
+@property (nonatomic, strong) NSMutableSet *invitees;
 @end
 
 @implementation InviteesViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    _friends = [NSArray array];
+    _invitees = [NSMutableSet set];
+
+    PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
+    [[query whereKey:EMAIL_KEY equalTo:[AppDelegate user].email] includeKey:FRIENDS_KEY];
+    
+    // Return all friends
+    
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject *user, NSError *error) {
+        _friends = [user objectForKey:FRIENDS_KEY];
+        [_tableView reloadData];
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -36,31 +52,59 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 0;
+    return _friends.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:INVITEE_CELL_IDENTIFIER];
     
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:INVITEE_CELL_IDENTIFIER];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
+    PFObject *friend = (PFObject *)_friends[indexPath.row];
+
+    if ([friend objectForKey:FULL_NAME_KEY]) {
     
-//    cell.textLabel.text = self.justCourseNamesArray[indexPath.row];
+        cell.textLabel.text = [friend objectForKey:FULL_NAME_KEY];
+        
+    } else {
+        
+        cell.textLabel.text = [friend objectForKey:EMAIL_KEY];
+
+    }
     
     return cell;
 }
 
-- (IBAction)addNewEvent:(id)sender
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray *components = [_emailTextField.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSString *string = [components componentsJoinedByString:@""];
-    NSArray *emailAddresses = [string componentsSeparatedByString:@","];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 
-    [Event createEventWithEmailAddresses:emailAddresses];
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    PFObject *friend = _friends[indexPath.row];
+    
+    if ([_invitees containsObject:friend]) {
+        [_invitees removeObject:friend];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    } else {
+        [_invitees addObject:friend];
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
+}
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:SEGUE_TO_TIMEFRAME]) {
+        
+        // Add email addresses to invitees
+        
+        NSArray *components = [_emailTextField.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *string = [components componentsJoinedByString:@""];
+        NSArray *emailAddresses = [string componentsSeparatedByString:@","];
+        
+        [_invitees addObjectsFromArray:emailAddresses];
+        
+        [AppDelegate user].protoEvent.invitees = _invitees;
+    }
 }
 
 @end

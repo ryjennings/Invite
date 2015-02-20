@@ -15,20 +15,17 @@
 
 @property (nonatomic, strong) PFObject *parse;
 
-@property (nonatomic, strong) NSDate *parseObjectID;
-@property (nonatomic, strong) NSArray *invitees;
-
 @end
 
 @implementation Event
 
-+ (Event *)createPrototype
++ (Event *)createEvent
 {
-    Event *proto = [[Event alloc] init];
-    return proto;
+    Event *event = [[Event alloc] init];
+    return event;
 }
 
-+ (void)createEventWithEmailAddresses:(NSArray *)emailAddresses
+- (void)createEventWithEmailAddresses:(NSArray *)emailAddresses
 {
     NSMutableArray *mutable = [emailAddresses mutableCopy];
 
@@ -43,11 +40,13 @@
         
         NSMutableArray *objectsToSave = [NSMutableArray array];
 
-        // Create new event
+        // 1. Create new event
         
         PFObject *event = [PFObject objectWithClassName:CLASS_EVENT_KEY];
         event[EVENT_CREATOR_KEY] = [AppDelegate parseUser];
         [objectsToSave addObject:event];
+        
+        // 2. Weed out email addresses who are already Persons
 
         for (PFObject *person in persons) {
             NSString *email = [person objectForKey:EMAIL_KEY];
@@ -58,7 +57,7 @@
             [event addObject:person forKey:EVENT_INVITEES_KEY];
         }
         
-        // Second, create a new Person for each remaining email
+        // 3. Create a new Person for each remaining email
         
         for (NSString *emailAddress in emailAddresses) {
             PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
@@ -67,12 +66,16 @@
 
             // Add person to event invitees
             [event addObject:person forKey:EVENT_INVITEES_KEY];
+            
+            // Add person to user's friends
+            [[AppDelegate parseUser] addObject:person forKey:FRIENDS_KEY];
         }
         
         [[AppDelegate parseUser] addObject:event forKey:EVENTS_KEY];
         [objectsToSave addObject:[AppDelegate parseUser]];
         
         [PFObject saveAllInBackground:objectsToSave];
+        
     }];
 }
 

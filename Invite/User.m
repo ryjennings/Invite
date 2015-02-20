@@ -29,7 +29,7 @@
 {
     _parse = user;
     [self createUserFromObject:user];
-    [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
+    [[AppDelegate user] checkForEventsWhereUserIsInvited];
 }
 
 - (void)createParseUserFromFacebookUser:(id<FBGraphUser>)user
@@ -59,6 +59,7 @@
     } else {
         
         _events = [object objectForKey:EVENTS_KEY];
+        _friends = [object objectForKey:FRIENDS_KEY];
         
     }
 }
@@ -95,9 +96,11 @@
         person[FULL_NAME_KEY] = _fullName;
         person[FIRST_NAME_KEY] = _firstName;
         
+        // Keys we don't need when initially setting someone up: events, friends
+        
         [person saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
+                [[AppDelegate user] checkForEventsWhereUserIsInvited];
             } else {
                 [[NSNotificationCenter defaultCenter] postNotificationName:DELETE_USER_NOTIFICATION object:self];
             }
@@ -124,11 +127,14 @@
         [events enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
             if (![currentEventObjectIds containsObject:event.objectId]) {
 
-                // Add event to user's events
+                // Add event to Parse user
                 [_parse addObject:event forKey:EVENTS_KEY];
                 
+                // Add event to local user
                 [mutableEvents addObject:event]; // Add to local
-
+                
+                // Add event creator as friend to user
+                [_parse addUniqueObject:[event objectForKey:EVENT_CREATOR_KEY] forKey:FRIENDS_KEY];
             }
         }];
         
@@ -136,6 +142,11 @@
         
         [_parse saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             NSLog(@"checkForEventsWhereUserIsInvited succeeded %@", [NSNumber numberWithBool:succeeded]);
+            if (succeeded) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
+            } else {
+                [[NSNotificationCenter defaultCenter] postNotificationName:DELETE_USER_NOTIFICATION object:self];
+            }
         }];
     }];
 }

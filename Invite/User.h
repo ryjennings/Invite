@@ -27,9 +27,10 @@
 @property (nonatomic, strong) NSString *fullName;
 @property (nonatomic, strong) NSString *firstName;
 
-@property (nonatomic, strong) Event *eventPrototype;
 @property (nonatomic, strong) NSArray *events;
 @property (nonatomic, strong) NSArray *friends;
+
+@property (nonatomic, strong) Event *protoEvent;
 
 + (instancetype)shared;
 

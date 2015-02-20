@@ -26,6 +26,7 @@
 #define FIRST_NAME_KEY @"first_name"
 #define EVENTS_KEY @"events"
 #define OBJECTID_KEY @"objectId"
+#define FRIENDS_KEY @"friends"
 
 // Keys used by Facebook
 #define ID_KEY @"id"
@@ -36,10 +37,12 @@
 #define DASHBOARD_VIEW_CONTROLLER @"DashboardViewController"
 
 // Segues
-#define ADD_NEW_EVENT_SEGUE @"AddNewEventSegue"
+#define SEGUE_TO_INVITEES @"SegueToInvitees"
+#define SEGUE_TO_TIMEFRAME @"SegueToTimeframe"
 
 // Table cell identifiers
 #define INVITEE_CELL_IDENTIFIER @"InviteeCellIdentifier"
+#define TIMEFRAME_HOUR_CELL_IDENTIFIER @"TimeframeHourCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

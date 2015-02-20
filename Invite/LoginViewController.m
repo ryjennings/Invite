@@ -32,6 +32,8 @@
     
     [self showFacebookLogin];
     
+    self.navigationController.navigationItem.title = @"Select Invitees";
+    
     // Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userCreated:) name:USER_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteUser:) name:DELETE_USER_NOTIFICATION object:nil];
@@ -87,9 +89,6 @@
                 [[AppDelegate user] loadParseUser:parseUser];
                 
             }
-            
-            [[AppDelegate user] checkForEventsWhereUserIsInvited];
-            
         }];
     }
 }

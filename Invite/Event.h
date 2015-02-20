@@ -14,9 +14,10 @@
 
 @interface Event : NSObject
 
-+ (Event *)createPrototype;
-//+ (Event *)createEvent;
+@property (nonatomic, strong) NSSet *invitees;
 
-+ (void)createEventWithEmailAddresses:(NSArray *)emailAddresses;
++ (Event *)createEvent;
+
+- (void)createEventWithEmailAddresses:(NSArray *)emailAddresses;
 
 @end

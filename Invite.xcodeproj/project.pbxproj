@@ -31,6 +31,10 @@
 		073274011A892BFB007700B3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 073274001A892BFB007700B3 /* Images.xcassets */; };
 		073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073274021A892BFB007700B3 /* LaunchScreen.xib */; };
 		073274101A892BFB007700B3 /* InviteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0732740F1A892BFB007700B3 /* InviteTests.m */; };
+		073845181A969CFB00E2929A /* Timeframe.m in Sources */ = {isa = PBXBuildFile; fileRef = 073845171A969CFB00E2929A /* Timeframe.m */; };
+		0738451B1A96A6A200E2929A /* TimeframeMonthCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0738451A1A96A6A200E2929A /* TimeframeMonthCell.m */; };
+		0738451E1A96A6B300E2929A /* TimeframeDayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0738451D1A96A6B300E2929A /* TimeframeDayCell.m */; };
+		074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074FF55B1A965924000483FF /* TimeframeViewController.m */; };
 		0755CE491A8D22E500FF05B7 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755CE481A8D22E500FF05B7 /* User.m */; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
@@ -78,6 +82,14 @@
 		073274091A892BFB007700B3 /* InviteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InviteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0732740E1A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0732740F1A892BFB007700B3 /* InviteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InviteTests.m; sourceTree = "<group>"; };
+		073845161A969CFB00E2929A /* Timeframe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timeframe.h; sourceTree = "<group>"; };
+		073845171A969CFB00E2929A /* Timeframe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Timeframe.m; sourceTree = "<group>"; };
+		073845191A96A6A200E2929A /* TimeframeMonthCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeMonthCell.h; sourceTree = "<group>"; };
+		0738451A1A96A6A200E2929A /* TimeframeMonthCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeMonthCell.m; sourceTree = "<group>"; };
+		0738451C1A96A6B300E2929A /* TimeframeDayCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeDayCell.h; sourceTree = "<group>"; };
+		0738451D1A96A6B300E2929A /* TimeframeDayCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeDayCell.m; sourceTree = "<group>"; };
+		074FF55A1A965924000483FF /* TimeframeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeViewController.h; sourceTree = "<group>"; };
+		074FF55B1A965924000483FF /* TimeframeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeViewController.m; sourceTree = "<group>"; };
 		0755CE471A8D22E500FF05B7 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		0755CE481A8D22E500FF05B7 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		0775B0701A93BFB900C15303 /* InviteesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesViewController.h; sourceTree = "<group>"; };
@@ -172,6 +184,7 @@
 				071F694C1A8C143F009A8380 /* DashboardViewController.m */,
 				0775B0701A93BFB900C15303 /* InviteesViewController.h */,
 				0775B0711A93BFB900C15303 /* InviteesViewController.m */,
+				07A313291A96AA410066EE3E /* Timeframe */,
 				0755CE471A8D22E500FF05B7 /* User.h */,
 				0755CE481A8D22E500FF05B7 /* User.m */,
 				0786EB7B1A8E70ED006FDCA6 /* Event.h */,
@@ -210,6 +223,21 @@
 				0732740E1A892BFB007700B3 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		07A313291A96AA410066EE3E /* Timeframe */ = {
+			isa = PBXGroup;
+			children = (
+				074FF55A1A965924000483FF /* TimeframeViewController.h */,
+				074FF55B1A965924000483FF /* TimeframeViewController.m */,
+				073845191A96A6A200E2929A /* TimeframeMonthCell.h */,
+				0738451A1A96A6A200E2929A /* TimeframeMonthCell.m */,
+				0738451C1A96A6B300E2929A /* TimeframeDayCell.h */,
+				0738451D1A96A6B300E2929A /* TimeframeDayCell.m */,
+				073845161A969CFB00E2929A /* Timeframe.h */,
+				073845171A969CFB00E2929A /* Timeframe.m */,
+			);
+			name = Timeframe;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -315,11 +343,15 @@
 			files = (
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
 				0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */,
+				074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */,
+				0738451B1A96A6A200E2929A /* TimeframeMonthCell.m in Sources */,
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
+				0738451E1A96A6B300E2929A /* TimeframeDayCell.m in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
 				073273F31A892BFB007700B3 /* main.m in Sources */,
 				0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */,
 				073273FC1A892BFB007700B3 /* LoginViewController.m in Sources */,
+				073845181A969CFB00E2929A /* Timeframe.m in Sources */,
 				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
