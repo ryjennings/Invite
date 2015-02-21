@@ -101,9 +101,8 @@
         NSString *string = [components componentsJoinedByString:@""];
         NSArray *emailAddresses = [string componentsSeparatedByString:@","];
         
-        [_invitees addObjectsFromArray:emailAddresses];
-        
         [AppDelegate user].protoEvent.invitees = _invitees;
+        [AppDelegate user].protoEvent.emails = emailAddresses;
     }
 }
 

@@ -13,8 +13,10 @@
 
 @interface Event ()
 
-@property (nonatomic, strong) PFObject *parse;
+@property (nonatomic, strong) NSMutableArray *invitee;
+@property (nonatomic, strong) NSMutableArray *email;
 
+@property (nonatomic, strong) PFObject *event;
 @end
 
 @implementation Event
@@ -25,84 +27,94 @@
     return event;
 }
 
-- (void)createEventWithEmailAddresses:(NSArray *)emailAddresses
+- (void)submitEvent
 {
-    NSMutableArray *mutable = [emailAddresses mutableCopy];
+    // CREATE ALL NEW OBJECTS FIRST, THEN SAVE TO EXISTING OBJECTS
 
-    // First, make sure an email address does not match an existing Invite user, if so remove address from invitees
-
+    // INVITEE - invitee selected from table above email field
+    // EMAIL - invitee added to email field
+    // PARSE - Person on Parse
+    
+    _email = [_emails mutableCopy];
+    _invitee = [[_invitees allObjects] mutableCopy];
+    
+    NSMutableArray *inviteeEmails = [NSMutableArray array];
+    [_invitees enumerateObjectsUsingBlock:^(PFObject *invitee, BOOL *stop) {
+        [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
+    }];
+    
     PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
-    [query whereKey:EMAIL_KEY containedIn:emailAddresses];
-    
-    // Return all Persons who are also invitees
-    
+    [query whereKey:EMAIL_KEY containedIn:_emails];
     [query findObjectsInBackgroundWithBlock:^(NSArray *persons, NSError *error) {
         
-        NSMutableArray *objectsToSave = [NSMutableArray array];
-
-        // 1. Create new event
+        // PARSE who were listed in email field
         
-        PFObject *event = [PFObject objectWithClassName:CLASS_EVENT_KEY];
-        event[EVENT_CREATOR_KEY] = [AppDelegate parseUser];
-        [objectsToSave addObject:event];
-        
-        // 2. Weed out email addresses who are already Persons
-
         for (PFObject *person in persons) {
-            NSString *email = [person objectForKey:EMAIL_KEY];
-            if ([mutable containsObject:email]) {
-                [mutable removeObject:email];
-            }
-            // Add person to event invitees
-            [event addObject:person forKey:EVENT_INVITEES_KEY];
-        }
-        
-        // 3. Create a new Person for each remaining email
-        
-        for (NSString *emailAddress in emailAddresses) {
-            PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
-            person[EMAIL_KEY] = emailAddress;
-            [objectsToSave addObject:person];
-
-            // Add person to event invitees
-            [event addObject:person forKey:EVENT_INVITEES_KEY];
             
-            // Add person to user's friends
-            [[AppDelegate parseUser] addObject:person forKey:FRIENDS_KEY];
+            if (![inviteeEmails containsObject:person[EMAIL_KEY]]) {
+                
+                // PARSE who is not currently INVITEE
+                [_invitee addObject:person];
+            }
+            
+            [_email removeObject:person[EMAIL_KEY]];
         }
         
-        [[AppDelegate parseUser] addObject:event forKey:EVENTS_KEY];
-        [objectsToSave addObject:[AppDelegate parseUser]];
+        NSMutableArray *save = [NSMutableArray array];
         
-        [PFObject saveAllInBackground:objectsToSave];
+        // Create a new Person for all emails left
+        for (NSString *email in _email) {
+            
+            PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
+            person[EMAIL_KEY] = email;
+            [_invitee addObject:person];
+            [save addObject:person];
+            
+        }
         
+        _event = [PFObject objectWithClassName:CLASS_EVENT_KEY];
+        _event[EVENT_CREATOR_KEY] = [AppDelegate parseUser];
+        _event[EVENT_STARTDATE_KEY] = _timeframe.start;
+        _event[EVENT_ENDDATE_KEY] = _timeframe.end;
+        [save addObject:_event];
+
+        [PFObject saveAllInBackground:save target:self selector:@selector(eventCreated)];
+    }];
+}
+     
+- (void)eventCreated
+{
+    // By now the new event and all people who had to be created for this event have been created...
+    [_event addUniqueObjectsFromArray:_invitee forKey:EVENT_INVITEES_KEY];
+    for (PFObject *person in _invitee) {
+        [self makeAdjustmentsToPerson:person event:_event];
+    }
+    [[AppDelegate parseUser] addUniqueObject:_event forKey:EVENTS_KEY];
+    
+    // Add to _invitee since we are done
+    [_invitee addObject:_event];
+    [_invitee addObject:[AppDelegate parseUser]];
+    
+    [PFObject saveAllInBackground:_invitee block:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:self];
+        } else {
+            NSLog(@"ERRRRRRRROR!!!");
+        }
     }];
 }
 
-/*
-+ (Event *)createEvent
+- (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event
 {
-    Event *event = [[Event alloc] init];
-    event.date = [NSDate date];
+    // Add event to invitee
+    [person addUniqueObject:event forKey:EVENTS_KEY];
     
-    // Add to Parse
-    PFObject *parseEvent = [PFObject objectWithClassName:ClassEventKey];
-    event.parse = parseEvent;
-    parseEvent[EventDateKey] = event.date;
-    [parseEvent addObject:[AppDelegate app].inviteUser.parse forKey:EventPersonsKey];
-    [[AppDelegate app].inviteUser.parse addObject:parseEvent forKey:EventsKey];
-    [PFObject saveAllInBackground:@[parseEvent, [AppDelegate app].inviteUser.parse]];
+    // Add invitee to creator's (user's) friends
+    [[AppDelegate parseUser] addUniqueObject:person forKey:FRIENDS_KEY];
     
-    // Add to Core Data
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:ClassEventKey inManagedObjectContext:[[AppDelegate app] managedObjectContext]];
-    NSManagedObject *coreEvent = [[NSManagedObject alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:[[AppDelegate app] managedObjectContext]];
-    event.core = coreEvent;
-    [coreEvent setValue:event.date forKey:EventDateKey];
-    [[[AppDelegate app].inviteUser.core mutableSetValueForKey:EventsKey] addObject:coreEvent];
-    [[AppDelegate app] saveContext];
-
-    return event;
+    // Add creator (user) to invitee's friends
+    [person addUniqueObject:[AppDelegate parseUser] forKey:FRIENDS_KEY];
+    
 }
- */
 
 @end

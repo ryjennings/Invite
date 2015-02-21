@@ -11,13 +11,16 @@
 #import <Parse/Parse.h>
 
 #import "User.h"
+#import "Timeframe.h"
 
 @interface Event : NSObject
 
 @property (nonatomic, strong) NSSet *invitees;
+@property (nonatomic, strong) NSArray *emails;
+@property (nonatomic, strong) Timeframe *timeframe;
 
 + (Event *)createEvent;
 
-- (void)createEventWithEmailAddresses:(NSArray *)emailAddresses;
+- (void)submitEvent;
 
 @end

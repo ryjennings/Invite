@@ -27,8 +27,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _timeframe = nil;
-    
     /*
     [PFObject fetchAllIfNeededInBackground:[AppDelegate user].friends block:^(NSArray *friends, NSError *error) {
         NSMutableArray *events = [NSMutableArray array];
@@ -42,6 +40,14 @@
         }];
     }];
      */
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSuccessfullyCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -157,6 +163,20 @@
 //    if ([segue.identifier isEqualToString:SEGUE_TO_TIMEFRAME]) {
 //        [AppDelegate user].eventPrototype = [Event createPrototype];
 //    }
+}
+
+- (IBAction)createEvent:(id)sender
+{
+    [AppDelegate user].protoEvent.timeframe = _timeframe;
+    [[AppDelegate user].protoEvent submitEvent];
+}
+
+#pragma mark - Notifications
+
+- (void)eventSuccessfullyCreated:(NSNotification *)notification
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [AppDelegate user].protoEvent = nil;
 }
 
 @end

@@ -29,7 +29,8 @@
 {
     _parse = user;
     [self createUserFromObject:user];
-    [[AppDelegate user] checkForEventsWhereUserIsInvited];
+//    [[AppDelegate user] checkForEventsWhereUserIsInvited];
+    [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
 }
 
 - (void)createParseUserFromFacebookUser:(id<FBGraphUser>)user
@@ -100,7 +101,8 @@
         
         [person saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
-                [[AppDelegate user] checkForEventsWhereUserIsInvited];
+//                [[AppDelegate user] checkForEventsWhereUserIsInvited];
+                [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
             } else {
                 [[NSNotificationCenter defaultCenter] postNotificationName:DELETE_USER_NOTIFICATION object:self];
             }
@@ -109,7 +111,7 @@
 }
 
 #pragma mark - Events
-
+/*
 - (void)checkForEventsWhereUserIsInvited
 {
     NSMutableArray *currentEventObjectIds = [NSMutableArray array];
@@ -150,5 +152,6 @@
         }];
     }];
 }
+*/
 
 @end

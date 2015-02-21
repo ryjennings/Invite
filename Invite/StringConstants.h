@@ -13,6 +13,8 @@
 // Event keys
 #define EVENT_INVITEES_KEY @"invitees"
 #define EVENT_CREATOR_KEY @"creator"
+#define EVENT_STARTDATE_KEY @"start_date"
+#define EVENT_ENDDATE_KEY @"end_date"
 
 // Keys
 #define EMAIL_KEY @"email"
@@ -47,3 +49,4 @@
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"
 #define DELETE_USER_NOTIFICATION @"DeleteUserNotifcation"
+#define EVENT_CREATED_NOTIFICATION @"EventCreatedNotification"
