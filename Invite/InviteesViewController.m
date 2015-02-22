@@ -102,6 +102,13 @@
         NSArray *emailAddresses = [string componentsSeparatedByString:@","];
         
         [AppDelegate user].protoEvent.invitees = _invitees;
+        
+        NSMutableArray *inviteeEmails = [NSMutableArray array];
+        for (PFObject *invitee in _invitees) {
+            [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
+        }
+        [AppDelegate user].protoEvent.inviteeEmails = inviteeEmails;
+        
         [AppDelegate user].protoEvent.emails = emailAddresses;
     }
 }

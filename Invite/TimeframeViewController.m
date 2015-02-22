@@ -9,6 +9,7 @@
 #import "TimeframeViewController.h"
 
 #import "AppDelegate.h"
+#import "BusyDetails.h"
 #import "Event.h"
 #import "StringConstants.h"
 #import "Timeframe.h"
@@ -20,6 +21,7 @@
 @property (nonatomic, weak) IBOutlet UITableView *hoursView;
 
 @property (nonatomic, strong) Timeframe *timeframe;
+@property (nonatomic, strong) NSMutableArray *busyTimes;
 @end
 
 @implementation TimeframeViewController
@@ -27,20 +29,50 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    /*
-    [PFObject fetchAllIfNeededInBackground:[AppDelegate user].friends block:^(NSArray *friends, NSError *error) {
-        NSMutableArray *events = [NSMutableArray array];
-        [friends enumerateObjectsUsingBlock:^(PFObject *friend, NSUInteger idx, BOOL *stop) {
-            [events addObjectsFromArray:[friend objectForKey:EVENTS_KEY]];
-        }];
-        [PFObject fetchAllIfNeededInBackground:events block:^(NSArray *events, NSError *error) {
+    // Find event times that friends have committed to...
+    // Buddy up friend with event name and time
+    
+    // Only check for busy times if the user has friends
+    if ([AppDelegate user].friends) {
+    
+        _busyTimes = [NSMutableArray array];
+        for (unsigned i = 0; i < 24; i++) {
+            [_busyTimes addObject:[NSNull null]];
+        }
+        
+        PFQuery *query = [PFQuery queryWithClassName:CLASS_EVENT_KEY];
+        [query whereKey:EVENT_EMAILS_KEY containedIn:[AppDelegate user].friendEmails];
+        [query includeKey:EVENT_INVITEES_KEY]; // Include invitees so that we can get their name and email
+        [query findObjectsInBackgroundWithBlock:^(NSArray *events, NSError *error) {
+            
             [events enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
-                NSLog(@"%@", [event objectForKey:EVENT_CREATOR_KEY]);
-            }];
-        }];
-    }];
-     */
+                
+                [[event objectForKey:EVENT_INVITEES_KEY] enumerateObjectsUsingBlock:^(PFObject *invitee, NSUInteger idx, BOOL *stop) {
 
+                    if ([[AppDelegate user].protoEvent.inviteeEmails containsObject:[invitee objectForKey:EMAIL_KEY]]) {
+                        
+                        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                        [formatter setDateFormat:@"H"];
+                        NSDate *startDate = [event objectForKey:EVENT_STARTDATE_KEY];
+                        NSDate *endDate = [event objectForKey:EVENT_ENDDATE_KEY];
+                        NSInteger startHour = [[formatter stringFromDate:startDate] integerValue];
+                        NSTimeInterval length = [endDate timeIntervalSinceDate:startDate];
+                        length = (length / 3600) + 1; // length in hours
+
+                        for (NSInteger i = startHour; i < startHour + length; i++) {
+                            if ([_busyTimes[i] isEqual:[NSNull null]]) {
+                                _busyTimes[i] = [NSMutableDictionary dictionary];
+                            }
+                            [((NSMutableDictionary *)_busyTimes[i]) setValue:[BusyDetails busyDetailsWithPersonName:[invitee objectForKey:FULL_NAME_KEY] eventName:@"Event Name"] forKey:[invitee objectForKey:EMAIL_KEY]];
+                        }
+                    }
+                }];
+            }];
+            [_hoursView reloadData];
+        }];
+        
+    }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSuccessfullyCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
 }
 
@@ -75,6 +107,7 @@
     cell.textLabel.text = [NSString stringWithFormat:@"%ld", hour];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
+    cell.backgroundColor = [UIColor whiteColor];
     
     if (_timeframe) {
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -84,6 +117,10 @@
         if (indexPath.row >= start && indexPath.row <= end) {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
+    }
+    
+    if (_busyTimes && ![_busyTimes[indexPath.row] isEqual:[NSNull null]]) {
+        cell.backgroundColor = [UIColor lightGrayColor];
     }
     
     return cell;
@@ -176,6 +213,15 @@
 - (void)eventSuccessfullyCreated:(NSNotification *)notification
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+    
+    // Add event to local user
+    if (![AppDelegate user].events) {
+        [AppDelegate user].events = [NSArray array];
+    }
+    NSMutableArray *events = [[AppDelegate user].events mutableCopy];
+    [events addObject:[AppDelegate user].protoEvent];
+    [AppDelegate user].events = events;
+    
     [AppDelegate user].protoEvent = nil;
 }
 

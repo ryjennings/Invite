@@ -36,6 +36,7 @@
 		0738451E1A96A6B300E2929A /* TimeframeDayCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0738451D1A96A6B300E2929A /* TimeframeDayCell.m */; };
 		074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074FF55B1A965924000483FF /* TimeframeViewController.m */; };
 		0755CE491A8D22E500FF05B7 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755CE481A8D22E500FF05B7 /* User.m */; };
+		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
 /* End PBXBuildFile section */
@@ -92,6 +93,8 @@
 		074FF55B1A965924000483FF /* TimeframeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeViewController.m; sourceTree = "<group>"; };
 		0755CE471A8D22E500FF05B7 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		0755CE481A8D22E500FF05B7 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		075ED6261A994FEC0015F9E6 /* BusyDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusyDetails.h; sourceTree = "<group>"; };
+		075ED6271A994FEC0015F9E6 /* BusyDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusyDetails.m; sourceTree = "<group>"; };
 		0775B0701A93BFB900C15303 /* InviteesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesViewController.h; sourceTree = "<group>"; };
 		0775B0711A93BFB900C15303 /* InviteesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesViewController.m; sourceTree = "<group>"; };
 		0775B0731A93E6B000C15303 /* StringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConstants.h; sourceTree = "<group>"; };
@@ -189,6 +192,8 @@
 				0755CE481A8D22E500FF05B7 /* User.m */,
 				0786EB7B1A8E70ED006FDCA6 /* Event.h */,
 				0786EB7C1A8E70ED006FDCA6 /* Event.m */,
+				075ED6261A994FEC0015F9E6 /* BusyDetails.h */,
+				075ED6271A994FEC0015F9E6 /* BusyDetails.m */,
 				073273FD1A892BFB007700B3 /* Main.storyboard */,
 				071F694E1A8C1A3D009A8380 /* Localizable.strings */,
 				073274001A892BFB007700B3 /* Images.xcassets */,
@@ -352,6 +357,7 @@
 				0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */,
 				073273FC1A892BFB007700B3 /* LoginViewController.m in Sources */,
 				073845181A969CFB00E2929A /* Timeframe.m in Sources */,
+				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
 				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

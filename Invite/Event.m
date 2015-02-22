@@ -29,8 +29,6 @@
 
 - (void)submitEvent
 {
-    // CREATE ALL NEW OBJECTS FIRST, THEN SAVE TO EXISTING OBJECTS
-
     // INVITEE - invitee selected from table above email field
     // EMAIL - invitee added to email field
     // PARSE - Person on Parse
@@ -78,30 +76,44 @@
         _event[EVENT_ENDDATE_KEY] = _timeframe.end;
         [save addObject:_event];
 
-        [PFObject saveAllInBackground:save target:self selector:@selector(eventCreated)];
+        [PFObject saveAllInBackground:save target:self selector:@selector(eventCreatedWithResult:error:)];
     }];
 }
-     
-- (void)eventCreated
+
+- (void)eventCreatedWithResult:(NSNumber *)result error:(NSError *)error
 {
-    // By now the new event and all people who had to be created for this event have been created...
-    [_event addUniqueObjectsFromArray:_invitee forKey:EVENT_INVITEES_KEY];
-    for (PFObject *person in _invitee) {
-        [self makeAdjustmentsToPerson:person event:_event];
-    }
-    [[AppDelegate parseUser] addUniqueObject:_event forKey:EVENTS_KEY];
-    
-    // Add to _invitee since we are done
-    [_invitee addObject:_event];
-    [_invitee addObject:[AppDelegate parseUser]];
-    
-    [PFObject saveAllInBackground:_invitee block:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:self];
-        } else {
-            NSLog(@"ERRRRRRRROR!!!");
+    if ([result boolValue]) { // success
+        
+        // By now the new event and all people who had to be created for this event have been created...
+        [_event addUniqueObjectsFromArray:_invitee forKey:EVENT_INVITEES_KEY];
+        
+        // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
+        NSMutableArray *emails = [NSMutableArray array];
+        for (PFObject *invitee in _invitee) {
+            [emails addObject:[invitee objectForKey:EMAIL_KEY]];
         }
-    }];
+        [_event addUniqueObjectsFromArray:emails forKey:EVENT_EMAILS_KEY];
+        
+        for (PFObject *person in _invitee) {
+            [self makeAdjustmentsToPerson:person event:_event];
+        }
+        
+        [[AppDelegate parseUser] addUniqueObject:_event forKey:EVENTS_KEY];
+        
+        // Add to _invitee since we are done
+        [_invitee addObject:_event];
+        [_invitee addObject:[AppDelegate parseUser]];
+        
+        [PFObject saveAllInBackground:_invitee block:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:self];
+            } else {
+                NSLog(@"ERRRRRRRROR!!!");
+            }
+        }];
+    } else {
+        NSLog(@"ERRRRRRRROR!!!");
+    }
 }
 
 - (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event
@@ -112,6 +124,25 @@
     // Add invitee to creator's (user's) friends
     [[AppDelegate parseUser] addUniqueObject:person forKey:FRIENDS_KEY];
     
+    // Add person to local friends
+    if (![AppDelegate user].friends) {
+        [AppDelegate user].friends = [NSArray array];
+    }
+    NSMutableArray *friends = [[AppDelegate user].friends mutableCopy];
+    [friends addObject:person];
+    [AppDelegate user].friends = friends;
+    
+    // Add invitee's email to creator's (user's) friendEmails
+    [[AppDelegate parseUser] addUniqueObject:[person objectForKey:EMAIL_KEY] forKey:FRIENDEMAILS_KEY];
+    
+    // Add person's email to local friendEmails
+    if (![AppDelegate user].friendEmails) {
+        [AppDelegate user].friendEmails = [NSArray array];
+    }
+    NSMutableArray *friendEmails = [[AppDelegate user].friendEmails mutableCopy];
+    [friendEmails addObject:[person objectForKey:EMAIL_KEY]];
+    [AppDelegate user].friendEmails = friendEmails;
+
     // Add creator (user) to invitee's friends
     [person addUniqueObject:[AppDelegate parseUser] forKey:FRIENDS_KEY];
     

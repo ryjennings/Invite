@@ -15,6 +15,7 @@
 #define EVENT_CREATOR_KEY @"creator"
 #define EVENT_STARTDATE_KEY @"start_date"
 #define EVENT_ENDDATE_KEY @"end_date"
+#define EVENT_EMAILS_KEY @"emails"
 
 // Keys
 #define EMAIL_KEY @"email"
@@ -29,6 +30,7 @@
 #define EVENTS_KEY @"events"
 #define OBJECTID_KEY @"objectId"
 #define FRIENDS_KEY @"friends"
+#define FRIENDEMAILS_KEY @"friendEmails"
 
 // Keys used by Facebook
 #define ID_KEY @"id"

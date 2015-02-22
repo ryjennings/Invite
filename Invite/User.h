@@ -29,6 +29,7 @@
 
 @property (nonatomic, strong) NSArray *events;
 @property (nonatomic, strong) NSArray *friends;
+@property (nonatomic, strong) NSArray *friendEmails;
 
 @property (nonatomic, strong) Event *protoEvent;
 

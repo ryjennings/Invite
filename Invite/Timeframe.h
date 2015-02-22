@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface Timeframe : UIViewController
+@interface Timeframe : NSObject
 
 @property (nonatomic, strong) NSDate *start;
 @property (nonatomic, strong) NSDate *end;

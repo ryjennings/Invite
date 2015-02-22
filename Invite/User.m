@@ -29,7 +29,6 @@
 {
     _parse = user;
     [self createUserFromObject:user];
-//    [[AppDelegate user] checkForEventsWhereUserIsInvited];
     [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
 }
 
@@ -61,6 +60,7 @@
         
         _events = [object objectForKey:EVENTS_KEY];
         _friends = [object objectForKey:FRIENDS_KEY];
+        _friendEmails = [object objectForKey:FRIENDEMAILS_KEY];
         
     }
 }
@@ -101,57 +101,13 @@
         
         [person saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
-//                [[AppDelegate user] checkForEventsWhereUserIsInvited];
                 [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
             } else {
                 [[NSNotificationCenter defaultCenter] postNotificationName:DELETE_USER_NOTIFICATION object:self];
+                NSLog(@"ERRRRRRRROR!!!");
             }
         }];
     }];
 }
-
-#pragma mark - Events
-/*
-- (void)checkForEventsWhereUserIsInvited
-{
-    NSMutableArray *currentEventObjectIds = [NSMutableArray array];
-    [_events enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
-        [currentEventObjectIds addObject:event.objectId];
-    }];
-    
-    PFQuery *query = [PFQuery queryWithClassName:CLASS_EVENT_KEY];
-    [query whereKey:EVENT_INVITEES_KEY equalTo:_parse];
-    
-    [query findObjectsInBackgroundWithBlock:^(NSArray *events, NSError *error) {
-        
-        NSMutableArray *mutableEvents = [_events mutableCopy];
-        
-        [events enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
-            if (![currentEventObjectIds containsObject:event.objectId]) {
-
-                // Add event to Parse user
-                [_parse addObject:event forKey:EVENTS_KEY];
-                
-                // Add event to local user
-                [mutableEvents addObject:event]; // Add to local
-                
-                // Add event creator as friend to user
-                [_parse addUniqueObject:[event objectForKey:EVENT_CREATOR_KEY] forKey:FRIENDS_KEY];
-            }
-        }];
-        
-        _events = mutableEvents;
-        
-        [_parse saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            NSLog(@"checkForEventsWhereUserIsInvited succeeded %@", [NSNumber numberWithBool:succeeded]);
-            if (succeeded) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
-            } else {
-                [[NSNotificationCenter defaultCenter] postNotificationName:DELETE_USER_NOTIFICATION object:self];
-            }
-        }];
-    }];
-}
-*/
 
 @end
