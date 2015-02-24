@@ -8,9 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-extern NSString *const ClassPersonKey;
-extern NSString *const EmailKey;
-
 @interface LoginViewController : UIViewController
 
 @end

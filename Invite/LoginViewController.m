@@ -28,12 +28,11 @@
 {
     [super viewDidLoad];
     
+    [self.navigationItem setHidesBackButton:YES animated:YES];
     _receivedUser = NO;
     
     [self showFacebookLogin];
-    
-    self.navigationController.navigationItem.title = @"Select Invitees";
-    
+        
     // Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userCreated:) name:USER_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteUser:) name:DELETE_USER_NOTIFICATION object:nil];
@@ -48,7 +47,7 @@
 - (void)showDashboard
 {
     DashboardViewController *controller = (DashboardViewController *)[self.storyboard instantiateViewControllerWithIdentifier:DASHBOARD_VIEW_CONTROLLER];
-    self.navigationController.viewControllers = @[controller];
+    [self.navigationController setViewControllers:@[controller] animated:YES];
 }
 
 - (void)pushDashboard
@@ -81,6 +80,7 @@
 
         PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
         [query whereKey:EMAIL_KEY equalTo:[facebookUser objectForKey:EMAIL_KEY]];
+        [query includeKey:EVENTS_KEY];
         [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseUser, NSError *error) {
             
             if (![parseUser objectForKey:FACEBOOK_ID_KEY]) {
@@ -93,8 +93,12 @@
             } else {
                 
                 [[AppDelegate user] loadParseUser:parseUser];
-                
+                [self performSelector:@selector(showDashboard) withObject:nil afterDelay:0.5];
+
             }
+            
+            [AppDelegate setObject:[facebookUser objectForKey:EMAIL_KEY] forKey:EMAIL_KEY];
+
         }];
     }
 }

@@ -38,17 +38,22 @@
 #define NAME_KEY @"name"
 
 // Controllers
+#define LOGIN_VIEW_CONTROLLER @"LoginViewController"
 #define DASHBOARD_VIEW_CONTROLLER @"DashboardViewController"
 
 // Segues
 #define SEGUE_TO_INVITEES @"SegueToInvitees"
 #define SEGUE_TO_TIMEFRAME @"SegueToTimeframe"
+#define SEGUE_TO_LOGIN @"SegueToLogin"
+#define SEGUE_TO_DASHBOARD @"SegueToDashboard"
 
 // Table cell identifiers
 #define INVITEE_CELL_IDENTIFIER @"InviteeCellIdentifier"
 #define TIMEFRAME_HOUR_CELL_IDENTIFIER @"TimeframeHourCellIdentifier"
+#define DASHBOARD_EVENT_CELL_IDENTIFIER @"DashboardEventCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"
 #define DELETE_USER_NOTIFICATION @"DeleteUserNotifcation"
 #define EVENT_CREATED_NOTIFICATION @"EventCreatedNotification"
+#define PARSE_LOADED_NOTIFICATION @"ParseLoadedNotification"

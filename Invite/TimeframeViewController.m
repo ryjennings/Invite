@@ -212,17 +212,7 @@
 
 - (void)eventSuccessfullyCreated:(NSNotification *)notification
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
-    // Add event to local user
-    if (![AppDelegate user].events) {
-        [AppDelegate user].events = [NSArray array];
-    }
-    NSMutableArray *events = [[AppDelegate user].events mutableCopy];
-    [events addObject:[AppDelegate user].protoEvent];
-    [AppDelegate user].events = events;
-    
-    [AppDelegate user].protoEvent = nil;
+    [self dismissViewControllerAnimated:YES completion:nil];    
 }
 
 @end

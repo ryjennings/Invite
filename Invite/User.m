@@ -29,7 +29,7 @@
 {
     _parse = user;
     [self createUserFromObject:user];
-    [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:PARSE_LOADED_NOTIFICATION object:self];
 }
 
 - (void)createParseUserFromFacebookUser:(id<FBGraphUser>)user
