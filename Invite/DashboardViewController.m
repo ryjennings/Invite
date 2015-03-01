@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "DashboardEventCell.h"
 #import "Event.h"
+#import "LoginViewController.h"
 #import "StringConstants.h"
 
 @interface DashboardViewController ()
@@ -108,6 +109,14 @@
 - (void)parseLoaded:(NSNotification *)notification
 {
     [_collectionView reloadData];
+}
+
+- (IBAction)logout:(id)sender
+{
+    [FBSession.activeSession closeAndClearTokenInformation];
+    [AppDelegate clearUser];
+    LoginViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:LOGIN_VIEW_CONTROLLER];
+    [self.navigationController setViewControllers:@[controller]];
 }
 
 @end

@@ -28,7 +28,6 @@
 {
     [super viewDidLoad];
     
-    [self.navigationItem setHidesBackButton:YES animated:YES];
     _receivedUser = NO;
     
     [self showFacebookLogin];
@@ -41,6 +40,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+    _receivedUser = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

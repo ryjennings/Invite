@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) NSMutableArray *invitee;
 @property (nonatomic, strong) NSMutableArray *email;
+@property (nonatomic, strong) NSMutableArray *iEmails;
 
 @property (nonatomic, strong) PFObject *event;
 @end
@@ -36,49 +37,58 @@
     _email = [_emails mutableCopy];
     _invitee = [[_invitees allObjects] mutableCopy];
     
-    NSMutableArray *inviteeEmails = [NSMutableArray array];
+    _iEmails = [NSMutableArray array];
     [_invitees enumerateObjectsUsingBlock:^(PFObject *invitee, BOOL *stop) {
-        [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
+        [_iEmails addObject:[invitee objectForKey:EMAIL_KEY]];
     }];
     
-    PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
-    [query whereKey:EMAIL_KEY containedIn:_emails];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *persons, NSError *error) {
-        
-        // PARSE who were listed in email field
-        
-        for (PFObject *person in persons) {
-            
-            if (![inviteeEmails containsObject:person[EMAIL_KEY]]) {
-                
-                // PARSE who is not currently INVITEE
-                [_invitee addObject:person];
-            }
-            
-            [_email removeObject:person[EMAIL_KEY]];
-        }
-        
-        NSMutableArray *save = [NSMutableArray array];
-        
-        // Create a new Person for all emails left
-        for (NSString *email in _email) {
-            
-            PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
-            person[EMAIL_KEY] = email;
-            [_invitee addObject:person];
-            [save addObject:person];
-            
-        }
-        
-        _event = [PFObject objectWithClassName:CLASS_EVENT_KEY];
-        _event[EVENT_CREATOR_KEY] = [AppDelegate parseUser];
-        _event[EVENT_STARTDATE_KEY] = _timeframe.start;
-        _event[EVENT_ENDDATE_KEY] = _timeframe.end;
-        [save addObject:_event];
-
-        [PFObject saveAllInBackground:save target:self selector:@selector(eventCreatedWithResult:error:)];
-    }];
+    if (_emails.count) {
+        PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
+        [query whereKey:EMAIL_KEY containedIn:_emails];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *persons, NSError *error) {
+            [self reallySubmitEventWithPersons:persons];
+        }];
+    } else {
+        [self reallySubmitEventWithPersons:nil];
+    }
 }
+
+- (void)reallySubmitEventWithPersons:(NSArray *)persons
+{
+    // PARSE who were listed in email field
+    
+    for (PFObject *person in persons) {
+        
+        if (![_iEmails containsObject:person[EMAIL_KEY]]) {
+            
+            // PARSE who is not currently INVITEE
+            [_invitee addObject:person];
+        }
+        
+        [_email removeObject:person[EMAIL_KEY]];
+    }
+    
+    NSMutableArray *save = [NSMutableArray array];
+    
+    // Create a new Person for all emails left
+    for (NSString *email in _email) {
+        
+        PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
+        person[EMAIL_KEY] = email;
+        [_invitee addObject:person];
+        [save addObject:person];
+        
+    }
+    
+    _event = [PFObject objectWithClassName:CLASS_EVENT_KEY];
+    _event[EVENT_CREATOR_KEY] = [AppDelegate parseUser];
+    _event[EVENT_STARTDATE_KEY] = _timeframe.start;
+    _event[EVENT_ENDDATE_KEY] = _timeframe.end;
+    [save addObject:_event];
+    
+    [PFObject saveAllInBackground:save target:self selector:@selector(eventCreatedWithResult:error:)];
+}
+
 
 - (void)eventCreatedWithResult:(NSNumber *)result error:(NSError *)error
 {
@@ -90,9 +100,11 @@
         // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
         NSMutableArray *emails = [NSMutableArray array];
         for (PFObject *invitee in _invitee) {
-            [emails addObject:[invitee objectForKey:EMAIL_KEY]];
+            NSString *email = [invitee objectForKey:EMAIL_KEY];
+            if (email && email.length > 0) [emails addObject:email];
         }
         [_event addUniqueObjectsFromArray:emails forKey:EVENT_EMAILS_KEY];
+        _emails = emails;
         
         for (PFObject *person in _invitee) {
             [self makeAdjustmentsToPerson:person event:_event];
@@ -145,7 +157,7 @@
 
     // Add creator (user) to invitee's friends
     [person addUniqueObject:[AppDelegate parseUser] forKey:FRIENDS_KEY];
-    
+    [person addUniqueObject:[AppDelegate user].email forKey:FRIENDEMAILS_KEY];
 }
 
 @end

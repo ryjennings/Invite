@@ -208,11 +208,17 @@
     [[AppDelegate user].protoEvent submitEvent];
 }
 
+- (IBAction)cancel:(id)sender
+{
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - Notifications
 
 - (void)eventSuccessfullyCreated:(NSNotification *)notification
 {
-    [self dismissViewControllerAnimated:YES completion:nil];    
+    [AppDelegate user].protoEvent = nil;
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

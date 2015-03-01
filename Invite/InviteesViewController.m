@@ -97,9 +97,14 @@
         
         // Add email addresses to invitees
         
-        NSArray *components = [_emailTextField.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString *string = [components componentsJoinedByString:@""];
-        NSArray *emailAddresses = [string componentsSeparatedByString:@","];
+        if (_emailTextField.text.length) {
+            NSArray *components = [_emailTextField.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            NSString *string = [components componentsJoinedByString:@""];
+            NSArray *emailAddresses = [string componentsSeparatedByString:@","];
+            if (emailAddresses.count) {
+                [AppDelegate user].protoEvent.emails = emailAddresses;
+            }
+        }
         
         [AppDelegate user].protoEvent.invitees = _invitees;
         
@@ -107,10 +112,17 @@
         for (PFObject *invitee in _invitees) {
             [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
         }
-        [AppDelegate user].protoEvent.inviteeEmails = inviteeEmails;
+        if (inviteeEmails.count) {
+            [AppDelegate user].protoEvent.inviteeEmails = inviteeEmails;
+        }
         
-        [AppDelegate user].protoEvent.emails = emailAddresses;
     }
+}
+
+- (IBAction)cancel:(id)sender
+{
+    [AppDelegate user].protoEvent = nil;
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

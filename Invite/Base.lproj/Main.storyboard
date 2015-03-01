@@ -136,6 +136,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="TfP-I1-re5">
+                        <barButtonItem key="leftBarButtonItem" title="Log Out" id="gGP-V0-G3c">
+                            <connections>
+                                <action selector="logout:" destination="Tg8-E4-TKE" id="fxS-NI-D0K"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Settings" id="6lc-aw-m1S">
                             <connections>
                                 <segue destination="AH1-zc-fz0" kind="presentation" id="Eme-6a-VK8"/>
@@ -169,7 +174,7 @@
             </objects>
             <point key="canvasLocation" x="1757" y="233"/>
         </scene>
-        <!--Invitees View Controller-->
+        <!--Invitees-->
         <scene sceneID="Eiq-ey-LhU">
             <objects>
                 <viewController id="yYW-xh-XCd" customClass="InviteesViewController" sceneMemberID="viewController">
@@ -243,7 +248,13 @@
                             <constraint firstItem="4Vz-FN-Qbq" firstAttribute="bottom" secondItem="ZOG-XV-z07" secondAttribute="top" id="qxh-la-bT3"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="1wH-vB-0MU"/>
+                    <navigationItem key="navigationItem" title="Invitees" id="1wH-vB-0MU">
+                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="dFR-Z7-7Qe">
+                            <connections>
+                                <action selector="cancel:" destination="yYW-xh-XCd" id="gNf-zC-RZd"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="emailTextField" destination="wEA-Tx-gYS" id="D9J-WB-XkV"/>
                         <outlet property="tableView" destination="4Vz-FN-Qbq" id="BZP-Io-ffp"/>
@@ -253,7 +264,7 @@
             </objects>
             <point key="canvasLocation" x="2455" y="233"/>
         </scene>
-        <!--Timeframe View Controller-->
+        <!--Timeframe-->
         <scene sceneID="iNu-RP-6DV">
             <objects>
                 <viewController id="nle-a3-tE2" customClass="TimeframeViewController" sceneMemberID="viewController">
@@ -367,6 +378,13 @@
                             <constraint firstItem="GI4-q9-Xwj" firstAttribute="top" secondItem="f2h-9T-nJY" secondAttribute="bottom" id="zUX-CC-6NP"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="Timeframe" id="YGI-CK-qZG">
+                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="PXY-F0-ojZ">
+                            <connections>
+                                <action selector="cancel:" destination="nle-a3-tE2" id="o5d-xQ-oyd"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="daysView" destination="GI4-q9-Xwj" id="cuY-zK-guP"/>
                         <outlet property="hoursView" destination="Q9V-m9-kmz" id="tAY-F4-ej0"/>
