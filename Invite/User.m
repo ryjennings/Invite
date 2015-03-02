@@ -8,6 +8,7 @@
 
 #import "User.h"
 
+#import "BusyDetails.h"
 #import "Event.h"
 #import "StringConstants.h"
 
@@ -29,6 +30,7 @@
 {
     _parse = user;
     [self createUserFromObject:user];
+    [self findBusyTimes];
     [[NSNotificationCenter defaultCenter] postNotificationName:PARSE_LOADED_NOTIFICATION object:self];
 }
 
@@ -44,7 +46,7 @@
     _gender = [object objectForKey:GENDER_KEY];
     _locale = [object objectForKey:LOCALE_KEY];
     _lastName = [object objectForKey:LAST_NAME_KEY];
-    _timezone = (long)[object objectForKey:TIMEZONE_KEY];
+    _timezone = [[object objectForKey:TIMEZONE_KEY] intValue];
     _email = [object objectForKey:EMAIL_KEY];
     _firstName = [object objectForKey:FIRST_NAME_KEY];
 
@@ -92,7 +94,7 @@
         person[LOCALE_KEY] = _locale;
         person[FACEBOOK_ID_KEY] = _facebookID;
         person[LAST_NAME_KEY] = _lastName;
-        person[TIMEZONE_KEY] = [NSNumber numberWithLong:_timezone];
+        person[TIMEZONE_KEY] = [NSNumber numberWithInt:_timezone];
         person[FACEBOOK_LINK_KEY] = _facebookLink;
         person[FULL_NAME_KEY] = _fullName;
         person[FIRST_NAME_KEY] = _firstName;
@@ -108,6 +110,52 @@
             }
         }];
     }];
+}
+
+- (void)findBusyTimes
+{
+    // Find event times that friends have committed to...
+    // Buddy up friend with event name and time
+    
+    // Only check for busy times if the user has friends
+    if (_friends) {
+        
+        NSMutableSet *busyTimes = [NSMutableSet set];
+        
+        NSMutableArray *mEvents = [NSMutableArray array];
+        
+        for (PFObject *friend in _friends) {
+            // Create "events" to fetch...
+            [mEvents addObjectsFromArray:[friend objectForKey:EVENTS_KEY]];
+        }
+        
+        [PFObject fetchAllIfNeededInBackground:mEvents block:^(NSArray *events, NSError *error) {
+            
+            NSMutableDictionary *friendNames = [NSMutableDictionary dictionary];
+            for (PFObject *friend in _friends) {
+                for (PFObject *event in [friend objectForKey:EVENTS_KEY]) {
+                    // Create friendNames for nameForFriendWithEvent:
+                    [friendNames setValue:[friend objectForKey:FULL_NAME_KEY] forKey:event.objectId];
+                }
+            }
+            
+            NSString *(^ nameForFriendWithEvent)(PFObject *event) = ^NSString *(PFObject *event) {
+                return [friendNames valueForKey:event.objectId];
+            };
+
+            for (PFObject *event in events) {
+                
+                NSDate *startDate = [event objectForKey:EVENT_STARTDATE_KEY];
+                NSDate *endDate = [event objectForKey:EVENT_ENDDATE_KEY];
+                NSTimeInterval duration = [endDate timeIntervalSinceDate:startDate];
+                duration = (duration / 3600) + 1; // duration in hours
+
+                [busyTimes addObject:[BusyDetails busyDetailsWithPersonName:nameForFriendWithEvent(event) eventName:@"Event Name" startDate:[event objectForKey:EVENT_STARTDATE_KEY] duration:duration]];
+            }
+            
+            _busyTimes = busyTimes;
+        }];
+    }
 }
 
 @end

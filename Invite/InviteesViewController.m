@@ -24,18 +24,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _friends = [NSArray array];
     _invitees = [NSMutableSet set];
-
-    PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
-    [[query whereKey:EMAIL_KEY equalTo:[AppDelegate user].email] includeKey:FRIENDS_KEY];
-    
-    // Return all friends
-    
-    [query getFirstObjectInBackgroundWithBlock:^(PFObject *user, NSError *error) {
-        _friends = [user objectForKey:FRIENDS_KEY];
-        [_tableView reloadData];
-    }];
+    _friends = [AppDelegate user].friends;
 }
 
 - (void)didReceiveMemoryWarning {

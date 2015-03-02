@@ -10,11 +10,13 @@
 
 @implementation BusyDetails
 
-+ (BusyDetails *)busyDetailsWithPersonName:(NSString *)personName eventName:(NSString *)eventName
++ (BusyDetails *)busyDetailsWithPersonName:(NSString *)personName eventName:(NSString *)eventName startDate:(NSDate *)startDate duration:(NSUInteger)duration
 {
     BusyDetails *busy = [[BusyDetails alloc] init];
     busy.personName = personName;
     busy.eventName = eventName;
+    busy.startDate = startDate;
+    busy.duration = duration;
     return busy;
 }
 

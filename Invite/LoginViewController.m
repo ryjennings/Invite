@@ -81,6 +81,7 @@
         PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
         [query whereKey:EMAIL_KEY equalTo:[facebookUser objectForKey:EMAIL_KEY]];
         [query includeKey:EVENTS_KEY];
+        [query includeKey:FRIENDS_KEY];
         [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseUser, NSError *error) {
             
             if (![parseUser objectForKey:FACEBOOK_ID_KEY]) {

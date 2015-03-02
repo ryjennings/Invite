@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSString *locale;
 @property (nonatomic, strong) NSString *facebookID;
 @property (nonatomic, strong) NSString *lastName;
-@property (nonatomic, assign) long timezone;
+@property (nonatomic, assign) int timezone;
 @property (nonatomic, strong) NSString *email;
 @property (nonatomic, strong) NSString *facebookLink;
 @property (nonatomic, strong) NSString *fullName;
@@ -30,6 +30,8 @@
 @property (nonatomic, strong) NSArray *events;
 @property (nonatomic, strong) NSArray *friends;
 @property (nonatomic, strong) NSArray *friendEmails;
+
+@property (nonatomic, strong) NSSet *busyTimes;
 
 @property (nonatomic, strong) Event *protoEvent;
 

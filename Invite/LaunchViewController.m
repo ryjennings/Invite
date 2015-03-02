@@ -29,6 +29,7 @@
         PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
         [query whereKey:EMAIL_KEY equalTo:email];
         [query includeKey:EVENTS_KEY];
+        [query includeKey:FRIENDS_KEY];
         [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseUser, NSError *error) {
             
             [[AppDelegate user] loadParseUser:parseUser];

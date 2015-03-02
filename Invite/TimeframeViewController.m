@@ -13,6 +13,9 @@
 #import "Event.h"
 #import "StringConstants.h"
 #import "Timeframe.h"
+#import "TimeframeCollectionCell.h"
+
+NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 @interface TimeframeViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -22,6 +25,13 @@
 
 @property (nonatomic, strong) Timeframe *timeframe;
 @property (nonatomic, strong) NSMutableArray *busyTimes;
+
+@property (nonatomic, assign) NSUInteger day;
+@property (nonatomic, assign) NSUInteger month;
+@property (nonatomic, assign) NSUInteger year;
+@property (nonatomic, assign) NSUInteger hour;
+@property (nonatomic, assign) NSUInteger quarter;
+
 @end
 
 @implementation TimeframeViewController
@@ -29,51 +39,59 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Find event times that friends have committed to...
-    // Buddy up friend with event name and time
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:[NSDate date]];
     
-    // Only check for busy times if the user has friends
-    if ([AppDelegate user].friends) {
-    
-        _busyTimes = [NSMutableArray array];
-        for (unsigned i = 0; i < 24; i++) {
-            [_busyTimes addObject:[NSNull null]];
-        }
-        
-        PFQuery *query = [PFQuery queryWithClassName:CLASS_EVENT_KEY];
-        [query whereKey:EVENT_EMAILS_KEY containedIn:[AppDelegate user].friendEmails];
-        [query includeKey:EVENT_INVITEES_KEY]; // Include invitees so that we can get their name and email
-        [query findObjectsInBackgroundWithBlock:^(NSArray *events, NSError *error) {
-            
-            [events enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
-                
-                [[event objectForKey:EVENT_INVITEES_KEY] enumerateObjectsUsingBlock:^(PFObject *invitee, NSUInteger idx, BOOL *stop) {
+    _day = components.day;
+    _month = components.month;
+    _year = components.year;
 
-                    if ([[AppDelegate user].protoEvent.inviteeEmails containsObject:[invitee objectForKey:EMAIL_KEY]]) {
-                        
-                        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                        [formatter setDateFormat:@"H"];
-                        NSDate *startDate = [event objectForKey:EVENT_STARTDATE_KEY];
-                        NSDate *endDate = [event objectForKey:EVENT_ENDDATE_KEY];
-                        NSInteger startHour = [[formatter stringFromDate:startDate] integerValue];
-                        NSTimeInterval length = [endDate timeIntervalSinceDate:startDate];
-                        length = (length / 3600) + 1; // length in hours
-
-                        for (NSInteger i = startHour; i < startHour + length; i++) {
-                            if ([_busyTimes[i] isEqual:[NSNull null]]) {
-                                _busyTimes[i] = [NSMutableDictionary dictionary];
-                            }
-                            [((NSMutableDictionary *)_busyTimes[i]) setValue:[BusyDetails busyDetailsWithPersonName:[invitee objectForKey:FULL_NAME_KEY] eventName:@"Event Name"] forKey:[invitee objectForKey:EMAIL_KEY]];
-                        }
-                    }
-                }];
-            }];
-            [_hoursView reloadData];
-        }];
-        
-    }
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSuccessfullyCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
+}
+
+- (NSString *)month:(NSUInteger)m
+{
+    switch (m) {
+        case 1: return @"January";
+        case 2: return @"Februrary";
+        case 3: return @"March";
+        case 4: return @"April";
+        case 5: return @"May";
+        case 6: return @"June";
+        case 7: return @"July";
+        case 8: return @"August";
+        case 9: return @"September";
+        case 10: return @"October";
+        case 11: return @"November";
+        default: return @"December";
+    }
+}
+
+- (NSUInteger)daysInMonth:(NSUInteger)m forYear:(NSUInteger)y
+{
+    switch (m) {
+        case 1: return 31;
+        case 2:
+        {
+            NSCalendar *calendar = [NSCalendar currentCalendar];
+            NSDateComponents *components = [[NSDateComponents alloc] init];
+            components.year = y;
+            components.month = 2;
+            components.day = 1;
+            NSDate *februaryDate = [calendar dateFromComponents:components];
+            return [calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:februaryDate].length;
+        }
+        case 3: return 31;
+        case 4: return 30;
+        case 5: return 31;
+        case 6: return 30;
+        case 7: return 31;
+        case 8: return 31;
+        case 9: return 30;
+        case 10: return 31;
+        case 11: return 30;
+        default: return 31;
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -219,6 +237,50 @@
 {
     [AppDelegate user].protoEvent = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - UICollectionView
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    if ([collectionView isEqual:_monthsView]) {
+        return 12;
+    } else {
+        return 365;
+    }
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    TimeframeCollectionCell *cell = (TimeframeCollectionCell *)[collectionView dequeueReusableCellWithReuseIdentifier:TimeframeCollectionCellId forIndexPath:indexPath];
+    cell.label.text = [NSString stringWithFormat:@"%lu", (unsigned long)[self dayForIndexPath:indexPath]];
+    return cell;
+}
+
+- (NSUInteger)dayForIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger item = indexPath.item;
+    NSUInteger remainingDays = [self daysInMonth:_month forYear:_year] - _day;
+    
+    if (item > remainingDays) {
+        item -= remainingDays;
+        
+        unsigned i = 1;
+        NSUInteger daysInMonth = [self daysInMonth:_month + i forYear:_year];
+        while (item > daysInMonth) {
+            item -= daysInMonth;
+            i++;
+        }
+    } else {
+        return item + _day;
+    }
+
+    return item;
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-//  TimeframeMonthCell.h
+//  TimeframeCollectionCell.h
 //  Invite
 //
 //  Created by Ryan Jennings on 2/19/15.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TimeframeMonthCell : UICollectionViewCell
+@interface TimeframeCollectionCell : UICollectionViewCell
+
+@property (nonatomic, weak) IBOutlet UILabel *label;
 
 @end
