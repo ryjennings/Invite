@@ -39,6 +39,7 @@
 		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
+		07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */; };
 		07D01A311A9A9B7F00860650 /* DashboardEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D01A301A9A9B7F00860650 /* DashboardEventCell.m */; };
 /* End PBXBuildFile section */
 
@@ -101,6 +102,8 @@
 		0775B0731A93E6B000C15303 /* StringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConstants.h; sourceTree = "<group>"; };
 		0786EB7B1A8E70ED006FDCA6 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		0786EB7C1A8E70ED006FDCA6 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
+		07B65A321AA4D81700A6F1A2 /* TimeframeCollectionLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeCollectionLayout.h; sourceTree = "<group>"; };
+		07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeCollectionLayout.m; sourceTree = "<group>"; };
 		07C2098C1A8C2159002B3961 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		07D01A2F1A9A9B7F00860650 /* DashboardEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashboardEventCell.h; sourceTree = "<group>"; };
 		07D01A301A9A9B7F00860650 /* DashboardEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashboardEventCell.m; sourceTree = "<group>"; };
@@ -235,6 +238,8 @@
 				074FF55B1A965924000483FF /* TimeframeViewController.m */,
 				073845191A96A6A200E2929A /* TimeframeCollectionCell.h */,
 				0738451A1A96A6A200E2929A /* TimeframeCollectionCell.m */,
+				07B65A321AA4D81700A6F1A2 /* TimeframeCollectionLayout.h */,
+				07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */,
 			);
 			name = Timeframe;
 			sourceTree = "<group>";
@@ -379,6 +384,7 @@
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
 				07D01A311A9A9B7F00860650 /* DashboardEventCell.m in Sources */,
 				0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */,
+				07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */,
 				074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */,
 				0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */,
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,

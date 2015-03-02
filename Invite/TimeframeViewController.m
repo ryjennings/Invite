@@ -17,7 +17,7 @@
 
 NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
-@interface TimeframeViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface TimeframeViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UICollectionView *monthsView;
 @property (nonatomic, weak) IBOutlet UICollectionView *daysView;
@@ -32,20 +32,28 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 @property (nonatomic, assign) NSUInteger hour;
 @property (nonatomic, assign) NSUInteger quarter;
 
+@property (nonatomic, assign) BOOL highlightCenterCell;
+
 @end
 
 @implementation TimeframeViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    self.navigationController.interactivePopGestureRecognizer.delegate = self;
+
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:[NSDate date]];
     
     _day = components.day;
     _month = components.month;
     _year = components.year;
-
+    
+    _highlightCenterCell = YES;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSuccessfullyCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
 }
 
@@ -259,6 +267,10 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 {
     TimeframeCollectionCell *cell = (TimeframeCollectionCell *)[collectionView dequeueReusableCellWithReuseIdentifier:TimeframeCollectionCellId forIndexPath:indexPath];
     cell.label.text = [NSString stringWithFormat:@"%lu", (unsigned long)[self dayForIndexPath:indexPath]];
+    if (_highlightCenterCell && indexPath.item == 2) {
+        _highlightCenterCell = NO;
+        cell.label.textColor = [UIColor redColor];
+    }
     return cell;
 }
 
@@ -281,6 +293,35 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     }
 
     return item;
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    return NO;
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if ([scrollView isEqual:_daysView]) {
+        [self highlightCenteredCellInCollectionView:_daysView];
+    }
+}
+
+- (void)highlightCenteredCellInCollectionView:(UICollectionView *)view
+{
+    [[view visibleCells] enumerateObjectsUsingBlock:^(TimeframeCollectionCell *cell, NSUInteger idx, BOOL *stop) {
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGPoint daysCenter = CGPointMake((screenRect.size.width / 2) + _daysView.contentOffset.x, cell.frame.origin.y + (cell.frame.size.height / 2));
+        if (cell.center.x == daysCenter.x && cell.center.y == daysCenter.y) {
+            cell.label.textColor = [UIColor redColor];
+        } else {
+            cell.label.textColor = [UIColor whiteColor];
+        }
+    }];
 }
 
 @end
