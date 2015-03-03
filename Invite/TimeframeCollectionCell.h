@@ -12,4 +12,8 @@
 
 @property (nonatomic, weak) IBOutlet UILabel *label;
 
+@property (nonatomic, assign) NSInteger day;
+@property (nonatomic, assign) NSInteger month;
+@property (nonatomic, assign) NSInteger year;
+
 @end

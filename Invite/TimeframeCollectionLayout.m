@@ -12,10 +12,6 @@
 
 - (void)awakeFromNib
 {
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat cellWidth = (screenRect.size.width - 4) / 5;
-    
-    self.itemSize = CGSizeMake(cellWidth, 50.0);
     self.minimumInteritemSpacing = 1.0;
     self.minimumLineSpacing = 1.0;
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;

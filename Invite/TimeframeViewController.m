@@ -14,6 +14,13 @@
 #import "StringConstants.h"
 #import "Timeframe.h"
 #import "TimeframeCollectionCell.h"
+#import "TimeframeCollectionLayout.h"
+
+// Convert GMT to systemTimeZone
+// NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+// [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss Z"];
+// [formatter setTimeZone:[NSTimeZone systemTimeZone]];
+// NSLog(@"systemTimeZone %@", [formatter stringFromDate:date]);
 
 NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
@@ -26,13 +33,16 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 @property (nonatomic, strong) Timeframe *timeframe;
 @property (nonatomic, strong) NSMutableArray *busyTimes;
 
-@property (nonatomic, assign) NSUInteger day;
-@property (nonatomic, assign) NSUInteger month;
-@property (nonatomic, assign) NSUInteger year;
-@property (nonatomic, assign) NSUInteger hour;
-@property (nonatomic, assign) NSUInteger quarter;
+@property (nonatomic, assign) NSInteger day;
+@property (nonatomic, assign) NSInteger month;
+@property (nonatomic, assign) NSInteger year;
 
-@property (nonatomic, assign) BOOL highlightCenterCell;
+@property (nonatomic, assign) NSInteger selectedDay;
+@property (nonatomic, assign) NSInteger selectedMonth;
+@property (nonatomic, assign) NSInteger selectedYear;
+
+@property (nonatomic, assign) BOOL highlightMonthsCenterCell;
+@property (nonatomic, assign) BOOL highlightDaysCenterCell;
 
 @end
 
@@ -45,19 +55,36 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     self.navigationController.interactivePopGestureRecognizer.delegate = self;
 
+    NSDate *today = [NSDate date];
+    NSDate *twoDaysAgo = [NSDate dateWithTimeIntervalSinceNow:-172800];
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:[NSDate date]];
+    NSDateComponents *todayComponents = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:today];
+    NSDateComponents *twoDaysAgoComponents = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:twoDaysAgo];
     
-    _day = components.day;
-    _month = components.month;
-    _year = components.year;
+    _day = twoDaysAgoComponents.day;
+    _month = twoDaysAgoComponents.month;
+    _year = twoDaysAgoComponents.year;
     
-    _highlightCenterCell = YES;
+    _selectedDay = todayComponents.day;
+    _selectedMonth = todayComponents.month;
+    _selectedYear = todayComponents.year;
+    
+    _highlightMonthsCenterCell = YES;
+    _highlightDaysCenterCell = YES;
+    
+    _daysView.backgroundColor = [UIColor clearColor];
+    _monthsView.backgroundColor = [UIColor clearColor];
+    
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat daysCellWidth = (screenRect.size.width - 4) / 5;
+    CGFloat monthsCellWidth = (screenRect.size.width - 2) / 3;
+    ((TimeframeCollectionLayout *)_daysView.collectionViewLayout).itemSize = CGSizeMake(daysCellWidth, 50.0);
+    ((TimeframeCollectionLayout *)_monthsView.collectionViewLayout).itemSize = CGSizeMake(monthsCellWidth, 50.0);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSuccessfullyCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
 }
 
-- (NSString *)month:(NSUInteger)m
+- (NSString *)month:(NSInteger)m
 {
     switch (m) {
         case 1: return @"January";
@@ -75,7 +102,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     }
 }
 
-- (NSUInteger)daysInMonth:(NSUInteger)m forYear:(NSUInteger)y
+- (NSInteger)daysInMonth:(NSInteger)m forYear:(NSInteger)y
 {
     switch (m) {
         case 1: return 31;
@@ -155,12 +182,15 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:[NSDate date]];
-    [components setDay:19];
-    [components setMonth:2];
+    NSDateComponents *components = [[NSDateComponents alloc] init];
+    [components setDay:_selectedDay];
+    [components setMonth:_selectedMonth];
+    [components setYear:_selectedYear];
     [components setHour:indexPath.row];
     NSDate *date = [calendar dateFromComponents:components];
     
+    NSLog(@"%@", date);
+
     // If no times have been selected yet...
     if (!_timeframe) {
         _timeframe = [Timeframe timeframe];
@@ -266,24 +296,56 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     TimeframeCollectionCell *cell = (TimeframeCollectionCell *)[collectionView dequeueReusableCellWithReuseIdentifier:TimeframeCollectionCellId forIndexPath:indexPath];
-    cell.label.text = [NSString stringWithFormat:@"%lu", (unsigned long)[self dayForIndexPath:indexPath]];
-    if (_highlightCenterCell && indexPath.item == 2) {
-        _highlightCenterCell = NO;
-        cell.label.textColor = [UIColor redColor];
+    
+    cell.label.alpha = 1;
+    
+    if ([collectionView isEqual:_monthsView]) {
+        
+        NSInteger month = [self monthForIndexPath:indexPath];
+        NSInteger year = [self yearForIndexPath:indexPath];
+        cell.label.text = [NSString stringWithFormat:@"%@ %ld", [self month:month], (long)year];
+        cell.month = month;
+        cell.year = year;
+        
+        if (indexPath.item == 0) {
+            cell.label.alpha = 0.1;
+        } else if (_highlightMonthsCenterCell && indexPath.item == 1) {
+            _highlightMonthsCenterCell = NO;
+            cell.label.textColor = [UIColor redColor];
+        }
+        
+    } else {
+        
+        NSInteger day = [self dayForIndexPath:indexPath];
+        cell.label.text = [NSString stringWithFormat:@"%lu", (unsigned long)day];
+        cell.day = day;
+        
+        if (indexPath.item < 2) {
+            cell.label.alpha = 0.1;
+        } else if (_highlightDaysCenterCell && indexPath.item == 2) {
+            _highlightDaysCenterCell = NO;
+            cell.label.textColor = [UIColor redColor];
+        }
+        
     }
     return cell;
 }
 
-- (NSUInteger)dayForIndexPath:(NSIndexPath *)indexPath
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSUInteger item = indexPath.item;
-    NSUInteger remainingDays = [self daysInMonth:_month forYear:_year] - _day;
+    [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+}
+
+- (NSInteger)dayForIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger item = indexPath.item;
+    NSInteger remainingDays = [self daysInMonth:_month forYear:_year] - _day;
     
     if (item > remainingDays) {
         item -= remainingDays;
         
         unsigned i = 1;
-        NSUInteger daysInMonth = [self daysInMonth:_month + i forYear:_year];
+        NSInteger daysInMonth = [self daysInMonth:_month + i forYear:_year];
         while (item > daysInMonth) {
             item -= daysInMonth;
             i++;
@@ -291,8 +353,27 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     } else {
         return item + _day;
     }
-
+    
     return item;
+}
+
+- (NSInteger)monthForIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger index = _month + indexPath.item;
+    if (index > 11) {
+        index -= 12;
+    }
+    return index;
+}
+
+- (NSInteger)yearForIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger index = _month + indexPath.item;
+    NSInteger year = _year;
+    if (index > 12) {
+        year++;
+    }
+    return year;
 }
 
 #pragma mark - UIGestureRecognizerDelegate
@@ -306,20 +387,29 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if ([scrollView isEqual:_daysView]) {
-        [self highlightCenteredCellInCollectionView:_daysView];
-    }
+    [self highlightCenteredCellInCollectionView:([scrollView isEqual:_daysView] ? _daysView : _monthsView)];
 }
 
 - (void)highlightCenteredCellInCollectionView:(UICollectionView *)view
 {
     [[view visibleCells] enumerateObjectsUsingBlock:^(TimeframeCollectionCell *cell, NSUInteger idx, BOOL *stop) {
+        
         CGRect screenRect = [[UIScreen mainScreen] bounds];
-        CGPoint daysCenter = CGPointMake((screenRect.size.width / 2) + _daysView.contentOffset.x, cell.frame.origin.y + (cell.frame.size.height / 2));
-        if (cell.center.x == daysCenter.x && cell.center.y == daysCenter.y) {
+        CGPoint viewCenter = CGPointMake((screenRect.size.width / 2) + view.contentOffset.x, cell.frame.origin.y + (cell.frame.size.height / 2));
+        
+        if (cell.center.x > viewCenter.x - 5 && cell.center.x < viewCenter.x + 5 && cell.center.y == viewCenter.y) {
+            
             cell.label.textColor = [UIColor redColor];
+            
+            if ([view isEqual:_daysView]) {
+                _selectedDay = cell.day;
+            } else if ([view isEqual:_monthsView]) {
+                _selectedMonth = cell.month;
+                _selectedYear = cell.year;
+            }
+            
         } else {
-            cell.label.textColor = [UIColor whiteColor];
+            cell.label.textColor = [UIColor blackColor];
         }
     }];
 }
