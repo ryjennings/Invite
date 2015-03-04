@@ -41,6 +41,10 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 @property (nonatomic, assign) NSInteger selectedMonth;
 @property (nonatomic, assign) NSInteger selectedYear;
 
+@property (nonatomic, assign) NSInteger dayForIndexPath;
+@property (nonatomic, assign) NSInteger monthForIndexPath;
+@property (nonatomic, assign) NSInteger yearForIndexPath;
+
 @property (nonatomic, assign) BOOL highlightMonthsCenterCell;
 @property (nonatomic, assign) BOOL highlightDaysCenterCell;
 
@@ -82,51 +86,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     ((TimeframeCollectionLayout *)_monthsView.collectionViewLayout).itemSize = CGSizeMake(monthsCellWidth, 50.0);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSuccessfullyCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
-}
-
-- (NSString *)month:(NSInteger)m
-{
-    switch (m) {
-        case 1: return @"January";
-        case 2: return @"Februrary";
-        case 3: return @"March";
-        case 4: return @"April";
-        case 5: return @"May";
-        case 6: return @"June";
-        case 7: return @"July";
-        case 8: return @"August";
-        case 9: return @"September";
-        case 10: return @"October";
-        case 11: return @"November";
-        default: return @"December";
-    }
-}
-
-- (NSInteger)daysInMonth:(NSInteger)m forYear:(NSInteger)y
-{
-    switch (m) {
-        case 1: return 31;
-        case 2:
-        {
-            NSCalendar *calendar = [NSCalendar currentCalendar];
-            NSDateComponents *components = [[NSDateComponents alloc] init];
-            components.year = y;
-            components.month = 2;
-            components.day = 1;
-            NSDate *februaryDate = [calendar dateFromComponents:components];
-            return [calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:februaryDate].length;
-        }
-        case 3: return 31;
-        case 4: return 30;
-        case 5: return 31;
-        case 6: return 30;
-        case 7: return 31;
-        case 8: return 31;
-        case 9: return 30;
-        case 10: return 31;
-        case 11: return 30;
-        default: return 31;
-    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -258,6 +217,8 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 //    }
 }
 
+#pragma mark - IBActions
+
 - (IBAction)createEvent:(id)sender
 {
     [AppDelegate user].protoEvent.timeframe = _timeframe;
@@ -267,14 +228,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (IBAction)cancel:(id)sender
 {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - Notifications
-
-- (void)eventSuccessfullyCreated:(NSNotification *)notification
-{
-    [AppDelegate user].protoEvent = nil;
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UICollectionView
@@ -301,8 +254,15 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     
     if ([collectionView isEqual:_monthsView]) {
         
-        NSInteger month = [self monthForIndexPath:indexPath];
-        NSInteger year = [self yearForIndexPath:indexPath];
+        NSInteger item = indexPath.item;
+        
+        if (_day < [self daysInMonth:_month forYear:_year] - 1) {
+            item--;
+        }
+        
+        NSInteger month = [self monthForIndexPath:[NSIndexPath indexPathForItem:item inSection:0]];
+        NSInteger year = [self yearForIndexPath:[NSIndexPath indexPathForItem:item inSection:0]];
+        
         cell.label.text = [NSString stringWithFormat:@"%@ %ld", [self month:month], (long)year];
         cell.month = month;
         cell.year = year;
@@ -317,6 +277,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     } else {
         
         NSInteger day = [self dayForIndexPath:indexPath];
+        
         cell.label.text = [NSString stringWithFormat:@"%lu", (unsigned long)day];
         cell.day = day;
         
@@ -334,60 +295,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
-}
-
-- (NSInteger)dayForIndexPath:(NSIndexPath *)indexPath
-{
-    NSInteger item = indexPath.item;
-    NSInteger remainingDays = [self daysInMonth:_month forYear:_year] - _day;
-    
-    if (item > remainingDays) {
-        item -= remainingDays;
-        
-        unsigned i = 1;
-        NSInteger daysInMonth = [self daysInMonth:_month + i forYear:_year];
-        while (item > daysInMonth) {
-            item -= daysInMonth;
-            i++;
-        }
-    } else {
-        return item + _day;
-    }
-    
-    return item;
-}
-
-- (NSInteger)monthForIndexPath:(NSIndexPath *)indexPath
-{
-    NSInteger index = _month + indexPath.item;
-    if (index > 11) {
-        index -= 12;
-    }
-    return index;
-}
-
-- (NSInteger)yearForIndexPath:(NSIndexPath *)indexPath
-{
-    NSInteger index = _month + indexPath.item;
-    NSInteger year = _year;
-    if (index > 12) {
-        year++;
-    }
-    return year;
-}
-
-#pragma mark - UIGestureRecognizerDelegate
-
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-{
-    return NO;
-}
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    [self highlightCenteredCellInCollectionView:([scrollView isEqual:_daysView] ? _daysView : _monthsView)];
 }
 
 - (void)highlightCenteredCellInCollectionView:(UICollectionView *)view
@@ -412,6 +319,117 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
             cell.label.textColor = [UIColor blackColor];
         }
     }];
+}
+
+#pragma mark - IndexPath Methods
+
+- (NSInteger)dayForIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger item = indexPath.item;
+    NSInteger remainingDays = [self daysInMonth:_month forYear:_year] - _day;
+    
+    if (item > remainingDays) {
+        item -= remainingDays;
+        
+        unsigned i = 1;
+        NSInteger daysInMonth = [self daysInMonth:_month + i forYear:_year];
+        while (item > daysInMonth) {
+            item -= daysInMonth;
+            i++;
+        }
+    } else {
+        return item + _day;
+    }
+    
+    return item;
+}
+
+- (NSInteger)monthForIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger month = _month + indexPath.item;
+    if (month > 11) {
+        month -= 12;
+    }
+    return month;
+}
+
+- (NSInteger)yearForIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger month = _month + indexPath.item;
+    NSInteger year = _year;
+    if (month > 12) {
+        year++;
+    }
+    return year;
+}
+
+#pragma mark - Helpers
+
+- (NSString *)month:(NSInteger)m
+{
+    switch (m) {
+        case 1: return @"January";
+        case 2: return @"Februrary";
+        case 3: return @"March";
+        case 4: return @"April";
+        case 5: return @"May";
+        case 6: return @"June";
+        case 7: return @"July";
+        case 8: return @"August";
+        case 9: return @"September";
+        case 10: return @"October";
+        case 11: return @"November";
+        default: return @"December";
+    }
+}
+
+- (NSInteger)daysInMonth:(NSInteger)m forYear:(NSInteger)y
+{
+    switch (m) {
+        case 1: return 31;
+        case 2:
+        {
+            NSCalendar *calendar = [NSCalendar currentCalendar];
+            NSDateComponents *components = [[NSDateComponents alloc] init];
+            components.year = y;
+            components.month = 2;
+            components.day = 1;
+            NSDate *februaryDate = [calendar dateFromComponents:components];
+            return [calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:februaryDate].length;
+        }
+        case 3: return 31;
+        case 4: return 30;
+        case 5: return 31;
+        case 6: return 30;
+        case 7: return 31;
+        case 8: return 31;
+        case 9: return 30;
+        case 10: return 31;
+        case 11: return 30;
+        default: return 31;
+    }
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    return NO;
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self highlightCenteredCellInCollectionView:([scrollView isEqual:_daysView] ? _daysView : _monthsView)];
+}
+
+#pragma mark - Notifications
+
+- (void)eventSuccessfullyCreated:(NSNotification *)notification
+{
+    [AppDelegate user].protoEvent = nil;
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
