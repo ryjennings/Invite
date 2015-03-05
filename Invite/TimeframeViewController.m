@@ -298,12 +298,10 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     }
 }
 
-- (void)dispatchTableReload
+- (void)turnAutoScrollingMonthsOff
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         _autoScrollingMonths = NO;
-        NSLog(@"reload");
-        [_hoursView reloadData];
     });
 }
 
@@ -527,29 +525,27 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     if ([self scrollViewIsCollectionView:scrollView]) {
+        
         _shouldScrollDays = _lastMonth != _selectedMonth;
         _shouldScrollMonths = _lastMonth != _selectedMonth;
         _lastMonth = _selectedMonth;
 
         if ([scrollView isEqual:_monthsView]) {
             if (_shouldScrollDays) {
-
-                [self dispatchTableReload];
-
+                [_hoursView reloadData];
                 [_daysView scrollToItemAtIndexPath:_firstDayIndexPaths[_selectedMonth - 1] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
             }
         } else {
             if (_shouldScrollMonths) {
-                
                 _autoScrollingMonths = YES;
-                [self dispatchTableReload];
-                
+                [self turnAutoScrollingMonthsOff];
+                [_hoursView reloadData];
                 [_monthsView scrollToItemAtIndexPath:[self indexPathForMonth:_selectedMonth year:_selectedYear] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
             }
         }
         
         if (!_shouldScrollDays && !_shouldScrollMonths) {
-            [self dispatchTableReload];
+            [_hoursView reloadData];
         }
     }
 }
