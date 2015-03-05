@@ -31,7 +31,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 @property (nonatomic, weak) IBOutlet UITableView *hoursView;
 
 @property (nonatomic, strong) Timeframe *timeframe;
-@property (nonatomic, strong) NSMutableArray *busyTimes;
 
 @property (nonatomic, assign) NSInteger day;
 @property (nonatomic, assign) NSInteger month;
@@ -41,10 +40,8 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 @property (nonatomic, assign) NSInteger selectedMonth;
 @property (nonatomic, assign) NSInteger selectedYear;
 
-@property (nonatomic, assign) NSInteger dayForIndexPath;
 @property (nonatomic, assign) NSInteger monthForIndexPath;
 @property (nonatomic, assign) NSInteger yearForIndexPath;
-
 @property (nonatomic, assign) NSInteger lastMonth;
 
 @property (nonatomic, strong) NSMutableArray *firstDayIndexPaths;
@@ -171,9 +168,9 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         }
     }
     
-    if (_busyTimes && ![_busyTimes[indexPath.row] isEqual:[NSNull null]]) {
-        cell.backgroundColor = [UIColor lightGrayColor];
-    }
+//    if (_busyTimes && ![_busyTimes[indexPath.row] isEqual:[NSNull null]]) {
+//        cell.backgroundColor = [UIColor lightGrayColor];
+//    }
     
     return cell;
 }
@@ -437,7 +434,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
             
         }
 
-        _dayForIndexPath = day;
         _monthForIndexPath = [monthYearDays[0] integerValue];
         _yearForIndexPath = [monthYearDays[1] integerValue];
 
@@ -445,7 +441,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         
     } else {
         
-        _dayForIndexPath = day + _day;
         _monthForIndexPath = _month;
         _yearForIndexPath = _year;
         
