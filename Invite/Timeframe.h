@@ -10,7 +10,9 @@
 
 @interface Timeframe : NSObject
 
+@property (nonatomic, strong) NSDate *startBaseDate;
 @property (nonatomic, strong) NSDate *start;
+@property (nonatomic, strong) NSDate *endBaseDate;
 @property (nonatomic, strong) NSDate *end;
 
 + (Timeframe *)timeframe;

@@ -105,7 +105,7 @@
                   symbolName = "__21-[User findBusyTimes]_block_invoke"
                   moduleName = "Invite"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
-                  timestampString = "447232569.866844"
+                  timestampString = "447277676.753755"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "157"
@@ -119,7 +119,7 @@
                   symbolName = "__21-[User findBusyTimes]_block_invoke"
                   moduleName = "Invite"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
-                  timestampString = "447232569.867021"
+                  timestampString = "447277676.754192"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "157"
@@ -167,7 +167,7 @@
                   symbolName = "-[User findBusyTimes]"
                   moduleName = "Invite"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
-                  timestampString = "447232569.872471"
+                  timestampString = "447277676.757812"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "132"
@@ -181,7 +181,7 @@
                   symbolName = "__21-[User findBusyTimes]_block_invoke"
                   moduleName = "Invite"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
-                  timestampString = "447232569.872635"
+                  timestampString = "447277676.758245"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "132"
@@ -189,6 +189,22 @@
                   offsetFromSymbolStart = "108">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Invite/TimeframeViewController.m"
+            timestampString = "447277644.144603"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
