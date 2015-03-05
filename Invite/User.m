@@ -145,12 +145,20 @@
 
             for (PFObject *event in events) {
                 
-                NSDate *startDate = [event objectForKey:EVENT_STARTDATE_KEY];
-                NSDate *endDate = [event objectForKey:EVENT_ENDDATE_KEY];
-                NSTimeInterval duration = [endDate timeIntervalSinceDate:startDate];
-                duration = (duration / 3600) + 1; // duration in hours
+                NSDate *start = [event objectForKey:EVENT_STARTDATE_KEY];
+                NSDate *end = [event objectForKey:EVENT_ENDDATE_KEY];
+                
+                NSCalendar *calendar = [NSCalendar currentCalendar];
+                NSDateComponents *startComponents = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:start];
+                startComponents.hour = 0;
+                NSDateComponents *endComponents = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:end];
+                endComponents.hour = 0;
+                
+                NSDate *startBaseDate = [calendar dateFromComponents:startComponents];
+                NSDate *endBaseDate = [calendar dateFromComponents:endComponents];
 
-                [busyTimes addObject:[BusyDetails busyDetailsWithPersonName:nameForFriendWithEvent(event) eventName:@"Event Name" startDate:[event objectForKey:EVENT_STARTDATE_KEY] duration:duration]];
+                [busyTimes addObject:[BusyDetails busyDetailsWithPersonName:nameForFriendWithEvent(event) eventName:@"Event Name" start:start startBaseDate:startBaseDate end:end endBaseDate:endBaseDate]];
+                
             }
             
             _busyTimes = busyTimes;

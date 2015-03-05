@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/User.m"
-            timestampString = "446964933.023903"
+            timestampString = "447283920.30542"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "157"
-            endingLineNumber = "157"
+            startingLineNumber = "165"
+            endingLineNumber = "165"
             landmarkName = "-findBusyTimes"
             landmarkType = "5">
             <Locations>
@@ -105,12 +105,12 @@
                   symbolName = "__21-[User findBusyTimes]_block_invoke"
                   moduleName = "Invite"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
-                  timestampString = "447277676.753755"
+                  timestampString = "447286188.229688"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "157"
-                  endingLineNumber = "157"
-                  offsetFromSymbolStart = "2405">
+                  startingLineNumber = "165"
+                  endingLineNumber = "165"
+                  offsetFromSymbolStart = "2695">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -119,12 +119,12 @@
                   symbolName = "__21-[User findBusyTimes]_block_invoke"
                   moduleName = "Invite"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
-                  timestampString = "447277676.754192"
+                  timestampString = "447286188.230113"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "157"
-                  endingLineNumber = "157"
-                  offsetFromSymbolStart = "2480">
+                  startingLineNumber = "165"
+                  endingLineNumber = "165"
+                  offsetFromSymbolStart = "2770">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -167,7 +167,7 @@
                   symbolName = "-[User findBusyTimes]"
                   moduleName = "Invite"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
-                  timestampString = "447277676.757812"
+                  timestampString = "447286188.233815"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "132"
@@ -181,12 +181,58 @@
                   symbolName = "__21-[User findBusyTimes]_block_invoke"
                   moduleName = "Invite"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
-                  timestampString = "447277676.758245"
+                  timestampString = "447286188.234247"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "132"
                   endingLineNumber = "132"
-                  offsetFromSymbolStart = "108">
+                  offsetFromSymbolStart = "109">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Invite/User.m"
+            timestampString = "447283865.103686"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
+            landmarkName = "-findBusyTimes"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__21-[User findBusyTimes]_block_invoke"
+                  moduleName = "Invite"
+                  urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
+                  timestampString = "447286188.236268"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "162"
+                  endingLineNumber = "162"
+                  offsetFromSymbolStart = "2333">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__21-[User findBusyTimes]_block_invoke"
+                  moduleName = "Invite"
+                  urlString = "file:///Users/rjennings/Developer/Invite/Invite/User.m"
+                  timestampString = "447286188.236677"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "162"
+                  endingLineNumber = "162"
+                  offsetFromSymbolStart = "2627">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -198,12 +244,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/TimeframeViewController.m"
-            timestampString = "447281351.892901"
+            timestampString = "447286172.387"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "168"
-            endingLineNumber = "168"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            startingLineNumber = "551"
+            endingLineNumber = "551"
+            landmarkName = "-scrollViewDidEndDecelerating:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

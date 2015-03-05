@@ -99,6 +99,19 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSuccessfullyCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Helpers
+
 - (void)createFirstDayIndexPaths
 {
     _firstDayIndexPaths = [NSMutableArray array];
@@ -124,15 +137,54 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     }
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (NSString *)month:(NSInteger)m
 {
-    [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    switch (m) {
+        case 1: return @"January";
+        case 2: return @"Februrary";
+        case 3: return @"March";
+        case 4: return @"April";
+        case 5: return @"May";
+        case 6: return @"June";
+        case 7: return @"July";
+        case 8: return @"August";
+        case 9: return @"September";
+        case 10: return @"October";
+        case 11: return @"November";
+        default: return @"December";
+    }
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (NSInteger)daysInMonth:(NSInteger)m forYear:(NSInteger)y
+{
+    switch (m) {
+        case 1: return 31;
+        case 2:
+        {
+            NSCalendar *calendar = [NSCalendar currentCalendar];
+            NSDateComponents *components = [[NSDateComponents alloc] init];
+            components.year = y;
+            components.month = 2;
+            components.day = 1;
+            NSDate *februaryDate = [calendar dateFromComponents:components];
+            return [calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:februaryDate].length;
+        }
+        case 3: return 31;
+        case 4: return 30;
+        case 5: return 31;
+        case 6: return 30;
+        case 7: return 31;
+        case 8: return 31;
+        case 9: return 30;
+        case 10: return 31;
+        case 11: return 30;
+        default: return 31;
+    }
+}
+
+- (BOOL)showingEarlierMonth
+{
+    return _day < [self daysInMonth:_month forYear:_year] - 1;
 }
 
 #pragma mark - UITableView
@@ -157,41 +209,34 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.backgroundColor = [UIColor whiteColor];
     
-    if (_timeframe) {
-        
+    bool (^withinHour)(id startEnd) = ^bool(Timeframe *startEnd) {
         NSDate *thisHour = [self dateFromDay:_selectedDay month:_selectedMonth year:_selectedYear hour:indexPath.row];
-        
-        if (([[_timeframe.start earlierDate:thisHour] isEqualToDate:_timeframe.start] && [[_timeframe.end laterDate:thisHour] isEqualToDate:_timeframe.end]) ||
-            [_timeframe.start isEqualToDate:thisHour] ||
-            [_timeframe.end isEqualToDate:thisHour]) {
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        return (([[startEnd.start earlierDate:thisHour] isEqualToDate:startEnd.start] && [[startEnd.end laterDate:thisHour] isEqualToDate:startEnd.end]) ||
+                [startEnd.start isEqualToDate:thisHour] ||
+                [startEnd.end isEqualToDate:thisHour]);
+    };
+    
+    if (_timeframe && withinHour(_timeframe)) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
+    
+    NSSet *relavantBusyTimes = [[AppDelegate user].busyTimes objectsPassingTest:^BOOL(BusyDetails *busy, BOOL *stop) {
+        return [busy.startBaseDate isEqualToDate:[self dateForSelectedComponents]] || [busy.endBaseDate isEqualToDate:[self dateForSelectedComponents]];
+    }];
+
+    for (BusyDetails *busyDetail in relavantBusyTimes) {
+        if (withinHour(busyDetail)) {
+            cell.backgroundColor = [UIColor lightGrayColor];
         }
     }
-    
-//    if (_busyTimes && ![_busyTimes[indexPath.row] isEqual:[NSNull null]]) {
-//        cell.backgroundColor = [UIColor lightGrayColor];
-//    }
-    
-    return cell;
-}
 
-- (NSDate *)dateFromDay:(NSInteger)day month:(NSInteger)month year:(NSInteger)year hour:(NSInteger)hour
-{
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    [components setDay:day];
-    [components setMonth:month];
-    [components setYear:year];
-    if (hour > 0) {
-        [components setHour:hour];
-    }
-    return [calendar dateFromComponents:components];
+    return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDate *date = [self dateFromDay:_selectedDay month:_selectedMonth year:_selectedYear hour:indexPath.row];
-    NSDate *baseDate = [self dateFromDay:_selectedDay month:_selectedMonth year:_selectedYear hour:0];
+    NSDate *baseDate = [self dateForSelectedComponents];
     
     NSLog(@"%@", date);
 
@@ -253,16 +298,13 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     }
 }
 
-- (void)saveStartDate:(NSDate *)date withBaseDate:(NSDate *)baseDate
+- (void)dispatchTableReload
 {
-    _timeframe.start = date;
-    _timeframe.startBaseDate = baseDate;
-}
-
-- (void)saveEndDate:(NSDate *)date withBaseDate:(NSDate *)baseDate
-{
-    _timeframe.end = date;
-    _timeframe.endBaseDate = baseDate;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _autoScrollingMonths = NO;
+        NSLog(@"reload");
+        [_hoursView reloadData];
+    });
 }
 
 #pragma mark - Navigation
@@ -299,11 +341,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     } else {
         return 365;
     }
-}
-
-- (BOOL)showingEarlierMonth
-{
-    return _day < [self daysInMonth:_month forYear:_year] - 1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -357,11 +394,9 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     return cell;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self dispatchTableReload];
-    [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
-}
+//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//}
 
 - (void)highlightCenteredCellInCollectionView:(UICollectionView *)view
 {
@@ -390,17 +425,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
             cell.label.textColor = [UIColor blackColor];
         }
     }];
-}
-
-- (NSIndexPath *)indexPathForMonth:(NSInteger)month year:(NSInteger)year
-{
-    for (unsigned i = 0; i < 12; i++) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
-        if (month == [self monthForIndexPath:indexPath]) {
-            return [self showingEarlierMonth] ? [NSIndexPath indexPathForItem:(i + 1) inSection:0] : indexPath;
-        }
-    }
-    return [NSIndexPath indexPathForItem:0 inSection:0];
 }
 
 #pragma mark - IndexPath Methods
@@ -458,6 +482,17 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     return month;
 }
 
+- (NSIndexPath *)indexPathForMonth:(NSInteger)month year:(NSInteger)year
+{
+    for (unsigned i = 0; i < 12; i++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+        if (month == [self monthForIndexPath:indexPath]) {
+            return [self showingEarlierMonth] ? [NSIndexPath indexPathForItem:(i + 1) inSection:0] : indexPath;
+        }
+    }
+    return [NSIndexPath indexPathForItem:0 inSection:0];
+}
+
 - (NSInteger)yearForIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger month = _month + indexPath.item;
@@ -466,53 +501,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         year++;
     }
     return year;
-}
-
-#pragma mark - Helpers
-
-- (NSString *)month:(NSInteger)m
-{
-    switch (m) {
-        case 1: return @"January";
-        case 2: return @"Februrary";
-        case 3: return @"March";
-        case 4: return @"April";
-        case 5: return @"May";
-        case 6: return @"June";
-        case 7: return @"July";
-        case 8: return @"August";
-        case 9: return @"September";
-        case 10: return @"October";
-        case 11: return @"November";
-        default: return @"December";
-    }
-}
-
-- (NSInteger)daysInMonth:(NSInteger)m forYear:(NSInteger)y
-{
-    switch (m) {
-        case 1: return 31;
-        case 2:
-        {
-            NSCalendar *calendar = [NSCalendar currentCalendar];
-            NSDateComponents *components = [[NSDateComponents alloc] init];
-            components.year = y;
-            components.month = 2;
-            components.day = 1;
-            NSDate *februaryDate = [calendar dateFromComponents:components];
-            return [calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:februaryDate].length;
-        }
-        case 3: return 31;
-        case 4: return 30;
-        case 5: return 31;
-        case 6: return 30;
-        case 7: return 31;
-        case 8: return 31;
-        case 9: return 30;
-        case 10: return 31;
-        case 11: return 30;
-        default: return 31;
-    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate
@@ -524,44 +512,46 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 #pragma mark - UIScrollViewDelegate
 
+- (BOOL)scrollViewIsCollectionView:(UIScrollView *)scrollView
+{
+    return [scrollView isEqual:_monthsView] || [scrollView isEqual:_daysView];
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [self highlightCenteredCellInCollectionView:([scrollView isEqual:_daysView] ? _daysView : _monthsView)];
+    if ([self scrollViewIsCollectionView:scrollView]) {
+        [self highlightCenteredCellInCollectionView:([scrollView isEqual:_daysView] ? _daysView : _monthsView)];
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    _shouldScrollDays = _lastMonth != _selectedMonth;
-    _shouldScrollMonths = _lastMonth != _selectedMonth;
-    _lastMonth = _selectedMonth;
-    NSLog(@"reload");
-    [_hoursView reloadData];
+    if ([self scrollViewIsCollectionView:scrollView]) {
+        _shouldScrollDays = _lastMonth != _selectedMonth;
+        _shouldScrollMonths = _lastMonth != _selectedMonth;
+        _lastMonth = _selectedMonth;
 
-    if ([scrollView isEqual:_monthsView]) {
-        if (_shouldScrollDays) {
+        if ([scrollView isEqual:_monthsView]) {
+            if (_shouldScrollDays) {
 
-            [self dispatchTableReload];
+                [self dispatchTableReload];
 
-            [_daysView scrollToItemAtIndexPath:_firstDayIndexPaths[_selectedMonth - 1] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+                [_daysView scrollToItemAtIndexPath:_firstDayIndexPaths[_selectedMonth - 1] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+            }
+        } else {
+            if (_shouldScrollMonths) {
+                
+                _autoScrollingMonths = YES;
+                [self dispatchTableReload];
+                
+                [_monthsView scrollToItemAtIndexPath:[self indexPathForMonth:_selectedMonth year:_selectedYear] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+            }
         }
-    } else {
-        if (_shouldScrollMonths) {
-            
-            _autoScrollingMonths = YES;
+        
+        if (!_shouldScrollDays && !_shouldScrollMonths) {
             [self dispatchTableReload];
-            
-            [_monthsView scrollToItemAtIndexPath:[self indexPathForMonth:_selectedMonth year:_selectedYear] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
         }
     }
-}
-
-- (void)dispatchTableReload
-{
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _autoScrollingMonths = NO;
-        NSLog(@"reload");
-        [_hoursView reloadData];
-    });
 }
 
 #pragma mark - Notifications
@@ -570,6 +560,38 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 {
     [AppDelegate user].protoEvent = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - NSDate
+
+- (void)saveStartDate:(NSDate *)date withBaseDate:(NSDate *)baseDate
+{
+    _timeframe.start = date;
+    _timeframe.startBaseDate = baseDate;
+}
+
+- (void)saveEndDate:(NSDate *)date withBaseDate:(NSDate *)baseDate
+{
+    _timeframe.end = date;
+    _timeframe.endBaseDate = baseDate;
+}
+
+- (NSDate *)dateForSelectedComponents
+{
+    return [self dateFromDay:_selectedDay month:_selectedMonth year:_selectedYear hour:0];
+}
+
+- (NSDate *)dateFromDay:(NSInteger)day month:(NSInteger)month year:(NSInteger)year hour:(NSInteger)hour
+{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *components = [[NSDateComponents alloc] init];
+    [components setDay:day];
+    [components setMonth:month];
+    [components setYear:year];
+    if (hour > 0) {
+        [components setHour:hour];
+    }
+    return [calendar dateFromComponents:components];
 }
 
 @end

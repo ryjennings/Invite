@@ -12,9 +12,11 @@
 
 @property (nonatomic, strong) NSString *personName;
 @property (nonatomic, strong) NSString *eventName;
-@property (nonatomic, strong) NSDate *startDate;
-@property (nonatomic, assign) NSUInteger duration;
+@property (nonatomic, strong) NSDate *startBaseDate;
+@property (nonatomic, strong) NSDate *start;
+@property (nonatomic, strong) NSDate *endBaseDate;
+@property (nonatomic, strong) NSDate *end;
 
-+ (BusyDetails *)busyDetailsWithPersonName:(NSString *)personName eventName:(NSString *)eventName startDate:(NSDate *)startDate duration:(NSUInteger)duration;
++ (BusyDetails *)busyDetailsWithPersonName:(NSString *)personName eventName:(NSString *)eventName start:(NSDate *)start startBaseDate:(NSDate *)startBaseDate end:(NSDate *)end endBaseDate:(NSDate *)endBaseDate;
 
 @end
