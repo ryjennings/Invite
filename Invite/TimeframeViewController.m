@@ -52,6 +52,8 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 @property (nonatomic, assign) BOOL highlightMonthsCenterCell;
 @property (nonatomic, assign) BOOL highlightDaysCenterCell;
 @property (nonatomic, assign) BOOL shouldScrollDays;
+@property (nonatomic, assign) BOOL shouldScrollMonths;
+@property (nonatomic, assign) BOOL autoScrollingMonths;
 
 @end
 
@@ -85,6 +87,8 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     _highlightMonthsCenterCell = YES;
     _highlightDaysCenterCell = YES;
     _shouldScrollDays = YES;
+    _shouldScrollMonths = YES;
+    _autoScrollingMonths = NO;
     
     _daysView.backgroundColor = [UIColor clearColor];
     _monthsView.backgroundColor = [UIColor clearColor];
@@ -353,14 +357,12 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
             
             if (_selectedDay != cell.day || _selectedMonth != cell.month) {
                 
-                _selectedDay = cell.day;
-                _selectedMonth = cell.month;
-                _selectedYear = cell.year;
-                
-                NSLog(@"%ld/%ld/%ld", (long)_selectedMonth, (long)_selectedDay, (long)_selectedYear);
-#warning Look into why _shouldScrollDays doesn't always work and days reverting back to 1 when month auto scrolls
-                _shouldScrollDays = _lastMonth != _selectedMonth;
-                _lastMonth = _selectedMonth;
+                if (!_autoScrollingMonths) {
+                    _selectedDay = cell.day;
+                    _selectedMonth = cell.month;
+                    _selectedYear = cell.year;
+                    NSLog(@"%ld/%ld/%ld", (long)_selectedMonth, (long)_selectedDay, (long)_selectedYear);
+                }
                 
             }
             
@@ -512,12 +514,25 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
+    _shouldScrollDays = _lastMonth != _selectedMonth;
+    _shouldScrollMonths = _lastMonth != _selectedMonth;
+    _lastMonth = _selectedMonth;
+
     if ([scrollView isEqual:_monthsView]) {
         if (_shouldScrollDays) {
             [_daysView scrollToItemAtIndexPath:_firstDayIndexPaths[_selectedMonth - 1] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
         }
     } else {
-        [_monthsView scrollToItemAtIndexPath:[self indexPathForMonth:_selectedMonth year:_selectedYear] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+        if (_shouldScrollMonths) {
+            
+            _autoScrollingMonths = YES;
+
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                _autoScrollingMonths = NO;
+            });
+            
+            [_monthsView scrollToItemAtIndexPath:[self indexPathForMonth:_selectedMonth year:_selectedYear] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+        }
     }
 }
 
