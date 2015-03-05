@@ -45,8 +45,13 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 @property (nonatomic, assign) NSInteger monthForIndexPath;
 @property (nonatomic, assign) NSInteger yearForIndexPath;
 
+@property (nonatomic, assign) NSInteger lastMonth;
+
+@property (nonatomic, strong) NSMutableArray *firstDayIndexPaths;
+
 @property (nonatomic, assign) BOOL highlightMonthsCenterCell;
 @property (nonatomic, assign) BOOL highlightDaysCenterCell;
+@property (nonatomic, assign) BOOL shouldScrollDays;
 
 @end
 
@@ -69,12 +74,17 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     _month = twoDaysAgoComponents.month;
     _year = twoDaysAgoComponents.year;
     
+    [self createFirstDayIndexPaths];
+    
     _selectedDay = todayComponents.day;
     _selectedMonth = todayComponents.month;
     _selectedYear = todayComponents.year;
     
+    _lastMonth = _selectedMonth;
+    
     _highlightMonthsCenterCell = YES;
     _highlightDaysCenterCell = YES;
+    _shouldScrollDays = YES;
     
     _daysView.backgroundColor = [UIColor clearColor];
     _monthsView.backgroundColor = [UIColor clearColor];
@@ -86,6 +96,31 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     ((TimeframeCollectionLayout *)_monthsView.collectionViewLayout).itemSize = CGSizeMake(monthsCellWidth, 50.0);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSuccessfullyCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
+}
+
+- (void)createFirstDayIndexPaths
+{
+    _firstDayIndexPaths = [NSMutableArray array];
+    for (unsigned i = 0; i < 12; i++) {
+        [_firstDayIndexPaths addObject:[NSNull null]];
+    }
+    NSInteger month = _month;
+    for (unsigned i = 0; i < 365; i++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+        if (i == 0 && _day != 1) {
+            [_firstDayIndexPaths replaceObjectAtIndex:(month - 1) withObject:indexPath];
+            NSLog(@"%ld %ld", (month - 1), (long)indexPath.item);
+            continue;
+        }
+        if ([self dayForIndexPath:indexPath] == 1) {
+            month++;
+            if (month > 12) {
+                month = 1;
+            }
+            [_firstDayIndexPaths replaceObjectAtIndex:(month - 1) withObject:indexPath];
+            NSLog(@"%ld %ld", (month - 1), (long)indexPath.item);
+        }
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -212,9 +247,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-//    if ([segue.identifier isEqualToString:SEGUE_TO_TIMEFRAME]) {
-//        [AppDelegate user].eventPrototype = [Event createPrototype];
-//    }
+
 }
 
 #pragma mark - IBActions
@@ -240,10 +273,15 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     if ([collectionView isEqual:_monthsView]) {
-        return 12;
+        return 14;
     } else {
         return 365;
     }
+}
+
+- (BOOL)showingEarlierMonth
+{
+    return _day < [self daysInMonth:_month forYear:_year] - 1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -256,7 +294,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         
         NSInteger item = indexPath.item;
         
-        if (_day < [self daysInMonth:_month forYear:_year] - 1) {
+        if ([self showingEarlierMonth]) {
             item--;
         }
         
@@ -264,6 +302,8 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         NSInteger year = [self yearForIndexPath:[NSIndexPath indexPathForItem:item inSection:0]];
         
         cell.label.text = [NSString stringWithFormat:@"%@ %ld", [self month:month], (long)year];
+        
+        cell.day = 1;
         cell.month = month;
         cell.year = year;
         
@@ -279,7 +319,10 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         NSInteger day = [self dayForIndexPath:indexPath];
         
         cell.label.text = [NSString stringWithFormat:@"%lu", (unsigned long)day];
+        
         cell.day = day;
+        cell.month = _monthForIndexPath;
+        cell.year = _yearForIndexPath;
         
         if (indexPath.item < 2) {
             cell.label.alpha = 0.1;
@@ -304,50 +347,93 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGPoint viewCenter = CGPointMake((screenRect.size.width / 2) + view.contentOffset.x, cell.frame.origin.y + (cell.frame.size.height / 2));
         
-        if (cell.center.x > viewCenter.x - 5 && cell.center.x < viewCenter.x + 5 && cell.center.y == viewCenter.y) {
+        if (cell.center.x > viewCenter.x - 5 &&
+            cell.center.x < viewCenter.x + 5 &&
+            cell.center.y == viewCenter.y) {
             
-            cell.label.textColor = [UIColor redColor];
-            
-            if ([view isEqual:_daysView]) {
+            if (_selectedDay != cell.day || _selectedMonth != cell.month) {
+                
                 _selectedDay = cell.day;
-            } else if ([view isEqual:_monthsView]) {
                 _selectedMonth = cell.month;
                 _selectedYear = cell.year;
+                
+                NSLog(@"%ld/%ld/%ld", (long)_selectedMonth, (long)_selectedDay, (long)_selectedYear);
+#warning Look into why _shouldScrollDays doesn't always work and days reverting back to 1 when month auto scrolls
+                _shouldScrollDays = _lastMonth != _selectedMonth;
+                _lastMonth = _selectedMonth;
+                
             }
             
+            cell.label.textColor = [UIColor redColor];
         } else {
             cell.label.textColor = [UIColor blackColor];
         }
     }];
 }
 
+- (NSIndexPath *)indexPathForMonth:(NSInteger)month year:(NSInteger)year
+{
+    for (unsigned i = 0; i < 12; i++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+        if (month == [self monthForIndexPath:indexPath]) {
+            return [self showingEarlierMonth] ? [NSIndexPath indexPathForItem:(i + 1) inSection:0] : indexPath;
+        }
+    }
+    return [NSIndexPath indexPathForItem:0 inSection:0];
+}
+
 #pragma mark - IndexPath Methods
 
 - (NSInteger)dayForIndexPath:(NSIndexPath *)indexPath
 {
-    NSInteger item = indexPath.item;
+    NSInteger day = indexPath.item;
     NSInteger remainingDays = [self daysInMonth:_month forYear:_year] - _day;
     
-    if (item > remainingDays) {
-        item -= remainingDays;
+    if (day > remainingDays) {
         
-        unsigned i = 1;
-        NSInteger daysInMonth = [self daysInMonth:_month + i forYear:_year];
-        while (item > daysInMonth) {
-            item -= daysInMonth;
-            i++;
+        day -= remainingDays;
+        
+        NSArray *(^nextMonth)(NSInteger add) = ^NSArray *(NSInteger add) {
+            NSInteger nextMonth = _month + add;
+            NSInteger yearForNextMonth = _year;
+            if (nextMonth > 12) {
+                nextMonth -= 12;
+                yearForNextMonth = _year + 1;
+            }
+            return [NSArray arrayWithObjects:@(nextMonth), @(yearForNextMonth), @([self daysInMonth:nextMonth forYear:yearForNextMonth]), nil];
+        };
+        
+        unsigned add;
+        NSArray *monthYearDays;
+        for (add = 1, monthYearDays = nextMonth(add);
+             day > [monthYearDays[2] integerValue];
+             add++, monthYearDays = nextMonth(add)) {
+            
+            day -= [monthYearDays[2] integerValue];
+            
         }
+
+        _dayForIndexPath = day;
+        _monthForIndexPath = [monthYearDays[0] integerValue];
+        _yearForIndexPath = [monthYearDays[1] integerValue];
+
+        return day;
+        
     } else {
-        return item + _day;
+        
+        _dayForIndexPath = day + _day;
+        _monthForIndexPath = _month;
+        _yearForIndexPath = _year;
+        
+        return day + _day;
+        
     }
-    
-    return item;
 }
 
 - (NSInteger)monthForIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger month = _month + indexPath.item;
-    if (month > 11) {
+    if (month > 12) {
         month -= 12;
     }
     return month;
@@ -422,6 +508,17 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [self highlightCenteredCellInCollectionView:([scrollView isEqual:_daysView] ? _daysView : _monthsView)];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if ([scrollView isEqual:_monthsView]) {
+        if (_shouldScrollDays) {
+            [_daysView scrollToItemAtIndexPath:_firstDayIndexPaths[_selectedMonth - 1] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+        }
+    } else {
+        [_monthsView scrollToItemAtIndexPath:[self indexPathForMonth:_selectedMonth year:_selectedYear] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+    }
 }
 
 #pragma mark - Notifications
