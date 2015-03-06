@@ -44,6 +44,10 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 @property (nonatomic, assign) NSInteger yearForIndexPath;
 @property (nonatomic, assign) NSInteger lastMonth;
 
+@property (nonatomic, assign) NSInteger dayBeforeScroll;
+@property (nonatomic, assign) NSInteger monthBeforeScroll;
+@property (nonatomic, assign) NSInteger yearBeforeScroll;
+
 @property (nonatomic, strong) NSMutableArray *firstDayIndexPaths;
 
 @property (nonatomic, assign) BOOL highlightMonthsCenterCell;
@@ -80,6 +84,9 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     _selectedYear = todayComponents.year;
     
     _lastMonth = _selectedMonth;
+    _dayBeforeScroll = _selectedDay;
+    _monthBeforeScroll = _selectedMonth;
+    _yearBeforeScroll = _selectedYear;
     
     _highlightMonthsCenterCell = YES;
     _highlightDaysCenterCell = YES;
@@ -364,7 +371,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         cell.month = month;
         cell.year = year;
         
-        if (indexPath.item == 0) {
+        if (indexPath.item == 0 || indexPath.item == 13) {
             cell.label.alpha = 0.1;
         } else if (_highlightMonthsCenterCell && indexPath.item == 1) {
             _highlightMonthsCenterCell = NO;
@@ -381,7 +388,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         cell.month = _monthForIndexPath;
         cell.year = _yearForIndexPath;
         
-        if (indexPath.item < 2) {
+        if (indexPath.item < 2 || indexPath.item > 362) {
             cell.label.alpha = 0.1;
         } else if (_highlightDaysCenterCell && indexPath.item == 2) {
             _highlightDaysCenterCell = NO;
@@ -522,13 +529,45 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     }
 }
 
+- (NSInteger)daysSelectedValue
+{
+    __block NSInteger i = 0;
+    
+    [[_daysView visibleCells] enumerateObjectsUsingBlock:^(TimeframeCollectionCell *cell, NSUInteger idx, BOOL *stop) {
+        
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGPoint viewCenter = CGPointMake((screenRect.size.width / 2) + _daysView.contentOffset.x, cell.frame.origin.y + (cell.frame.size.height / 2));
+        
+        if (cell.center.x > viewCenter.x - 5 &&
+            cell.center.x < viewCenter.x + 5 &&
+            cell.center.y == viewCenter.y) {
+            i = [cell.label.text integerValue];
+        }
+    }];
+    
+    return i;
+}
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     if ([self scrollViewIsCollectionView:scrollView]) {
         
+        NSInteger daysSelectedValue = [self daysSelectedValue];
+        if (_dayBeforeScroll == daysSelectedValue &&
+            _monthBeforeScroll == _selectedMonth &&
+            _yearBeforeScroll == _selectedYear) {
+            _selectedDay = daysSelectedValue;
+            NSLog(@"%ld/%ld/%ld", (long)_selectedMonth, (long)_selectedDay, (long)_selectedYear);
+            return;
+        }
+        
         _shouldScrollDays = _lastMonth != _selectedMonth;
         _shouldScrollMonths = _lastMonth != _selectedMonth;
         _lastMonth = _selectedMonth;
+        
+        _dayBeforeScroll = _selectedDay;
+        _monthBeforeScroll = _selectedMonth;
+        _yearBeforeScroll = _selectedYear;
 
         if ([scrollView isEqual:_monthsView]) {
             if (_shouldScrollDays) {
