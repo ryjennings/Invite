@@ -31,6 +31,8 @@
 @property (nonatomic, strong) NSArray *friends;
 @property (nonatomic, strong) NSArray *friendEmails;
 
+@property (nonatomic, strong) PFObject *eventToDisplay;
+
 @property (nonatomic, strong) NSSet *busyTimes;
 
 @property (nonatomic, strong) Event *protoEvent;

@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "DashboardEventCell.h"
 #import "Event.h"
+#import "EventViewController.h"
 #import "LoginViewController.h"
 #import "StringConstants.h"
 
@@ -73,9 +74,15 @@
     if ([event isKindOfClass:[Event class]]) {
         cell.label.text = [NSString stringWithFormat:@"Start: %@\nEnd: %@\nInvitees: %@", ((Event *)event).timeframe.start, ((Event *)event).timeframe.end, ((Event *)event).emails];
     } else {
-        cell.label.text = [NSString stringWithFormat:@"Start: %@\nEnd: %@\nInvitees: %@", event[EVENT_STARTDATE_KEY], event[EVENT_ENDDATE_KEY], event[EVENT_EMAILS_KEY]];
+        cell.label.text = [NSString stringWithFormat:@"Start: %@\nEnd: %@\nInvitees: %@", event[EVENT_STARTDATE_KEY], event[EVENT_ENDDATE_KEY], event[EVENT_RSVP_KEY]];
     }
     return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    [AppDelegate user].eventToDisplay = [AppDelegate user].events[indexPath.item];
+    [self performSegueWithIdentifier:SEGUE_TO_EVENT sender:self];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath

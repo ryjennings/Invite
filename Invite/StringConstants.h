@@ -6,6 +6,13 @@
 //  Copyright (c) 2015 Appuous. All rights reserved.
 //
 
+typedef NS_ENUM(NSUInteger, EventResponse) {
+    EventResponseNone,
+    EventResponseGoing,
+    EventResponseMaybe,
+    EventResponseNotGoing
+};
+
 // Classes
 #define CLASS_PERSON_KEY @"Person"
 #define CLASS_EVENT_KEY @"Event"
@@ -15,7 +22,7 @@
 #define EVENT_CREATOR_KEY @"creator"
 #define EVENT_STARTDATE_KEY @"start_date"
 #define EVENT_ENDDATE_KEY @"end_date"
-#define EVENT_EMAILS_KEY @"emails"
+#define EVENT_RSVP_KEY @"rsvp"
 
 // Keys
 #define EMAIL_KEY @"email"
@@ -40,17 +47,21 @@
 // Controllers
 #define LOGIN_VIEW_CONTROLLER @"LoginViewController"
 #define DASHBOARD_VIEW_CONTROLLER @"DashboardViewController"
+#define EVENT_VIEW_CONTROLLER @"EventViewController"
 
 // Segues
 #define SEGUE_TO_INVITEES @"SegueToInvitees"
 #define SEGUE_TO_TIMEFRAME @"SegueToTimeframe"
 #define SEGUE_TO_LOGIN @"SegueToLogin"
 #define SEGUE_TO_DASHBOARD @"SegueToDashboard"
+#define SEGUE_TO_EVENT @"SegueToEvent"
 
 // Table cell identifiers
 #define INVITEE_CELL_IDENTIFIER @"InviteeCellIdentifier"
 #define TIMEFRAME_HOUR_CELL_IDENTIFIER @"TimeframeHourCellIdentifier"
 #define DASHBOARD_EVENT_CELL_IDENTIFIER @"DashboardEventCellIdentifier"
+#define EVENT_RSVP_CELL_IDENTIFIER @"EventRSVPCellIdentifier"
+#define EVENT_TEXT_CELL_IDENTIFIER @"EventTextCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

@@ -98,13 +98,15 @@
         [_event addUniqueObjectsFromArray:_invitee forKey:EVENT_INVITEES_KEY];
         
         // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
-        NSMutableArray *emails = [NSMutableArray array];
+        NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
         for (PFObject *invitee in _invitee) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
-            if (email && email.length > 0) [emails addObject:email];
+            if (email && email.length > 0) {
+                [rsvp setValue:@(EventResponseNone) forKey:email];
+            }
         }
-        [_event addUniqueObjectsFromArray:emails forKey:EVENT_EMAILS_KEY];
-        _emails = emails;
+        _event[EVENT_RSVP_KEY] = rsvp;
+        _emails = [rsvp allKeys];
         
         for (PFObject *person in _invitee) {
             [self makeAdjustmentsToPerson:person event:_event];

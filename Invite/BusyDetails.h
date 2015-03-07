@@ -11,12 +11,19 @@
 @interface BusyDetails : NSObject
 
 @property (nonatomic, strong) NSString *personName;
+@property (nonatomic, strong) NSString *email;
 @property (nonatomic, strong) NSString *eventName;
 @property (nonatomic, strong) NSDate *startBaseDate;
 @property (nonatomic, strong) NSDate *start;
 @property (nonatomic, strong) NSDate *endBaseDate;
 @property (nonatomic, strong) NSDate *end;
 
-+ (BusyDetails *)busyDetailsWithPersonName:(NSString *)personName eventName:(NSString *)eventName start:(NSDate *)start startBaseDate:(NSDate *)startBaseDate end:(NSDate *)end endBaseDate:(NSDate *)endBaseDate;
++ (BusyDetails *)busyDetailsWithPersonName:(NSString *)personName
+                                     email:(NSString *)email
+                                 eventName:(NSString *)eventName
+                                     start:(NSDate *)start
+                             startBaseDate:(NSDate *)startBaseDate
+                                       end:(NSDate *)end
+                               endBaseDate:(NSDate *)endBaseDate;
 
 @end

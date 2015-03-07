@@ -10,10 +10,17 @@
 
 @implementation BusyDetails
 
-+ (BusyDetails *)busyDetailsWithPersonName:(NSString *)personName eventName:(NSString *)eventName start:(NSDate *)start startBaseDate:(NSDate *)startBaseDate end:(NSDate *)end endBaseDate:(NSDate *)endBaseDate
++ (BusyDetails *)busyDetailsWithPersonName:(NSString *)personName
+                                     email:(NSString *)email
+                                 eventName:(NSString *)eventName
+                                     start:(NSDate *)start
+                             startBaseDate:(NSDate *)startBaseDate
+                                       end:(NSDate *)end
+                               endBaseDate:(NSDate *)endBaseDate
 {
     BusyDetails *busy = [[BusyDetails alloc] init];
     busy.personName = personName;
+    busy.email = email;
     busy.eventName = eventName;
     busy.start = start;
     busy.startBaseDate = startBaseDate;

@@ -208,10 +208,12 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSMutableString *labelText = [[NSMutableString alloc] init];
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:TIMEFRAME_HOUR_CELL_IDENTIFIER];
     long hour = indexPath.row % 12;
     if (hour == 0) hour = 12;
-    cell.textLabel.text = [NSString stringWithFormat:@"%ld", hour];
+    [labelText appendFormat:@"%ld", hour];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.backgroundColor = [UIColor whiteColor];
@@ -232,11 +234,15 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     }];
 
     for (BusyDetails *busyDetail in relavantBusyTimes) {
-        if (withinHour(busyDetail)) {
-            cell.backgroundColor = [UIColor lightGrayColor];
-        }
+        [[AppDelegate user].protoEvent.invitees enumerateObjectsUsingBlock:^(PFObject *person, BOOL *stop) {
+            if ([busyDetail.email isEqualToString:[person objectForKey:EMAIL_KEY]] && withinHour(busyDetail)) {
+                cell.backgroundColor = [UIColor lightGrayColor];
+                [labelText appendFormat:@" %@", busyDetail.email];
+            }
+        }];
     }
 
+    cell.textLabel.text = labelText;
     return cell;
 }
 

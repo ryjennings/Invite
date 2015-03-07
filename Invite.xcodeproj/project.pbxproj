@@ -40,6 +40,9 @@
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
 		07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */; };
+		07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE501AAA2F17002B9962 /* EventViewController.m */; };
+		07B8EE551AAA326F002B9962 /* EventRSVPCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE541AAA326F002B9962 /* EventRSVPCell.m */; };
+		07B8EE581AAA5ADF002B9962 /* EventTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE571AAA5ADF002B9962 /* EventTextCell.m */; };
 		07D01A311A9A9B7F00860650 /* DashboardEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D01A301A9A9B7F00860650 /* DashboardEventCell.m */; };
 /* End PBXBuildFile section */
 
@@ -104,6 +107,12 @@
 		0786EB7C1A8E70ED006FDCA6 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		07B65A321AA4D81700A6F1A2 /* TimeframeCollectionLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeCollectionLayout.h; sourceTree = "<group>"; };
 		07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeCollectionLayout.m; sourceTree = "<group>"; };
+		07B8EE4F1AAA2F17002B9962 /* EventViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventViewController.h; sourceTree = "<group>"; };
+		07B8EE501AAA2F17002B9962 /* EventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventViewController.m; sourceTree = "<group>"; };
+		07B8EE531AAA326F002B9962 /* EventRSVPCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventRSVPCell.h; sourceTree = "<group>"; };
+		07B8EE541AAA326F002B9962 /* EventRSVPCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventRSVPCell.m; sourceTree = "<group>"; };
+		07B8EE561AAA5ADF002B9962 /* EventTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventTextCell.h; sourceTree = "<group>"; };
+		07B8EE571AAA5ADF002B9962 /* EventTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventTextCell.m; sourceTree = "<group>"; };
 		07C2098C1A8C2159002B3961 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		07D01A2F1A9A9B7F00860650 /* DashboardEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashboardEventCell.h; sourceTree = "<group>"; };
 		07D01A301A9A9B7F00860650 /* DashboardEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashboardEventCell.m; sourceTree = "<group>"; };
@@ -194,6 +203,7 @@
 				07D01A321A9A9D5E00860650 /* Dashboard */,
 				07D01A331A9A9D7900860650 /* Invitees */,
 				07A313291A96AA410066EE3E /* Timeframe */,
+				07B8EE521AAA2F22002B9962 /* Event */,
 				07D01A341A9A9E7500860650 /* Model */,
 				073273FD1A892BFB007700B3 /* Main.storyboard */,
 				071F694E1A8C1A3D009A8380 /* Localizable.strings */,
@@ -242,6 +252,19 @@
 				07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */,
 			);
 			name = Timeframe;
+			sourceTree = "<group>";
+		};
+		07B8EE521AAA2F22002B9962 /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				07B8EE4F1AAA2F17002B9962 /* EventViewController.h */,
+				07B8EE501AAA2F17002B9962 /* EventViewController.m */,
+				07B8EE561AAA5ADF002B9962 /* EventTextCell.h */,
+				07B8EE571AAA5ADF002B9962 /* EventTextCell.m */,
+				07B8EE531AAA326F002B9962 /* EventRSVPCell.h */,
+				07B8EE541AAA326F002B9962 /* EventRSVPCell.m */,
+			);
+			name = Event;
 			sourceTree = "<group>";
 		};
 		07D01A321A9A9D5E00860650 /* Dashboard */ = {
@@ -382,6 +405,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
+				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
 				07D01A311A9A9B7F00860650 /* DashboardEventCell.m in Sources */,
 				0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */,
 				07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */,
@@ -395,7 +419,9 @@
 				074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */,
 				073845181A969CFB00E2929A /* Timeframe.m in Sources */,
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
+				07B8EE551AAA326F002B9962 /* EventRSVPCell.m in Sources */,
 				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
+				07B8EE581AAA5ADF002B9962 /* EventTextCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
