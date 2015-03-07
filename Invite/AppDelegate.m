@@ -194,4 +194,25 @@
     return ((AppDelegate *)[[UIApplication sharedApplication] delegate]).user.parse;
 }
 
+#pragma mark - Helpers
+
++ (NSString *)keyFromEmail:(NSString *)email
+{
+    return [email stringByReplacingOccurrencesOfString:@"." withString:@":"];
+}
+
++ (NSString *)emailFromKey:(NSString *)key
+{
+    return [key stringByReplacingOccurrencesOfString:@":" withString:@"."];
+}
+
++ (NSArray *)emailsFromKeys:(NSArray *)keys
+{
+    NSMutableArray *emails = [NSMutableArray array];
+    for (NSString *key in keys) {
+        [emails addObject:[key stringByReplacingOccurrencesOfString:@":" withString:@"."]];
+    }
+    return emails;
+}
+
 @end

@@ -78,17 +78,17 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         return cell;
     } else {
         NSDictionary *rsvp = [_event objectForKey:EVENT_RSVP_KEY];
-        EventResponse response = [[rsvp objectForKey:[AppDelegate user].email] integerValue];
+        EventResponse response = [[rsvp objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
         EventRSVPCell *cell = (EventRSVPCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_RSVP_CELL_IDENTIFIER];
         cell.segments.selectedSegmentIndex = response;
         return cell;
     }
 }
 
-- (void)valueChangedOnSegmentedControl:(UISegmentedControl *)control
+- (IBAction)rsvpChanged:(UISegmentedControl *)control
 {
     NSMutableDictionary *rsvp = [[_event objectForKey:EVENT_RSVP_KEY] mutableCopy];
-    [rsvp setValue:@(control.selectedSegmentIndex) forKey:[AppDelegate user].email];
+    [rsvp setValue:@(control.selectedSegmentIndex) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
     _event[EVENT_RSVP_KEY] = rsvp;
     [_event saveInBackground];
 }

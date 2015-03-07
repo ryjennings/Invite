@@ -36,5 +36,8 @@
 
 + (void)clearUser;
 
-@end
++ (NSString *)keyFromEmail:(NSString *)email;
++ (NSString *)emailFromKey:(NSString *)key;
++ (NSArray *)emailsFromKeys:(NSArray *)keys;
 
+@end

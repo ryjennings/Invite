@@ -89,7 +89,6 @@
     [PFObject saveAllInBackground:save target:self selector:@selector(eventCreatedWithResult:error:)];
 }
 
-
 - (void)eventCreatedWithResult:(NSNumber *)result error:(NSError *)error
 {
     if ([result boolValue]) { // success
@@ -102,11 +101,11 @@
         for (PFObject *invitee in _invitee) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
-                [rsvp setValue:@(EventResponseNone) forKey:email];
+                [rsvp setValue:@(EventResponseNone) forKey:[AppDelegate keyFromEmail:email]];
             }
         }
         _event[EVENT_RSVP_KEY] = rsvp;
-        _emails = [rsvp allKeys];
+        _emails = [AppDelegate emailsFromKeys:[rsvp allKeys]];
         
         for (PFObject *person in _invitee) {
             [self makeAdjustmentsToPerson:person event:_event];

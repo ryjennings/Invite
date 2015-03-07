@@ -227,6 +227,9 @@
                                                         <segment title="Maybe"/>
                                                         <segment title="Sorry"/>
                                                     </segments>
+                                                    <connections>
+                                                        <action selector="rsvpChanged:" destination="vUf-2g-qse" eventType="valueChanged" id="4fS-Xc-LSL"/>
+                                                    </connections>
                                                 </segmentedControl>
                                             </subviews>
                                             <constraints>
