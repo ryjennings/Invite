@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "BusyDetails.h"
 #import "Event.h"
+#import "EventViewController.h"
 #import "StringConstants.h"
 #import "Timeframe.h"
 #import "TimeframeCollectionCell.h"
@@ -101,15 +102,15 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     CGFloat daysCellWidth = (screenRect.size.width - 4) / 5;
     CGFloat monthsCellWidth = (screenRect.size.width - 2) / 3;
     ((TimeframeCollectionLayout *)_daysView.collectionViewLayout).itemSize = CGSizeMake(daysCellWidth, 50.0);
-    ((TimeframeCollectionLayout *)_monthsView.collectionViewLayout).itemSize = CGSizeMake(monthsCellWidth, 50.0);
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventSuccessfullyCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
+    ((TimeframeCollectionLayout *)_monthsView.collectionViewLayout).itemSize = CGSizeMake(monthsCellWidth, 50.0);    
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    _monthsView.delegate = nil;
+    _daysView.delegate = nil;
+    _hoursView.delegate = nil;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -330,7 +331,10 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (IBAction)createEvent:(id)sender
 {
     [AppDelegate user].protoEvent.timeframe = _timeframe;
-    [[AppDelegate user].protoEvent submitEvent];
+//    [[AppDelegate user].protoEvent submitEvent];
+//    EventViewController *eventViewController = [self.storyboard instantiateViewControllerWithIdentifier:EVENT_VIEW_CONTROLLER];
+//    [self.navigationController pushViewController:eventViewController animated:YES];
+    [self performSegueWithIdentifier:SEGUE_TO_EVENT sender:self];
 }
 
 - (IBAction)cancel:(id)sender
@@ -593,14 +597,6 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
             [_hoursView reloadData];
         }
     }
-}
-
-#pragma mark - Notifications
-
-- (void)eventSuccessfullyCreated:(NSNotification *)notification
-{
-    [AppDelegate user].protoEvent = nil;
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - NSDate

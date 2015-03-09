@@ -71,11 +71,7 @@
 {
     DashboardEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:DASHBOARD_EVENT_CELL_IDENTIFIER forIndexPath:indexPath];
     id event = [AppDelegate user].events[indexPath.item];
-    if ([event isKindOfClass:[Event class]]) {
-        cell.label.text = [NSString stringWithFormat:@"Start: %@\nEnd: %@\nInvitees: %@", ((Event *)event).timeframe.start, ((Event *)event).timeframe.end, ((Event *)event).emails];
-    } else {
-        cell.label.text = [NSString stringWithFormat:@"Start: %@\nEnd: %@\nInvitees: %@", event[EVENT_STARTDATE_KEY], event[EVENT_ENDDATE_KEY], event[EVENT_RSVP_KEY]];
-    }
+    cell.label.text = [NSString stringWithFormat:@"Title: %@\nDescription: %@\nStart: %@\nEnd: %@\nInvitees: %@", event[EVENT_TITLE_KEY], event[EVENT_DESCRIPTION_KEY], event[EVENT_STARTDATE_KEY], event[EVENT_ENDDATE_KEY], event[EVENT_RSVP_KEY]];
     return cell;
 }
 
@@ -95,15 +91,9 @@
 - (void)eventCreated:(NSNotification *)notification
 {
     // Add event to local user
-    if (![AppDelegate user].events) {
-        [AppDelegate user].events = [NSArray array];
-    }
-    NSMutableArray *events = [[AppDelegate user].events mutableCopy];
-    [events addObject:[AppDelegate user].protoEvent];
-    [AppDelegate user].events = events;
-    
+
+    [self dismissViewControllerAnimated:YES completion:nil];
     [AppDelegate user].protoEvent = nil;
-    
     [_collectionView reloadData];
     [self performSelector:@selector(scrollToItemAtIndexPath) withObject:nil afterDelay:0.5];
 }

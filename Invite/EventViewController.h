@@ -12,6 +12,4 @@
 
 @interface EventViewController : UIViewController
 
-@property (nonatomic, strong) PFObject *event;
-
 @end

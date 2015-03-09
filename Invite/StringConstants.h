@@ -18,11 +18,15 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define CLASS_EVENT_KEY @"Event"
 
 // Event keys
-#define EVENT_INVITEES_KEY @"invitees"
-#define EVENT_CREATOR_KEY @"creator"
+
+#define EVENT_TITLE_KEY @"title"
 #define EVENT_STARTDATE_KEY @"start_date"
 #define EVENT_ENDDATE_KEY @"end_date"
+#define EVENT_DESCRIPTION_KEY @"description"
+#define EVENT_LOCATION_KEY @"location"
+#define EVENT_INVITEES_KEY @"invitees"
 #define EVENT_RSVP_KEY @"rsvp"
+#define EVENT_CREATOR_KEY @"creator"
 
 // Keys
 #define EMAIL_KEY @"email"
@@ -62,6 +66,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define DASHBOARD_EVENT_CELL_IDENTIFIER @"DashboardEventCellIdentifier"
 #define EVENT_RSVP_CELL_IDENTIFIER @"EventRSVPCellIdentifier"
 #define EVENT_TEXT_CELL_IDENTIFIER @"EventTextCellIdentifier"
+#define EVENT_EDIT_CELL_IDENTIFIER @"EventEditCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

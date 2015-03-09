@@ -84,6 +84,8 @@
     _event[EVENT_CREATOR_KEY] = [AppDelegate parseUser];
     _event[EVENT_STARTDATE_KEY] = _timeframe.start;
     _event[EVENT_ENDDATE_KEY] = _timeframe.end;
+    _event[EVENT_TITLE_KEY] = _title;
+    _event[EVENT_DESCRIPTION_KEY] = _eventDescription;
     [save addObject:_event];
     
     [PFObject saveAllInBackground:save target:self selector:@selector(eventCreatedWithResult:error:)];
@@ -119,7 +121,16 @@
         
         [PFObject saveAllInBackground:_invitee block:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
+                
+                if (![AppDelegate user].events) {
+                    [AppDelegate user].events = [NSArray array];
+                }
+                NSMutableArray *events = [[AppDelegate user].events mutableCopy];
+                [events addObject:_event];
+                [AppDelegate user].events = events;
+                
                 [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:self];
+                
             } else {
                 NSLog(@"ERRRRRRRROR!!!");
             }
