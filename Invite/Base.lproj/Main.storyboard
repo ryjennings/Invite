@@ -201,7 +201,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H6L-90-xH0">
-                                            <rect key="frame" x="8" y="7" width="89" height="30"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                             <state key="normal" title="Create Event">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
@@ -212,8 +212,10 @@
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
-                                        <constraint firstItem="H6L-90-xH0" firstAttribute="centerY" secondItem="gM2-sh-vNq" secondAttribute="centerY" id="7Fg-Bi-GwI"/>
-                                        <constraint firstItem="H6L-90-xH0" firstAttribute="leading" secondItem="gM2-sh-vNq" secondAttribute="leadingMargin" id="F6f-V2-c1L"/>
+                                        <constraint firstAttribute="bottom" secondItem="H6L-90-xH0" secondAttribute="bottom" id="6nW-3X-JEk"/>
+                                        <constraint firstItem="H6L-90-xH0" firstAttribute="top" secondItem="gM2-sh-vNq" secondAttribute="top" id="IyR-eO-1xg"/>
+                                        <constraint firstAttribute="trailing" secondItem="H6L-90-xH0" secondAttribute="trailing" id="ND4-d0-Du8"/>
+                                        <constraint firstItem="H6L-90-xH0" firstAttribute="leading" secondItem="gM2-sh-vNq" secondAttribute="leading" id="aBL-UQ-CxB"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
@@ -279,7 +281,7 @@
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V44-Gw-xMC">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V44-Gw-xMC">
                                                     <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -382,7 +384,10 @@
                                             <textInputTraits key="textInputTraits"/>
                                         </textField>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kdF-tv-MTt">
-                                            <rect key="frame" x="8" y="46" width="32" height="30"/>
+                                            <rect key="frame" x="0.0" y="46" width="600" height="54"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="54" id="Pec-Pt-DiU"/>
+                                            </constraints>
                                             <state key="normal" title="Next">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
@@ -396,8 +401,9 @@
                                         <constraint firstItem="wEA-Tx-gYS" firstAttribute="top" secondItem="B2V-mn-Y6L" secondAttribute="topMargin" id="GFZ-UO-gDu"/>
                                         <constraint firstItem="wEA-Tx-gYS" firstAttribute="trailing" secondItem="B2V-mn-Y6L" secondAttribute="trailingMargin" id="JVq-97-Qr2"/>
                                         <constraint firstItem="wEA-Tx-gYS" firstAttribute="leading" secondItem="B2V-mn-Y6L" secondAttribute="leadingMargin" id="Wb5-Qt-lfn"/>
-                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="top" secondItem="wEA-Tx-gYS" secondAttribute="bottom" constant="8" symbolic="YES" id="n4a-by-xdn"/>
-                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="leading" secondItem="wEA-Tx-gYS" secondAttribute="leading" id="z12-0V-4eg"/>
+                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="centerX" secondItem="wEA-Tx-gYS" secondAttribute="centerX" id="h8v-Tf-X6y"/>
+                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="top" secondItem="wEA-Tx-gYS" secondAttribute="bottom" constant="8" symbolic="YES" id="oZ9-Bx-dC7"/>
+                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="leading" secondItem="B2V-mn-Y6L" secondAttribute="leading" id="zro-Gt-1Zw"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
@@ -466,7 +472,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p3N-4K-agW">
-                                            <rect key="frame" x="8" y="8" width="32" height="30"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                             <state key="normal" title="Next">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
@@ -477,8 +483,10 @@
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
-                                        <constraint firstItem="p3N-4K-agW" firstAttribute="leading" secondItem="e0f-9d-bzA" secondAttribute="leadingMargin" id="CLD-7l-zn9"/>
-                                        <constraint firstItem="p3N-4K-agW" firstAttribute="top" secondItem="e0f-9d-bzA" secondAttribute="topMargin" id="RQ7-6O-sgh"/>
+                                        <constraint firstAttribute="trailing" secondItem="p3N-4K-agW" secondAttribute="trailing" id="4K4-bN-qP2"/>
+                                        <constraint firstItem="p3N-4K-agW" firstAttribute="leading" secondItem="e0f-9d-bzA" secondAttribute="leading" id="8N6-FL-RhZ"/>
+                                        <constraint firstAttribute="bottom" secondItem="p3N-4K-agW" secondAttribute="bottom" id="Hjp-bZ-rpo"/>
+                                        <constraint firstItem="p3N-4K-agW" firstAttribute="top" secondItem="e0f-9d-bzA" secondAttribute="top" id="wPY-Sd-5QN"/>
                                     </constraints>
                                 </view>
                                 <prototypes>

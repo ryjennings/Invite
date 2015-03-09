@@ -184,7 +184,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         
         calculationView = [[UITextView alloc] init];
         calculationView.attributedText = [[NSAttributedString alloc] initWithString:@""]; // get the text from your datasource add attributes and insert here
-        textViewWidth = self.view.frame.size.width - 30.0; // Insert the width of your UITextViews or include calculations to set it accordingly
+        textViewWidth = self.view.frame.size.width; // Insert the width of your UITextViews or include calculations to set it accordingly
     }
     CGSize size = [calculationView sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
     return size.height;
@@ -198,12 +198,12 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     // If the UITextView is not automatically resized (e.g. through autolayout
     // constraints), resize it here
     
-    [self scrollToCursorForTextView:textView]; // OPTIONAL: Follow cursor
+//    [self scrollToCursorForTextView:textView]; // OPTIONAL: Follow cursor
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
-    [self scrollToCursorForTextView:textView];
+//    [self scrollToCursorForTextView:textView];
 }
 
 - (void)scrollToCursorForTextView:(UITextView *)textView
