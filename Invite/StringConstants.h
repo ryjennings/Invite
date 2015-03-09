@@ -27,6 +27,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define EVENT_INVITEES_KEY @"invitees"
 #define EVENT_RSVP_KEY @"rsvp"
 #define EVENT_CREATOR_KEY @"creator"
+#define EVENT_COVERIMAGE_KEY @"cover_image"
 
 // Keys
 #define EMAIL_KEY @"email"

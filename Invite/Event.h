@@ -19,6 +19,7 @@
 @property (nonatomic, strong) Timeframe *timeframe;
 @property (nonatomic, strong) NSString *eventDescription;
 @property (nonatomic, strong) NSSet *invitees;
+@property (nonatomic, strong) UIImage *coverImage;
 
 @property (nonatomic, strong) NSArray *inviteeEmails;
 @property (nonatomic, strong) NSArray *emails;

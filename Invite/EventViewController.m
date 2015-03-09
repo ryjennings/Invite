@@ -16,6 +16,8 @@
 #import "StringConstants.h"
 #import "User.h"
 
+CGFloat const EventCoverHeight = 200.0;
+
 typedef NS_ENUM(NSUInteger, EventMode) {
     EventModeEditing,
     EventModePreviewing,
@@ -32,8 +34,11 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     EventRowCount
 };
 
-@interface EventViewController () <UITextViewDelegate>
+@interface EventViewController () <UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic, weak) IBOutlet UIButton *eventCoverButton;
+@property (nonatomic, weak) IBOutlet UIView *eventCoverView;
+
 @property (nonatomic) EventMode mode;
 @property (nonatomic, strong) PFObject *parseEvent;
 @property (nonatomic, strong) NSMutableDictionary *textViews;
@@ -52,9 +57,47 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         _mode = EventModeViewing;
         _tableView.tableFooterView = nil;
     }
-
+    
+    _eventCoverView.frame = CGRectMake(0, 0, 0, EventCoverHeight);
+    [_eventCoverButton.imageView setContentMode:UIViewContentModeScaleAspectFill];
+    
+    if (_mode == EventModeEditing) {
+        [_eventCoverButton setTitle:@"Tap to add event cover photo." forState:UIControlStateNormal];
+        [_eventCoverButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+        [_eventCoverButton addTarget:self action:@selector(accessImagePicker:) forControlEvents:UIControlEventTouchUpInside];
+    } else if ([_parseEvent objectForKey:EVENT_COVERIMAGE_KEY]) {
+        NSLog(@"DATA %@", [_parseEvent objectForKey:EVENT_COVERIMAGE_KEY]);
+        PFImageView *creature = [[PFImageView alloc] init];
+        creature.file = (PFFile *)[_parseEvent objectForKey:EVENT_COVERIMAGE_KEY];
+        [creature loadInBackground:^(UIImage *image, NSError *error) {
+            [_eventCoverButton setImage:image forState:UIControlStateNormal];
+        }];
+    }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)accessImagePicker:(id)sender
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.allowsEditing = YES;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    [self presentViewController:picker animated:YES completion:NULL];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = info[UIImagePickerControllerEditedImage];
+    [_eventCoverButton setImage:image forState:UIControlStateNormal];
+    [_eventCoverButton setTitle:@"" forState:UIControlStateNormal];
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -158,9 +201,9 @@ typedef NS_ENUM(NSUInteger, EventRow) {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    for (UITextView *textView in _textViews) {
-        [textView resignFirstResponder];
-    }
+//    for (UITextView *textView in _textViews) {
+//        [textView resignFirstResponder];
+//    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -266,6 +309,9 @@ typedef NS_ENUM(NSUInteger, EventRow) {
 {
     [AppDelegate user].protoEvent.title = ((UITextView *)[_textViews objectForKey:[NSIndexPath indexPathForRow:0 inSection:0]]).text;
     [AppDelegate user].protoEvent.eventDescription = ((UITextView *)[_textViews objectForKey:[NSIndexPath indexPathForRow:2 inSection:0]]).text;
+    if (_eventCoverButton.imageView.image) {
+        [AppDelegate user].protoEvent.coverImage = _eventCoverButton.imageView.image;
+    }
     [[AppDelegate user].protoEvent submitEvent];
 }
 

@@ -86,6 +86,11 @@
     _event[EVENT_ENDDATE_KEY] = _timeframe.end;
     _event[EVENT_TITLE_KEY] = _title;
     _event[EVENT_DESCRIPTION_KEY] = _eventDescription;
+    
+    NSData *coverData = UIImagePNGRepresentation(_coverImage);
+    PFFile *coverFile = [PFFile fileWithName:@"cover.png" data:coverData];
+    _event[EVENT_COVERIMAGE_KEY] = coverFile;
+    
     [save addObject:_event];
     
     [PFObject saveAllInBackground:save target:self selector:@selector(eventCreatedWithResult:error:)];

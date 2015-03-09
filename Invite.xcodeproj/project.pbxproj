@@ -45,6 +45,7 @@
 		07B8EE551AAA326F002B9962 /* EventRSVPCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE541AAA326F002B9962 /* EventRSVPCell.m */; };
 		07B8EE581AAA5ADF002B9962 /* EventTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE571AAA5ADF002B9962 /* EventTextCell.m */; };
 		07D01A311A9A9B7F00860650 /* DashboardEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D01A301A9A9B7F00860650 /* DashboardEventCell.m */; };
+		07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +120,7 @@
 		07C2098C1A8C2159002B3961 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		07D01A2F1A9A9B7F00860650 /* DashboardEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashboardEventCell.h; sourceTree = "<group>"; };
 		07D01A301A9A9B7F00860650 /* DashboardEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashboardEventCell.m; sourceTree = "<group>"; };
+		07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = "../../Downloads/parse-library-1/ParseUI.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */,
 				0724632D1A8BD42900820834 /* libsqlite3.dylib in Frameworks */,
 				0724632B1A8BD41900820834 /* libz.dylib in Frameworks */,
 				072463291A8BD40D00820834 /* SystemConfiguration.framework in Frameworks */,
@@ -156,6 +159,7 @@
 		0724632E1A8BD44200820834 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */,
 				0724632F1A8BD61A00820834 /* FacebookSDK.framework */,
 				0724632C1A8BD42900820834 /* libsqlite3.dylib */,
 				0724632A1A8BD41900820834 /* libz.dylib */,
