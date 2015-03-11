@@ -56,10 +56,12 @@
 
     if (!parseObject) {
         
+        _profileURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square&width=300&height=300", [object objectForKey:ID_KEY]];
         [self createParseUser];
         
     } else {
         
+        _profileURL = [object objectForKey:PROFILE_URL_KEY];
         _events = [object objectForKey:EVENTS_KEY];
         _friends = [object objectForKey:FRIENDS_KEY];
         _friendEmails = [object objectForKey:FRIENDEMAILS_KEY];
@@ -73,13 +75,12 @@
     
     PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
     [query whereKey:EMAIL_KEY equalTo:_email];
-    [query getFirstObjectInBackgroundWithBlock:^(PFObject *match, NSError *error) {
-        
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         PFObject *person;
         
-        if (match) {
+        if (objects.count) {
             
-            person = match;
+            person = objects[0];
             
         } else {
             
@@ -89,7 +90,7 @@
         }
         
         _parse = person;
-
+        
         person[GENDER_KEY] = _gender;
         person[LOCALE_KEY] = _locale;
         person[FACEBOOK_ID_KEY] = _facebookID;
@@ -98,6 +99,7 @@
         person[FACEBOOK_LINK_KEY] = _facebookLink;
         person[FULL_NAME_KEY] = _fullName;
         person[FIRST_NAME_KEY] = _firstName;
+        person[PROFILE_URL_KEY] = _profileURL;
         
         // Keys we don't need when initially setting someone up: events, friends
         

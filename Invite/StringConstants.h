@@ -42,7 +42,8 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define EVENTS_KEY @"events"
 #define OBJECTID_KEY @"objectId"
 #define FRIENDS_KEY @"friends"
-#define FRIENDEMAILS_KEY @"friendEmails"
+#define FRIENDEMAILS_KEY @"friend_emails"
+#define PROFILE_URL_KEY @"profile_url"
 
 // Keys used by Facebook
 #define ID_KEY @"id"

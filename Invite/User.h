@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSString *facebookLink;
 @property (nonatomic, strong) NSString *fullName;
 @property (nonatomic, strong) NSString *firstName;
+@property (nonatomic, strong) NSString *profileURL;
 
 @property (nonatomic, strong) NSArray *events;
 @property (nonatomic, strong) NSArray *friends;
