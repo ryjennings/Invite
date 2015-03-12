@@ -8,6 +8,18 @@
 
 #import "EventEditCell.h"
 
+@interface EventEditCell () <UITextViewDelegate>
+
+@end
+
 @implementation EventEditCell
+
+- (void)textViewDidChange:(UITextView *)textView
+{
+    _placeholderLabel.hidden = _textView.text.length;
+    if (_delegate && [_delegate respondsToSelector:@selector(eventEditCell:textViewDidChange:)]) {
+        [_delegate eventEditCell:self textViewDidChange:_textView];
+    }
+}
 
 @end

@@ -16,6 +16,8 @@
 #import "StringConstants.h"
 #import "User.h"
 
+#define kEventCellFont [UIFont systemFontOfSize:17]
+
 CGFloat const EventCoverHeight = 200.0;
 
 typedef NS_ENUM(NSUInteger, EventMode) {
@@ -34,70 +36,68 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     EventRowCount
 };
 
-@interface EventViewController () <UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface EventViewController () <EventEditCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
-@property (nonatomic, weak) IBOutlet UIButton *eventCoverButton;
 @property (nonatomic, weak) IBOutlet UIView *eventCoverView;
+@property (nonatomic, weak) IBOutlet UIButton *eventCoverButton;
 
 @property (nonatomic) EventMode mode;
-@property (nonatomic, strong) PFObject *parseEvent;
-@property (nonatomic, strong) NSMutableDictionary *textViews;
+@property (nonatomic, strong) PFObject *event;
+
+@property (nonatomic, strong) NSMutableArray *textViewText;
+@property (nonatomic, strong) NSArray *eventData;
 @end
 
 @implementation EventViewController
 
 - (void)viewDidLoad
 {
-    _textViews = [NSMutableDictionary dictionary];
-    
-    if ([AppDelegate user].protoEvent) {
-        _mode = EventModeEditing;
-    } else if ([AppDelegate user].eventToDisplay) {
-        _parseEvent = [AppDelegate user].eventToDisplay;
-        _mode = EventModeViewing;
-        _tableView.tableFooterView = nil;
+    // Instantiate text view array
+    _textViewText = [NSMutableArray array];
+    for (unsigned i = 0; i < EventRowCount; i++) {
+        [_textViewText addObject:@""];
     }
-    
-    _eventCoverView.frame = CGRectMake(0, 0, 0, EventCoverHeight);
-    [_eventCoverButton.imageView setContentMode:UIViewContentModeScaleAspectFill];
-    
-    if (_mode == EventModeEditing) {
+
+    // Set mode, event data and cover
+    if ([AppDelegate user].protoEvent) {
+        Event *event = [AppDelegate user].protoEvent;
+        _mode = EventModeEditing;
+        _eventData = [NSArray arrayWithObjects:
+                      event.title ? event.title : @"Tap to add title",
+                      [NSString stringWithFormat:@"%@ - %@", event.timeframe.start ? event.timeframe.start : [AppDelegate user].protoEvent.timeframe.start, event.timeframe.end ? event.timeframe.end : [AppDelegate user].protoEvent.timeframe.end],
+                      event.eventDescription ? event.eventDescription : @"Tap to add description",
+                      event.location ? event.location : @"Location to be listed here",
+                      event.invitees ? [event.invitees description] : @"Invitees to be listed here",
+                      nil];
         [_eventCoverButton setTitle:@"Tap to add event cover photo." forState:UIControlStateNormal];
         [_eventCoverButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         [_eventCoverButton addTarget:self action:@selector(accessImagePicker:) forControlEvents:UIControlEventTouchUpInside];
-    } else if ([_parseEvent objectForKey:EVENT_COVERIMAGE_KEY]) {
-        NSLog(@"DATA %@", [_parseEvent objectForKey:EVENT_COVERIMAGE_KEY]);
-        PFImageView *creature = [[PFImageView alloc] init];
-        creature.file = (PFFile *)[_parseEvent objectForKey:EVENT_COVERIMAGE_KEY];
-        [creature loadInBackground:^(UIImage *image, NSError *error) {
-            [_eventCoverButton setImage:image forState:UIControlStateNormal];
-        }];
+    } else {
+        _event = [AppDelegate user].eventToDisplay;
+        _mode = EventModeViewing;
+        _eventData = [NSArray arrayWithObjects:
+                      [_event objectForKey:EVENT_TITLE_KEY],
+                      [NSString stringWithFormat:@"%@ - %@", [_event objectForKey:EVENT_STARTDATE_KEY], [_event objectForKey:EVENT_ENDDATE_KEY]],
+                      [_event objectForKey:EVENT_DESCRIPTION_KEY],
+                      [_event objectForKey:EVENT_LOCATION_KEY],
+                      [_event objectForKey:EVENT_INVITEES_KEY],
+                      nil];
+        if ([_event objectForKey:EVENT_COVERIMAGE_KEY]) {
+            PFImageView *coverImageView = [[PFImageView alloc] init];
+            coverImageView.file = (PFFile *)[_event objectForKey:EVENT_COVERIMAGE_KEY];
+            [coverImageView loadInBackground:^(UIImage *image, NSError *error) {
+                [_eventCoverButton setImage:image forState:UIControlStateNormal];
+            }];
+        }
+        _tableView.tableFooterView = nil;
     }
+    
+    // Additional cover setup
+    _eventCoverView.frame = CGRectMake(0, 0, 0, EventCoverHeight);
+    [_eventCoverButton.imageView setContentMode:UIViewContentModeScaleAspectFill];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-}
-
-- (void)accessImagePicker:(id)sender
-{
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    picker.delegate = self;
-    picker.allowsEditing = YES;
-    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    [self presentViewController:picker animated:YES completion:NULL];
-}
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    UIImage *image = info[UIImagePickerControllerEditedImage];
-    [_eventCoverButton setImage:image forState:UIControlStateNormal];
-    [_eventCoverButton setTitle:@"" forState:UIControlStateNormal];
-    [picker dismissViewControllerAnimated:YES completion:NULL];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -120,82 +120,39 @@ typedef NS_ENUM(NSUInteger, EventRow) {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    BOOL creator = [((PFObject *)[_parseEvent objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
-    UITableViewCell *cell;
+    BOOL creator = [((PFObject *)[_event objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
     
-    if (_mode == EventModeEditing && (indexPath.item == EventRowTitle || indexPath.item == EventRowDescription)) {
+    if (_mode == EventModeEditing && (indexPath.row == EventRowTitle || indexPath.row == EventRowDescription)) {
         
-        cell = [tableView dequeueReusableCellWithIdentifier:EVENT_EDIT_CELL_IDENTIFIER];
+        EventEditCell *cell = (EventEditCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_EDIT_CELL_IDENTIFIER];
+        cell.delegate = self;
+        cell.placeholderLabel.text = _eventData[indexPath.row];
+        cell.placeholderLabel.hidden = cell.textView.text.length;
+        cell.textView.tag = indexPath.row;
+        cell.textView.text = _textViewText[indexPath.row];
+        cell.textView.font = kEventCellFont;
+        cell.textView.textContainer.lineFragmentPadding = 0;
+        cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0);
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
         
-    } else if (indexPath.item == EventRowRSVP && !creator) {
+    } else if (indexPath.row == EventRowRSVP && !creator) {
         
-        NSDictionary *rsvp = [_parseEvent objectForKey:EVENT_RSVP_KEY];
+        NSDictionary *rsvp = [_event objectForKey:EVENT_RSVP_KEY];
         EventResponse response = [[rsvp objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
         EventRSVPCell *cell = (EventRSVPCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_RSVP_CELL_IDENTIFIER];
         cell.segments.selectedSegmentIndex = response;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
         
     } else {
         
-        cell = [tableView dequeueReusableCellWithIdentifier:EVENT_TEXT_CELL_IDENTIFIER];
+        EventTextCell *cell = (EventTextCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_TEXT_CELL_IDENTIFIER];
+        cell.label.text = _eventData[indexPath.row];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        return cell;
         
     }
-
-    switch (indexPath.item) {
-        case EventRowTitle:
-        {
-            if (_mode == EventModeEditing) {
-                ((EventEditCell *)cell).placeholderLabel.text = @"Tap to add event title";
-                [_textViews setObject:((EventEditCell *)cell).textView forKey:indexPath];
-                [((EventEditCell *)cell).textView setDelegate:self];
-                ((EventEditCell *)cell).textView.backgroundColor = [UIColor redColor];
-            } else {
-                ((EventTextCell *)cell).label.text = _mode == EventModePreviewing ? [AppDelegate user].protoEvent.title : _parseEvent[EVENT_TITLE_KEY];
-            }
-        }
-            break;
-        case EventRowTimeframe:
-        {
-            NSDate *start = _mode == EventModeViewing ? [_parseEvent objectForKey:EVENT_STARTDATE_KEY] : [AppDelegate user].protoEvent.timeframe.start;
-            NSDate *end = _mode == EventModeViewing ? [_parseEvent objectForKey:EVENT_ENDDATE_KEY] : [AppDelegate user].protoEvent.timeframe.end;
-            ((EventTextCell *)cell).label.text = [NSString stringWithFormat:@"%@ - %@", start, end];
-        }
-            break;
-        case EventRowDescription:
-        {
-            if (_mode == EventModeEditing) {
-                ((EventEditCell *)cell).placeholderLabel.text = @"Tap to add event description";
-                [_textViews setObject:((EventEditCell *)cell).textView forKey:indexPath];
-                [((EventEditCell *)cell).textView setDelegate:self];
-                ((EventEditCell *)cell).textView.backgroundColor = [UIColor redColor];
-            } else {
-                ((EventTextCell *)cell).label.text = _mode == EventModePreviewing ? [AppDelegate user].protoEvent.eventDescription : _parseEvent[EVENT_DESCRIPTION_KEY];
-            }
-        }
-            break;
-        case EventRowInvitees:
-        {
-            if (_mode == EventModeViewing) {
-                ((EventTextCell *)cell).label.text = [NSString stringWithFormat:@"Invitees: %@", _parseEvent[EVENT_RSVP_KEY]];
-            } else {
-                ((EventTextCell *)cell).label.text = @"Invitees to be listed here";//[NSString stringWithFormat:@"Invitees: %@", [AppDelegate user].protoEvent.invitees];
-            }
-        }
-            break;
-        case EventRowLocation:
-        {
-            ((EventTextCell *)cell).label.text = @"Location to be listed here.";
-        }
-            break;
-        case EventRowRSVP:
-        {
-            ((EventTextCell *)cell).label.text = @"You are the creator of this event.";
-        }
-            break;
-        default:
-            break;
-    }
-    return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -205,59 +162,36 @@ typedef NS_ENUM(NSUInteger, EventRow) {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.item == EventRowTitle || indexPath.item == EventRowDescription) {
-        return [self textViewHeightForRowAtIndexPath:indexPath];
-    } else {
-        return 100.0;
-    }
+    NSString *text = ((NSString *)_textViewText[indexPath.row]).length ? _textViewText[indexPath.row] : _eventData[indexPath.row];
+    CGFloat textViewWidth = self.view.frame.size.width - 30;
+    CGRect frame = [text boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
+                                      options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                   attributes:@{NSFontAttributeName: kEventCellFont}
+                                      context:nil];
+    return frame.size.height + 25;
 }
 
-- (CGFloat)textViewHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark - Notifications
+
+- (void)keyboardWillShow:(NSNotification *)notification
 {
-    UITextView *calculationView = [_textViews objectForKey:indexPath];
-    CGFloat textViewWidth = calculationView.frame.size.width;
-    if (!calculationView.attributedText) {
-        calculationView = [[UITextView alloc] init];
-        calculationView.attributedText = [[NSAttributedString alloc] initWithString:@""];
-        textViewWidth = self.view.frame.size.width;
-    }
-    CGSize size = [calculationView sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
-    return size.height;
+    NSDictionary *info = [notification userInfo];
+    CGSize size = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, size.height, 0.0);
+    self.tableView.contentInset = contentInsets;
+    self.tableView.scrollIndicatorInsets = contentInsets;
 }
 
-- (void)textViewDidChange:(UITextView *)textView
+- (void)keyboardWillHide:(NSNotification *)notification
 {
-    [self.tableView beginUpdates]; // This will cause an animated update of
-    [self.tableView endUpdates];   // the height of your UITableViewCell
+    [UIView animateWithDuration:0.35 animations:^{
+        UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, 0.0, 0.0);
+        self.tableView.contentInset = contentInsets;
+        self.tableView.scrollIndicatorInsets = contentInsets;
+    } completion:nil];
 }
 
-- (void)keyboardWillShow:(NSNotification*)aNotification
-{
-//    NSDictionary* info = [aNotification userInfo];
-//    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-//    
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, kbSize.height, 0.0);
-//    self.tableView.contentInset = contentInsets;
-//    self.tableView.scrollIndicatorInsets = contentInsets;
-}
-
-- (void)keyboardWillHide:(NSNotification*)aNotification
-{
-//    [UIView beginAnimations:nil context:nil];
-//    [UIView setAnimationDuration:0.35];
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, 0.0, 0.0);
-//    self.tableView.contentInset = contentInsets;
-//    self.tableView.scrollIndicatorInsets = contentInsets;
-//    [UIView commitAnimations];
-}
-
-- (IBAction)rsvpChanged:(UISegmentedControl *)control
-{
-    NSMutableDictionary *rsvp = [[_parseEvent objectForKey:EVENT_RSVP_KEY] mutableCopy];
-    [rsvp setValue:@(control.selectedSegmentIndex) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
-    _parseEvent[EVENT_RSVP_KEY] = rsvp;
-    [_parseEvent saveInBackground];
-}
+#pragma mark - IBActions
 
 - (IBAction)close:(id)sender
 {
@@ -266,12 +200,55 @@ typedef NS_ENUM(NSUInteger, EventRow) {
 
 - (IBAction)createEvent:(id)sender
 {
-    [AppDelegate user].protoEvent.title = ((UITextView *)[_textViews objectForKey:[NSIndexPath indexPathForRow:0 inSection:0]]).text;
-    [AppDelegate user].protoEvent.eventDescription = ((UITextView *)[_textViews objectForKey:[NSIndexPath indexPathForRow:2 inSection:0]]).text;
+    [AppDelegate user].protoEvent.title = _textViewText[EventRowTitle];
+    [AppDelegate user].protoEvent.eventDescription = _textViewText[EventRowDescription];
     if (_eventCoverButton.imageView.image) {
         [AppDelegate user].protoEvent.coverImage = _eventCoverButton.imageView.image;
     }
     [[AppDelegate user].protoEvent submitEvent];
+}
+
+#pragma mark - UIImagePicker
+
+- (void)accessImagePicker:(id)sender
+{
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.allowsEditing = YES;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    [self presentViewController:picker animated:YES completion:NULL];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = info[UIImagePickerControllerEditedImage];
+    [_eventCoverButton setImage:image forState:UIControlStateNormal];
+    [_eventCoverButton setTitle:@"" forState:UIControlStateNormal];
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - EventEditCellDelegate
+
+- (void)eventEditCell:(EventEditCell *)cell textViewDidChange:(UITextView *)textView
+{
+    _textViewText[textView.tag] = textView.text;
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
+}
+
+#pragma mark - RSVP
+
+- (IBAction)rsvpChanged:(UISegmentedControl *)control
+{
+    NSMutableDictionary *rsvp = [[_event objectForKey:EVENT_RSVP_KEY] mutableCopy];
+    [rsvp setValue:@(control.selectedSegmentIndex) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
+    _event[EVENT_RSVP_KEY] = rsvp;
+    [_event saveInBackground];
 }
 
 @end

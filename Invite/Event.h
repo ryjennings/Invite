@@ -18,6 +18,7 @@
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) Timeframe *timeframe;
 @property (nonatomic, strong) NSString *eventDescription;
+@property (nonatomic, strong) NSString *location;
 @property (nonatomic, strong) NSSet *invitees;
 @property (nonatomic, strong) UIImage *coverImage;
 
