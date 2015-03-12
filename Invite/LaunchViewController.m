@@ -30,10 +30,11 @@
         [query whereKey:EMAIL_KEY equalTo:email];
         [query includeKey:EVENTS_KEY];
         [query includeKey:FRIENDS_KEY];
-        [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseUser, NSError *error) {
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             
-            [[AppDelegate user] loadParseUser:parseUser];
-
+            if (objects.count) {
+                [[AppDelegate user] loadParseUser:objects[0]];
+            }
         }];
 
         DashboardViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:DASHBOARD_VIEW_CONTROLLER];

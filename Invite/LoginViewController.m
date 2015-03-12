@@ -78,28 +78,27 @@
 
         _receivedUser = YES;
 
+        [AppDelegate setObject:[facebookUser objectForKey:EMAIL_KEY] forKey:EMAIL_KEY];
+
         PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
         [query whereKey:EMAIL_KEY equalTo:[facebookUser objectForKey:EMAIL_KEY]];
         [query includeKey:EVENTS_KEY];
         [query includeKey:FRIENDS_KEY];
-        [query getFirstObjectInBackgroundWithBlock:^(PFObject *parseUser, NSError *error) {
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             
-            if (![parseUser objectForKey:FACEBOOK_ID_KEY]) {
+            if (objects.count) {
+                
+                [[AppDelegate user] loadParseUser:objects[0]];
+                [self performSelector:@selector(showDashboard) withObject:nil afterDelay:0.5];
+                
+            } else {
 
                 // User does not exist in Parse database...
                 // Create Parse user
                 
                 [[AppDelegate user] createParseUserFromFacebookUser:facebookUser];
                 
-            } else {
-                
-                [[AppDelegate user] loadParseUser:parseUser];
-                [self performSelector:@selector(showDashboard) withObject:nil afterDelay:0.5];
-
             }
-            
-            [AppDelegate setObject:[facebookUser objectForKey:EMAIL_KEY] forKey:EMAIL_KEY];
-
         }];
     }
 }

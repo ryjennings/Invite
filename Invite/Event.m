@@ -87,9 +87,11 @@
     _event[EVENT_TITLE_KEY] = _title;
     _event[EVENT_DESCRIPTION_KEY] = _eventDescription;
     
-    NSData *coverData = UIImagePNGRepresentation(_coverImage);
-    PFFile *coverFile = [PFFile fileWithName:@"cover.png" data:coverData];
-    _event[EVENT_COVERIMAGE_KEY] = coverFile;
+    if (_coverImage) {
+        NSData *coverData = UIImagePNGRepresentation(_coverImage);
+        PFFile *coverFile = [PFFile fileWithName:@"cover.png" data:coverData];
+        _event[EVENT_COVERIMAGE_KEY] = coverFile;
+    }
     
     [save addObject:_event];
     
@@ -112,7 +114,7 @@
             }
         }
         _event[EVENT_RSVP_KEY] = rsvp;
-        _emails = [AppDelegate emailsFromKeys:[rsvp allKeys]];
+//        _emails = [AppDelegate emailsFromKeys:[rsvp allKeys]];
         
         for (PFObject *person in _invitee) {
             [self makeAdjustmentsToPerson:person event:_event];
@@ -133,6 +135,8 @@
                 NSMutableArray *events = [[AppDelegate user].events mutableCopy];
                 [events addObject:_event];
                 [AppDelegate user].events = events;
+                
+                [self sendPushNotification];
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:self];
                 
@@ -175,6 +179,21 @@
     // Add creator (user) to invitee's friends
     [person addUniqueObject:[AppDelegate parseUser] forKey:FRIENDS_KEY];
     [person addUniqueObject:[AppDelegate user].email forKey:FRIENDEMAILS_KEY];
+}
+
+- (void)sendPushNotification
+{
+    NSMutableArray *emails = [NSMutableArray arrayWithArray:_inviteeEmails];
+    [emails addObjectsFromArray:_emails];
+    
+    if (_inviteeEmails) {
+        PFQuery *query = [PFInstallation query];
+        [query whereKey:EMAIL_KEY containedIn:emails];
+        
+        // Send push notification to query
+        [PFPush sendPushMessageToQueryInBackground:query
+                                       withMessage:@"You've received a new event!"];
+    }
 }
 
 @end

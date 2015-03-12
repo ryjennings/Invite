@@ -18,7 +18,6 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define CLASS_EVENT_KEY @"Event"
 
 // Event keys
-
 #define EVENT_TITLE_KEY @"title"
 #define EVENT_STARTDATE_KEY @"start_date"
 #define EVENT_ENDDATE_KEY @"end_date"

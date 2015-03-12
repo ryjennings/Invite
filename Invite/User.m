@@ -76,7 +76,9 @@
     PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
     [query whereKey:EMAIL_KEY equalTo:_email];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+
         PFObject *person;
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
         
         if (objects.count) {
             
@@ -87,6 +89,8 @@
             person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
             person[EMAIL_KEY] = _email;
             
+            currentInstallation[EMAIL_KEY] = _email;
+
         }
         
         _parse = person;
@@ -103,7 +107,7 @@
         
         // Keys we don't need when initially setting someone up: events, friends
         
-        [person saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        [PFObject saveAllInBackground:@[person, currentInstallation] block:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
             } else {
