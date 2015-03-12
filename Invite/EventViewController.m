@@ -201,19 +201,13 @@ typedef NS_ENUM(NSUInteger, EventRow) {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//    for (UITextView *textView in _textViews) {
-//        [textView resignFirstResponder];
-//    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // check here, if it is one of the cells, that needs to be resized
-    // to the size of the contained UITextView
     if (indexPath.item == EventRowTitle || indexPath.item == EventRowDescription) {
         return [self textViewHeightForRowAtIndexPath:indexPath];
     } else {
-        // return your normal height here:
         return 100.0;
     }
 }
@@ -223,11 +217,9 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     UITextView *calculationView = [_textViews objectForKey:indexPath];
     CGFloat textViewWidth = calculationView.frame.size.width;
     if (!calculationView.attributedText) {
-        // This will be needed on load, when the text view is not inited yet
-        
         calculationView = [[UITextView alloc] init];
-        calculationView.attributedText = [[NSAttributedString alloc] initWithString:@""]; // get the text from your datasource add attributes and insert here
-        textViewWidth = self.view.frame.size.width; // Insert the width of your UITextViews or include calculations to set it accordingly
+        calculationView.attributedText = [[NSAttributedString alloc] initWithString:@""];
+        textViewWidth = self.view.frame.size.width;
     }
     CGSize size = [calculationView sizeThatFits:CGSizeMake(textViewWidth, FLT_MAX)];
     return size.height;
@@ -237,59 +229,26 @@ typedef NS_ENUM(NSUInteger, EventRow) {
 {
     [self.tableView beginUpdates]; // This will cause an animated update of
     [self.tableView endUpdates];   // the height of your UITableViewCell
-    
-    // If the UITextView is not automatically resized (e.g. through autolayout
-    // constraints), resize it here
-    
-//    [self scrollToCursorForTextView:textView]; // OPTIONAL: Follow cursor
-}
-
-- (void)textViewDidBeginEditing:(UITextView *)textView
-{
-//    [self scrollToCursorForTextView:textView];
-}
-
-- (void)scrollToCursorForTextView:(UITextView *)textView
-{
-    CGRect cursorRect = [textView caretRectForPosition:textView.selectedTextRange.start];
-    
-    cursorRect = [self.tableView convertRect:cursorRect fromView:textView];
-    
-    if (![self rectVisible:cursorRect]) {
-        cursorRect.size.height += 8; // To add some space underneath the cursor
-        [self.tableView scrollRectToVisible:cursorRect animated:YES];
-    }
-}
-
-- (BOOL)rectVisible: (CGRect)rect
-{
-    CGRect visibleRect;
-    visibleRect.origin = self.tableView.contentOffset;
-    visibleRect.origin.y += self.tableView.contentInset.top;
-    visibleRect.size = self.tableView.bounds.size;
-    visibleRect.size.height -= self.tableView.contentInset.top + self.tableView.contentInset.bottom;
-    
-    return CGRectContainsRect(visibleRect, rect);
 }
 
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
-    NSDictionary* info = [aNotification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, kbSize.height, 0.0);
-    self.tableView.contentInset = contentInsets;
-    self.tableView.scrollIndicatorInsets = contentInsets;
+//    NSDictionary* info = [aNotification userInfo];
+//    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+//    
+//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, kbSize.height, 0.0);
+//    self.tableView.contentInset = contentInsets;
+//    self.tableView.scrollIndicatorInsets = contentInsets;
 }
 
 - (void)keyboardWillHide:(NSNotification*)aNotification
 {
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.35];
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, 0.0, 0.0);
-    self.tableView.contentInset = contentInsets;
-    self.tableView.scrollIndicatorInsets = contentInsets;
-    [UIView commitAnimations];
+//    [UIView beginAnimations:nil context:nil];
+//    [UIView setAnimationDuration:0.35];
+//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, 0.0, 0.0);
+//    self.tableView.contentInset = contentInsets;
+//    self.tableView.scrollIndicatorInsets = contentInsets;
+//    [UIView commitAnimations];
 }
 
 - (IBAction)rsvpChanged:(UISegmentedControl *)control
