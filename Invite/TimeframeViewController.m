@@ -323,19 +323,12 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-
+    if ([segue.identifier isEqualToString:SEGUE_TO_EVENT]) {
+        [AppDelegate user].protoEvent.timeframe = _timeframe;
+    }
 }
 
 #pragma mark - IBActions
-
-- (IBAction)createEvent:(id)sender
-{
-    [AppDelegate user].protoEvent.timeframe = _timeframe;
-//    [[AppDelegate user].protoEvent submitEvent];
-//    EventViewController *eventViewController = [self.storyboard instantiateViewControllerWithIdentifier:EVENT_VIEW_CONTROLLER];
-//    [self.navigationController pushViewController:eventViewController animated:YES];
-    [self performSegueWithIdentifier:SEGUE_TO_EVENT sender:self];
-}
 
 - (IBAction)cancel:(id)sender
 {

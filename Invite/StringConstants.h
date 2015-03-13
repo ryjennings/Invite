@@ -60,6 +60,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define SEGUE_TO_LOGIN @"SegueToLogin"
 #define SEGUE_TO_DASHBOARD @"SegueToDashboard"
 #define SEGUE_TO_EVENT @"SegueToEvent"
+#define SEGUE_TO_LOCATION @"SegueToLocation"
 
 // Table cell identifiers
 #define INVITEE_CELL_IDENTIFIER @"InviteeCellIdentifier"
