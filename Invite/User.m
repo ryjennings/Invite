@@ -133,14 +133,14 @@
 
         [PFObject fetchAllIfNeededInBackground:fetchEvents block:^(NSArray *events, NSError *error) {
             
-            NSMutableDictionary *friendsEvents = [NSMutableDictionary dictionary];
-            // friendsEvents = { "eventObjectId" = [friend, friend], etc }
+            NSMutableDictionary *eventsThatFriendsAreAttending = [NSMutableDictionary dictionary];
+            // eventsThatFriendsAreAttending = { "eventObjectId" = [friend, friend], etc }
             for (PFObject *friend in _friends) {
                 for (PFObject *event in [friend objectForKey:EVENTS_KEY]) {
-                    if (friendsEvents[event.objectId]) {
-                        [friendsEvents[event.objectId] addObject:friend];
+                    if (eventsThatFriendsAreAttending[event.objectId]) {
+                        [eventsThatFriendsAreAttending[event.objectId] addObject:friend];
                     } else {
-                        friendsEvents[event.objectId] = [NSMutableArray arrayWithObject:friend];
+                        eventsThatFriendsAreAttending[event.objectId] = [NSMutableArray arrayWithObject:friend];
                     }
                 }
             }
@@ -159,14 +159,22 @@
                 NSDate *startBaseDate = [calendar dateFromComponents:startComponents];
                 NSDate *endBaseDate = [calendar dateFromComponents:endComponents];
                 
-                [friendsEvents[event.objectId] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    [busyTimes addObject:[BusyDetails busyDetailsWithPersonName:[(PFObject *)obj objectForKey:FULL_NAME_KEY]
-                                                                          email:[(PFObject *)obj objectForKey:EMAIL_KEY]
-                                                                      eventName:@"Event Name"
-                                                                          start:start
-                                                                  startBaseDate:startBaseDate
-                                                                            end:end
-                                                                    endBaseDate:endBaseDate]];
+                [eventsThatFriendsAreAttending[event.objectId] enumerateObjectsUsingBlock:^(PFObject *friend, NSUInteger idx, BOOL *stop) {
+                    
+                    NSDictionary *rsvp = [event objectForKey:EVENT_RSVP_KEY];
+                    NSString *email = [friend objectForKey:EMAIL_KEY];
+                    EventResponse response = [rsvp[[AppDelegate keyFromEmail:email]] integerValue];
+                    
+                    if (response == EventResponseGoing || response == EventResponseMaybe) {
+                        [busyTimes addObject:[BusyDetails busyDetailsWithName:[friend objectForKey:FULL_NAME_KEY]
+                                                                        email:email
+                                                                   eventTitle:[event objectForKey:EVENT_TITLE_KEY]
+                                                                eventResponse:response
+                                                                        start:start
+                                                                startBaseDate:startBaseDate
+                                                                          end:end
+                                                                  endBaseDate:endBaseDate]];
+                    }
                 }];
             }
             

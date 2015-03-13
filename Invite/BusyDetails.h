@@ -10,20 +10,22 @@
 
 @interface BusyDetails : NSObject
 
-@property (nonatomic, strong) NSString *personName;
+@property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *email;
-@property (nonatomic, strong) NSString *eventName;
+@property (nonatomic, strong) NSString *eventTitle;
+@property (nonatomic, assign) NSInteger eventResponse;
 @property (nonatomic, strong) NSDate *startBaseDate;
 @property (nonatomic, strong) NSDate *start;
 @property (nonatomic, strong) NSDate *endBaseDate;
 @property (nonatomic, strong) NSDate *end;
 
-+ (BusyDetails *)busyDetailsWithPersonName:(NSString *)personName
-                                     email:(NSString *)email
-                                 eventName:(NSString *)eventName
-                                     start:(NSDate *)start
-                             startBaseDate:(NSDate *)startBaseDate
-                                       end:(NSDate *)end
-                               endBaseDate:(NSDate *)endBaseDate;
++ (BusyDetails *)busyDetailsWithName:(NSString *)name
+                               email:(NSString *)email
+                          eventTitle:(NSString *)eventTitle
+                       eventResponse:(NSInteger)eventResponse
+                               start:(NSDate *)start
+                       startBaseDate:(NSDate *)startBaseDate
+                                 end:(NSDate *)end
+                         endBaseDate:(NSDate *)endBaseDate;
 
 @end
