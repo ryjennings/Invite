@@ -39,7 +39,6 @@
 		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
-		0789246F1AB369B7005EE7FB /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0789246E1AB369B7005EE7FB /* LocationViewController.m */; };
 		078924741AB36DCE005EE7FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078924731AB36DCE005EE7FB /* MapKit.framework */; };
 		07A1DBB51AABBE9800CABF89 /* EventEditCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A1DBB41AABBE9800CABF89 /* EventEditCell.m */; };
 		07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */; };
@@ -47,6 +46,10 @@
 		07B8EE551AAA326F002B9962 /* EventRSVPCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE541AAA326F002B9962 /* EventRSVPCell.m */; };
 		07B8EE581AAA5ADF002B9962 /* EventTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE571AAA5ADF002B9962 /* EventTextCell.m */; };
 		07D01A311A9A9B7F00860650 /* DashboardEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D01A301A9A9B7F00860650 /* DashboardEventCell.m */; };
+		07DDBF221AC7ACC60058E1CA /* LocationSavedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF211AC7ACC60058E1CA /* LocationSavedViewController.swift */; };
+		07DDBF241AC7B4090058E1CA /* LocationAnnotation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07DDBF231AC7B4090058E1CA /* LocationAnnotation.xib */; };
+		07DDBF261AC7BEDA0058E1CA /* LocationNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF251AC7BEDA0058E1CA /* LocationNewViewController.swift */; };
+		07DDBF281AC7D12A0058E1CA /* LocationResultsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF271AC7D12A0058E1CA /* LocationResultsTableViewController.swift */; };
 		07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */; };
 /* End PBXBuildFile section */
 
@@ -109,8 +112,6 @@
 		0775B0731A93E6B000C15303 /* StringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConstants.h; sourceTree = "<group>"; };
 		0786EB7B1A8E70ED006FDCA6 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		0786EB7C1A8E70ED006FDCA6 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
-		0789246D1AB369B7005EE7FB /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
-		0789246E1AB369B7005EE7FB /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
 		078924731AB36DCE005EE7FB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		07A1DBB31AABBE9800CABF89 /* EventEditCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventEditCell.h; sourceTree = "<group>"; };
 		07A1DBB41AABBE9800CABF89 /* EventEditCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventEditCell.m; sourceTree = "<group>"; };
@@ -125,6 +126,11 @@
 		07C2098C1A8C2159002B3961 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		07D01A2F1A9A9B7F00860650 /* DashboardEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashboardEventCell.h; sourceTree = "<group>"; };
 		07D01A301A9A9B7F00860650 /* DashboardEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashboardEventCell.m; sourceTree = "<group>"; };
+		07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Invite-Bridging-Header.h"; sourceTree = "<group>"; };
+		07DDBF211AC7ACC60058E1CA /* LocationSavedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationSavedViewController.swift; sourceTree = "<group>"; };
+		07DDBF231AC7B4090058E1CA /* LocationAnnotation.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationAnnotation.xib; sourceTree = "<group>"; };
+		07DDBF251AC7BEDA0058E1CA /* LocationNewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationNewViewController.swift; sourceTree = "<group>"; };
+		07DDBF271AC7D12A0058E1CA /* LocationResultsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationResultsTableViewController.swift; sourceTree = "<group>"; };
 		07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = "../../Downloads/parse-library-1/ParseUI.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -210,6 +216,7 @@
 				073273F41A892BFB007700B3 /* AppDelegate.h */,
 				073273F51A892BFB007700B3 /* AppDelegate.m */,
 				0775B0731A93E6B000C15303 /* StringConstants.h */,
+				07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */,
 				078924701AB369C5005EE7FB /* Launch */,
 				078924711AB369CE005EE7FB /* Login */,
 				07D01A321A9A9D5E00860650 /* Dashboard */,
@@ -275,8 +282,10 @@
 		078924721AB369DC005EE7FB /* Location */ = {
 			isa = PBXGroup;
 			children = (
-				0789246D1AB369B7005EE7FB /* LocationViewController.h */,
-				0789246E1AB369B7005EE7FB /* LocationViewController.m */,
+				07DDBF211AC7ACC60058E1CA /* LocationSavedViewController.swift */,
+				07DDBF251AC7BEDA0058E1CA /* LocationNewViewController.swift */,
+				07DDBF271AC7D12A0058E1CA /* LocationResultsTableViewController.swift */,
+				07DDBF231AC7B4090058E1CA /* LocationAnnotation.xib */,
 			);
 			name = Location;
 			sourceTree = "<group>";
@@ -429,6 +438,7 @@
 				071F694F1A8C1A3D009A8380 /* Localizable.strings in Resources */,
 				073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */,
 				073274011A892BFB007700B3 /* Images.xcassets in Resources */,
+				07DDBF241AC7B4090058E1CA /* LocationAnnotation.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,6 +463,7 @@
 				07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */,
 				074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */,
 				0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */,
+				07DDBF281AC7D12A0058E1CA /* LocationResultsTableViewController.swift in Sources */,
 				07A1DBB51AABBE9800CABF89 /* EventEditCell.m in Sources */,
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
@@ -461,11 +472,12 @@
 				073273FC1A892BFB007700B3 /* LoginViewController.m in Sources */,
 				074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */,
 				073845181A969CFB00E2929A /* Timeframe.m in Sources */,
+				07DDBF221AC7ACC60058E1CA /* LocationSavedViewController.swift in Sources */,
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
+				07DDBF261AC7BEDA0058E1CA /* LocationNewViewController.swift in Sources */,
 				07B8EE551AAA326F002B9962 /* EventRSVPCell.m in Sources */,
 				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
 				07B8EE581AAA5ADF002B9962 /* EventTextCell.m in Sources */,
-				0789246F1AB369B7005EE7FB /* LocationViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,6 +602,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -603,7 +616,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				SWIFT_OBJC_BRIDGING_HEADER = "Invite/Invite-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -611,6 +626,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -624,7 +640,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				SWIFT_OBJC_BRIDGING_HEADER = "Invite/Invite-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

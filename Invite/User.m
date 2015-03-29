@@ -12,6 +12,8 @@
 #import "Event.h"
 #import "StringConstants.h"
 
+//_profileURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square&width=300&height=300", [object objectForKey:ID_KEY]];
+
 @implementation User
 
 + (instancetype)shared
@@ -46,7 +48,6 @@
     _gender = [object objectForKey:GENDER_KEY];
     _locale = [object objectForKey:LOCALE_KEY];
     _lastName = [object objectForKey:LAST_NAME_KEY];
-    _timezone = [[object objectForKey:TIMEZONE_KEY] intValue];
     _email = [object objectForKey:EMAIL_KEY];
     _firstName = [object objectForKey:FIRST_NAME_KEY];
 
@@ -56,15 +57,14 @@
 
     if (!parseObject) {
         
-        _profileURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square&width=300&height=300", [object objectForKey:ID_KEY]];
         [self createParseUser];
         
     } else {
         
-        _profileURL = [object objectForKey:PROFILE_URL_KEY];
         _events = [object objectForKey:EVENTS_KEY];
         _friends = [object objectForKey:FRIENDS_KEY];
-        _friendEmails = [object objectForKey:FRIENDEMAILS_KEY];
+        _friendEmails = [object objectForKey:FRIENDS_EMAILS_KEY];
+        _locations = [object objectForKey:LOCATIONS_KEY];
         
     }
 }
@@ -99,11 +99,9 @@
         person[LOCALE_KEY] = _locale;
         person[FACEBOOK_ID_KEY] = _facebookID;
         person[LAST_NAME_KEY] = _lastName;
-        person[TIMEZONE_KEY] = @(_timezone);
         person[FACEBOOK_LINK_KEY] = _facebookLink;
         person[FULL_NAME_KEY] = _fullName;
         person[FIRST_NAME_KEY] = _firstName;
-        person[PROFILE_URL_KEY] = _profileURL;
         
         // Keys we don't need when initially setting someone up: events, friends
         

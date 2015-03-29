@@ -34,15 +34,13 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define LOCALE_KEY @"locale"
 #define FACEBOOK_ID_KEY @"facebook_id"
 #define LAST_NAME_KEY @"last_name"
-#define TIMEZONE_KEY @"timezone"
 #define FACEBOOK_LINK_KEY @"facebook_link"
 #define FULL_NAME_KEY @"full_name"
 #define FIRST_NAME_KEY @"first_name"
 #define EVENTS_KEY @"events"
-#define OBJECTID_KEY @"objectId"
 #define FRIENDS_KEY @"friends"
-#define FRIENDEMAILS_KEY @"friend_emails"
-#define PROFILE_URL_KEY @"profile_url"
+#define FRIENDS_EMAILS_KEY @"friends_emails"
+#define LOCATIONS_KEY @"locations"
 
 // Keys used by Facebook
 #define ID_KEY @"id"
@@ -53,14 +51,16 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define LOGIN_VIEW_CONTROLLER @"LoginViewController"
 #define DASHBOARD_VIEW_CONTROLLER @"DashboardViewController"
 #define EVENT_VIEW_CONTROLLER @"EventViewController"
+#define LOCATION_RESULTS_TABLE_VIEW_CONTROLLER @"LocationResultsTableViewController"
 
 // Segues
-#define SEGUE_TO_INVITEES @"SegueToInvitees"
-#define SEGUE_TO_TIMEFRAME @"SegueToTimeframe"
 #define SEGUE_TO_LOGIN @"SegueToLogin"
 #define SEGUE_TO_DASHBOARD @"SegueToDashboard"
+#define SEGUE_TO_INVITEES @"SegueToInvitees"
+#define SEGUE_TO_TIMEFRAME @"SegueToTimeframe"
+#define SEGUE_TO_SAVED_LOCATION @"SegueToSavedLocation"
+#define SEGUE_TO_NEW_LOCATION @"SegueToNewLocation"
 #define SEGUE_TO_EVENT @"SegueToEvent"
-#define SEGUE_TO_LOCATION @"SegueToLocation"
 
 // Table cell identifiers
 #define INVITEE_CELL_IDENTIFIER @"InviteeCellIdentifier"

@@ -166,7 +166,7 @@
     [AppDelegate user].friends = friends;
     
     // Add invitee's email to creator's (user's) friendEmails
-    [[AppDelegate parseUser] addUniqueObject:[person objectForKey:EMAIL_KEY] forKey:FRIENDEMAILS_KEY];
+    [[AppDelegate parseUser] addUniqueObject:[person objectForKey:EMAIL_KEY] forKey:FRIENDS_EMAILS_KEY];
     
     // Add person's email to local friendEmails
     if (![AppDelegate user].friendEmails) {
@@ -178,7 +178,7 @@
 
     // Add creator (user) to invitee's friends
     [person addUniqueObject:[AppDelegate parseUser] forKey:FRIENDS_KEY];
-    [person addUniqueObject:[AppDelegate user].email forKey:FRIENDEMAILS_KEY];
+    [person addUniqueObject:[AppDelegate user].email forKey:FRIENDS_EMAILS_KEY];
 }
 
 - (void)sendPushNotification

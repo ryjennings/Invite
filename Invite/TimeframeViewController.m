@@ -319,20 +319,21 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     });
 }
 
-#pragma mark - Navigation
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:SEGUE_TO_EVENT]) {
-        [AppDelegate user].protoEvent.timeframe = _timeframe;
-    }
-}
-
 #pragma mark - IBActions
 
 - (IBAction)cancel:(id)sender
 {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)next:(id)sender
+{
+    [AppDelegate user].protoEvent.timeframe = _timeframe;
+    if ([AppDelegate user].locations && [AppDelegate user].locations.count) {
+        [self performSegueWithIdentifier:SEGUE_TO_SAVED_LOCATION sender:self];
+    } else {
+        [self performSegueWithIdentifier:SEGUE_TO_NEW_LOCATION sender:self];
+    }
 }
 
 #pragma mark - UICollectionView

@@ -21,16 +21,15 @@
 @property (nonatomic, strong) NSString *locale;
 @property (nonatomic, strong) NSString *facebookID;
 @property (nonatomic, strong) NSString *lastName;
-@property (nonatomic, assign) int timezone;
 @property (nonatomic, strong) NSString *email;
 @property (nonatomic, strong) NSString *facebookLink;
 @property (nonatomic, strong) NSString *fullName;
 @property (nonatomic, strong) NSString *firstName;
-@property (nonatomic, strong) NSString *profileURL;
 
 @property (nonatomic, strong) NSArray *events;
 @property (nonatomic, strong) NSArray *friends;
 @property (nonatomic, strong) NSArray *friendEmails;
+@property (nonatomic, strong) NSDictionary *locations;
 
 @property (nonatomic, strong) PFObject *eventToDisplay;
 
