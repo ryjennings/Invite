@@ -66,7 +66,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
                       event.title ? event.title : @"Tap to add title",
                       [NSString stringWithFormat:@"%@ - %@", event.timeframe.start ? event.timeframe.start : [AppDelegate user].protoEvent.timeframe.start, event.timeframe.end ? event.timeframe.end : [AppDelegate user].protoEvent.timeframe.end],
                       event.eventDescription ? event.eventDescription : @"Tap to add description",
-                      event.location ? event.location : @"Location to be listed here",
+                      @"Location to be listed here",
                       event.invitees ? [event.invitees description] : @"Invitees to be listed here",
                       nil];
         [_eventCoverButton setTitle:@"Tap to add event cover photo." forState:UIControlStateNormal];
@@ -77,14 +77,14 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         _mode = EventModeViewing;
         _eventData = [NSArray arrayWithObjects:
                       [_event objectForKey:EVENT_TITLE_KEY],
-                      [NSString stringWithFormat:@"%@ - %@", [_event objectForKey:EVENT_STARTDATE_KEY], [_event objectForKey:EVENT_ENDDATE_KEY]],
+                      [NSString stringWithFormat:@"%@ - %@", [_event objectForKey:EVENT_START_DATE_KEY], [_event objectForKey:EVENT_END_DATE_KEY]],
                       [_event objectForKey:EVENT_DESCRIPTION_KEY],
                       [_event objectForKey:EVENT_LOCATION_KEY],
                       [_event objectForKey:EVENT_INVITEES_KEY],
                       nil];
-        if ([_event objectForKey:EVENT_COVERIMAGE_KEY]) {
+        if ([_event objectForKey:EVENT_COVER_IMAGE_KEY]) {
             PFImageView *coverImageView = [[PFImageView alloc] init];
-            coverImageView.file = (PFFile *)[_event objectForKey:EVENT_COVERIMAGE_KEY];
+            coverImageView.file = (PFFile *)[_event objectForKey:EVENT_COVER_IMAGE_KEY];
             [coverImageView loadInBackground:^(UIImage *image, NSError *error) {
                 [_eventCoverButton setImage:image forState:UIControlStateNormal];
             }];

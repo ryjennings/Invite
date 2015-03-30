@@ -40,4 +40,9 @@
 + (NSString *)emailFromKey:(NSString *)key;
 + (NSArray *)emailsFromKeys:(NSArray *)keys;
 
+// Weird methods needed because Swift doesn't like @class
+
++ (void)addLocationToProtoEvent:(PFObject *)location;
++ (NSArray *)locations;
+
 @end

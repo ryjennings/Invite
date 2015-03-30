@@ -9,42 +9,87 @@
 import UIKit
 import MapKit
 
-public class LocationNewViewController: UIViewController, UISearchResultsUpdating, UISearchBarDelegate
+@objc public class LocationNewViewController: UIViewController, UISearchResultsUpdating, UISearchBarDelegate
 {
     @IBOutlet weak var searchBarView: UIView!
     @IBOutlet weak var nextButton: UIButton!
-    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var nicknameTextFieldHeightConstraint: NSLayoutConstraint!
     
     var searchController: UISearchController!
+    var location = PFObject(className: CLASS_LOCATION_KEY)
     
     public override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        var searchResultsController = storyboard?.instantiateViewControllerWithIdentifier("LocationResultsTableViewController") as LocationResultsTableViewController
+        var searchResultsController = storyboard?.instantiateViewControllerWithIdentifier("LocationResultsViewController") as LocationResultsViewController
         searchController = UISearchController(searchResultsController: searchResultsController)
         searchController.searchResultsUpdater = self
-
+        searchController.dimsBackgroundDuringPresentation = true
+        // The search bar won't show up unless scopeButtonTitles is set.
+        // The scope buttons won't show up unless two titles are set. 
+        // So since we don't want any scope buttons, only set one title.
+        searchController.searchBar.scopeButtonTitles = ["Invite"]
+        searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = "Search for a location"
         searchBarView.addSubview(searchController.searchBar)
         
-        
-        
-        
-        
-        
-        searchController.dimsBackgroundDuringPresentation = true
-        searchController.searchBar.scopeButtonTitles = ["Country", "Capital"]
-        searchController.searchBar.delegate = self
-        
+        locationLabel.text = "Use the search bar above to set a location."
+        nicknameTextFieldHeightConstraint.constant = 0
     }
     
     public override func viewDidLayoutSubviews()
     {
         searchController.searchBar.frame.size.width = searchBarView.bounds.size.width
+        locationLabel.preferredMaxLayoutWidth = view.frame.size.width - 32
     }
     
-    public func updateSearchResultsForSearchController(searchController: UISearchController) {
+    public func updateSearchResultsForSearchController(searchController: UISearchController)
+    {
 
+    }
+    
+    public override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    {
+        if (segue.identifier == "SegueToEvent") {
+            if (!nicknameTextField.text.isEmpty) {
+                location.setObject(nicknameTextField.text, forKey: LOCATION_NICKNAME_KEY)
+            }
+            AppDelegate.addLocationToProtoEvent(location)
+        }
+    }
+    
+    // MARK: - UISearchBarDelegate
+    
+    public func searchBarSearchButtonClicked(searchBar: UISearchBar)
+    {
+        var geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(searchBar.text, {(placemarks: [AnyObject]!, error: NSError!) -> Void in
+            if let placemark = placemarks?[0] as? CLPlacemark {
+                
+                // Set the annotation
+                let annotation = MKPlacemark(placemark: placemark)
+                self.mapView.addAnnotation(annotation)
+                self.mapView.showAnnotations([annotation], animated: true)
+                
+                // Set the coordinate and address for use later
+                self.location.setObject(searchBar.text, forKey: LOCATION_ADDRESS_KEY)
+                self.location.setObject("\(placemark.location.coordinate.longitude),\(placemark.location.coordinate.latitude)", forKey: LOCATION_COORDINATE_KEY)
+                
+                // Update the UI
+                self.locationLabel.text = searchBar.text
+                self.nicknameTextFieldHeightConstraint.constant = 30
+                
+                UIView.animateWithDuration(0.333, animations: {
+                    self.view.layoutIfNeeded()
+                })
+
+                // Dismiss the search controller
+                self.searchController.active = false
+            }
+        })
     }
 }

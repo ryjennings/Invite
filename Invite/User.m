@@ -145,8 +145,8 @@
 
             for (PFObject *event in events) {
                 
-                NSDate *start = [event objectForKey:EVENT_STARTDATE_KEY];
-                NSDate *end = [event objectForKey:EVENT_ENDDATE_KEY];
+                NSDate *start = [event objectForKey:EVENT_START_DATE_KEY];
+                NSDate *end = [event objectForKey:EVENT_END_DATE_KEY];
                 
                 NSCalendar *calendar = [NSCalendar currentCalendar];
                 NSDateComponents *startComponents = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:start];

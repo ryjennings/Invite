@@ -71,7 +71,7 @@
 {
     DashboardEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:DASHBOARD_EVENT_CELL_IDENTIFIER forIndexPath:indexPath];
     id event = [AppDelegate user].events[indexPath.item];
-    cell.label.text = [NSString stringWithFormat:@"Title: %@\nDescription: %@\nStart: %@\nEnd: %@\nInvitees: %@", event[EVENT_TITLE_KEY], event[EVENT_DESCRIPTION_KEY], event[EVENT_STARTDATE_KEY], event[EVENT_ENDDATE_KEY], event[EVENT_RSVP_KEY]];
+    cell.label.text = [NSString stringWithFormat:@"Title: %@\nDescription: %@\nStart: %@\nEnd: %@\nInvitees: %@", event[EVENT_TITLE_KEY], event[EVENT_DESCRIPTION_KEY], event[EVENT_START_DATE_KEY], event[EVENT_END_DATE_KEY], event[EVENT_RSVP_KEY]];
     return cell;
 }
 

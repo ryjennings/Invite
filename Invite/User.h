@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Appuous. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <Parse/Parse.h>
 
@@ -29,7 +29,7 @@
 @property (nonatomic, strong) NSArray *events;
 @property (nonatomic, strong) NSArray *friends;
 @property (nonatomic, strong) NSArray *friendEmails;
-@property (nonatomic, strong) NSDictionary *locations;
+@property (nonatomic, strong) NSArray *locations;
 
 @property (nonatomic, strong) PFObject *eventToDisplay;
 

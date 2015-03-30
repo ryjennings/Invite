@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 
+#import "Event.h"
 #import "StringConstants.h"
 #import "User.h"
 
@@ -231,6 +232,18 @@
         [emails addObject:[key stringByReplacingOccurrencesOfString:@":" withString:@"."]];
     }
     return emails;
+}
+
+#pragma mark - Weird methods needed because Swift doesn't like @class
+
++ (void)addLocationToProtoEvent:(PFObject *)location
+{
+    [AppDelegate user].protoEvent.location = location;
+}
+
++ (NSArray *)locations
+{
+    return [AppDelegate user].locations;
 }
 
 @end

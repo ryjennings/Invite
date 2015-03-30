@@ -49,7 +49,7 @@
 		07DDBF221AC7ACC60058E1CA /* LocationSavedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF211AC7ACC60058E1CA /* LocationSavedViewController.swift */; };
 		07DDBF241AC7B4090058E1CA /* LocationAnnotation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07DDBF231AC7B4090058E1CA /* LocationAnnotation.xib */; };
 		07DDBF261AC7BEDA0058E1CA /* LocationNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF251AC7BEDA0058E1CA /* LocationNewViewController.swift */; };
-		07DDBF281AC7D12A0058E1CA /* LocationResultsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF271AC7D12A0058E1CA /* LocationResultsTableViewController.swift */; };
+		07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */; };
 		07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */; };
 /* End PBXBuildFile section */
 
@@ -130,7 +130,7 @@
 		07DDBF211AC7ACC60058E1CA /* LocationSavedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationSavedViewController.swift; sourceTree = "<group>"; };
 		07DDBF231AC7B4090058E1CA /* LocationAnnotation.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationAnnotation.xib; sourceTree = "<group>"; };
 		07DDBF251AC7BEDA0058E1CA /* LocationNewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationNewViewController.swift; sourceTree = "<group>"; };
-		07DDBF271AC7D12A0058E1CA /* LocationResultsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationResultsTableViewController.swift; sourceTree = "<group>"; };
+		07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationResultsViewController.swift; sourceTree = "<group>"; };
 		07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = "../../Downloads/parse-library-1/ParseUI.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -284,7 +284,7 @@
 			children = (
 				07DDBF211AC7ACC60058E1CA /* LocationSavedViewController.swift */,
 				07DDBF251AC7BEDA0058E1CA /* LocationNewViewController.swift */,
-				07DDBF271AC7D12A0058E1CA /* LocationResultsTableViewController.swift */,
+				07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */,
 				07DDBF231AC7B4090058E1CA /* LocationAnnotation.xib */,
 			);
 			name = Location;
@@ -463,7 +463,7 @@
 				07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */,
 				074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */,
 				0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */,
-				07DDBF281AC7D12A0058E1CA /* LocationResultsTableViewController.swift in Sources */,
+				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,
 				07A1DBB51AABBE9800CABF89 /* EventEditCell.m in Sources */,
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,

@@ -25,6 +25,7 @@
 + (Event *)createEvent
 {
     Event *event = [[Event alloc] init];
+    event.location = [NSMutableDictionary dictionary];
     return event;
 }
 
@@ -82,15 +83,15 @@
     
     _event = [PFObject objectWithClassName:CLASS_EVENT_KEY];
     _event[EVENT_CREATOR_KEY] = [AppDelegate parseUser];
-    _event[EVENT_STARTDATE_KEY] = _timeframe.start;
-    _event[EVENT_ENDDATE_KEY] = _timeframe.end;
+    _event[EVENT_START_DATE_KEY] = _timeframe.start;
+    _event[EVENT_END_DATE_KEY] = _timeframe.end;
     _event[EVENT_TITLE_KEY] = _title;
     _event[EVENT_DESCRIPTION_KEY] = _eventDescription;
     
     if (_coverImage) {
         NSData *coverData = UIImagePNGRepresentation(_coverImage);
         PFFile *coverFile = [PFFile fileWithName:@"cover.png" data:coverData];
-        _event[EVENT_COVERIMAGE_KEY] = coverFile;
+        _event[EVENT_COVER_IMAGE_KEY] = coverFile;
     }
     
     [save addObject:_event];
@@ -156,6 +157,9 @@
     
     // Add invitee to creator's (user's) friends
     [[AppDelegate parseUser] addUniqueObject:person forKey:FRIENDS_KEY];
+    
+    // Add location
+    [[AppDelegate parseUser] addUniqueObject:_location forKey:EVENT_LOCATIONS_KEY];
     
     // Add person to local friends
     if (![AppDelegate user].friends) {

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Appuous. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <Parse/Parse.h>
 
@@ -18,7 +18,7 @@
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) Timeframe *timeframe;
 @property (nonatomic, strong) NSString *eventDescription;
-@property (nonatomic, strong) NSString *location;
+@property (nonatomic, strong) PFObject *location;
 @property (nonatomic, strong) NSSet *invitees;
 @property (nonatomic, strong) UIImage *coverImage;
 

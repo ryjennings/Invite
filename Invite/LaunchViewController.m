@@ -30,6 +30,7 @@
         [query whereKey:EMAIL_KEY equalTo:email];
         [query includeKey:EVENTS_KEY];
         [query includeKey:FRIENDS_KEY];
+        [query includeKey:LOCATIONS_KEY];
         [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             
             if (objects.count) {
