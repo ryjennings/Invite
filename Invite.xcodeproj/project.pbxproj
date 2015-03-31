@@ -35,6 +35,7 @@
 		0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0738451A1A96A6A200E2929A /* TimeframeCollectionCell.m */; };
 		074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074AA5921A9C353C009DC152 /* LaunchViewController.m */; };
 		074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074FF55B1A965924000483FF /* TimeframeViewController.m */; };
+		075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075249E51ACB397C00D279DA /* InviteTheme.swift */; };
 		0755CE491A8D22E500FF05B7 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755CE481A8D22E500FF05B7 /* User.m */; };
 		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
@@ -45,11 +46,14 @@
 		07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE501AAA2F17002B9962 /* EventViewController.m */; };
 		07B8EE551AAA326F002B9962 /* EventRSVPCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE541AAA326F002B9962 /* EventRSVPCell.m */; };
 		07B8EE581AAA5ADF002B9962 /* EventTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE571AAA5ADF002B9962 /* EventTextCell.m */; };
-		07D01A311A9A9B7F00860650 /* DashboardEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D01A301A9A9B7F00860650 /* DashboardEventCell.m */; };
+		07BC8E391ACB13EB0050C4E9 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */; };
+		07BC8E3C1ACB29CE0050C4E9 /* DashboardEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BC8E3B1ACB29CE0050C4E9 /* DashboardEventCell.swift */; };
 		07DDBF221AC7ACC60058E1CA /* LocationSavedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF211AC7ACC60058E1CA /* LocationSavedViewController.swift */; };
 		07DDBF241AC7B4090058E1CA /* LocationAnnotation.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07DDBF231AC7B4090058E1CA /* LocationAnnotation.xib */; };
 		07DDBF261AC7BEDA0058E1CA /* LocationNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF251AC7BEDA0058E1CA /* LocationNewViewController.swift */; };
 		07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */; };
+		07DDBF341ACB096B0058E1CA /* GooglePlacesAutocomplete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF301ACB096B0058E1CA /* GooglePlacesAutocomplete.swift */; };
+		07DDBF351ACB096B0058E1CA /* GooglePlacesAutocomplete.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07DDBF311ACB096B0058E1CA /* GooglePlacesAutocomplete.xib */; };
 		07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */; };
 /* End PBXBuildFile section */
 
@@ -103,6 +107,7 @@
 		074AA5921A9C353C009DC152 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		074FF55A1A965924000483FF /* TimeframeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeViewController.h; sourceTree = "<group>"; };
 		074FF55B1A965924000483FF /* TimeframeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeViewController.m; sourceTree = "<group>"; };
+		075249E51ACB397C00D279DA /* InviteTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteTheme.swift; sourceTree = "<group>"; };
 		0755CE471A8D22E500FF05B7 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		0755CE481A8D22E500FF05B7 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		075ED6261A994FEC0015F9E6 /* BusyDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusyDetails.h; sourceTree = "<group>"; };
@@ -123,14 +128,16 @@
 		07B8EE541AAA326F002B9962 /* EventRSVPCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventRSVPCell.m; sourceTree = "<group>"; };
 		07B8EE561AAA5ADF002B9962 /* EventTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventTextCell.h; sourceTree = "<group>"; };
 		07B8EE571AAA5ADF002B9962 /* EventTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventTextCell.m; sourceTree = "<group>"; };
+		07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
+		07BC8E3B1ACB29CE0050C4E9 /* DashboardEventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardEventCell.swift; sourceTree = "<group>"; };
 		07C2098C1A8C2159002B3961 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
-		07D01A2F1A9A9B7F00860650 /* DashboardEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashboardEventCell.h; sourceTree = "<group>"; };
-		07D01A301A9A9B7F00860650 /* DashboardEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashboardEventCell.m; sourceTree = "<group>"; };
 		07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Invite-Bridging-Header.h"; sourceTree = "<group>"; };
 		07DDBF211AC7ACC60058E1CA /* LocationSavedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationSavedViewController.swift; sourceTree = "<group>"; };
 		07DDBF231AC7B4090058E1CA /* LocationAnnotation.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationAnnotation.xib; sourceTree = "<group>"; };
 		07DDBF251AC7BEDA0058E1CA /* LocationNewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationNewViewController.swift; sourceTree = "<group>"; };
 		07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationResultsViewController.swift; sourceTree = "<group>"; };
+		07DDBF301ACB096B0058E1CA /* GooglePlacesAutocomplete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GooglePlacesAutocomplete.swift; sourceTree = "<group>"; };
+		07DDBF311ACB096B0058E1CA /* GooglePlacesAutocomplete.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GooglePlacesAutocomplete.xib; sourceTree = "<group>"; };
 		07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = "../../Downloads/parse-library-1/ParseUI.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -217,6 +224,9 @@
 				073273F51A892BFB007700B3 /* AppDelegate.m */,
 				0775B0731A93E6B000C15303 /* StringConstants.h */,
 				07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */,
+				075249E51ACB397C00D279DA /* InviteTheme.swift */,
+				07BC8E3A1ACB13EF0050C4E9 /* Views */,
+				07DDBF2E1ACB096B0058E1CA /* GooglePlacesAutocomplete */,
 				078924701AB369C5005EE7FB /* Launch */,
 				078924711AB369CE005EE7FB /* Login */,
 				07D01A321A9A9D5E00860650 /* Dashboard */,
@@ -318,13 +328,20 @@
 			name = Event;
 			sourceTree = "<group>";
 		};
+		07BC8E3A1ACB13EF0050C4E9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		07D01A321A9A9D5E00860650 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
 				071F694B1A8C143F009A8380 /* DashboardViewController.h */,
 				071F694C1A8C143F009A8380 /* DashboardViewController.m */,
-				07D01A2F1A9A9B7F00860650 /* DashboardEventCell.h */,
-				07D01A301A9A9B7F00860650 /* DashboardEventCell.m */,
+				07BC8E3B1ACB29CE0050C4E9 /* DashboardEventCell.swift */,
 			);
 			name = Dashboard;
 			sourceTree = "<group>";
@@ -351,6 +368,15 @@
 				073845171A969CFB00E2929A /* Timeframe.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		07DDBF2E1ACB096B0058E1CA /* GooglePlacesAutocomplete */ = {
+			isa = PBXGroup;
+			children = (
+				07DDBF301ACB096B0058E1CA /* GooglePlacesAutocomplete.swift */,
+				07DDBF311ACB096B0058E1CA /* GooglePlacesAutocomplete.xib */,
+			);
+			path = GooglePlacesAutocomplete;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -434,6 +460,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07DDBF351ACB096B0058E1CA /* GooglePlacesAutocomplete.xib in Resources */,
 				073273FF1A892BFB007700B3 /* Main.storyboard in Resources */,
 				071F694F1A8C1A3D009A8380 /* Localizable.strings in Resources */,
 				073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */,
@@ -456,17 +483,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07BC8E391ACB13EB0050C4E9 /* ProfileImageView.swift in Sources */,
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
 				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
-				07D01A311A9A9B7F00860650 /* DashboardEventCell.m in Sources */,
 				0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */,
 				07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */,
 				074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */,
 				0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */,
 				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,
+				07DDBF341ACB096B0058E1CA /* GooglePlacesAutocomplete.swift in Sources */,
 				07A1DBB51AABBE9800CABF89 /* EventEditCell.m in Sources */,
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
+				075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */,
 				073273F31A892BFB007700B3 /* main.m in Sources */,
 				0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */,
 				073273FC1A892BFB007700B3 /* LoginViewController.m in Sources */,
@@ -476,6 +505,7 @@
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
 				07DDBF261AC7BEDA0058E1CA /* LocationNewViewController.swift in Sources */,
 				07B8EE551AAA326F002B9962 /* EventRSVPCell.m in Sources */,
+				07BC8E3C1ACB29CE0050C4E9 /* DashboardEventCell.swift in Sources */,
 				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
 				07B8EE581AAA5ADF002B9962 /* EventTextCell.m in Sources */,
 			);
@@ -605,6 +635,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/rjennings/Downloads/parse-library-1",
@@ -614,11 +646,12 @@
 				INFOPLIST_FILE = Invite/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Invite/Invite-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -629,6 +662,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/rjennings/Downloads/parse-library-1",
@@ -638,10 +673,11 @@
 				INFOPLIST_FILE = Invite/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Invite/Invite-Bridging-Header.h";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

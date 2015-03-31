@@ -18,7 +18,7 @@
 
 #define kEventCellFont [UIFont systemFontOfSize:17]
 
-CGFloat const EventCoverHeight = 200.0;
+CGFloat const kEventCoverHeight = 200.0;
 
 typedef NS_ENUM(NSUInteger, EventMode) {
     EventModeEditing,
@@ -57,12 +57,15 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     for (unsigned i = 0; i < EventRowCount; i++) {
         [_textViewText addObject:@""];
     }
+    
+    NSMutableArray *mEvent = [NSMutableArray array];
 
     // Set mode, event data and cover
     if ([AppDelegate user].protoEvent) {
         Event *event = [AppDelegate user].protoEvent;
         _mode = EventModeEditing;
-        _eventData = [NSArray arrayWithObjects:
+        
+        mEvent = [NSMutableArray arrayWithObjects:
                       event.title ? event.title : @"Tap to add title",
                       [NSString stringWithFormat:@"%@ - %@", event.timeframe.start ? event.timeframe.start : [AppDelegate user].protoEvent.timeframe.start, event.timeframe.end ? event.timeframe.end : [AppDelegate user].protoEvent.timeframe.end],
                       event.eventDescription ? event.eventDescription : @"Tap to add description",
@@ -75,13 +78,24 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     } else {
         _event = [AppDelegate user].eventToDisplay;
         _mode = EventModeViewing;
-        _eventData = [NSArray arrayWithObjects:
-                      [_event objectForKey:EVENT_TITLE_KEY],
-                      [NSString stringWithFormat:@"%@ - %@", [_event objectForKey:EVENT_START_DATE_KEY], [_event objectForKey:EVENT_END_DATE_KEY]],
-                      [_event objectForKey:EVENT_DESCRIPTION_KEY],
-                      [_event objectForKey:EVENT_LOCATION_KEY],
-                      [_event objectForKey:EVENT_INVITEES_KEY],
-                      nil];
+        
+        NSString *title = [_event objectForKey:EVENT_TITLE_KEY];
+        NSString *timeframe = [NSString stringWithFormat:@"%@ - %@", [_event objectForKey:EVENT_START_DATE_KEY], [_event objectForKey:EVENT_END_DATE_KEY]];
+        NSString *description = [_event objectForKey:EVENT_DESCRIPTION_KEY];
+        PFObject *location = [_event objectForKey:EVENT_LOCATION_KEY];
+        NSArray *invitees = [_event objectForKey:EVENT_INVITEES_KEY];
+//        NSMutableString *persons = [[NSMutableString alloc] initWithString:[(PFObject *)invitees[0] objectForKey:EMAIL_KEY]];
+//        for (PFObject *invitee in invitees) {
+//            [persons appendFormat:@", %@", [invitee objectForKey:EMAIL_KEY]];
+//        }
+        
+        [mEvent addObject:title.length > 0 ? title : @"No title"];
+        [mEvent addObject:timeframe];
+        [mEvent addObject:description.length > 0 ? description : @"No description"];
+        [mEvent addObject:location ? location : @"No location"];
+        [mEvent addObject:@"Invitees"];
+        [mEvent addObject:@"RSVP"];
+
         if ([_event objectForKey:EVENT_COVER_IMAGE_KEY]) {
             PFImageView *coverImageView = [[PFImageView alloc] init];
             coverImageView.file = (PFFile *)[_event objectForKey:EVENT_COVER_IMAGE_KEY];
@@ -89,11 +103,14 @@ typedef NS_ENUM(NSUInteger, EventRow) {
                 [_eventCoverButton setImage:image forState:UIControlStateNormal];
             }];
         }
+        
+        _eventData = mEvent;
+        
         _tableView.tableFooterView = nil;
     }
     
     // Additional cover setup
-    _eventCoverView.frame = CGRectMake(0, 0, 0, EventCoverHeight);
+    _eventCoverView.frame = CGRectMake(0, 0, 0, kEventCoverHeight);
     [_eventCoverButton.imageView setContentMode:UIViewContentModeScaleAspectFill];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -124,7 +141,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     
     if (_mode == EventModeEditing && (indexPath.row == EventRowTitle || indexPath.row == EventRowDescription)) {
         
-        EventEditCell *cell = (EventEditCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_EDIT_CELL_IDENTIFIER];
+        EventEditCell *cell = (EventEditCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_EDIT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.delegate = self;
         cell.placeholderLabel.text = _eventData[indexPath.row];
         cell.placeholderLabel.hidden = cell.textView.text.length;

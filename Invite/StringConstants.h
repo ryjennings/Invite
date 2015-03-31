@@ -13,6 +13,9 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
     EventResponseNotGoing
 };
 
+#define kGroupCornerRadius 5.f
+#define kGroupMargin 10.f
+
 // Classes
 #define CLASS_PERSON_KEY @"Person"
 #define CLASS_EVENT_KEY @"Event"
@@ -21,7 +24,8 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 // Location keys
 #define LOCATION_ADDRESS_KEY @"address"
 #define LOCATION_NICKNAME_KEY @"nickname"
-#define LOCATION_COORDINATE_KEY @"coordinate"
+#define LOCATION_LONGITUDE_KEY @"longitude"
+#define LOCATION_LATITUDE_KEY @"latitude"
 
 // Event keys
 #define EVENT_TITLE_KEY @"title"
@@ -77,6 +81,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define EVENT_TEXT_CELL_IDENTIFIER @"EventTextCellIdentifier"
 #define EVENT_EDIT_CELL_IDENTIFIER @"EventEditCellIdentifier"
 #define LOCATION_SAVED_CELL_IDENTIFIER @"LocationSavedCellIdentifier"
+#define LOCATION_NEW_CELL_IDENTIFIER @"LocationNewCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

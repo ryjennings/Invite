@@ -45,4 +45,6 @@
 + (void)addLocationToProtoEvent:(PFObject *)location;
 + (NSArray *)locations;
 
++ (void)insetGroupedTableView:(UITableView *)tableView cell:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath;
+
 @end

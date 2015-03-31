@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-@objc public class LocationNewViewController: UIViewController, UISearchResultsUpdating, UISearchBarDelegate
+@objc public class LocationNewViewController: UIViewController, UISearchBarDelegate, GooglePlacesAutocompleteDelegate
 {
     @IBOutlet weak var searchBarView: UIView!
     @IBOutlet weak var nextButton: UIButton!
@@ -25,9 +25,9 @@ import MapKit
     {
         super.viewDidLoad()
         
-        var searchResultsController = storyboard?.instantiateViewControllerWithIdentifier("LocationResultsViewController") as LocationResultsViewController
-        searchController = UISearchController(searchResultsController: searchResultsController)
-        searchController.searchResultsUpdater = self
+        let gpaViewController = GooglePlacesAutocomplete(apiKey: "AIzaSyCscZK8r9gOJ9z0TMl7WbN6HH8JoeKyV5g", placeType: .Address)
+//        var searchResultsController = storyboard?.instantiateViewControllerWithIdentifier("LocationResultsViewController") as LocationResultsViewController
+        searchController = UISearchController(searchResultsController: gpaViewController)
         searchController.dimsBackgroundDuringPresentation = true
         // The search bar won't show up unless scopeButtonTitles is set.
         // The scope buttons won't show up unless two titles are set. 
@@ -45,11 +45,6 @@ import MapKit
     {
         searchController.searchBar.frame.size.width = searchBarView.bounds.size.width
         locationLabel.preferredMaxLayoutWidth = view.frame.size.width - 32
-    }
-    
-    public func updateSearchResultsForSearchController(searchController: UISearchController)
-    {
-
     }
     
     public override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
@@ -77,7 +72,8 @@ import MapKit
                 
                 // Set the coordinate and address for use later
                 self.location.setObject(searchBar.text, forKey: LOCATION_ADDRESS_KEY)
-                self.location.setObject("\(placemark.location.coordinate.longitude),\(placemark.location.coordinate.latitude)", forKey: LOCATION_COORDINATE_KEY)
+                self.location.setObject(placemark.location.coordinate.longitude, forKey: LOCATION_LONGITUDE_KEY)
+                self.location.setObject(placemark.location.coordinate.latitude, forKey: LOCATION_LATITUDE_KEY)
                 
                 // Update the UI
                 self.locationLabel.text = searchBar.text

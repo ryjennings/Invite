@@ -12,8 +12,6 @@
 #import "Event.h"
 #import "StringConstants.h"
 
-//_profileURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square&width=300&height=300", [object objectForKey:ID_KEY]];
-
 @implementation User
 
 + (instancetype)shared
