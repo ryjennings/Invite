@@ -87,6 +87,7 @@
     _event[EVENT_END_DATE_KEY] = _timeframe.end;
     _event[EVENT_TITLE_KEY] = _title;
     _event[EVENT_DESCRIPTION_KEY] = _eventDescription;
+    _event[EVENT_LOCATION_KEY] = _location;
     
     if (_coverImage) {
         NSData *coverData = UIImagePNGRepresentation(_coverImage);

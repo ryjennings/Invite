@@ -30,7 +30,7 @@
     [_addNewEventButton setTitle:NSLocalizedString(@"dashboard_button_addnewevent", nil) forState:UIControlStateNormal];
     [_settingsButton setTitle:NSLocalizedString(@"navigation_button_settings", nil)];
     
-//    _collectionView.backgroundColor = [UIColor clearColor];
+    [_collectionView registerClass:[DashboardEventCell class] forCellWithReuseIdentifier:DASHBOARD_EVENT_CELL_IDENTIFIER];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseLoaded:) name:PARSE_LOADED_NOTIFICATION object:nil];
@@ -71,7 +71,7 @@
 {
     DashboardEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:DASHBOARD_EVENT_CELL_IDENTIFIER forIndexPath:indexPath];
     PFObject *event = [AppDelegate user].events[indexPath.item];
-//    cell.label.text = [NSString stringWithFormat:@"Title: %@\nDescription: %@\nStart: %@\nEnd: %@\nInvitees: %@", event[EVENT_TITLE_KEY], event[EVENT_DESCRIPTION_KEY], event[EVENT_START_DATE_KEY], event[EVENT_END_DATE_KEY], event[EVENT_RSVP_KEY]];
+    cell.event = event;
     return cell;
 }
 

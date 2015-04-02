@@ -17,5 +17,11 @@ import UIKit
     
     class func themeNavigationBar()
     {
+        UINavigationBar.appearance().barTintColor = UIColor(red: 0.13, green: 0.84, blue: 0.47, alpha: 1.0)
+        UINavigationBar.appearance().translucent = false
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(16)]
+        
+        UIBarButtonItem.appearance().tintColor = UIColor.whiteColor()
+        UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: UIFont.systemFontOfSize(14)], forState: .Normal)
     }
 }

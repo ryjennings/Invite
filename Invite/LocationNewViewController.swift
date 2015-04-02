@@ -29,6 +29,7 @@ import MapKit
 //        var searchResultsController = storyboard?.instantiateViewControllerWithIdentifier("LocationResultsViewController") as LocationResultsViewController
         searchController = UISearchController(searchResultsController: gpaViewController)
         searchController.dimsBackgroundDuringPresentation = true
+        searchController.hidesNavigationBarDuringPresentation = false
         // The search bar won't show up unless scopeButtonTitles is set.
         // The scope buttons won't show up unless two titles are set. 
         // So since we don't want any scope buttons, only set one title.

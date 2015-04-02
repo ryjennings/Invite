@@ -86,34 +86,7 @@
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DashboardEventCellIdentifier" id="krm-qC-fce" customClass="DashboardEventCell">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="470"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Z2b-Q8-WQf">
-                                                    <rect key="frame" x="25" y="25" width="550" height="420"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                </view>
-                                            </subviews>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </view>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="Z2b-Q8-WQf" secondAttribute="trailing" constant="25" id="P07-qA-RVM"/>
-                                            <constraint firstItem="Z2b-Q8-WQf" firstAttribute="top" secondItem="krm-qC-fce" secondAttribute="top" constant="25" id="PpL-zE-gng"/>
-                                            <constraint firstItem="Z2b-Q8-WQf" firstAttribute="leading" secondItem="krm-qC-fce" secondAttribute="leading" constant="25" id="dDs-43-h9c"/>
-                                            <constraint firstAttribute="bottom" secondItem="Z2b-Q8-WQf" secondAttribute="bottom" constant="25" id="ylV-ol-lfl"/>
-                                        </constraints>
-                                        <size key="customSize" width="600" height="470"/>
-                                        <connections>
-                                            <outlet property="eventView" destination="Z2b-Q8-WQf" id="z3I-n4-CVV"/>
-                                        </connections>
-                                    </collectionViewCell>
-                                </cells>
+                                <cells/>
                                 <connections>
                                     <outlet property="dataSource" destination="Tg8-E4-TKE" id="Xxs-7J-TzY"/>
                                     <outlet property="delegate" destination="Tg8-E4-TKE" id="avw-hC-lyw"/>
@@ -403,20 +376,11 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" red="0.89411764709999997" green="0.92549019610000005" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <view key="tableFooterView" contentMode="scaleToFill" id="B2V-mn-Y6L">
-                                    <rect key="frame" x="0.0" y="130" width="600" height="100"/>
+                                    <rect key="frame" x="0.0" y="211.5" width="600" height="76"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wEA-Tx-gYS">
-                                            <rect key="frame" x="8" y="8" width="584" height="30"/>
-                                            <color key="backgroundColor" red="0.95686274510000002" green="0.95294117649999999" blue="0.92549019610000005" alpha="1" colorSpace="calibratedRGB"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <textInputTraits key="textInputTraits"/>
-                                        </textField>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kdF-tv-MTt">
-                                            <rect key="frame" x="0.0" y="46" width="600" height="54"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="54" id="Pec-Pt-DiU"/>
-                                            </constraints>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="76"/>
                                             <state key="normal" title="Next">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
@@ -425,14 +389,12 @@
                                             </connections>
                                         </button>
                                     </subviews>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
-                                        <constraint firstItem="wEA-Tx-gYS" firstAttribute="top" secondItem="B2V-mn-Y6L" secondAttribute="topMargin" id="GFZ-UO-gDu"/>
-                                        <constraint firstItem="wEA-Tx-gYS" firstAttribute="trailing" secondItem="B2V-mn-Y6L" secondAttribute="trailingMargin" id="JVq-97-Qr2"/>
-                                        <constraint firstItem="wEA-Tx-gYS" firstAttribute="leading" secondItem="B2V-mn-Y6L" secondAttribute="leadingMargin" id="Wb5-Qt-lfn"/>
-                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="centerX" secondItem="wEA-Tx-gYS" secondAttribute="centerX" id="h8v-Tf-X6y"/>
-                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="top" secondItem="wEA-Tx-gYS" secondAttribute="bottom" constant="8" symbolic="YES" id="oZ9-Bx-dC7"/>
-                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="leading" secondItem="B2V-mn-Y6L" secondAttribute="leading" id="zro-Gt-1Zw"/>
+                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="top" secondItem="B2V-mn-Y6L" secondAttribute="top" id="0jQ-lt-8rN"/>
+                                        <constraint firstAttribute="bottom" secondItem="kdF-tv-MTt" secondAttribute="bottom" id="a3Y-Fo-nwc"/>
+                                        <constraint firstItem="kdF-tv-MTt" firstAttribute="leading" secondItem="B2V-mn-Y6L" secondAttribute="leading" id="bqV-mW-yJq"/>
+                                        <constraint firstAttribute="trailing" secondItem="kdF-tv-MTt" secondAttribute="trailing" id="hzC-02-zdm"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
@@ -482,7 +444,7 @@
                                             <outlet property="textView" destination="man-eH-Fo9" id="Oca-ME-OaQ"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="InviteeCellIdentifier" textLabel="TSx-ux-NhQ" style="IBUITableViewCellStyleDefault" id="VSi-Eb-6NJ">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="InviteeCellIdentifier" textLabel="TSx-ux-NhQ" style="IBUITableViewCellStyleDefault" id="VSi-Eb-6NJ">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VSi-Eb-6NJ" id="I6j-dx-FG6">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -519,7 +481,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="emailTextField" destination="wEA-Tx-gYS" id="D9J-WB-XkV"/>
                         <outlet property="tableView" destination="4Vz-FN-Qbq" id="BZP-Io-ffp"/>
                     </connections>
                 </viewController>
@@ -816,7 +777,7 @@
                         <viewControllerLayoutGuide type="bottom" id="tQB-AK-Wfz"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="aQR-ws-peF">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="d4q-h7-Zux">
@@ -979,6 +940,6 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="B3D-i4-VCl"/>
-        <segue reference="bjE-Bf-f1J"/>
+        <segue reference="vLu-DP-yd3"/>
     </inferredMetricsTieBreakers>
 </document>

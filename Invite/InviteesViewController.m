@@ -15,6 +15,7 @@
 #import "StringConstants.h"
 
 #define kEventCellFont [UIFont systemFontOfSize:17]
+#define kEventNoPreviousFriendsFont [UIFont systemFontOfSize:14]
 
 typedef NS_ENUM(NSUInteger, InviteesSection) {
     InviteesSectionFriends,
@@ -24,10 +25,10 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
 @interface InviteesViewController () <UITableViewDataSource, UITableViewDelegate, EventEditCellDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
-@property (nonatomic, weak) IBOutlet UITextField *emailTextField;
 @property (nonatomic, strong) NSArray *friends;
 @property (nonatomic, strong) NSMutableSet *invitees;
-@property (nonatomic, strong) NSMutableArray *textViewText;
+@property (nonatomic, strong) NSString *textViewText;
+@property (nonatomic, assign) BOOL noPreviousFriends;
 @end
 
 @implementation InviteesViewController
@@ -36,12 +37,43 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 {
     [super viewDidLoad];
     
+    _textViewText = @"";
+    
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
 
     _invitees = [NSMutableSet set];
     _friends = [AppDelegate user].friends;
+    _noPreviousFriends = !_friends.count;
     
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.tableHeaderView = [self tableHeaderView];
+
+    if (_noPreviousFriends) {
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (UIView *)tableHeaderView
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 100)];
+    view.backgroundColor = [UIColor clearColor];
+    
+    UILabel *label = [[UILabel alloc] init];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor inviteTitleColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.numberOfLines = 0;
+    label.font = [UIFont systemFontOfSize:18];
+    label.text = @"Who would you like to\ninvite to this event?";
+    [view addSubview:label];
+    
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[label]-|" options:0 metrics:nil views:@{@"label": label}]];
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[label]|" options:0 metrics:nil views:@{@"label": label}]];
+    
+    return view;
 }
 
 - (void)didReceiveMemoryWarning
@@ -61,15 +93,16 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 {
     switch (section) {
         case InviteesSectionFriends:
-            return _friends.count;
+            return _noPreviousFriends ? 1 : _friends.count;
         default:
             return 1;
     }
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
 {
-    [AppDelegate insetGroupedTableView:tableView cell:cell indexPath:indexPath];
+    UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
+    headerView.textLabel.textColor = [UIColor inviteTitleColor];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -77,26 +110,42 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     if (indexPath.section == InviteesSectionFriends) {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:INVITEE_CELL_IDENTIFIER forIndexPath:indexPath];
         
-        PFObject *friend = (PFObject *)_friends[indexPath.row];
-
-        if ([friend objectForKey:FULL_NAME_KEY]) {
+        if (_noPreviousFriends) {
         
-            cell.textLabel.text = [friend objectForKey:FULL_NAME_KEY];
-            
+            cell.textLabel.text = NSLocalizedString(@"invitees_nopreviousfriends", nil);
+                cell.textLabel.numberOfLines = 0;
+                cell.textLabel.font = [UIFont systemFontOfSize:15];
+            cell.backgroundColor = [UIColor clearColor];
+            cell.contentView.backgroundColor = [UIColor clearColor];
+            cell.textLabel.textColor = [UIColor inviteTitleColor];
+        
         } else {
+        
+            PFObject *friend = (PFObject *)_friends[indexPath.row];
             
-            cell.textLabel.text = [friend objectForKey:EMAIL_KEY];
+            cell.textLabel.textColor = [UIColor inviteBodyColor];
 
+            if ([friend objectForKey:FULL_NAME_KEY]) {
+            
+                cell.textLabel.text = [friend objectForKey:FULL_NAME_KEY];
+                
+            } else {
+                
+                cell.textLabel.text = [friend objectForKey:EMAIL_KEY];
+
+            }
+        
         }
         
         return cell;
     } else {
         EventEditCell *cell = (EventEditCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_EDIT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.delegate = self;
-        cell.placeholderLabel.text = @"Email";
+        cell.placeholderLabel.text = @"Enter your friends' email addresses";
         cell.placeholderLabel.hidden = cell.textView.text.length;
+        cell.placeholderLabel.textColor = [UIColor colorWithWhite:0.9 alpha:1.0];
         cell.textView.tag = indexPath.row;
-        cell.textView.text = _textViewText[indexPath.row];
+        cell.textView.text = _textViewText;
         cell.textView.font = kEventCellFont;
         cell.textView.textContainer.lineFragmentPadding = 0;
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0);
@@ -109,9 +158,19 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 {
     switch (section) {
         case InviteesSectionFriends:
-            return @"Invite Friends";
+            return @"Previously Invited Friends";
         default:
-            return @"Email Addresses";
+            return @"New Friends";
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+    switch (section) {
+        case InviteesSectionEmail:
+            return @"Enter a list of email addresses. Separate multiple email addresses with a comma. Ex: xxx@inviteapp.com, yyy@inviteapp.com";
+        default:
+            return nil;
     }
 }
 
@@ -130,6 +189,28 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat textViewWidth = self.view.frame.size.width - 30;
+    if (indexPath.section == InviteesSectionFriends) {
+        if (_noPreviousFriends) {
+            CGRect frame = [NSLocalizedString(@"invitees_nopreviousfriends", nil) boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
+                                                       options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                                    attributes:@{NSFontAttributeName: kEventNoPreviousFriendsFont}
+                                                       context:nil];
+            return frame.size.height + 25;
+        } else {
+            return 44;
+        }
+    } else {
+        CGRect frame = [_textViewText boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
+                                          options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                       attributes:@{NSFontAttributeName: kEventCellFont}
+                                          context:nil];
+        return frame.size.height + 25;
+    }
+}
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -138,8 +219,8 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         
         // Add email addresses to invitees
         
-        if (_emailTextField.text.length) {
-            NSArray *components = [_emailTextField.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (_textViewText.length) {
+            NSArray *components = [_textViewText componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             NSString *string = [components componentsJoinedByString:@""];
             NSArray *emailAddresses = [string componentsSeparatedByString:@","];
             if (emailAddresses.count) {
@@ -164,6 +245,36 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 {
     [AppDelegate user].protoEvent = nil;
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Notifications
+
+- (void)keyboardWillShow:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    CGSize size = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, size.height, 0.0);
+    self.tableView.contentInset = contentInsets;
+    self.tableView.scrollIndicatorInsets = contentInsets;
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification
+{
+    [UIView animateWithDuration:0.35 animations:^{
+        UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, 0.0, 0.0);
+        self.tableView.contentInset = contentInsets;
+        self.tableView.scrollIndicatorInsets = contentInsets;
+    } completion:nil];
+}
+
+#pragma mark - EventEditCellDelegate
+
+- (void)eventEditCell:(EventEditCell *)cell textViewDidChange:(UITextView *)textView
+{
+    _textViewText = textView.text;
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
 }
 
 @end

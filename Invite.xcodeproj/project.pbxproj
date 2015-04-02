@@ -55,6 +55,7 @@
 		07DDBF341ACB096B0058E1CA /* GooglePlacesAutocomplete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF301ACB096B0058E1CA /* GooglePlacesAutocomplete.swift */; };
 		07DDBF351ACB096B0058E1CA /* GooglePlacesAutocomplete.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07DDBF311ACB096B0058E1CA /* GooglePlacesAutocomplete.xib */; };
 		07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */; };
+		07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,6 +140,7 @@
 		07DDBF301ACB096B0058E1CA /* GooglePlacesAutocomplete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GooglePlacesAutocomplete.swift; sourceTree = "<group>"; };
 		07DDBF311ACB096B0058E1CA /* GooglePlacesAutocomplete.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GooglePlacesAutocomplete.xib; sourceTree = "<group>"; };
 		07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = "../../Downloads/parse-library-1/ParseUI.framework"; sourceTree = "<group>"; };
+		07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Invite.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +227,7 @@
 				0775B0731A93E6B000C15303 /* StringConstants.h */,
 				07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */,
 				075249E51ACB397C00D279DA /* InviteTheme.swift */,
+				07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */,
 				07BC8E3A1ACB13EF0050C4E9 /* Views */,
 				07DDBF2E1ACB096B0058E1CA /* GooglePlacesAutocomplete */,
 				078924701AB369C5005EE7FB /* Launch */,
@@ -495,6 +498,7 @@
 				07A1DBB51AABBE9800CABF89 /* EventEditCell.m in Sources */,
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
+				07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */,
 				075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */,
 				073273F31A892BFB007700B3 /* main.m in Sources */,
 				0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */,

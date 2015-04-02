@@ -19,6 +19,7 @@ enum LocationSavedSection: Int {
 {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapView: MKMapView!
+    var location: PFObject!
     
     public override func viewDidLoad()
     {
@@ -64,13 +65,20 @@ enum LocationSavedSection: Int {
         if (indexPath.section == LocationSavedSection.NewLocation.rawValue) {
             performSegueWithIdentifier(SEGUE_TO_NEW_LOCATION, sender: self)
         } else {
-            let location = AppDelegate.locations()[indexPath.row] as PFObject
+            location = AppDelegate.locations()[indexPath.row] as PFObject
             let longitude = location.objectForKey(LOCATION_LONGITUDE_KEY) as? Double
             let latitude = location.objectForKey(LOCATION_LATITUDE_KEY) as? Double
             let coordinate = CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!)
             let annotation = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
             mapView.addAnnotation(annotation)
             mapView.showAnnotations([annotation], animated: true)
+        }
+    }
+
+    public override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    {
+        if (segue.identifier == "SegueToEvent") {
+            AppDelegate.addLocationToProtoEvent(location)
         }
     }
 }
