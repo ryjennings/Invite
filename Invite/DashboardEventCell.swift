@@ -38,6 +38,7 @@ import ParseUI
             prepareConstraints()
         }
         
+        self.eventImageView.image = nil
         if ((event.objectForKey(EVENT_COVER_IMAGE_KEY)) != nil) {
             
             // Setup image view
@@ -89,42 +90,7 @@ import ParseUI
         labelString.appendAttributedString(NSAttributedString(string: t, attributes: [NSFontAttributeName: eventTitleFont, NSForegroundColorAttributeName: UIColor.lightGrayColor()]))
         labelString.appendAttributedString(NSAttributedString(string: "\n", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(10)]))
         
-        let calendar = NSCalendar.currentCalendar()
-        let startDate = event.objectForKey(EVENT_START_DATE_KEY) as NSDate
-        let endDate = event.objectForKey(EVENT_END_DATE_KEY) as NSDate
-        let startComponents = calendar.components(
-            NSCalendarUnit.YearCalendarUnit |
-                NSCalendarUnit.MonthCalendarUnit |
-                NSCalendarUnit.DayCalendarUnit |
-                NSCalendarUnit.HourCalendarUnit |
-                NSCalendarUnit.MinuteCalendarUnit |
-                NSCalendarUnit.SecondCalendarUnit
-            , fromDate: startDate)
-        let endComponents = calendar.components(
-            NSCalendarUnit.YearCalendarUnit |
-                NSCalendarUnit.MonthCalendarUnit |
-                NSCalendarUnit.DayCalendarUnit |
-                NSCalendarUnit.HourCalendarUnit |
-                NSCalendarUnit.MinuteCalendarUnit |
-                NSCalendarUnit.SecondCalendarUnit
-            , fromDate: endDate)
-        var dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = .MediumStyle
-        dateFormatter.timeStyle = .ShortStyle
-        labelString.appendAttributedString(NSAttributedString(string: dateFormatter.stringFromDate(startDate), attributes: [NSFontAttributeName: eventTimeframeFont, NSForegroundColorAttributeName: UIColor.darkGrayColor()]))
-        if (startComponents.day == endComponents.day &&
-            startComponents.month == endComponents.month &&
-            startComponents.year == endComponents.year) {
-                dateFormatter.dateStyle = .NoStyle
-        }
-        if (!(startComponents.day == endComponents.day &&
-            startComponents.month == endComponents.month &&
-            startComponents.year == endComponents.year &&
-            startComponents.hour == endComponents.hour &&
-            startComponents.minute == endComponents.minute &&
-            startComponents.second == endComponents.second)) {
-                labelString.appendAttributedString(NSAttributedString(string: NSString(format: " - %@", dateFormatter.stringFromDate(startDate)), attributes: [NSFontAttributeName: eventTimeframeFont, NSForegroundColorAttributeName: UIColor.darkGrayColor()]))
-        }
+        labelString.appendAttributedString(NSAttributedString(string: AppDelegate.presentationTimeframeFromStartDate(event.objectForKey(EVENT_START_DATE_KEY) as NSDate, endDate: event.objectForKey(EVENT_END_DATE_KEY) as NSDate), attributes: [NSFontAttributeName: eventTimeframeFont, NSForegroundColorAttributeName: UIColor.darkGrayColor()]))
         labelString.appendAttributedString(NSAttributedString(string: "\n\n", attributes: [NSFontAttributeName: eventNewlineFont]))
         
         var d = ""

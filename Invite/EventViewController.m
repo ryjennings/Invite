@@ -13,6 +13,7 @@
 #import "EventEditCell.h"
 #import "EventRSVPCell.h"
 #import "EventTextCell.h"
+#import "Invite-Swift.h"
 #import "StringConstants.h"
 #import "User.h"
 
@@ -65,12 +66,20 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         Event *event = [AppDelegate user].protoEvent;
         _mode = EventModeEditing;
         
+        NSMutableString *persons = [[NSMutableString alloc] initWithString:@"Friends invited:"];
+        for (PFObject *invitee in event.invitees) {
+            [persons appendFormat:@"\n%@", [invitee objectForKey:FULL_NAME_KEY] ? [invitee objectForKey:FULL_NAME_KEY] : [invitee objectForKey:EMAIL_KEY]];
+        }
+        for (NSString *email in event.emails) {
+            [persons appendFormat:@"\n%@", email];
+        }
+
         mEvent = [NSMutableArray arrayWithObjects:
                       event.title ? event.title : @"Tap to add title",
-                      [NSString stringWithFormat:@"%@ - %@", event.timeframe.start ? event.timeframe.start : [AppDelegate user].protoEvent.timeframe.start, event.timeframe.end ? event.timeframe.end : [AppDelegate user].protoEvent.timeframe.end],
+                      [AppDelegate presentationTimeframeFromStartDate:[AppDelegate user].protoEvent.timeframe.start endDate:[AppDelegate user].protoEvent.timeframe.end],
                       event.eventDescription ? event.eventDescription : @"Tap to add description",
                       @"Location to be listed here",
-                      event.invitees ? [event.invitees description] : @"Invitees to be listed here",
+                      persons,
                       nil];
         [_eventCoverButton setTitle:@"Tap to add event cover photo." forState:UIControlStateNormal];
         [_eventCoverButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -80,21 +89,21 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         _mode = EventModeViewing;
         
         NSString *title = [_event objectForKey:EVENT_TITLE_KEY];
-        NSString *timeframe = [NSString stringWithFormat:@"%@ - %@", [_event objectForKey:EVENT_START_DATE_KEY], [_event objectForKey:EVENT_END_DATE_KEY]];
         NSString *description = [_event objectForKey:EVENT_DESCRIPTION_KEY];
         PFObject *location = [_event objectForKey:EVENT_LOCATION_KEY];
         NSArray *invitees = [_event objectForKey:EVENT_INVITEES_KEY];
-//        NSMutableString *persons = [[NSMutableString alloc] initWithString:[(PFObject *)invitees[0] objectForKey:EMAIL_KEY]];
-//        for (PFObject *invitee in invitees) {
-//            [persons appendFormat:@", %@", [invitee objectForKey:EMAIL_KEY]];
-//        }
+
+        NSMutableString *persons = [[NSMutableString alloc] initWithString:@"Not yet responded:"];
+        for (PFObject *invitee in invitees) {
+            [persons appendFormat:@"\n%@", [invitee objectForKey:FULL_NAME_KEY] ? [invitee objectForKey:FULL_NAME_KEY] : [invitee objectForKey:EMAIL_KEY]];
+        }
         
         [mEvent addObject:title.length > 0 ? title : @"No title"];
-        [mEvent addObject:timeframe];
+        [mEvent addObject:[AppDelegate presentationTimeframeFromStartDate:[_event objectForKey:EVENT_START_DATE_KEY] endDate:[_event objectForKey:EVENT_END_DATE_KEY]]];
         [mEvent addObject:description.length > 0 ? description : @"No description"];
-        [mEvent addObject:location ? location : @"No location"];
-        [mEvent addObject:@"Invitees"];
-        [mEvent addObject:@"RSVP"];
+        [mEvent addObject:@"No location"];
+        [mEvent addObject:persons];
+        [mEvent addObject:@"You are the creator of this event"];
 
         if ([_event objectForKey:EVENT_COVER_IMAGE_KEY]) {
             PFImageView *coverImageView = [[PFImageView alloc] init];
@@ -104,13 +113,12 @@ typedef NS_ENUM(NSUInteger, EventRow) {
             }];
         }
         
-        _eventData = mEvent;
-        
-        _tableView.tableFooterView = nil;
+        _tableView.tableFooterView = [[UIView alloc] init];
     }
+
+    _eventData = mEvent;
     
     // Additional cover setup
-    _eventCoverView.frame = CGRectMake(0, 0, 0, kEventCoverHeight);
     [_eventCoverButton.imageView setContentMode:UIViewContentModeScaleAspectFill];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];

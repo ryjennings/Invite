@@ -19,13 +19,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Invite/DashboardEventCell.swift"
-            timestampString = "449699989.414756"
+            filePath = "Invite/Event.m"
+            timestampString = "449731231.714025"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "prepareCell()"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
+            landmarkName = "-eventCreatedWithResult:error:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -35,13 +35,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Invite/DashboardEventCell.swift"
-            timestampString = "449699989.414756"
+            filePath = "Invite/Event.m"
+            timestampString = "449731232.955722"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
-            landmarkName = "layoutSubviews()"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
+            landmarkName = "-eventCreatedWithResult:error:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -51,13 +51,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Invite/DashboardEventCell.swift"
-            timestampString = "449701340.833067"
+            filePath = "Invite/LocationSavedViewController.swift"
+            timestampString = "449731544.223426"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "prepareCell()"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
+            landmarkName = "prepareForSegue(_:sender:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

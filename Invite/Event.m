@@ -25,7 +25,6 @@
 + (Event *)createEvent
 {
     Event *event = [[Event alloc] init];
-    event.location = [NSMutableDictionary dictionary];
     return event;
 }
 

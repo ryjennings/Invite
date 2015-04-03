@@ -175,10 +175,10 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <view key="tableHeaderView" contentMode="scaleToFill" id="NvA-16-BIx">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                    <rect key="frame" x="0.0" y="64" width="600" height="200"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kNc-sP-jlA">
+                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kNc-sP-jlA">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                             <state key="normal">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -699,7 +699,7 @@
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
-                                                <segue destination="vUf-2g-qse" kind="show" id="bjE-Bf-f1J"/>
+                                                <segue destination="vUf-2g-qse" kind="show" identifier="SegueToEvent" id="bjE-Bf-f1J"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -940,6 +940,6 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="B3D-i4-VCl"/>
-        <segue reference="vLu-DP-yd3"/>
+        <segue reference="bjE-Bf-f1J"/>
     </inferredMetricsTieBreakers>
 </document>

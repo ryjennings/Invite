@@ -19,7 +19,7 @@ enum LocationSavedSection: Int {
 {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapView: MKMapView!
-    var location: PFObject!
+    var location = PFObject(className: CLASS_LOCATION_KEY)
     
     public override func viewDidLoad()
     {
