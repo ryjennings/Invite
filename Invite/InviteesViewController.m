@@ -38,6 +38,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     [super viewDidLoad];
     
     _textViewText = @"";
+    self.navigationItem.title = @"Invite Friends";
     
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
 
