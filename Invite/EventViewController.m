@@ -17,8 +17,6 @@
 #import "StringConstants.h"
 #import "User.h"
 
-#define kEventCellFont [UIFont systemFontOfSize:17]
-
 CGFloat const kEventCoverHeight = 200.0;
 
 typedef NS_ENUM(NSUInteger, EventMode) {
@@ -155,7 +153,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         cell.placeholderLabel.hidden = cell.textView.text.length;
         cell.textView.tag = indexPath.row;
         cell.textView.text = _textViewText[indexPath.row];
-        cell.textView.font = kEventCellFont;
+        cell.textView.font = [UIFont inviteTableLabelFont];
         cell.textView.textContainer.lineFragmentPadding = 0;
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -191,7 +189,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     CGFloat textViewWidth = self.view.frame.size.width - 30;
     CGRect frame = [text boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
                                       options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                   attributes:@{NSFontAttributeName: kEventCellFont}
+                                   attributes:@{NSFontAttributeName: [UIFont inviteTableLabelFont]}
                                       context:nil];
     return frame.size.height + 25;
 }

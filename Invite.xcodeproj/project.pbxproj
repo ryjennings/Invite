@@ -23,6 +23,26 @@
 		0724632B1A8BD41900820834 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0724632A1A8BD41900820834 /* libz.dylib */; };
 		0724632D1A8BD42900820834 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0724632C1A8BD42900820834 /* libsqlite3.dylib */; };
 		072463301A8BD61A00820834 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0724632F1A8BD61A00820834 /* FacebookSDK.framework */; };
+		0728365C1AD2F02000B158AC /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728364B1AD2F02000B158AC /* ProximaNova-Black.otf */; };
+		0728365D1AD2F02000B158AC /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728364C1AD2F02000B158AC /* ProximaNova-Bold.otf */; };
+		0728365E1AD2F02000B158AC /* ProximaNova-BoldIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728364D1AD2F02000B158AC /* ProximaNova-BoldIt.otf */; };
+		0728365F1AD2F02000B158AC /* ProximaNova-Extrabold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728364E1AD2F02000B158AC /* ProximaNova-Extrabold.otf */; };
+		072836601AD2F02000B158AC /* ProximaNova-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728364F1AD2F02000B158AC /* ProximaNova-Light.otf */; };
+		072836611AD2F02000B158AC /* ProximaNova-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836501AD2F02000B158AC /* ProximaNova-LightItalic.otf */; };
+		072836621AD2F02000B158AC /* ProximaNova-RegItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836511AD2F02000B158AC /* ProximaNova-RegItalic.otf */; };
+		072836631AD2F02000B158AC /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836521AD2F02000B158AC /* ProximaNova-Regular.otf */; };
+		072836641AD2F02000B158AC /* ProximaNova-RegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836531AD2F02000B158AC /* ProximaNova-RegularItalic.otf */; };
+		072836651AD2F02000B158AC /* ProximaNova-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836541AD2F02000B158AC /* ProximaNova-Semibold.otf */; };
+		072836661AD2F02000B158AC /* ProximaNova-SemiboldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836551AD2F02000B158AC /* ProximaNova-SemiboldItalic.otf */; };
+		072836671AD2F02000B158AC /* ProximaNovaCond-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836561AD2F02000B158AC /* ProximaNovaCond-Light.otf */; };
+		072836681AD2F02000B158AC /* ProximaNovaCond-LightIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836571AD2F02000B158AC /* ProximaNovaCond-LightIt.otf */; };
+		072836691AD2F02000B158AC /* ProximaNovaCond-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836581AD2F02000B158AC /* ProximaNovaCond-Regular.otf */; };
+		0728366A1AD2F02000B158AC /* ProximaNovaCond-RegularIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 072836591AD2F02000B158AC /* ProximaNovaCond-RegularIt.otf */; };
+		0728366B1AD2F02000B158AC /* ProximaNovaCond-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728365A1AD2F02000B158AC /* ProximaNovaCond-Semibold.otf */; };
+		0728366C1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728365B1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf */; };
+		0728366E1AD2F1FC00B158AC /* UIFont+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */; };
+		072836761AD315BF00B158AC /* UIView+Invite.m in Sources */ = {isa = PBXBuildFile; fileRef = 072836751AD315BF00B158AC /* UIView+Invite.m */; };
+		0728367B1AD43F5700B158AC /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0728367A1AD43F5700B158AC /* ProgressView.swift */; };
 		073273F31A892BFB007700B3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F21A892BFB007700B3 /* main.m */; };
 		073273F61A892BFB007700B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F51A892BFB007700B3 /* AppDelegate.m */; };
 		073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 073273F71A892BFB007700B3 /* Invite.xcdatamodeld */; };
@@ -86,6 +106,27 @@
 		0724632A1A8BD41900820834 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		0724632C1A8BD42900820834 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		0724632F1A8BD61A00820834 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
+		0728364B1AD2F02000B158AC /* ProximaNova-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Black.otf"; sourceTree = "<group>"; };
+		0728364C1AD2F02000B158AC /* ProximaNova-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Bold.otf"; sourceTree = "<group>"; };
+		0728364D1AD2F02000B158AC /* ProximaNova-BoldIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-BoldIt.otf"; sourceTree = "<group>"; };
+		0728364E1AD2F02000B158AC /* ProximaNova-Extrabold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Extrabold.otf"; sourceTree = "<group>"; };
+		0728364F1AD2F02000B158AC /* ProximaNova-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Light.otf"; sourceTree = "<group>"; };
+		072836501AD2F02000B158AC /* ProximaNova-LightItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-LightItalic.otf"; sourceTree = "<group>"; };
+		072836511AD2F02000B158AC /* ProximaNova-RegItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-RegItalic.otf"; sourceTree = "<group>"; };
+		072836521AD2F02000B158AC /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Regular.otf"; sourceTree = "<group>"; };
+		072836531AD2F02000B158AC /* ProximaNova-RegularItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-RegularItalic.otf"; sourceTree = "<group>"; };
+		072836541AD2F02000B158AC /* ProximaNova-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Semibold.otf"; sourceTree = "<group>"; };
+		072836551AD2F02000B158AC /* ProximaNova-SemiboldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-SemiboldItalic.otf"; sourceTree = "<group>"; };
+		072836561AD2F02000B158AC /* ProximaNovaCond-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-Light.otf"; sourceTree = "<group>"; };
+		072836571AD2F02000B158AC /* ProximaNovaCond-LightIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-LightIt.otf"; sourceTree = "<group>"; };
+		072836581AD2F02000B158AC /* ProximaNovaCond-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-Regular.otf"; sourceTree = "<group>"; };
+		072836591AD2F02000B158AC /* ProximaNovaCond-RegularIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-RegularIt.otf"; sourceTree = "<group>"; };
+		0728365A1AD2F02000B158AC /* ProximaNovaCond-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-Semibold.otf"; sourceTree = "<group>"; };
+		0728365B1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-SemiboldIt.otf"; sourceTree = "<group>"; };
+		0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Invite.swift"; sourceTree = "<group>"; };
+		072836741AD315BF00B158AC /* UIView+Invite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Invite.h"; sourceTree = "<group>"; };
+		072836751AD315BF00B158AC /* UIView+Invite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Invite.m"; sourceTree = "<group>"; };
+		0728367A1AD43F5700B158AC /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		073273ED1A892BFB007700B3 /* Invite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Invite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		073273F11A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		073273F21A892BFB007700B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -200,6 +241,41 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		0728364A1AD2F02000B158AC /* Proxima Nova Collection */ = {
+			isa = PBXGroup;
+			children = (
+				0728364B1AD2F02000B158AC /* ProximaNova-Black.otf */,
+				0728364C1AD2F02000B158AC /* ProximaNova-Bold.otf */,
+				0728364D1AD2F02000B158AC /* ProximaNova-BoldIt.otf */,
+				0728364E1AD2F02000B158AC /* ProximaNova-Extrabold.otf */,
+				0728364F1AD2F02000B158AC /* ProximaNova-Light.otf */,
+				072836501AD2F02000B158AC /* ProximaNova-LightItalic.otf */,
+				072836511AD2F02000B158AC /* ProximaNova-RegItalic.otf */,
+				072836521AD2F02000B158AC /* ProximaNova-Regular.otf */,
+				072836531AD2F02000B158AC /* ProximaNova-RegularItalic.otf */,
+				072836541AD2F02000B158AC /* ProximaNova-Semibold.otf */,
+				072836551AD2F02000B158AC /* ProximaNova-SemiboldItalic.otf */,
+				072836561AD2F02000B158AC /* ProximaNovaCond-Light.otf */,
+				072836571AD2F02000B158AC /* ProximaNovaCond-LightIt.otf */,
+				072836581AD2F02000B158AC /* ProximaNovaCond-Regular.otf */,
+				072836591AD2F02000B158AC /* ProximaNovaCond-RegularIt.otf */,
+				0728365A1AD2F02000B158AC /* ProximaNovaCond-Semibold.otf */,
+				0728365B1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf */,
+			);
+			path = "Proxima Nova Collection";
+			sourceTree = "<group>";
+		};
+		072836771AD3188700B158AC /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				072836741AD315BF00B158AC /* UIView+Invite.h */,
+				072836751AD315BF00B158AC /* UIView+Invite.m */,
+				07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */,
+				0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		073273E41A892BFB007700B3 = {
 			isa = PBXGroup;
 			children = (
@@ -228,7 +304,8 @@
 				0775B0731A93E6B000C15303 /* StringConstants.h */,
 				07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */,
 				075249E51ACB397C00D279DA /* InviteTheme.swift */,
-				07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */,
+				072836771AD3188700B158AC /* Categories */,
+				0728364A1AD2F02000B158AC /* Proxima Nova Collection */,
 				07BC8E3A1ACB13EF0050C4E9 /* Views */,
 				07DDBF2E1ACB096B0058E1CA /* GooglePlacesAutocomplete */,
 				078924701AB369C5005EE7FB /* Launch */,
@@ -335,6 +412,7 @@
 			isa = PBXGroup;
 			children = (
 				07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */,
+				0728367A1AD43F5700B158AC /* ProgressView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -463,10 +541,27 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0728366A1AD2F02000B158AC /* ProximaNovaCond-RegularIt.otf in Resources */,
 				07DDBF351ACB096B0058E1CA /* GooglePlacesAutocomplete.xib in Resources */,
+				072836611AD2F02000B158AC /* ProximaNova-LightItalic.otf in Resources */,
+				0728365F1AD2F02000B158AC /* ProximaNova-Extrabold.otf in Resources */,
 				073273FF1A892BFB007700B3 /* Main.storyboard in Resources */,
+				072836681AD2F02000B158AC /* ProximaNovaCond-LightIt.otf in Resources */,
+				0728365D1AD2F02000B158AC /* ProximaNova-Bold.otf in Resources */,
+				072836641AD2F02000B158AC /* ProximaNova-RegularItalic.otf in Resources */,
+				0728366B1AD2F02000B158AC /* ProximaNovaCond-Semibold.otf in Resources */,
+				0728365C1AD2F02000B158AC /* ProximaNova-Black.otf in Resources */,
+				072836651AD2F02000B158AC /* ProximaNova-Semibold.otf in Resources */,
+				072836601AD2F02000B158AC /* ProximaNova-Light.otf in Resources */,
+				072836691AD2F02000B158AC /* ProximaNovaCond-Regular.otf in Resources */,
+				0728365E1AD2F02000B158AC /* ProximaNova-BoldIt.otf in Resources */,
+				0728366C1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf in Resources */,
 				071F694F1A8C1A3D009A8380 /* Localizable.strings in Resources */,
+				072836661AD2F02000B158AC /* ProximaNova-SemiboldItalic.otf in Resources */,
+				072836621AD2F02000B158AC /* ProximaNova-RegItalic.otf in Resources */,
 				073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */,
+				072836631AD2F02000B158AC /* ProximaNova-Regular.otf in Resources */,
+				072836671AD2F02000B158AC /* ProximaNovaCond-Light.otf in Resources */,
 				073274011A892BFB007700B3 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -494,6 +589,7 @@
 				074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */,
 				0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */,
 				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,
+				0728366E1AD2F1FC00B158AC /* UIFont+Invite.swift in Sources */,
 				07DDBF341ACB096B0058E1CA /* GooglePlacesAutocomplete.swift in Sources */,
 				07A1DBB51AABBE9800CABF89 /* EventEditCell.m in Sources */,
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
@@ -501,11 +597,13 @@
 				07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */,
 				075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */,
 				073273F31A892BFB007700B3 /* main.m in Sources */,
+				0728367B1AD43F5700B158AC /* ProgressView.swift in Sources */,
 				0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */,
 				073273FC1A892BFB007700B3 /* LoginViewController.m in Sources */,
 				074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */,
 				073845181A969CFB00E2929A /* Timeframe.m in Sources */,
 				07DDBF221AC7ACC60058E1CA /* LocationSavedViewController.swift in Sources */,
+				072836761AD315BF00B158AC /* UIView+Invite.m in Sources */,
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
 				07DDBF261AC7BEDA0058E1CA /* LocationNewViewController.swift in Sources */,
 				07B8EE551AAA326F002B9962 /* EventRSVPCell.m in Sources */,
@@ -655,7 +753,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Invite/Invite-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -681,7 +779,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Invite/Invite-Bridging-Header.h";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

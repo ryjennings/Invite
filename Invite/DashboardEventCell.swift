@@ -28,7 +28,6 @@ import ParseUI
     var mapView: MKMapView!
     var label = UILabel()
     
-    let cornerRadius: CGFloat = 6
     var showMapView = false
     var prepared = false
     
@@ -111,12 +110,12 @@ import ParseUI
         
         // Event View
         eventView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        eventView.layer.cornerRadius = cornerRadius
+        eventView.layer.cornerRadius = CGFloat(kCornerRadius)
         eventView.clipsToBounds = true
         eventView.backgroundColor = UIColor.whiteColor()
         addSubview(eventView)
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-25-[eventView]-25-|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-25-[eventView]-25-|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-padding-[eventView]-padding-|", options: NSLayoutFormatOptions(0), metrics: ["padding": kDashboardPadding], views: views))
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-padding-[eventView]-padding-|", options: NSLayoutFormatOptions(0), metrics: ["padding": kDashboardPadding], views: views))
         
         // Event Image View
         eventImageView.setTranslatesAutoresizingMaskIntoConstraints(false)

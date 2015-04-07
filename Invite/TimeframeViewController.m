@@ -12,6 +12,7 @@
 #import "BusyDetails.h"
 #import "Event.h"
 #import "EventViewController.h"
+#import "Invite-Swift.h"
 #import "StringConstants.h"
 #import "Timeframe.h"
 #import "TimeframeCollectionCell.h"
@@ -30,6 +31,8 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 @property (nonatomic, weak) IBOutlet UICollectionView *monthsView;
 @property (nonatomic, weak) IBOutlet UICollectionView *daysView;
 @property (nonatomic, weak) IBOutlet UITableView *hoursView;
+@property (nonatomic, weak) IBOutlet UIView *headerView;
+@property (nonatomic, weak) IBOutlet UIButton *nextButton;
 
 @property (nonatomic, strong) Timeframe *timeframe;
 
@@ -67,6 +70,8 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     self.navigationController.interactivePopGestureRecognizer.delegate = self;
+    
+    self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:2 steps:5];
 
     NSDate *today = [NSDate date];
     NSDate *twoDaysAgo = [NSDate dateWithTimeIntervalSinceNow:-172800];
@@ -98,6 +103,12 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     _daysView.backgroundColor = [UIColor clearColor];
     _monthsView.backgroundColor = [UIColor clearColor];
     
+    [self configureHeaderView];
+    
+    _nextButton.layer.cornerRadius = kCornerRadius;
+    _nextButton.clipsToBounds = YES;
+    _nextButton.titleLabel.font = [UIFont inviteButtonTitleFont];
+
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat daysCellWidth = (screenRect.size.width - 4) / 5;
     CGFloat monthsCellWidth = (screenRect.size.width - 2) / 3;
@@ -116,6 +127,21 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)configureHeaderView
+{
+    UILabel *label = [[UILabel alloc] init];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor inviteQuestionColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.numberOfLines = 0;
+    label.font = [UIFont inviteQuestionFont];
+    label.text = @"When would you like the\nevent to start and end?";
+    [_headerView addSubview:label];
+    [_headerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[label]-15-|" options:0 metrics:nil views:@{@"label": label}]];
+    [_headerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-34-[label]" options:0 metrics:nil views:@{@"label": label}]];
 }
 
 #pragma mark - Helpers
@@ -197,6 +223,35 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 #pragma mark - UITableView
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
+    headerView.textLabel.textColor = [UIColor inviteTableHeaderColor];
+    headerView.textLabel.font = [UIFont inviteTableHeaderFont];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section
+{
+    UITableViewHeaderFooterView *footerView = (UITableViewHeaderFooterView *)view;
+    footerView.textLabel.font = [UIFont inviteTableFooterFont];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    switch (section) {
+        default:
+            return @"Select Time";
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+    switch (section) {
+        default:
+            return @"To have an event span multiple days, simply switch days, then select the end time.";
+    }
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
@@ -218,6 +273,8 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.backgroundColor = [UIColor whiteColor];
+    cell.textLabel.font = [UIFont inviteTableLabelFont];
+    cell.textLabel.textColor = [UIColor inviteTableLabelColor];
     
     bool (^withinHour)(id startEnd) = ^bool(Timeframe *startEnd) {
         NSDate *thisHour = [self dateFromDay:_selectedDay month:_selectedMonth year:_selectedYear hour:indexPath.row];
@@ -357,6 +414,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     TimeframeCollectionCell *cell = (TimeframeCollectionCell *)[collectionView dequeueReusableCellWithReuseIdentifier:TimeframeCollectionCellId forIndexPath:indexPath];
     
     cell.label.alpha = 1;
+    cell.label.textColor = [UIColor inviteDarkBlueColor];
     
     if ([collectionView isEqual:_monthsView]) {
         
@@ -369,6 +427,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         NSInteger month = [self monthForIndexPath:[NSIndexPath indexPathForItem:item inSection:0]];
         NSInteger year = [self yearForIndexPath:[NSIndexPath indexPathForItem:item inSection:0]];
         
+        cell.label.font = [UIFont inviteTimeframeMonthFont];
         cell.label.text = [NSString stringWithFormat:@"%@ %ld", [self month:month], (long)year];
         
         cell.day = 1;
@@ -379,13 +438,14 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
             cell.label.alpha = 0.1;
         } else if (_highlightMonthsCenterCell && indexPath.item == 1) {
             _highlightMonthsCenterCell = NO;
-            cell.label.textColor = [UIColor redColor];
+            cell.label.textColor = [UIColor inviteBlueColor];
         }
         
     } else {
         
         NSInteger day = [self dayForIndexPath:indexPath];
         
+        cell.label.font = [UIFont inviteTimeframeDayFont];
         cell.label.text = [NSString stringWithFormat:@"%lu", (unsigned long)day];
         
         cell.day = day;
@@ -396,7 +456,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
             cell.label.alpha = 0.1;
         } else if (_highlightDaysCenterCell && indexPath.item == 2) {
             _highlightDaysCenterCell = NO;
-            cell.label.textColor = [UIColor redColor];
+            cell.label.textColor = [UIColor inviteBlueColor];
         }
         
     }
@@ -429,9 +489,9 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
                 
             }
             
-            cell.label.textColor = [UIColor redColor];
+            cell.label.textColor = [UIColor inviteBlueColor];
         } else {
-            cell.label.textColor = [UIColor blackColor];
+            cell.label.textColor = [UIColor inviteDarkBlueColor];
         }
     }];
 }

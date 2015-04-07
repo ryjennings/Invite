@@ -14,8 +14,7 @@
 #import "Invite-Swift.h"
 #import "StringConstants.h"
 
-#define kEventCellFont [UIFont systemFontOfSize:17]
-#define kEventNoPreviousFriendsFont [UIFont systemFontOfSize:14]
+#define kNoPreviousFriendsFont [UIFont proximaNovaRegularFontOfSize:14]
 
 typedef NS_ENUM(NSUInteger, InviteesSection) {
     InviteesSectionFriends,
@@ -25,6 +24,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
 @interface InviteesViewController () <UITableViewDataSource, UITableViewDelegate, EventEditCellDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic, weak) IBOutlet UIButton *nextButton;
 @property (nonatomic, strong) NSArray *friends;
 @property (nonatomic, strong) NSMutableSet *invitees;
 @property (nonatomic, strong) NSString *textViewText;
@@ -38,14 +38,19 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     [super viewDidLoad];
     
     _textViewText = @"";
-    self.navigationItem.title = @"Invite Friends";
+    
+    self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:1 steps:5];
     
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-
+    
     _invitees = [NSMutableSet set];
     _friends = [AppDelegate user].friends;
     _noPreviousFriends = !_friends.count;
-    
+
+    _nextButton.layer.cornerRadius = kCornerRadius;
+    _nextButton.clipsToBounds = YES;
+    _nextButton.titleLabel.font = [UIFont inviteButtonTitleFont];
+
     _tableView.tableHeaderView = [self tableHeaderView];
 
     if (_noPreviousFriends) {
@@ -64,15 +69,15 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     UILabel *label = [[UILabel alloc] init];
     label.translatesAutoresizingMaskIntoConstraints = NO;
     label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor inviteTitleColor];
+    label.textColor = [UIColor inviteQuestionColor];
     label.textAlignment = NSTextAlignmentCenter;
     label.numberOfLines = 0;
-    label.font = [UIFont systemFontOfSize:18];
+    label.font = [UIFont inviteQuestionFont];
     label.text = @"Who would you like to\ninvite to this event?";
     [view addSubview:label];
     
-    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[label]-|" options:0 metrics:nil views:@{@"label": label}]];
-    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-12-[label]|" options:0 metrics:nil views:@{@"label": label}]];
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[label]-15-|" options:0 metrics:nil views:@{@"label": label}]];
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-34-[label]" options:0 metrics:nil views:@{@"label": label}]];
     
     return view;
 }
@@ -103,7 +108,14 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
-    headerView.textLabel.textColor = [UIColor inviteTitleColor];
+    headerView.textLabel.textColor = [UIColor inviteTableHeaderColor];
+    headerView.textLabel.font = [UIFont inviteTableHeaderFont];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section
+{
+    UITableViewHeaderFooterView *footerView = (UITableViewHeaderFooterView *)view;
+    footerView.textLabel.font = [UIFont inviteTableFooterFont];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -114,17 +126,18 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         if (_noPreviousFriends) {
         
             cell.textLabel.text = NSLocalizedString(@"invitees_nopreviousfriends", nil);
-                cell.textLabel.numberOfLines = 0;
-                cell.textLabel.font = [UIFont systemFontOfSize:15];
+            cell.textLabel.numberOfLines = 0;
+            cell.textLabel.font = kNoPreviousFriendsFont;
             cell.backgroundColor = [UIColor clearColor];
             cell.contentView.backgroundColor = [UIColor clearColor];
-            cell.textLabel.textColor = [UIColor inviteTitleColor];
+            cell.textLabel.textColor = [UIColor inviteQuestionColor];
         
         } else {
         
             PFObject *friend = (PFObject *)_friends[indexPath.row];
             
-            cell.textLabel.textColor = [UIColor inviteBodyColor];
+            cell.textLabel.textColor = [UIColor inviteTableLabelColor];
+            cell.textLabel.font = [UIFont inviteTableLabelFont];
 
             if ([friend objectForKey:FULL_NAME_KEY]) {
             
@@ -143,11 +156,12 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         EventEditCell *cell = (EventEditCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_EDIT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.delegate = self;
         cell.placeholderLabel.text = @"Enter your friends' email addresses";
+        cell.placeholderLabel.font = [UIFont inviteTableLabelFont];
         cell.placeholderLabel.hidden = cell.textView.text.length;
         cell.placeholderLabel.textColor = [UIColor colorWithWhite:0.9 alpha:1.0];
         cell.textView.tag = indexPath.row;
         cell.textView.text = _textViewText;
-        cell.textView.font = kEventCellFont;
+        cell.textView.font = [UIFont inviteTableLabelFont];
         cell.textView.textContainer.lineFragmentPadding = 0;
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -197,7 +211,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         if (_noPreviousFriends) {
             CGRect frame = [NSLocalizedString(@"invitees_nopreviousfriends", nil) boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
                                                        options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                                    attributes:@{NSFontAttributeName: kEventNoPreviousFriendsFont}
+                                                    attributes:@{NSFontAttributeName: kNoPreviousFriendsFont}
                                                        context:nil];
             return frame.size.height + 25;
         } else {
@@ -206,7 +220,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     } else {
         CGRect frame = [_textViewText boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
                                           options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                       attributes:@{NSFontAttributeName: kEventCellFont}
+                                       attributes:@{NSFontAttributeName: [UIFont inviteTableLabelFont]}
                                           context:nil];
         return frame.size.height + 25;
     }

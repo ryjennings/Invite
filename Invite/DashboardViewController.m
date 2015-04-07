@@ -16,9 +16,10 @@
 #import "Invite-Swift.h"
 
 @interface DashboardViewController ()
-@property (nonatomic, weak) IBOutlet UIButton *addNewEventButton;
+@property (nonatomic, weak) IBOutlet UIButton *createEventButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *settingsButton;
 @property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *createEventButtonLeadingConstraint;
 @end
 
 @implementation DashboardViewController
@@ -27,7 +28,12 @@
 {
     [super viewDidLoad];
     
-    [_addNewEventButton setTitle:NSLocalizedString(@"dashboard_button_addnewevent", nil) forState:UIControlStateNormal];
+    [_createEventButton setTitle:[NSLocalizedString(@"dashboard_button_addnewevent", nil) uppercaseString] forState:UIControlStateNormal];
+    _createEventButton.layer.cornerRadius = kCornerRadius;
+    _createEventButton.clipsToBounds = YES;
+    _createEventButton.titleLabel.font = [UIFont inviteButtonTitleFont];
+    _createEventButtonLeadingConstraint.constant = kDashboardPadding;
+    
     [_settingsButton setTitle:NSLocalizedString(@"navigation_button_settings", nil)];
     
     [_collectionView registerClass:[DashboardEventCell class] forCellWithReuseIdentifier:DASHBOARD_EVENT_CELL_IDENTIFIER];

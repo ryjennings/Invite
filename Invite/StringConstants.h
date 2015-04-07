@@ -13,8 +13,8 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
     EventResponseNotGoing
 };
 
-#define kGroupCornerRadius 5.f
-#define kGroupMargin 10.f
+#define kCornerRadius 6.f
+#define kDashboardPadding 25.f
 
 // Classes
 #define CLASS_PERSON_KEY @"Person"

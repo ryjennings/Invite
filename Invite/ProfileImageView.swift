@@ -20,7 +20,7 @@ public class ProfileImageView: UIImageView
         initialsLabel.text = "\(firstName[firstName.startIndex])\(lastName[lastName.startIndex])"
         initialsLabel.textColor = UIColor.lightGrayColor()
         initialsLabel.textAlignment = .Center
-        initialsLabel.font = UIFont.systemFontOfSize(30)
+        initialsLabel.font = UIFont.proximaNovaRegularFontOfSize(30)
         initialsLabel.minimumScaleFactor = 10/30 // minimum/maximum
         initialsLabel.adjustsFontSizeToFitWidth = true
         addSubview(initialsLabel)
