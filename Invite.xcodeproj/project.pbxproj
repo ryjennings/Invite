@@ -54,6 +54,7 @@
 		073845181A969CFB00E2929A /* Timeframe.m in Sources */ = {isa = PBXBuildFile; fileRef = 073845171A969CFB00E2929A /* Timeframe.m */; };
 		0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0738451A1A96A6A200E2929A /* TimeframeCollectionCell.m */; };
 		074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074AA5921A9C353C009DC152 /* LaunchViewController.m */; };
+		074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */; };
 		074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074FF55B1A965924000483FF /* TimeframeViewController.m */; };
 		075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075249E51ACB397C00D279DA /* InviteTheme.swift */; };
 		0755CE491A8D22E500FF05B7 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755CE481A8D22E500FF05B7 /* User.m */; };
@@ -147,6 +148,7 @@
 		0738451A1A96A6A200E2929A /* TimeframeCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeCollectionCell.m; sourceTree = "<group>"; };
 		074AA5911A9C353C009DC152 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
 		074AA5921A9C353C009DC152 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
+		074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframeHourCell.swift; sourceTree = "<group>"; };
 		074FF55A1A965924000483FF /* TimeframeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeViewController.h; sourceTree = "<group>"; };
 		074FF55B1A965924000483FF /* TimeframeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeViewController.m; sourceTree = "<group>"; };
 		075249E51ACB397C00D279DA /* InviteTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteTheme.swift; sourceTree = "<group>"; };
@@ -389,6 +391,7 @@
 				0738451A1A96A6A200E2929A /* TimeframeCollectionCell.m */,
 				07B65A321AA4D81700A6F1A2 /* TimeframeCollectionLayout.h */,
 				07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */,
+				074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */,
 			);
 			name = Timeframe;
 			sourceTree = "<group>";
@@ -610,6 +613,7 @@
 				07BC8E3C1ACB29CE0050C4E9 /* DashboardEventCell.swift in Sources */,
 				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
 				07B8EE581AAA5ADF002B9962 /* EventTextCell.m in Sources */,
+				074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -753,7 +757,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Invite/Invite-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -779,7 +783,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Invite/Invite-Bridging-Header.h";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

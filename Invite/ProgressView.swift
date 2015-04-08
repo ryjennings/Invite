@@ -72,7 +72,7 @@ import UIKit
         addConstraint(NSLayoutConstraint(item: currentStepView, attribute: .CenterX, relatedBy: .Equal, toItem: self, attribute: .CenterX, multiplier: 1, constant: (CGFloat(step) - 3) * stepWidth))
         addConstraint(NSLayoutConstraint(item: currentStepView, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: rect.size.width))
         addConstraint(NSLayoutConstraint(item: currentStepView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: rect.size.height))
-        currentStepView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.1, 0.1)
+        currentStepView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0, 0)
         
         AppDelegate.delay(0) {
             UIView.animateWithDuration(0.2, delay: 1, options: .CurveEaseInOut, animations: {

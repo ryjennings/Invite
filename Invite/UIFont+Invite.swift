@@ -162,6 +162,11 @@ extension UIFont
         return UIFont.proximaNovaSemiboldFontOfSize(20)
     }
     
+    public class func inviteTimeframeHourFont() -> UIFont
+    {
+        return UIFont.proximaNovaRegularFontOfSize(14)
+    }
+    
     public class func inviteTimeframeDayFont() -> UIFont
     {
         return UIFont.proximaNovaSemiboldFontOfSize(20)

@@ -248,7 +248,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 {
     switch (section) {
         default:
-            return @"To have an event span multiple days, simply switch days, then select the end time.";
+            return @"Note: To have an event span multiple days, simply switch days, then select the end time.";
     }
 }
 
@@ -264,17 +264,11 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSMutableString *labelText = [[NSMutableString alloc] init];
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:TIMEFRAME_HOUR_CELL_IDENTIFIER];
-    long hour = indexPath.row % 12;
-    if (hour == 0) hour = 12;
-    [labelText appendFormat:@"%ld", hour];
+    TimeframeHourCell *cell = (TimeframeHourCell *)[tableView dequeueReusableCellWithIdentifier:TIMEFRAME_HOUR_CELL_IDENTIFIER];
+
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.font = [UIFont inviteTableLabelFont];
-    cell.textLabel.textColor = [UIColor inviteTableLabelColor];
     
     bool (^withinHour)(id startEnd) = ^bool(Timeframe *startEnd) {
         NSDate *thisHour = [self dateFromDay:_selectedDay month:_selectedMonth year:_selectedYear hour:indexPath.row];
@@ -291,16 +285,36 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         return [busy.startBaseDate isEqualToDate:[self dateForSelectedComponents]] || [busy.endBaseDate isEqualToDate:[self dateForSelectedComponents]];
     }];
 
+    NSMutableArray *unavailablePersons = [[NSMutableArray alloc] init];
     for (BusyDetails *busyDetail in relavantBusyTimes) {
         [[AppDelegate user].protoEvent.invitees enumerateObjectsUsingBlock:^(PFObject *person, BOOL *stop) {
             if ([busyDetail.email isEqualToString:[person objectForKey:EMAIL_KEY]] && withinHour(busyDetail)) {
-                cell.backgroundColor = [UIColor lightGrayColor];
-                [labelText appendFormat:@" %@", busyDetail.email];
+                [unavailablePersons addObject:busyDetail.name];
             }
         }];
     }
+    
+    if (unavailablePersons.count) {
+        cell.label.text = @"Someone is unavailable.";
+        cell.label.textColor = [UIColor inviteTableLabelColor];
+        cell.circleColor = [UIColor inviteLightSlateColor];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    } else if ([AppDelegate user].protoEvent.invitees.count && unavailablePersons.count == [AppDelegate user].protoEvent.invitees.count) {
+        cell.label.text = @"All Invite guests are unavailable!";
+        cell.label.textColor = [UIColor inviteRedColor];
+        cell.circleColor = [UIColor redColor];
+    } else {
+        cell.label.text = @"Everyone is available.";
+        cell.label.textColor = [UIColor inviteGreenColor];
+        cell.circleColor = [UIColor inviteGreenColor];
+    }
 
-    cell.textLabel.text = labelText;
+    cell.label.font = [UIFont inviteTimeframeTableLabelFont];
+
+    long hour = indexPath.row % 12;
+    if (hour == 0) hour = 12;
+    cell.hourLabel.text = [NSString stringWithFormat:@"%ld", hour];
+    
     return cell;
 }
 
