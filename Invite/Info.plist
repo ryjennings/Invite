@@ -73,5 +73,7 @@
 		<string>ProximaNovaCond-Semibold.otf</string>
 		<string>ProximaNovaCond-SemiboldIt.otf</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Invite app</string>
 </dict>
 </plist>

@@ -400,11 +400,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 - (IBAction)next:(id)sender
 {
     [AppDelegate user].protoEvent.timeframe = _timeframe;
-    if ([AppDelegate user].locations && [AppDelegate user].locations.count) {
-        [self performSegueWithIdentifier:SEGUE_TO_SAVED_LOCATION sender:self];
-    } else {
-        [self performSegueWithIdentifier:SEGUE_TO_NEW_LOCATION sender:self];
-    }
+    [self performSegueWithIdentifier:SEGUE_TO_LOCATION sender:self];
 }
 
 #pragma mark - UICollectionView

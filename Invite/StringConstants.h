@@ -69,19 +69,17 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define SEGUE_TO_DASHBOARD @"SegueToDashboard"
 #define SEGUE_TO_INVITEES @"SegueToInvitees"
 #define SEGUE_TO_TIMEFRAME @"SegueToTimeframe"
-#define SEGUE_TO_SAVED_LOCATION @"SegueToSavedLocation"
-#define SEGUE_TO_NEW_LOCATION @"SegueToNewLocation"
+#define SEGUE_TO_LOCATION @"SegueToLocation"
 #define SEGUE_TO_EVENT @"SegueToEvent"
 
 // Table cell identifiers
-#define INVITEE_CELL_IDENTIFIER @"InviteeCellIdentifier"
+#define MAP_CELL_IDENTIFIER @"MapCellIdentifier"
+#define BASIC_CELL_IDENTIFIER @"BasicCellIdentifier"
+#define INPUT_CELL_IDENTIFIER @"InputCellIdentifier"
+#define RADIO_CELL_IDENTIFIER @"RadioCellIdentifier"
+#define DASHBOARD_CELL_IDENTIFIER @"DashboardCellIdentifier"
+
 #define TIMEFRAME_HOUR_CELL_IDENTIFIER @"TimeframeHourCellIdentifier"
-#define DASHBOARD_EVENT_CELL_IDENTIFIER @"DashboardEventCellIdentifier"
-#define EVENT_RSVP_CELL_IDENTIFIER @"EventRSVPCellIdentifier"
-#define EVENT_TEXT_CELL_IDENTIFIER @"EventTextCellIdentifier"
-#define EVENT_EDIT_CELL_IDENTIFIER @"EventEditCellIdentifier"
-#define LOCATION_SAVED_CELL_IDENTIFIER @"LocationSavedCellIdentifier"
-#define LOCATION_NEW_CELL_IDENTIFIER @"LocationNewCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

@@ -16,20 +16,20 @@ extension AppDelegate
         var presentationString = NSMutableString()
         let calendar = NSCalendar.currentCalendar()
         let startComponents = calendar.components(
-            NSCalendarUnit.YearCalendarUnit |
-                NSCalendarUnit.MonthCalendarUnit |
-                NSCalendarUnit.DayCalendarUnit |
-                NSCalendarUnit.HourCalendarUnit |
-                NSCalendarUnit.MinuteCalendarUnit |
-                NSCalendarUnit.SecondCalendarUnit
+            NSCalendarUnit.CalendarUnitYear |
+                NSCalendarUnit.CalendarUnitMonth |
+                NSCalendarUnit.CalendarUnitDay |
+                NSCalendarUnit.CalendarUnitHour |
+                NSCalendarUnit.CalendarUnitMinute |
+                NSCalendarUnit.CalendarUnitSecond
             , fromDate: startDate)
         let endComponents = calendar.components(
-            NSCalendarUnit.YearCalendarUnit |
-                NSCalendarUnit.MonthCalendarUnit |
-                NSCalendarUnit.DayCalendarUnit |
-                NSCalendarUnit.HourCalendarUnit |
-                NSCalendarUnit.MinuteCalendarUnit |
-                NSCalendarUnit.SecondCalendarUnit
+            NSCalendarUnit.CalendarUnitYear |
+                NSCalendarUnit.CalendarUnitMonth |
+                NSCalendarUnit.CalendarUnitDay |
+                NSCalendarUnit.CalendarUnitHour |
+                NSCalendarUnit.CalendarUnitMinute |
+                NSCalendarUnit.CalendarUnitSecond
             , fromDate: endDate)
         var dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
@@ -46,7 +46,7 @@ extension AppDelegate
             startComponents.hour == endComponents.hour &&
             startComponents.minute == endComponents.minute &&
             startComponents.second == endComponents.second)) {
-                presentationString.appendString(NSString(format: " - %@", dateFormatter.stringFromDate(endDate)))
+                presentationString.appendString(NSString(format: " - %@", dateFormatter.stringFromDate(endDate)) as String)
         }
         return presentationString
     }

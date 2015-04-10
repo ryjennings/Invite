@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc public class ProgressView: UIView
+@objc class ProgressView: UIView
 {
     var step: Int!
     var steps: Int!
@@ -21,7 +21,7 @@ import UIKit
         super.init(frame: frame)
     }
     
-    convenience public init(frame: CGRect, step: Int, steps: Int)
+    convenience init(frame: CGRect, step: Int, steps: Int)
     {
         self.init(frame: frame)
         self.step = step
@@ -30,12 +30,12 @@ import UIKit
         self.backgroundColor = UIColor.clearColor()
     }
 
-    required public init(coder aDecoder: NSCoder)
+    required init(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
     }
 
-    override public func drawRect(rect: CGRect)
+    override func drawRect(rect: CGRect)
     {
         stepWidth = rect.size.width / CGFloat(steps)
         let height = rect.size.height - 2

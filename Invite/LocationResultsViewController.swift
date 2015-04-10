@@ -7,27 +7,65 @@
 //
 
 import UIKit
+import AddressBookUI
 
-@objc public class LocationResultsViewController: UIViewController
+@objc class LocationResultsViewController: UITableViewController, UITableViewDataSource, UITableViewDelegate
 {
-    public var locations: NSArray!
-    
-    required public init(coder aDecoder: NSCoder)
+    var delegate: LocationResultsViewControllerDelegate?
+    var locations = [AnyObject]()
     {
-        super.init(coder: aDecoder)
+        didSet {
+            tableView.reloadData()
+        }
     }
     
-    public override func viewDidLoad()
+    override func viewDidLoad()
     {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.clearColor()
-        
-        let blurEffect = UIBlurEffect(style: .Dark)
-        var blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        view.addSubview(blurView)
-        
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[blurView]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["blurView": blurView]))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[blurView]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["blurView": blurView]))
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: BASIC_CELL_IDENTIFIER)
     }
+
+    // MARK: - UITableView
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    {
+        return 1
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
+        return locations.count
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    {
+        let placemark = locations[indexPath.row] as! CLPlacemark
+        
+        var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) as! UITableViewCell
+        
+        var attributedText = NSMutableAttributedString(string: placemark.name, attributes: [NSForegroundColorAttributeName: UIColor.inviteDarkBlueColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(15)])
+        attributedText.appendAttributedString(NSAttributedString(string: "\n"))
+        attributedText.appendAttributedString(NSAttributedString(string: placemark.addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", "), attributes: [NSForegroundColorAttributeName: UIColor.inviteTableLabelColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12)]))
+            
+        var style = NSMutableParagraphStyle()
+        style.lineSpacing = 3
+        attributedText.addAttribute(NSParagraphStyleAttributeName, value: style, range: NSMakeRange(0, count(attributedText.string)))
+        
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.attributedText = attributedText
+
+        return cell
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    {
+        if let d = delegate {
+            d.didSelectPlacemark(locations[indexPath.row] as! CLPlacemark)
+        }
+    }
+}
+
+protocol LocationResultsViewControllerDelegate
+{
+    func didSelectPlacemark(placemark: CLPlacemark)
 }

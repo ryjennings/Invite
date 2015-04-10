@@ -3,5 +3,6 @@
 //
 
 #import "AppDelegate.h"
+#import "EventEditCell.h"
 #import "StringConstants.h"
 #import "UIView+Invite.h"

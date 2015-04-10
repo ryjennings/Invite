@@ -22,7 +22,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     InviteesSectionCount
 };
 
-@interface InviteesViewController () <UITableViewDataSource, UITableViewDelegate, EventEditCellDelegate>
+@interface InviteesViewController () <UITableViewDataSource, UITableViewDelegate, InputCellDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UIButton *nextButton;
 @property (nonatomic, strong) NSArray *friends;
@@ -121,7 +121,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == InviteesSectionFriends) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:INVITEE_CELL_IDENTIFIER forIndexPath:indexPath];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER forIndexPath:indexPath];
         
         if (_noPreviousFriends) {
         
@@ -153,7 +153,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         
         return cell;
     } else {
-        EventEditCell *cell = (EventEditCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_EDIT_CELL_IDENTIFIER forIndexPath:indexPath];
+        InputCell *cell = (InputCell *)[tableView dequeueReusableCellWithIdentifier:INPUT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.delegate = self;
         cell.placeholderLabel.text = @"Enter your friends' email addresses";
         cell.placeholderLabel.font = [UIFont inviteTableLabelFont];
@@ -283,9 +283,9 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     } completion:nil];
 }
 
-#pragma mark - EventEditCellDelegate
+#pragma mark - InputCellDelegate
 
-- (void)eventEditCell:(EventEditCell *)cell textViewDidChange:(UITextView *)textView
+- (void)textViewDidChange:(UITextView *)textView
 {
     _textViewText = textView.text;
     [self.tableView beginUpdates];

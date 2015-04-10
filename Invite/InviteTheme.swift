@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc public class InviteTheme: NSObject
+@objc class InviteTheme: NSObject
 {
     class func customizeAppAppearance()
     {
@@ -18,16 +18,16 @@ import UIKit
         
         UINavigationBar.appearance().tintColor = UIColor.whiteColor()
         UINavigationBar.appearance().barTintColor = UIColor.inviteGreenColor()
-        UINavigationBar.appearance().translucent = false
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.inviteNavigationTitleFont()]
         
         // MARK: - UIBarButtonItem
         
-        UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: UIFont.inviteNavigationButtonFont()], forState: .Normal)
+        UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: UIFont.inviteNavigationButtonFont(), NSForegroundColorAttributeName: UIColor.whiteColor()], forState: .Normal)
         
         // MARK: - UIButton
         
         UIButton.appearance().setTitleColor(UIColor.inviteButtonTitleColor(), forState: .Normal)
         UIButton.appearance().backgroundColor = UIColor.inviteButtonBackgroundColor()
+        
     }
 }

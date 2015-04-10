@@ -8,12 +8,12 @@
 
 import UIKit
 
-public class ProfileImageView: UIImageView
+class ProfileImageView: UIImageView
 {
-    public func configureWith(person: PFObject)
+    func configureWith(person: PFObject)
     {
-        let firstName = person.objectForKey(FIRST_NAME_KEY) as String
-        let lastName = person.objectForKey(LAST_NAME_KEY) as String
+        let firstName = person.objectForKey(FIRST_NAME_KEY) as! String
+        let lastName = person.objectForKey(LAST_NAME_KEY) as! String
 
         var initialsLabel = UILabel()
         initialsLabel.setTranslatesAutoresizingMaskIntoConstraints(false)

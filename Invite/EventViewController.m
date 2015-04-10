@@ -35,7 +35,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     EventRowCount
 };
 
-@interface EventViewController () <EventEditCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface EventViewController () <InputCellDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UIView *eventCoverView;
 @property (nonatomic, weak) IBOutlet UIButton *eventCoverButton;
@@ -147,7 +147,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     
     if (_mode == EventModeEditing && (indexPath.row == EventRowTitle || indexPath.row == EventRowDescription)) {
         
-        EventEditCell *cell = (EventEditCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_EDIT_CELL_IDENTIFIER forIndexPath:indexPath];
+        InputCell *cell = (InputCell *)[tableView dequeueReusableCellWithIdentifier:INPUT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.delegate = self;
         cell.placeholderLabel.text = _eventData[indexPath.row];
         cell.placeholderLabel.hidden = cell.textView.text.length;
@@ -163,15 +163,15 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         
         NSDictionary *rsvp = [_event objectForKey:EVENT_RSVP_KEY];
         EventResponse response = [[rsvp objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
-        EventRSVPCell *cell = (EventRSVPCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_RSVP_CELL_IDENTIFIER];
+        RadioCell *cell = (RadioCell *)[tableView dequeueReusableCellWithIdentifier:RADIO_CELL_IDENTIFIER];
         cell.segments.selectedSegmentIndex = response;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
         
     } else {
         
-        EventTextCell *cell = (EventTextCell *)[tableView dequeueReusableCellWithIdentifier:EVENT_TEXT_CELL_IDENTIFIER];
-        cell.label.text = _eventData[indexPath.row];
+        BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
+        cell.textLabel.text = _eventData[indexPath.row];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
         
@@ -257,7 +257,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
 
 #pragma mark - EventEditCellDelegate
 
-- (void)eventEditCell:(EventEditCell *)cell textViewDidChange:(UITextView *)textView
+- (void)textViewDidChange:(UITextView *)textView
 {
     _textViewText[textView.tag] = textView.text;
     [self.tableView beginUpdates];

@@ -36,7 +36,7 @@
     
     [_settingsButton setTitle:NSLocalizedString(@"navigation_button_settings", nil)];
     
-    [_collectionView registerClass:[DashboardEventCell class] forCellWithReuseIdentifier:DASHBOARD_EVENT_CELL_IDENTIFIER];
+    [_collectionView registerClass:[DashboardCell class] forCellWithReuseIdentifier:DASHBOARD_CELL_IDENTIFIER];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseLoaded:) name:PARSE_LOADED_NOTIFICATION object:nil];
@@ -75,7 +75,7 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    DashboardEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:DASHBOARD_EVENT_CELL_IDENTIFIER forIndexPath:indexPath];
+    DashboardCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:DASHBOARD_CELL_IDENTIFIER forIndexPath:indexPath];
     PFObject *event = [AppDelegate user].events[indexPath.item];
     cell.event = event;
     return cell;
