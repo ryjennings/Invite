@@ -192,51 +192,42 @@
                                         <constraint firstAttribute="trailing" secondItem="kNc-sP-jlA" secondAttribute="trailing" id="ugZ-7n-LBU"/>
                                     </constraints>
                                 </view>
-                                <view key="tableFooterView" contentMode="scaleToFill" id="gM2-sh-vNq">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="uDT-eL-xqd">
+                                    <rect key="frame" x="0.0" y="368" width="600" height="74"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H6L-90-xH0">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
-                                            <state key="normal" title="Create Event">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Oc-69-qeH">
+                                            <rect key="frame" x="15" y="15" width="570" height="44"/>
+                                            <state key="normal" title="CREATE EVENT">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
-                                                <action selector="createEvent:" destination="vUf-2g-qse" eventType="touchUpInside" id="mNr-gC-QE2"/>
+                                                <action selector="next:" destination="nle-a3-tE2" eventType="touchUpInside" id="SBn-Eo-yqn"/>
                                             </connections>
                                         </button>
                                     </subviews>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
-                                        <constraint firstAttribute="bottom" secondItem="H6L-90-xH0" secondAttribute="bottom" id="6nW-3X-JEk"/>
-                                        <constraint firstItem="H6L-90-xH0" firstAttribute="top" secondItem="gM2-sh-vNq" secondAttribute="top" id="IyR-eO-1xg"/>
-                                        <constraint firstAttribute="trailing" secondItem="H6L-90-xH0" secondAttribute="trailing" id="ND4-d0-Du8"/>
-                                        <constraint firstItem="H6L-90-xH0" firstAttribute="leading" secondItem="gM2-sh-vNq" secondAttribute="leading" id="aBL-UQ-CxB"/>
+                                        <constraint firstItem="0Oc-69-qeH" firstAttribute="centerY" secondItem="uDT-eL-xqd" secondAttribute="centerY" id="0HW-JS-Cbk"/>
+                                        <constraint firstItem="0Oc-69-qeH" firstAttribute="centerX" secondItem="uDT-eL-xqd" secondAttribute="centerX" id="Cud-Ld-1m9"/>
+                                        <constraint firstItem="0Oc-69-qeH" firstAttribute="top" secondItem="uDT-eL-xqd" secondAttribute="top" constant="15" id="KGp-Ty-45o"/>
+                                        <constraint firstItem="0Oc-69-qeH" firstAttribute="leading" secondItem="uDT-eL-xqd" secondAttribute="leading" constant="15" id="Pel-rt-JGV"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="BasicCellIdentifier" id="EZg-Jv-ZWT" customClass="BasicCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="BasicCellIdentifier" textLabel="MlO-3d-YzF" style="IBUITableViewCellStyleDefault" id="EZg-Jv-ZWT" customClass="BasicCell">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EZg-Jv-ZWT" id="Bjv-3j-0Do">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yOU-yv-zqd">
-                                                    <rect key="frame" x="15" y="10" width="570" height="23"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="MlO-3d-YzF">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="yOU-yv-zqd" secondAttribute="trailing" constant="15" id="ABZ-d1-Lzy"/>
-                                                <constraint firstItem="yOU-yv-zqd" firstAttribute="leading" secondItem="Bjv-3j-0Do" secondAttribute="leading" constant="15" id="doC-dg-XmV"/>
-                                                <constraint firstAttribute="bottom" secondItem="yOU-yv-zqd" secondAttribute="bottom" constant="10" id="f3R-Ei-sYE"/>
-                                                <constraint firstItem="yOU-yv-zqd" firstAttribute="top" secondItem="Bjv-3j-0Do" secondAttribute="top" constant="10" id="hRg-9R-nGC"/>
-                                            </constraints>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="label" destination="yOU-yv-zqd" id="OmK-Xg-zZS"/>
-                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="RadioCellIdentifier" id="8Jd-nD-Ny9" customClass="RadioCell">
                                         <autoresizingMask key="autoresizingMask"/>

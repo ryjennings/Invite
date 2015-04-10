@@ -227,7 +227,7 @@ enum LocationSection: Int {
         self.searchController.active = false
     }
     
-    // MARK: - EventEditCellDelegate
+    // MARK: - InputCellDelegate
     
     func textViewDidChange(textView: UITextView)
     {

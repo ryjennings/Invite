@@ -10,9 +10,6 @@
 
 #import "AppDelegate.h"
 #import "Event.h"
-#import "EventEditCell.h"
-#import "EventRSVPCell.h"
-#import "EventTextCell.h"
 #import "Invite-Swift.h"
 #import "StringConstants.h"
 #import "User.h"
@@ -255,7 +252,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - EventEditCellDelegate
+#pragma mark - InputCellDelegate
 
 - (void)textViewDidChange:(UITextView *)textView
 {

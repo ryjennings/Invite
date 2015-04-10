@@ -10,7 +10,6 @@
 
 #import "AppDelegate.h"
 #import "Event.h"
-#import "EventEditCell.h"
 #import "Invite-Swift.h"
 #import "StringConstants.h"
 
