@@ -38,7 +38,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     
     _textViewText = @"";
     
-    self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:1 steps:5];
+    self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:2 steps:5];
     
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     

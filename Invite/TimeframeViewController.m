@@ -71,7 +71,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     self.navigationController.interactivePopGestureRecognizer.delegate = self;
     
-    self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:2 steps:5];
+    self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:3 steps:5];
 
     NSDate *today = [NSDate date];
     NSDate *twoDaysAgo = [NSDate dateWithTimeIntervalSinceNow:-172800];

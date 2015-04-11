@@ -46,7 +46,7 @@ enum LocationSection: Int {
         nextButton.clipsToBounds = true
         nextButton.titleLabel!.font = UIFont.inviteButtonTitleFont()
         
-        navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 3, steps: 5)
+        navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 4, steps: 5)
 
         tableView.tableHeaderView = tableHeaderView()
         definesPresentationContext = true

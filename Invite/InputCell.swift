@@ -14,6 +14,11 @@ import UIKit
     @IBOutlet weak var placeholderLabel: UILabel!
     @IBOutlet weak var textView: UITextView!
     
+    override func awakeFromNib()
+    {
+        placeholderLabel.font = UIFont.inviteTableLabelFont()
+    }
+    
     // MARK: - UITextViewDelegate
 
     func textViewDidChange(textView: UITextView)

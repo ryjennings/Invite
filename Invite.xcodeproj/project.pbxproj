@@ -70,6 +70,7 @@
 		07D9DD371AD8386B008FF016 /* InputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD361AD8386B008FF016 /* InputCell.swift */; };
 		07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD381AD83E42008FF016 /* RadioCell.swift */; };
 		07D9DD3B1AD868B5008FF016 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD3A1AD868B5008FF016 /* MapCell.swift */; };
+		07D9DD3D1AD880F4008FF016 /* TitleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD3C1AD880F4008FF016 /* TitleViewController.swift */; };
 		07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF251AC7BEDA0058E1CA /* LocationViewController.swift */; };
 		07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */; };
 		07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */; };
@@ -171,6 +172,7 @@
 		07D9DD361AD8386B008FF016 /* InputCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputCell.swift; sourceTree = "<group>"; };
 		07D9DD381AD83E42008FF016 /* RadioCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioCell.swift; sourceTree = "<group>"; };
 		07D9DD3A1AD868B5008FF016 /* MapCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
+		07D9DD3C1AD880F4008FF016 /* TitleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleViewController.swift; sourceTree = "<group>"; };
 		07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Invite-Bridging-Header.h"; sourceTree = "<group>"; };
 		07DDBF251AC7BEDA0058E1CA /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationResultsViewController.swift; sourceTree = "<group>"; };
@@ -303,6 +305,7 @@
 				078924701AB369C5005EE7FB /* Launch */,
 				078924711AB369CE005EE7FB /* Login */,
 				07D01A321A9A9D5E00860650 /* Dashboard */,
+				07D9DD3E1AD880FD008FF016 /* Title/Description */,
 				07D01A331A9A9D7900860650 /* Invitees */,
 				07A313291A96AA410066EE3E /* Timeframe */,
 				078924721AB369DC005EE7FB /* Location */,
@@ -451,6 +454,14 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
+		07D9DD3E1AD880FD008FF016 /* Title/Description */ = {
+			isa = PBXGroup;
+			children = (
+				07D9DD3C1AD880F4008FF016 /* TitleViewController.swift */,
+			);
+			name = Title/Description;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -572,6 +583,7 @@
 			files = (
 				07BC8E391ACB13EB0050C4E9 /* ProfileImageView.swift in Sources */,
 				07D9DD371AD8386B008FF016 /* InputCell.swift in Sources */,
+				07D9DD3D1AD880F4008FF016 /* TitleViewController.swift in Sources */,
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
 				07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */,
 				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
