@@ -10,26 +10,40 @@ import UIKit
 
 class ProfileImageView: UIImageView
 {
-    func configureWith(person: PFObject)
+    override func awakeFromNib()
     {
-        let firstName = person.objectForKey(FIRST_NAME_KEY) as! String
-        let lastName = person.objectForKey(LAST_NAME_KEY) as! String
-
+        layer.cornerRadius = 22
+        clipsToBounds = true
+    }
+    
+    func prepareLabelForPerson(person: PFObject)
+    {
+        var displayText = ""
+        if let firstName = person.objectForKey(FIRST_NAME_KEY) as? String {
+            displayText += "\(firstName[firstName.startIndex])"
+        }
+        if let lastName = person.objectForKey(LAST_NAME_KEY) as? String {
+            displayText += "\(lastName[lastName.startIndex])"
+        }
+        if (displayText.isEmpty) {
+            let email = person.objectForKey(EMAIL_KEY) as! String
+            displayText = "\(email[email.startIndex])"
+        }
+        
         var initialsLabel = UILabel()
         initialsLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
-        initialsLabel.text = "\(firstName[firstName.startIndex])\(lastName[lastName.startIndex])"
-        initialsLabel.textColor = UIColor.lightGrayColor()
+        initialsLabel.textColor = UIColor.whiteColor()
+        initialsLabel.text = displayText.uppercaseString
+        initialsLabel.backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.inviteLightSlateColor()
         initialsLabel.textAlignment = .Center
-        initialsLabel.font = UIFont.proximaNovaRegularFontOfSize(30)
-        initialsLabel.minimumScaleFactor = 10/30 // minimum/maximum
+        initialsLabel.font = UIFont.proximaNovaRegularFontOfSize(22)
+        initialsLabel.minimumScaleFactor = 10/22 // minimum/maximum
         initialsLabel.adjustsFontSizeToFitWidth = true
         addSubview(initialsLabel)
         
         let views = ["label": initialsLabel]
         addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
         addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        
-        //_profileURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square&width=300&height=300", [object objectForKey:ID_KEY]];
-        
     }
 }

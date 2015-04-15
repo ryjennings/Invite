@@ -110,43 +110,31 @@ enum TitleSection: Int {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-//        if (indexPath.section == TitleSection.Title.rawValue) {
-        
-            let text = inputText[indexPath.row] as String
-            var cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
-            cell.delegate = self
-            cell.placeholderLabel.text = "Tap here to enter a title"
-            cell.placeholderLabel.hidden = Bool(count(text))
-            cell.textView.tag = indexPath.section
-            cell.textView.text = text
-            cell.textView.font = UIFont.inviteTableLabelFont()
-            cell.textView.textContainer.lineFragmentPadding = 0
-            cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0)
-            cell.selectionStyle = .None
-            return cell
-            
-//        } else {
-//            
-//            var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) as! UITableViewCell
-//            cell.accessoryType = indexPath.row == savedLocationsIndex ? .Checkmark : .None
-//            if (indexPath.row == 0) {
-//                cell.textLabel?.text = "Use current location"
-//            } else {
-//                let location = AppDelegate.locations()[indexPath.row - 1] as! PFObject
-//                let address = location.objectForKey(LOCATION_ADDRESS_KEY) as? String
-//                let nickname = location.objectForKey(LOCATION_NICKNAME_KEY) as? String
-//                cell.textLabel?.text = nickname ?? address
-//            }
-//            return cell
-//            
-//        }
+        let text = inputText[indexPath.row] as String
+        var cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
+        cell.delegate = self
+        cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "Tap here to add a title" : "Tap here to add a description"
+        cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaRegularFontOfSize(24) : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.placeholderLabel.hidden = Bool(count(text))
+        cell.placeholderLabel.textColor = UIColor(white: 0.9, alpha: 1)
+        cell.textView.tag = indexPath.section
+        cell.textView.text = text
+        cell.textView.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaRegularFontOfSize(24) : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.textView.textContainer.lineFragmentPadding = 0
+        cell.textView.contentInset = indexPath.section == TitleSection.Title.rawValue ? UIEdgeInsetsMake(1, 0, 0, 0) : UIEdgeInsetsMake(1, 0, 0, 0)
+        cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0)
+        cell.textView.textColor = UIColor.inviteTableLabelColor()
+        cell.selectionStyle = .None
+        cell.textViewLeadingConstraint.constant = cell.separatorInset.left
+        cell.labelLeadingConstraint.constant = cell.separatorInset.left
+        return cell
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
         let text = inputText[indexPath.section] as NSString
-        let textViewWidth = self.view.frame.size.width - 30
-        let frame = text.boundingRectWithSize(CGSizeMake(textViewWidth, CGFloat.max), options: (.UsesLineFragmentOrigin | .UsesFontLeading), attributes: [NSFontAttributeName: UIFont.inviteTableLabelFont()], context: nil)
+        let textViewWidth = self.view.frame.size.width - (tableView.separatorInset.left * 2)
+        let frame = text.boundingRectWithSize(CGSizeMake(textViewWidth, CGFloat.max), options: (.UsesLineFragmentOrigin | .UsesFontLeading), attributes: [NSFontAttributeName: indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaRegularFontOfSize(24) : UIFont.proximaNovaRegularFontOfSize(16)], context: nil)
         return frame.size.height + 25
     }
     

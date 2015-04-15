@@ -12,4 +12,5 @@
 "navigation_button_settings" = "Settings";
 "alert_cannotlogin_title" = "Unable to Log In to Facebook";
 "alert_cannotlogin_message" = "Please try to again.";
-"invitees_nopreviousfriends" = "Haven't sent an event before? That's cool. Enter the email addresses of the friends you want to invite to this event in the 'New Friends' section below. We'll remember them so that you can easily invite them to new events in the future!";
+"invitees_nopreviousfriends" = "Haven't sent an event before? That's okay. Enter the email addresses of the friends you would like to invite to this event in the \"New Friends\" section below. We'll remember them so that you can easily invite them to new events in the future!";
+"invitees_newfriends_footer" = "Enter a list of email addresses. Separate multiple email addresses with a comma. Ex: xxx@inviteapp.com, yyy@inviteapp.com";

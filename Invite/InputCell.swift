@@ -13,12 +13,14 @@ import UIKit
     var delegate: InputCellDelegate?
     @IBOutlet weak var placeholderLabel: UILabel!
     @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var labelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var textViewLeadingConstraint: NSLayoutConstraint!
     
     override func awakeFromNib()
     {
-        placeholderLabel.font = UIFont.inviteTableLabelFont()
+//        placeholderLabel.font = UIFont.inviteTableLabelFont()
     }
-    
+        
     // MARK: - UITextViewDelegate
 
     func textViewDidChange(textView: UITextView)

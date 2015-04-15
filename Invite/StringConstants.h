@@ -71,6 +71,8 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define SEGUE_TO_TIMEFRAME @"SegueToTimeframe"
 #define SEGUE_TO_LOCATION @"SegueToLocation"
 #define SEGUE_TO_EVENT @"SegueToEvent"
+#define SEGUE_TO_START_DATE @"SegueToStartDate"
+#define SEGUE_TO_END_DATE @"SegueToEndDate"
 
 // Table cell identifiers
 #define MAP_CELL_IDENTIFIER @"MapCellIdentifier"
@@ -78,8 +80,8 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define INPUT_CELL_IDENTIFIER @"InputCellIdentifier"
 #define RADIO_CELL_IDENTIFIER @"RadioCellIdentifier"
 #define DASHBOARD_CELL_IDENTIFIER @"DashboardCellIdentifier"
-
-#define TIMEFRAME_HOUR_CELL_IDENTIFIER @"TimeframeHourCellIdentifier"
+#define TIMEFRAME_CELL_IDENTIFIER @"TimeframeCellIdentifier"
+#define PROFILE_CELL_IDENTIFIER @"ProfileCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

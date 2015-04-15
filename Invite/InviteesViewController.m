@@ -11,9 +11,13 @@
 #import "AppDelegate.h"
 #import "Event.h"
 #import "Invite-Swift.h"
+#import "ProfileCell.h"
 #import "StringConstants.h"
 
-#define kNoPreviousFriendsFont [UIFont proximaNovaRegularFontOfSize:14]
+#import "UIImageView+WebCache.h"
+
+#define kNoPreviousFriendsFont [UIFont proximaNovaRegularFontOfSize:16]
+#define kFooterPadding 20
 
 typedef NS_ENUM(NSUInteger, InviteesSection) {
     InviteesSectionFriends,
@@ -114,43 +118,77 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 - (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *footerView = (UITableViewHeaderFooterView *)view;
-    footerView.textLabel.font = [UIFont inviteTableFooterFont];
+    
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    [style setLineSpacing:4];
+
+    NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"invitees_newfriends_footer", nil) attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}];
+    
+    footerView.textLabel.attributedText = att;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    [style setLineSpacing:6];
+    return [NSLocalizedString(@"invitees_newfriends_footer", nil) boundingRectWithSize:CGSizeMake(self.view.frame.size.width - (_tableView.separatorInset.left * 2), CGFLOAT_MAX)
+                                                                               options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                                                            attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}
+                                                                               context:nil].size.height + kFooterPadding;
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == InviteesSectionFriends) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER forIndexPath:indexPath];
         
         if (_noPreviousFriends) {
-        
-            cell.textLabel.text = NSLocalizedString(@"invitees_nopreviousfriends", nil);
+            
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER forIndexPath:indexPath];
+
+            NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"invitees_nopreviousfriends", nil) attributes:@{NSFontAttributeName: kNoPreviousFriendsFont}];
+            NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+            [style setLineSpacing:6];
+            [att addAttribute:NSParagraphStyleAttributeName value:style range:NSMakeRange(0, [att.string length])];
+            
             cell.textLabel.numberOfLines = 0;
-            cell.textLabel.font = kNoPreviousFriendsFont;
             cell.backgroundColor = [UIColor clearColor];
             cell.contentView.backgroundColor = [UIColor clearColor];
-            cell.textLabel.textColor = [UIColor inviteQuestionColor];
+            cell.textLabel.textColor = [UIColor inviteTableHeaderColor];
+            cell.textLabel.attributedText = att;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            return cell;
+            
         
         } else {
         
+            ProfileCell *cell = (ProfileCell *)[tableView dequeueReusableCellWithIdentifier:PROFILE_CELL_IDENTIFIER forIndexPath:indexPath];
             PFObject *friend = (PFObject *)_friends[indexPath.row];
             
-            cell.textLabel.textColor = [UIColor inviteTableLabelColor];
-            cell.textLabel.font = [UIFont inviteTableLabelFont];
+            cell.label.textColor = [UIColor inviteTableLabelColor];
+            cell.label.font = [UIFont inviteTableLabelFont];
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_select"]];
 
+            
             if ([friend objectForKey:FULL_NAME_KEY]) {
             
-                cell.textLabel.text = [friend objectForKey:FULL_NAME_KEY];
+                cell.label.text = [friend objectForKey:FULL_NAME_KEY];
                 
             } else {
                 
-                cell.textLabel.text = [friend objectForKey:EMAIL_KEY];
+                cell.label.text = [friend objectForKey:EMAIL_KEY];
 
             }
-        
+            
+            if ([friend objectForKey:FACEBOOK_ID_KEY]) {
+                [cell.profileImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square&width=150&height=150", [friend objectForKey:FACEBOOK_ID_KEY]]] placeholderImage:nil];
+            } else {
+                [cell.profileImageView prepareLabelForPerson:friend];
+            }
+            return cell;
+            
         }
         
-        return cell;
     } else {
         InputCell *cell = (InputCell *)[tableView dequeueReusableCellWithIdentifier:INPUT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.delegate = self;
@@ -164,6 +202,8 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         cell.textView.textContainer.lineFragmentPadding = 0;
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.textViewLeadingConstraint.constant = cell.separatorInset.left;
+        cell.labelLeadingConstraint.constant = cell.separatorInset.left;
         return cell;
     }
 }
@@ -182,7 +222,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 {
     switch (section) {
         case InviteesSectionEmail:
-            return @"Enter a list of email addresses. Separate multiple email addresses with a comma. Ex: xxx@inviteapp.com, yyy@inviteapp.com";
+            return NSLocalizedString(@"invitees_newfriends_footer", nil);
         default:
             return nil;
     }
@@ -190,16 +230,20 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (_noPreviousFriends) {
+        return;
+    }
+    
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 
     PFObject *friend = _friends[indexPath.row];
     
     if ([_invitees containsObject:friend]) {
         [_invitees removeObject:friend];
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_select"]];
     } else {
         [_invitees addObject:friend];
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_selected"]];
     }
 }
 
@@ -208,13 +252,15 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     CGFloat textViewWidth = self.view.frame.size.width - 30;
     if (indexPath.section == InviteesSectionFriends) {
         if (_noPreviousFriends) {
+            NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+            [style setLineSpacing:6];
             CGRect frame = [NSLocalizedString(@"invitees_nopreviousfriends", nil) boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
                                                        options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                                    attributes:@{NSFontAttributeName: kNoPreviousFriendsFont}
+                                                                                            attributes:@{NSFontAttributeName: kNoPreviousFriendsFont, NSParagraphStyleAttributeName: style}
                                                        context:nil];
             return frame.size.height + 25;
         } else {
-            return 44;
+            return 66;
         }
     } else {
         CGRect frame = [_textViewText boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
