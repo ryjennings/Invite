@@ -11,4 +11,5 @@ import UIKit
 @objc(RadioCell) class RadioCell: UITableViewCell
 {
     @IBOutlet weak var segments: UISegmentedControl!
+    @IBOutlet weak var segmentsLeadingConstraint: NSLayoutConstraint!
 }

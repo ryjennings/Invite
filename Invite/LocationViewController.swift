@@ -138,6 +138,7 @@ enum LocationSection: Int {
             
             var cell = tableView.dequeueReusableCellWithIdentifier(MAP_CELL_IDENTIFIER, forIndexPath: indexPath) as! MapCell
             cell.delegate = self
+            cell.mapViewLeadingConstraint.constant = cell.separatorInset.left
             if (showCurrentLocation) {
                 cell.showCurrentLocation()
             } else {

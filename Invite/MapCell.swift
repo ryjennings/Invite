@@ -14,6 +14,7 @@ import MapKit
     var delegate: MapCellDelegate?
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var mapViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var textField: UITextField!
     

@@ -154,6 +154,8 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         cell.textView.textContainer.lineFragmentPadding = 0;
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.textViewLeadingConstraint.constant = cell.separatorInset.left;
+        cell.labelLeadingConstraint.constant = cell.separatorInset.left;
         return cell;
         
     } else if (indexPath.row == EventRowRSVP && !creator) {
@@ -163,6 +165,7 @@ typedef NS_ENUM(NSUInteger, EventRow) {
         RadioCell *cell = (RadioCell *)[tableView dequeueReusableCellWithIdentifier:RADIO_CELL_IDENTIFIER];
         cell.segments.selectedSegmentIndex = response;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.segmentsLeadingConstraint.constant = cell.separatorInset.left;
         return cell;
         
     } else {

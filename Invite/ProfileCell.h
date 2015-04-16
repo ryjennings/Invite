@@ -14,5 +14,6 @@
 
 @property (nonatomic, weak) IBOutlet ProfileImageView *profileImageView;
 @property (nonatomic, weak) IBOutlet UILabel *label;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *profileImageViewLeadingConstraint;
 
 @end

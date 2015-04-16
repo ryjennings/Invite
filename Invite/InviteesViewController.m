@@ -168,7 +168,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
             cell.label.textColor = [UIColor inviteTableLabelColor];
             cell.label.font = [UIFont inviteTableLabelFont];
             cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_select"]];
-
+            cell.profileImageViewLeadingConstraint.constant = cell.separatorInset.left;
             
             if ([friend objectForKey:FULL_NAME_KEY]) {
             

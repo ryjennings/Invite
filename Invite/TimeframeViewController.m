@@ -264,7 +264,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TimeframeHourCell *cell = (TimeframeHourCell *)[tableView dequeueReusableCellWithIdentifier:TIMEFRAME_HOUR_CELL_IDENTIFIER];
+    TimeframeHourCell *cell = (TimeframeHourCell *)[tableView dequeueReusableCellWithIdentifier:@"TimeframeHourCellIdentifier"];
 
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryType = UITableViewCellAccessoryNone;
@@ -397,10 +397,11 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (IBAction)next:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    [AppDelegate user].protoEvent.timeframe = _timeframe;
-    [self performSegueWithIdentifier:SEGUE_TO_LOCATION sender:self];
+    if ([segue.identifier isEqualToString:SEGUE_TO_LOCATION]) {
+        [AppDelegate user].protoEvent.timeframe = _timeframe;
+    }
 }
 
 #pragma mark - UICollectionView

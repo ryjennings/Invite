@@ -10,7 +10,7 @@ import UIKit
 
 class TimeframeHourCell: UITableViewCell
 {
-    @IBOutlet weak var hourLabelHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var hourLabelLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var hourLabel: UILabel!
     @IBOutlet weak var label: UILabel!
     
