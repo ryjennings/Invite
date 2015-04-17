@@ -127,12 +127,13 @@ enum TitleSection: Int {
         cell.textView.tag = indexPath.section
         cell.textView.text = text
         cell.textView.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaSemiboldFontOfSize(30) : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.textView.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteBlueColor() : UIColor.inviteTableLabelColor()
         cell.textView.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.textView.textContainer.lineFragmentPadding = 0
         cell.textView.contentInset = indexPath.section == TitleSection.Title.rawValue ? UIEdgeInsetsMake(1, 0, 0, 0) : UIEdgeInsetsMake(1, 0, 0, 0)
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0)
+        cell.textView.autocapitalizationType = indexPath.section == TitleSection.Title.rawValue ? UITextAutocapitalizationType.Words : UITextAutocapitalizationType.Sentences
         addDoneToolBarToKeyboard(cell.textView)
-        cell.textView.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteBlueColor() : UIColor.inviteTableLabelColor()
         
         cell.selectionStyle = .None
         cell.textViewLeadingConstraint.constant = cell.separatorInset.left

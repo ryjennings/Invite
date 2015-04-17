@@ -11,4 +11,11 @@ import UIKit
 @objc(InviteesCollectionCell) class InviteesCollectionCell: UICollectionViewCell
 {
     @IBOutlet weak var profileImageView: ProfileImageView!
+    @IBOutlet weak var label: UILabel!
+    
+    override func awakeFromNib()
+    {
+        label.font = UIFont.proximaNovaRegularFontOfSize(10)
+        label.textColor = UIColor.inviteTableLabelColor()
+    }
 }

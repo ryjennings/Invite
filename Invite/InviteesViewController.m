@@ -204,6 +204,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         cell.textView.font = [UIFont inviteTableLabelFont];
         cell.textView.textContainer.lineFragmentPadding = 0;
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0);
+        cell.textView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         [self addDoneToolBarToKeyboard:cell.textView];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.textViewLeadingConstraint.constant = cell.separatorInset.left;

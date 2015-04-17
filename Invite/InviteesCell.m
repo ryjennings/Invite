@@ -37,6 +37,8 @@ NSString *const kNoResponse = @"No Response";
 @property (nonatomic, strong) NSMutableArray *sorry;
 @property (nonatomic, strong) NSMutableArray *noresponse;
 
+@property (nonatomic, strong) NSMutableDictionary *invitees;
+
 @property (nonatomic, strong) UICollectionViewFlowLayout *flowLayout;
 
 @end
@@ -51,36 +53,52 @@ NSString *const kNoResponse = @"No Response";
     _maybe = [NSMutableArray array];
     _sorry = [NSMutableArray array];
     _noresponse = [NSMutableArray array];
+    _invitees = [NSMutableDictionary dictionary];
     
     if (_emailInvitees.count) {
         [_noresponse addObjectsFromArray:_emailInvitees];
     }
     
     [_rsvpDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        switch (((NSNumber *)obj).integerValue) {
-            case EventResponseGoing:
-                [_going addObject:[self personForKey:key]];
-                break;
-            case EventResponseMaybe:
-                [_maybe addObject:[self personForKey:key]];
-                break;
-            case EventResponseSorry:
-                [_sorry addObject:[self personForKey:key]];
-                break;
-            default:
-                [_noresponse addObject:[self personForKey:key]];
-                break;
+        if ([self personForKey:key]) {
+            switch (((NSNumber *)obj).integerValue) {
+                case EventResponseGoing:
+                    [_going addObject:[self personForKey:key]];
+                    break;
+                case EventResponseMaybe:
+                    [_maybe addObject:[self personForKey:key]];
+                    break;
+                case EventResponseSorry:
+                    [_sorry addObject:[self personForKey:key]];
+                    break;
+                default:
+                    [_noresponse addObject:[self personForKey:key]];
+                    break;
+            }
         }
     }];
-
+    
+    if (_going.count) {
+        [_invitees setObject:_going forKey:@(EventResponseGoing)];
+    }
+    if (_maybe.count) {
+        [_invitees setObject:_maybe forKey:@(EventResponseMaybe)];
+    }
+    if (_sorry.count) {
+        [_invitees setObject:_sorry forKey:@(EventResponseMaybe)];
+    }
+    if (_noresponse) {
+        [_invitees setObject:_noresponse forKey:@(EventResponseNone)];
+    }
+    
     self.collectionView.collectionViewLayout = DateFlowLayout.new;
     self.flowLayout = ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout);
-    
     self.flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    self.flowLayout.headerReferenceSize = CGSizeMake(50, 50); //width is margin to the left of the header - must be bigger than 0 to show headers correct.
-    self.flowLayout.minimumInteritemSpacing = 10;
-    self.flowLayout.minimumLineSpacing = 17;
-    self.flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    self.flowLayout.headerReferenceSize = CGSizeMake(80, 80);
+    self.flowLayout.minimumInteritemSpacing = 0;
+    self.flowLayout.minimumLineSpacing = 0;
+    self.flowLayout.sectionInset = UIEdgeInsetsMake(0, self.separatorInset.left, 0, 0);
+    self.flowLayout.itemSize = CGSizeMake(60, 80);
     self.collectionView.alwaysBounceVertical = NO;
 }
 
@@ -98,55 +116,47 @@ NSString *const kNoResponse = @"No Response";
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return InviteesCellSectionCount;
+    NSInteger sections = 0;
+    if (_invitees[@(EventResponseGoing)] && ((NSArray *)_invitees[@(EventResponseGoing)]).count) {
+        sections++;
+    } else if (_invitees[@(EventResponseMaybe)] && ((NSArray *)_invitees[@(EventResponseMaybe)]).count) {
+        sections++;
+    } else if (_invitees[@(EventResponseSorry)] && ((NSArray *)_invitees[@(EventResponseSorry)]).count) {
+        sections++;
+    } else if (_invitees[@(EventResponseNone)] && ((NSArray *)_invitees[@(EventResponseNone)]).count) {
+        sections++;
+    }
+    return sections;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    if (section == InviteesCellSectionGoing) {
-        return _going.count ? _going.count : 0;
-    } else if (section == InviteesCellSectionMaybe) {
-        return _maybe.count ? _maybe.count : 0;
-    } else if (section == InviteesCellSectionSorry) {
-        return _sorry.count ? _sorry.count : 0;
-    } else {
-        return _noresponse.count ? _noresponse.count : 0;
-    }
+    NSInteger items = 0;
+    items = ((NSArray *)_invitees[@(section)]).count;
+    return items;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PFObject *invitee;
-    NSString *email;
-    
-    switch (indexPath.section) {
-        case InviteesCellSectionGoing:
-            invitee = _going[indexPath.item];
-            break;
-        case InviteesCellSectionMaybe:
-            invitee = _maybe[indexPath.item];
-            break;
-        case InviteesCellSectionSorry:
-            invitee = _sorry[indexPath.item];
-            break;
-        default:
-            
-            if ([_noresponse[indexPath.item] isKindOfClass:[PFObject class]]) {
-                invitee = _noresponse[indexPath.item];
-            } else {
-                email = _noresponse[indexPath.item];
-            }
-            
-            break;
-    }
     InviteesCollectionCell *cell = (InviteesCollectionCell *)[collectionView dequeueReusableCellWithReuseIdentifier:INVITEES_COLLECTION_CELL_IDENTIFIER forIndexPath:indexPath];
     
-    if (email.length) {
-        [cell.profileImageView prepareLabelForEmail:email];
-    } else if ([invitee objectForKey:FACEBOOK_ID_KEY]) {
-        [cell.profileImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square&width=150&height=150", [invitee objectForKey:FACEBOOK_ID_KEY]]] placeholderImage:nil];
+    id person = ((NSArray *)_invitees[@(indexPath.section)])[indexPath.row];
+    
+    if ([person isKindOfClass:[PFObject class]] && [((PFObject *)person) objectForKey:FACEBOOK_ID_KEY]) {
+        [cell.profileImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square&width=150&height=150", [person objectForKey:FACEBOOK_ID_KEY]]] placeholderImage:nil];
     } else {
-        [cell.profileImageView prepareLabelForPerson:invitee];
+        cell.profileImageView.person = person;
+    }
+    
+    if ([person isKindOfClass:[PFObject class]]) {
+        PFObject *thisPerson = (PFObject *)person;
+        if ([thisPerson objectForKey:FIRST_NAME_KEY]) {
+            cell.label.text = [thisPerson objectForKey:FIRST_NAME_KEY];
+        } else {
+            cell.label.text = [thisPerson objectForKey:EMAIL_KEY];
+        }
+    } else {
+        cell.label.text = (NSString *)person;
     }
     
     return cell;
@@ -155,10 +165,12 @@ NSString *const kNoResponse = @"No Response";
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionReusableView *reusableview = nil;
-    return nil;
+    
     if (kind == UICollectionElementKindSectionHeader) {
         InviteesCollectionHeaderView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER forIndexPath:indexPath];
-        headerView.label.text = @"Going";
+        headerView.label.text = @[kGoing, kMaybe, kSorry, kNoResponse][indexPath.section];
+        headerView.label.font = [UIFont proximaNovaRegularFontOfSize:10];
+        headerView.label.textColor = [UIColor inviteTableLabelColor];
         reusableview = headerView;
     }
     

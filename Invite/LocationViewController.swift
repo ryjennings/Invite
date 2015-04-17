@@ -135,6 +135,12 @@ enum LocationSection: Int {
         }
     }
     
+    override func viewDidDisappear(animated: Bool)
+    {
+        var mapCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! MapCell
+        mapCell.delegate = nil
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         if (indexPath.section == LocationSection.ActiveLocation.rawValue) {

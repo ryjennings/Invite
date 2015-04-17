@@ -15,6 +15,8 @@
 #import "StringConstants.h"
 #import "User.h"
 
+#import <MapKit/MapKit.h>
+
 typedef NS_ENUM(NSUInteger, EventMode) {
     EventModePreviewing,
     EventModeViewing
@@ -23,13 +25,14 @@ typedef NS_ENUM(NSUInteger, EventMode) {
 typedef NS_ENUM(NSUInteger, EventSection) {
     // EventSectionLocation is in the table header
     EventSectionDetails, // Title, timeframe, description
-    EventSectionRSVP,
     EventSectionInvitees,
     EventSectionCount
 };
 
 @interface EventViewController () <UINavigationControllerDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic, weak) IBOutlet UIScrollView *mapScrollView;
+@property (nonatomic, weak) IBOutlet MKMapView *mapView;
 @property (nonatomic, weak) IBOutlet UIButton *createEventButton;
 
 @property (nonatomic) EventMode mode;
@@ -46,11 +49,40 @@ typedef NS_ENUM(NSUInteger, EventSection) {
     [super viewDidLoad];
 
     self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:5 steps:5];
-    _isCreator = [((PFObject *)[_event objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
+    
+    if (_event) {
+        _isCreator = [((PFObject *)[_event objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
+        _rsvpDictionary = [_event objectForKey:EVENT_RSVP_KEY];
+    } else {
+        NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
+        for (PFObject *invitee in [AppDelegate user].protoEvent.invitees) {
+            NSString *email = [invitee objectForKey:EMAIL_KEY];
+            if (email && email.length > 0) {
+                [rsvp setValue:@(EventResponseNone) forKey:[AppDelegate keyFromEmail:email]];
+            }
+        }
+        for (NSString *email in [AppDelegate user].protoEvent.emails) {
+            [rsvp setValue:@(EventResponseNone) forKey:[AppDelegate keyFromEmail:email]];
+        }
+        _rsvpDictionary = rsvp;
+    }
     
     _createEventButton.layer.cornerRadius = kCornerRadius;
     _createEventButton.clipsToBounds = YES;
     _createEventButton.titleLabel.font = [UIFont inviteButtonTitleFont];
+    
+    _tableView.estimatedRowHeight = 100;
+    _tableView.rowHeight = UITableViewAutomaticDimension;
+    _mapScrollView.backgroundColor = [UIColor inviteBackgroundSlateColor];
+    
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LATITUDE_KEY]).doubleValue
+                                                      longitude:((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue];
+    [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+        MKPlacemark *placemark = [[MKPlacemark alloc] initWithPlacemark:placemarks[0]];
+        [_mapView addAnnotation:placemark];
+        [_mapView showAnnotations:@[placemark] animated:YES];
+    }];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -64,6 +96,30 @@ typedef NS_ENUM(NSUInteger, EventSection) {
 
 #pragma mark - UITableView
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
+    headerView.textLabel.textColor = [UIColor inviteTableHeaderColor];
+    headerView.textLabel.font = [UIFont inviteTableHeaderFont];
+    headerView.contentView.backgroundColor = [UIColor inviteBackgroundSlateColor];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section
+{
+    UITableViewHeaderFooterView *footerView = (UITableViewHeaderFooterView *)view;
+    footerView.textLabel.font = [UIFont inviteTableFooterFont];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    switch (section) {
+        case EventSectionInvitees:
+            return @"Invited Friends";
+        default:
+            return @"";
+    }
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return EventSectionCount;
@@ -71,7 +127,7 @@ typedef NS_ENUM(NSUInteger, EventSection) {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return (section == EventSectionRSVP && (_mode == EventModePreviewing || _isCreator)) ? 0 : 1;
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -82,11 +138,11 @@ typedef NS_ENUM(NSUInteger, EventSection) {
         
             BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
             
-            NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:[AppDelegate user].protoEvent.title attributes:@{NSFontAttributeName: [UIFont proximaNovaLightFontOfSize:20]}];
-            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
-            [att appendAttributedString:[[NSAttributedString alloc] initWithString:[AppDelegate presentationTimeframeFromStartDate:[AppDelegate user].protoEvent.timeframe.start endDate:[AppDelegate user].protoEvent.timeframe.end] attributes:@{NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:14]}]];
-            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
-            [att appendAttributedString:[[NSAttributedString alloc] initWithString:[AppDelegate user].protoEvent.eventDescription attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:16]}]];
+            NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:[AppDelegate user].protoEvent.title attributes:@{NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:30], NSForegroundColorAttributeName: [UIColor inviteBlueColor]}];
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\n"]];
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:[AppDelegate presentationTimeframeFromStartDate:[AppDelegate user].protoEvent.timeframe.start endDate:[AppDelegate user].protoEvent.timeframe.end] attributes:@{NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:14], NSForegroundColorAttributeName: [UIColor lightGrayColor]}]];
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\n"]];
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:[AppDelegate user].protoEvent.eventDescription attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSForegroundColorAttributeName: [UIColor inviteTableLabelColor]}]];
             
             cell.textLabel.attributedText = att;
             cell.textLabel.numberOfLines = 0;
@@ -101,6 +157,8 @@ typedef NS_ENUM(NSUInteger, EventSection) {
             cell.emailInvitees = [AppDelegate user].protoEvent.emails;
             cell.rsvpDictionary = _rsvpDictionary;
             [cell prepareCell];
+//            cell.backgroundColor = [UIColor inviteAccentLineGrayColor];
+//            cell.contentView.backgroundColor = [UIColor inviteAccentLineGrayColor];
             return cell;
             
         }
@@ -122,14 +180,14 @@ typedef NS_ENUM(NSUInteger, EventSection) {
             
             return cell;
             
-        } else if (indexPath.row == EventSectionRSVP && !_isCreator) {
-            
-            EventResponse response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
-            RadioCell *cell = (RadioCell *)[tableView dequeueReusableCellWithIdentifier:RADIO_CELL_IDENTIFIER];
-            cell.segments.selectedSegmentIndex = response;
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            cell.segmentsLeadingConstraint.constant = cell.separatorInset.left;
-            return cell;
+//        } else if (indexPath.row == EventSectionRSVP && !_isCreator) {
+//            
+//            EventResponse response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
+//            RadioCell *cell = (RadioCell *)[tableView dequeueReusableCellWithIdentifier:RADIO_CELL_IDENTIFIER];
+//            cell.segments.selectedSegmentIndex = response;
+//            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//            cell.segmentsLeadingConstraint.constant = cell.separatorInset.left;
+//            return cell;
             
         } else {
             
@@ -137,6 +195,8 @@ typedef NS_ENUM(NSUInteger, EventSection) {
             cell.userInvitees = [_event objectForKey:EVENT_INVITEES_KEY];
             cell.rsvpDictionary = _rsvpDictionary;
             [cell prepareCell];
+//            cell.backgroundColor = [UIColor inviteAccentLineGrayColor];
+//            cell.contentView.backgroundColor = [UIColor inviteAccentLineGrayColor];
             return cell;
             
         }
@@ -146,11 +206,6 @@ typedef NS_ENUM(NSUInteger, EventSection) {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 100;
 }
 
 #pragma mark - Notifications

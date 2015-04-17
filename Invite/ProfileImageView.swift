@@ -10,6 +10,16 @@ import UIKit
 
 class ProfileImageView: UIImageView
 {
+    var person: AnyObject! {
+        didSet {
+            if person is PFObject {
+                prepareLabelForPerson(person as! PFObject)
+            } else {
+                prepareLabelForEmail(person as! String)
+            }
+        }
+    }
+    
     override func awakeFromNib()
     {
         layer.cornerRadius = 20
