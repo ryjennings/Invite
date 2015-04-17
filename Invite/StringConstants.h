@@ -10,7 +10,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
     EventResponseNone,
     EventResponseGoing,
     EventResponseMaybe,
-    EventResponseNotGoing
+    EventResponseSorry
 };
 
 #define kCornerRadius 6.f
@@ -82,6 +82,9 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define DASHBOARD_CELL_IDENTIFIER @"DashboardCellIdentifier"
 #define TIMEFRAME_CELL_IDENTIFIER @"TimeframeCellIdentifier"
 #define PROFILE_CELL_IDENTIFIER @"ProfileCellIdentifier"
+#define INVITEES_CELL_IDENTIFIER @"InviteesCellIdentifier"
+#define INVITEES_COLLECTION_CELL_IDENTIFIER @"InviteesCollectionCellIdentifier"
+#define INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER @"InviteesCollectionHeaderViewIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

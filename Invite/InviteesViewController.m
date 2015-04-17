@@ -29,7 +29,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UIButton *nextButton;
 @property (nonatomic, strong) NSArray *friends;
-@property (nonatomic, strong) NSMutableSet *invitees;
+@property (nonatomic, strong) NSMutableArray *invitees;
 @property (nonatomic, strong) NSString *textViewText;
 @property (nonatomic, assign) BOOL noPreviousFriends;
 @end
@@ -46,7 +46,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     
-    _invitees = [NSMutableSet set];
+    _invitees = [NSMutableArray array];
     _friends = [AppDelegate user].friends;
     _noPreviousFriends = !_friends.count;
 
@@ -167,7 +167,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
             
             cell.label.textColor = [UIColor inviteTableLabelColor];
             cell.label.font = [UIFont inviteTableLabelFont];
-            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_select"]];
+            cell.accessoryView = [[UIImageView alloc] initWithImage:([_invitees containsObject:friend] ? [UIImage imageNamed:@"list_selected"] : [UIImage imageNamed:@"list_select"])];
             cell.profileImageViewLeadingConstraint.constant = cell.separatorInset.left;
             
             if ([friend objectForKey:FULL_NAME_KEY]) {
@@ -201,6 +201,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         cell.textView.font = [UIFont inviteTableLabelFont];
         cell.textView.textContainer.lineFragmentPadding = 0;
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0);
+        [self addDoneToolBarToKeyboard:cell.textView];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.textViewLeadingConstraint.constant = cell.separatorInset.left;
         cell.labelLeadingConstraint.constant = cell.separatorInset.left;
@@ -230,7 +231,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (_noPreviousFriends) {
+    if (_noPreviousFriends || indexPath.section == InviteesSectionEmail) {
         return;
     }
     
@@ -280,12 +281,15 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         // Add email addresses to invitees
         
         if (_textViewText.length) {
+            NSMutableArray *allInvitees = [[NSMutableArray alloc] initWithArray:_invitees];
             NSArray *components = [_textViewText componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             NSString *string = [components componentsJoinedByString:@""];
             NSArray *emailAddresses = [string componentsSeparatedByString:@","];
             if (emailAddresses.count) {
                 [AppDelegate user].protoEvent.emails = emailAddresses;
             }
+            [allInvitees addObjectsFromArray:emailAddresses];
+            [AppDelegate user].protoEvent.allInvitees = allInvitees;
         }
         
         [AppDelegate user].protoEvent.invitees = _invitees;
@@ -313,7 +317,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 {
     NSDictionary *info = [notification userInfo];
     CGSize size = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, size.height, 0.0);
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, size.height + 74, 0.0); // +74 for next button
     self.tableView.contentInset = contentInsets;
     self.tableView.scrollIndicatorInsets = contentInsets;
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
@@ -335,6 +339,26 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     _textViewText = textView.text;
     [self.tableView beginUpdates];
     [self.tableView endUpdates];
+}
+
+#pragma mark - UITextView Dismiss Toolbar
+
+- (void)addDoneToolBarToKeyboard:(UITextView *)textView
+{
+    UIToolbar *doneToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 0, 50)];
+    doneToolbar.barStyle = UIBarStyleBlackTranslucent;
+    doneToolbar.items = [NSArray arrayWithObjects:
+                         [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                         [[UIBarButtonItem alloc]initWithTitle:@"Dismiss Keyboard" style:UIBarButtonItemStyleDone target:self action:@selector(doneButtonClickedDismissKeyboard)],
+                         [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                         nil];
+    [doneToolbar sizeToFit];
+    textView.inputAccessoryView = doneToolbar;
+}
+
+- (void)doneButtonClickedDismissKeyboard
+{
+    [self.view endEditing:YES];
 }
 
 @end

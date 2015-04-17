@@ -16,6 +16,12 @@ class ProfileImageView: UIImageView
         clipsToBounds = true
     }
     
+    func prepareLabelForEmail(email: String)
+    {
+        let displayText = "\(email[email.startIndex])"
+        prepareLabelWithText(displayText)
+    }
+    
     func prepareLabelForPerson(person: PFObject)
     {
         var displayText = ""
@@ -29,7 +35,11 @@ class ProfileImageView: UIImageView
             let email = person.objectForKey(EMAIL_KEY) as! String
             displayText = "\(email[email.startIndex])"
         }
-        
+        prepareLabelWithText(displayText)
+    }
+    
+    func prepareLabelWithText(displayText: String)
+    {
         var initialsLabel = UILabel()
         initialsLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
         initialsLabel.textColor = UIColor.whiteColor()

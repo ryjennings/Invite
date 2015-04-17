@@ -15,15 +15,17 @@
 
 @interface Event : NSObject
 
+@property (nonatomic, strong) PFObject *location;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) Timeframe *timeframe;
 @property (nonatomic, strong) NSString *eventDescription;
-@property (nonatomic, strong) PFObject *location;
-@property (nonatomic, strong) NSSet *invitees;
-@property (nonatomic, strong) UIImage *coverImage;
+@property (nonatomic, strong) NSArray *invitees;
+//@property (nonatomic, strong) UIImage *coverImage;
 
 @property (nonatomic, strong) NSArray *inviteeEmails;
 @property (nonatomic, strong) NSArray *emails;
+
+@property (nonatomic, strong) NSArray *allInvitees;
 
 + (Event *)createEvent;
 

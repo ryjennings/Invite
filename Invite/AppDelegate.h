@@ -42,7 +42,9 @@
 
 // Weird methods needed because Swift doesn't like @class
 
-+ (void)addLocationToProtoEvent:(PFObject *)location;
++ (void)addToProtoEventLocation:(PFObject *)location;
 + (NSArray *)locations;
++ (void)addToProtoEventTitle:(NSString *)title description:(NSString *)description;
++ (void)nilProtoEvent;
 
 @end

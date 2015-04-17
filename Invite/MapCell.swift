@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-@objc(MapCell) class MapCell: UITableViewCell, CLLocationManagerDelegate
+@objc(MapCell) class MapCell: UITableViewCell, CLLocationManagerDelegate, UITextFieldDelegate
 {
     var delegate: MapCellDelegate?
     
@@ -19,6 +19,8 @@ import MapKit
     @IBOutlet weak var textField: UITextField!
     
     var locationManager: CLLocationManager!
+    
+    var location = PFObject(className: CLASS_LOCATION_KEY)
 
     var placemark: CLPlacemark!
     {
@@ -52,6 +54,7 @@ import MapKit
         
         textField.placeholder = "Give this location a nickname"
         textField.font = UIFont.inviteTableLabelFont()
+        textField.delegate = self
     }
     
     func showPlacemark(placemark: MKPlacemark)
@@ -91,13 +94,19 @@ import MapKit
             let address = (placemarks[0] as! CLPlacemark).addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", ")
             self.label.text = address
             if let d = self.delegate {
-                var location = PFObject(className: CLASS_LOCATION_KEY)
-                location.setObject(newLocation.coordinate.latitude, forKey: LOCATION_LATITUDE_KEY)
-                location.setObject(newLocation.coordinate.longitude, forKey: LOCATION_LONGITUDE_KEY)
-                location.setObject(address, forKey: LOCATION_ADDRESS_KEY)
-                d.didSetCurrentLocationToLocation(location)
+                self.location.setObject(newLocation.coordinate.latitude, forKey: LOCATION_LATITUDE_KEY)
+                self.location.setObject(newLocation.coordinate.longitude, forKey: LOCATION_LONGITUDE_KEY)
+                self.location.setObject(address, forKey: LOCATION_ADDRESS_KEY)
+                d.didSetCurrentLocationToLocation(self.location)
             }
         })
+    }
+    
+    // MARK: UITextFieldDelegate
+    
+    func textFieldDidEndEditing(textField: UITextField)
+    {
+        self.location.setObject(textField.text, forKey: LOCATION_NICKNAME_KEY)
     }
 }
 

@@ -157,7 +157,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
         if (i == 0 && _day != 1) {
             [_firstDayIndexPaths replaceObjectAtIndex:(month - 1) withObject:indexPath];
-            NSLog(@"%ld %ld", (month - 1), (long)indexPath.item);
+//            NSLog(@"%li %ld", (month - 1), (long)indexPath.item);
             continue;
         }
         if ([self dayForIndexPath:indexPath] == 1) {
@@ -166,7 +166,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
                 month = 1;
             }
             [_firstDayIndexPaths replaceObjectAtIndex:(month - 1) withObject:indexPath];
-            NSLog(@"%ld %ld", (month - 1), (long)indexPath.item);
+//            NSLog(@"%li %ld", (month - 1), (long)indexPath.item);
         }
     }
 }
@@ -287,8 +287,8 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
     NSMutableArray *unavailablePersons = [[NSMutableArray alloc] init];
     for (BusyDetails *busyDetail in relavantBusyTimes) {
-        [[AppDelegate user].protoEvent.invitees enumerateObjectsUsingBlock:^(PFObject *person, BOOL *stop) {
-            if ([busyDetail.email isEqualToString:[person objectForKey:EMAIL_KEY]] && withinHour(busyDetail)) {
+        [[AppDelegate user].protoEvent.invitees enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([busyDetail.email isEqualToString:[((PFObject *)obj) objectForKey:EMAIL_KEY]] && withinHour(busyDetail)) {
                 [unavailablePersons addObject:busyDetail.name];
             }
         }];
@@ -394,6 +394,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
 
 - (IBAction)cancel:(id)sender
 {
+    [AppDelegate user].protoEvent = nil;
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 

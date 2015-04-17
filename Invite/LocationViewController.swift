@@ -50,8 +50,11 @@ enum LocationSection: Int {
 
         tableView.tableHeaderView = tableHeaderView()
         definesPresentationContext = true
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     }
-        
+    
     func tableHeaderView() -> UIView
     {
         var view = UIView(frame: CGRectMake(0, 0, 0, 144))
@@ -84,7 +87,7 @@ enum LocationSection: Int {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
     {
         if (segue.identifier == "SegueToEvent") {
-            AppDelegate.addLocationToProtoEvent(activeLocation)
+            AppDelegate.addToProtoEventLocation(activeLocation)
         }
     }
 
@@ -145,12 +148,14 @@ enum LocationSection: Int {
                 cell.placemark = activePlacemark
                 cell.parseLocation = activeLocation
             }
+            addDoneToolBarToKeyboard(cell.textField)
             return cell
             
         } else {
             
             var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) as! UITableViewCell
-            cell.accessoryType = indexPath.row == savedLocationsIndex ? .Checkmark : .None
+//            cell.accessoryType = indexPath.row == savedLocationsIndex ? .Checkmark : .None
+            cell.accessoryView = indexPath.row == savedLocationsIndex ? UIImageView(image: UIImage(named: "list_selected")) : UIImageView(image: UIImage(named: "list_select"))
             if (indexPath.row == 0) {
                 cell.textLabel?.text = "Use current location"
             } else {
@@ -235,10 +240,56 @@ enum LocationSection: Int {
 
     }
     
-    // MARK: MapCellDelegate
+    // MARK: - MapCellDelegate
     
     func didSetCurrentLocationToLocation(location: PFObject)
     {
         activeLocation = location
+    }
+
+    // MARK: - Notifications
+    
+    func keyboardWillShow(notification: NSNotification)
+    {
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+            let contentInsets = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: keyboardSize.height  + 74, right: 0) // +74 for next button
+            tableView.contentInset = contentInsets
+            tableView.scrollIndicatorInsets = contentInsets
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification)
+    {
+        UIView.animateWithDuration(0.35, animations: {
+            let contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, 0.0, 0.0)
+            self.tableView.contentInset = contentInsets
+            self.tableView.scrollIndicatorInsets = contentInsets
+        })
+    }
+
+    // MARK: - UITextView Dismiss Toolbar
+    
+    func addDoneToolBarToKeyboard(textField: UITextField)
+    {
+        var doneToolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 50))
+        doneToolbar.barStyle = .BlackTranslucent
+        doneToolbar.items = [
+            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(title: "Dismiss Keyboard", style: .Done, target: self, action: "doneButtonClickedDismissKeyboard"),
+            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        ]
+        doneToolbar.sizeToFit()
+        textField.inputAccessoryView = doneToolbar
+    }
+    
+    func doneButtonClickedDismissKeyboard()
+    {
+        self.view.endEditing(true)
+    }
+    
+    @IBAction func cancel(sender: UIBarButtonItem)
+    {
+        AppDelegate.nilProtoEvent()
+        navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }
 }

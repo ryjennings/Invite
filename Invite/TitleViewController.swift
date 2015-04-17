@@ -123,6 +123,7 @@ enum TitleSection: Int {
         cell.textView.textContainer.lineFragmentPadding = 0
         cell.textView.contentInset = indexPath.section == TitleSection.Title.rawValue ? UIEdgeInsetsMake(1, 0, 0, 0) : UIEdgeInsetsMake(1, 0, 0, 0)
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0)
+        addDoneToolBarToKeyboard(cell.textView)
         cell.textView.textColor = UIColor.inviteTableLabelColor()
         cell.selectionStyle = .None
         cell.textViewLeadingConstraint.constant = cell.separatorInset.left
@@ -157,7 +158,7 @@ enum TitleSection: Int {
     func keyboardWillShow(notification: NSNotification)
     {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-            let contentInsets = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: keyboardSize.height, right: 0)
+            let contentInsets = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: keyboardSize.height  + 74, right: 0) // +74 for next button
             tableView.contentInset = contentInsets
             tableView.scrollIndicatorInsets = contentInsets
         }
@@ -170,5 +171,38 @@ enum TitleSection: Int {
             self.tableView.contentInset = contentInsets
             self.tableView.scrollIndicatorInsets = contentInsets
         })
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    {
+        if (segue.identifier == SEGUE_TO_INVITEES) {
+            AppDelegate.addToProtoEventTitle(inputText[TitleSection.Title.rawValue], description: inputText[TitleSection.Description.rawValue])
+        }
+    }
+    
+    // MARK: - UITextView Dismiss Toolbar
+    
+    func addDoneToolBarToKeyboard(textView: UITextView)
+    {
+        var doneToolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 50))
+        doneToolbar.barStyle = .BlackTranslucent
+        doneToolbar.items = [
+            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(title: "Dismiss Keyboard", style: .Done, target: self, action: "doneButtonClickedDismissKeyboard"),
+            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        ]
+        doneToolbar.sizeToFit()
+        textView.inputAccessoryView = doneToolbar
+    }
+    
+    func doneButtonClickedDismissKeyboard()
+    {
+        self.view.endEditing(true)
+    }
+
+    @IBAction func cancel(sender: UIBarButtonItem)
+    {
+        AppDelegate.nilProtoEvent()
+        navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }
 }

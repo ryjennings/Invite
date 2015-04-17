@@ -14,6 +14,7 @@
 {
     [[UIButton appearanceWhenContainedIn:[UINavigationBar class], nil] setBackgroundColor:[UIColor clearColor]];
     [[UIButton appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor clearColor]];
+    [[UIButton appearanceWhenContainedIn:[UIToolbar class], nil] setBackgroundColor:[UIColor clearColor]];
     [[UIButton appearanceWhenContainedIn:[UITableViewCell class], nil] setBackgroundColor:[UIColor clearColor]];
 }
 

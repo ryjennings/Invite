@@ -35,13 +35,14 @@
     // PARSE - Person on Parse
     
     _email = [_emails mutableCopy];
-    _invitee = [[_invitees allObjects] mutableCopy];
+    _invitee = [_invitees mutableCopy];
     
     _iEmails = [NSMutableArray array];
-    [_invitees enumerateObjectsUsingBlock:^(PFObject *invitee, BOOL *stop) {
-        [_iEmails addObject:[invitee objectForKey:EMAIL_KEY]];
-    }];
     
+    [_invitees enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [_iEmails addObject:[((PFObject *)obj) objectForKey:EMAIL_KEY]];
+    }];
+        
     if (_emails.count) {
         PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
         [query whereKey:EMAIL_KEY containedIn:_emails];
@@ -88,11 +89,11 @@
     _event[EVENT_DESCRIPTION_KEY] = _eventDescription;
     _event[EVENT_LOCATION_KEY] = _location;
     
-    if (_coverImage) {
-        NSData *coverData = UIImagePNGRepresentation(_coverImage);
-        PFFile *coverFile = [PFFile fileWithName:@"cover.png" data:coverData];
-        _event[EVENT_COVER_IMAGE_KEY] = coverFile;
-    }
+//    if (_coverImage) {
+//        NSData *coverData = UIImagePNGRepresentation(_coverImage);
+//        PFFile *coverFile = [PFFile fileWithName:@"cover.png" data:coverData];
+//        _event[EVENT_COVER_IMAGE_KEY] = coverFile;
+//    }
     
     [save addObject:_event];
     

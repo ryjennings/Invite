@@ -239,7 +239,7 @@
 
 #pragma mark - Weird methods needed because Swift doesn't like @class
 
-+ (void)addLocationToProtoEvent:(PFObject *)location
++ (void)addToProtoEventLocation:(PFObject *)location
 {
     [AppDelegate user].protoEvent.location = location;
 }
@@ -248,5 +248,17 @@
 {
     return [AppDelegate user].locations;
 }
+
++ (void)addToProtoEventTitle:(NSString *)title description:(NSString *)description
+{
+    [AppDelegate user].protoEvent.title = title;
+    [AppDelegate user].protoEvent.eventDescription = description;
+}
+
++ (void)nilProtoEvent
+{
+    [AppDelegate user].protoEvent = nil;
+}
+
 
 @end
