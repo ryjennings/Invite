@@ -129,13 +129,16 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-    [style setLineSpacing:6];
-    return [NSLocalizedString(@"invitees_newfriends_footer", nil) boundingRectWithSize:CGSizeMake(self.view.frame.size.width - (_tableView.separatorInset.left * 2), CGFLOAT_MAX)
-                                                                               options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                                                            attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}
-                                                                               context:nil].size.height + kFooterPadding;
-
+    if (section == InviteesSectionEmail) {
+        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        [style setLineSpacing:6];
+        return [NSLocalizedString(@"invitees_newfriends_footer", nil) boundingRectWithSize:CGSizeMake(self.view.frame.size.width - (_tableView.separatorInset.left * 2), CGFLOAT_MAX)
+                                                                                   options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
+                                                                                attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}
+                                                                                   context:nil].size.height + kFooterPadding;
+    } else {
+        return 0;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -261,7 +264,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
                                                        context:nil];
             return frame.size.height + 25;
         } else {
-            return 66;
+            return 54;
         }
     } else {
         CGRect frame = [_textViewText boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
@@ -317,7 +320,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 {
     NSDictionary *info = [notification userInfo];
     CGSize size = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, size.height + 74, 0.0); // +74 for next button
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, size.height, 0.0);
     self.tableView.contentInset = contentInsets;
     self.tableView.scrollIndicatorInsets = contentInsets;
     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];

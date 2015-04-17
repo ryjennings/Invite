@@ -9,6 +9,7 @@
 #import "InviteesCell.h"
 
 #import "AppDelegate.h"
+#import "DateFlowLayout.h"
 #import "Invite-Swift.h"
 #import "StringConstants.h"
 
@@ -35,6 +36,8 @@ NSString *const kNoResponse = @"No Response";
 @property (nonatomic, strong) NSMutableArray *maybe;
 @property (nonatomic, strong) NSMutableArray *sorry;
 @property (nonatomic, strong) NSMutableArray *noresponse;
+
+@property (nonatomic, strong) UICollectionViewFlowLayout *flowLayout;
 
 @end
 
@@ -69,6 +72,16 @@ NSString *const kNoResponse = @"No Response";
                 break;
         }
     }];
+
+    self.collectionView.collectionViewLayout = DateFlowLayout.new;
+    self.flowLayout = ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout);
+    
+    self.flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    self.flowLayout.headerReferenceSize = CGSizeMake(50, 50); //width is margin to the left of the header - must be bigger than 0 to show headers correct.
+    self.flowLayout.minimumInteritemSpacing = 10;
+    self.flowLayout.minimumLineSpacing = 17;
+    self.flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    self.collectionView.alwaysBounceVertical = NO;
 }
 
 - (PFObject *)personForKey:(NSString *)key
@@ -137,6 +150,19 @@ NSString *const kNoResponse = @"No Response";
     }
     
     return cell;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionReusableView *reusableview = nil;
+    return nil;
+    if (kind == UICollectionElementKindSectionHeader) {
+        InviteesCollectionHeaderView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER forIndexPath:indexPath];
+        headerView.label.text = @"Going";
+        reusableview = headerView;
+    }
+    
+    return reusableview;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath

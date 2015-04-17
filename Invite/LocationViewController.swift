@@ -252,7 +252,7 @@ enum LocationSection: Int {
     func keyboardWillShow(notification: NSNotification)
     {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-            let contentInsets = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: keyboardSize.height  + 74, right: 0) // +74 for next button
+            let contentInsets = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: keyboardSize.height, right: 0)
             tableView.contentInset = contentInsets
             tableView.scrollIndicatorInsets = contentInsets
         }

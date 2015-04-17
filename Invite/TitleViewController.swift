@@ -26,6 +26,9 @@ enum TitleSection: Int {
         inputText = [String](count: TitleSection.Count.rawValue, repeatedValue: "")
         navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 1, steps: 5)
         tableView.tableHeaderView = tableHeaderView()
+        tableView.separatorStyle = .None
+        tableView.estimatedRowHeight = 100
+        tableView.rowHeight = UITableViewAutomaticDimension
         
         nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
         nextButton.clipsToBounds = true
@@ -39,6 +42,8 @@ enum TitleSection: Int {
     {
         super.viewDidDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        
+//        [self.messageTextView removeObserver:self forKeyPath:@"contentSize"];
     }
 
     func tableHeaderView() -> UIView
@@ -53,7 +58,7 @@ enum TitleSection: Int {
         label.textAlignment = .Center
         label.numberOfLines = 0
         label.font = UIFont.inviteQuestionFont()
-        label.text = "Let's create a new event!\nGive us some details."
+        label.text = "Let's create a new event!"
         view.addSubview(label)
         
         let views = ["label": label]
@@ -83,7 +88,7 @@ enum TitleSection: Int {
     {
         switch (section) {
         case TitleSection.Title.rawValue:
-            return "Title"
+            return nil
         case TitleSection.Description.rawValue:
             return "Description"
         default:
@@ -113,31 +118,41 @@ enum TitleSection: Int {
         let text = inputText[indexPath.row] as String
         var cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
         cell.delegate = self
-        cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "Tap here to add a title" : "Tap here to add a description"
-        cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaRegularFontOfSize(24) : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "First, let's name this\nevent. Tap here\nto add a title." : "Tap here to add a description"
+        cell.placeholderLabel.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
+        cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.inviteQuestionFont() : UIFont.proximaNovaRegularFontOfSize(16)
         cell.placeholderLabel.hidden = Bool(count(text))
-        cell.placeholderLabel.textColor = UIColor(white: 0.9, alpha: 1)
+        cell.placeholderLabel.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteQuestionColor() : UIColor(white: 0.9, alpha: 1)
+        cell.placeholderLabel.numberOfLines = 0
         cell.textView.tag = indexPath.section
         cell.textView.text = text
-        cell.textView.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaRegularFontOfSize(24) : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.textView.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaSemiboldFontOfSize(30) : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.textView.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.textView.textContainer.lineFragmentPadding = 0
         cell.textView.contentInset = indexPath.section == TitleSection.Title.rawValue ? UIEdgeInsetsMake(1, 0, 0, 0) : UIEdgeInsetsMake(1, 0, 0, 0)
         cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0)
         addDoneToolBarToKeyboard(cell.textView)
-        cell.textView.textColor = UIColor.inviteTableLabelColor()
+        cell.textView.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteBlueColor() : UIColor.inviteTableLabelColor()
+        
         cell.selectionStyle = .None
         cell.textViewLeadingConstraint.constant = cell.separatorInset.left
         cell.labelLeadingConstraint.constant = cell.separatorInset.left
+        cell.backgroundColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.clearColor() : UIColor.whiteColor()
+        cell.contentView.backgroundColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.clearColor() : UIColor.whiteColor()
         return cell
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
-    {
-        let text = inputText[indexPath.section] as NSString
-        let textViewWidth = self.view.frame.size.width - (tableView.separatorInset.left * 2)
-        let frame = text.boundingRectWithSize(CGSizeMake(textViewWidth, CGFloat.max), options: (.UsesLineFragmentOrigin | .UsesFontLeading), attributes: [NSFontAttributeName: indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaRegularFontOfSize(24) : UIFont.proximaNovaRegularFontOfSize(16)], context: nil)
-        return frame.size.height + 25
-    }
+//    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+//    {
+//        if (indexPath.section == TitleSection.Title.rawValue) {
+//            return 120
+//        } else {
+//            let text = inputText[indexPath.section] as NSString
+//            let textViewWidth = self.view.frame.size.width - (tableView.separatorInset.left * 2)
+//            let frame = text.boundingRectWithSize(CGSizeMake(textViewWidth, CGFloat.max), options: (.UsesLineFragmentOrigin | .UsesFontLeading), attributes: [NSFontAttributeName: indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaRegularFontOfSize(24) : UIFont.proximaNovaRegularFontOfSize(16)], context: nil)
+//            return frame.size.height + 25
+//        }
+//    }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
@@ -158,7 +173,7 @@ enum TitleSection: Int {
     func keyboardWillShow(notification: NSNotification)
     {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-            let contentInsets = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: keyboardSize.height  + 74, right: 0) // +74 for next button
+            let contentInsets = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: keyboardSize.height, right: 0) // +50 for done bar
             tableView.contentInset = contentInsets
             tableView.scrollIndicatorInsets = contentInsets
         }

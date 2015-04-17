@@ -45,8 +45,8 @@ import MapKit
         mapView.scrollEnabled = false
         mapView.userInteractionEnabled = false
         mapView.layer.cornerRadius = 50
-        mapView.layer.borderColor = UIColor.inviteTableLabelColor().CGColor
-        mapView.layer.borderWidth = 1
+//        mapView.layer.borderColor = UIColor.inviteTableLabelColor().CGColor
+//        mapView.layer.borderWidth = 1
         
         label.textColor = UIColor.inviteTableLabelColor()
         label.font = UIFont.inviteTableLabelFont()

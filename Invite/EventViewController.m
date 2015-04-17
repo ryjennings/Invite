@@ -30,6 +30,7 @@ typedef NS_ENUM(NSUInteger, EventSection) {
 
 @interface EventViewController () <UINavigationControllerDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic, weak) IBOutlet UIButton *createEventButton;
 
 @property (nonatomic) EventMode mode;
 @property (nonatomic, assign) BOOL isCreator;
@@ -47,6 +48,10 @@ typedef NS_ENUM(NSUInteger, EventSection) {
     self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:5 steps:5];
     _isCreator = [((PFObject *)[_event objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
     
+    _createEventButton.layer.cornerRadius = kCornerRadius;
+    _createEventButton.clipsToBounds = YES;
+    _createEventButton.titleLabel.font = [UIFont inviteButtonTitleFont];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
@@ -66,7 +71,7 @@ typedef NS_ENUM(NSUInteger, EventSection) {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return (section == EventSectionRSVP && _isCreator) ? 0 : 1;
+    return (section == EventSectionRSVP && (_mode == EventModePreviewing || _isCreator)) ? 0 : 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
