@@ -129,7 +129,11 @@ enum LocationSection: Int {
         case LocationSection.ActiveLocation.rawValue:
             return 1
         case LocationSection.SavedLocations.rawValue:
-            return AppDelegate.locations().count + 1 // for current location
+            if (AppDelegate.locations() == nil) {
+                return 1
+            } else {
+                return AppDelegate.locations().count + 1 // for current location
+            }
         default:
             return 0
         }

@@ -24,6 +24,7 @@ typedef NS_ENUM(NSUInteger, EventMode) {
 
 typedef NS_ENUM(NSUInteger, EventSection) {
     // EventSectionLocation is in the table header
+    EventSectionMessage,
     EventSectionDetails, // Title, timeframe, description
     EventSectionInvitees,
     EventSectionCount
@@ -58,11 +59,11 @@ typedef NS_ENUM(NSUInteger, EventSection) {
         for (PFObject *invitee in [AppDelegate user].protoEvent.invitees) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
-                [rsvp setValue:@(EventResponseNone) forKey:[AppDelegate keyFromEmail:email]];
+                [rsvp setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:email]];
             }
         }
         for (NSString *email in [AppDelegate user].protoEvent.emails) {
-            [rsvp setValue:@(EventResponseNone) forKey:[AppDelegate keyFromEmail:email]];
+            [rsvp setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:email]];
         }
         _rsvpDictionary = rsvp;
     }
@@ -113,6 +114,8 @@ typedef NS_ENUM(NSUInteger, EventSection) {
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     switch (section) {
+        case EventSectionDetails:
+            return @"Event Details";
         case EventSectionInvitees:
             return @"Invited Friends";
         default:
@@ -134,7 +137,17 @@ typedef NS_ENUM(NSUInteger, EventSection) {
 {
     if (_mode == EventModePreviewing) {
         
-        if (indexPath.section == EventSectionDetails) {
+        if (indexPath.section == EventSectionMessage) {
+            
+            BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
+            cell.textLabel.text = @"Alright, we're ready to send this invite off! Please review, and if everything looks alright, tap the button below!";
+            cell.textLabel.font = [UIFont inviteQuestionFont];
+            cell.textLabel.textColor = [UIColor inviteQuestionColor];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
+            cell.textLabel.numberOfLines = 0;
+            return cell;
+            
+        } else if (indexPath.section == EventSectionDetails) {
         
             BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
             

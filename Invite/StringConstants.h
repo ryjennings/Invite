@@ -7,10 +7,10 @@
 //
 
 typedef NS_ENUM(NSUInteger, EventResponse) {
-    EventResponseNone,
     EventResponseGoing,
     EventResponseMaybe,
-    EventResponseSorry
+    EventResponseSorry,
+    EventResponseNoResponse
 };
 
 #define kCornerRadius 6.f

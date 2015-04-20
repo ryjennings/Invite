@@ -112,7 +112,7 @@
         for (PFObject *invitee in _invitee) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
-                [rsvp setValue:@(EventResponseNone) forKey:[AppDelegate keyFromEmail:email]];
+                [rsvp setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:email]];
             }
         }
         _event[EVENT_RSVP_KEY] = rsvp;

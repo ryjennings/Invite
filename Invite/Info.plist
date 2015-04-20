@@ -28,31 +28,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>104</string>
+	<string>105</string>
 	<key>FacebookAppID</key>
 	<string>825836284140500</string>
 	<key>FacebookDisplayName</key>
 	<string>Invite</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UIStatusBarHidden</key>
-	<false/>
-	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleLightContent</string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Invite app</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>ProximaNova-Black.otf</string>
@@ -73,7 +57,23 @@
 		<string>ProximaNovaCond-Semibold.otf</string>
 		<string>ProximaNovaCond-SemiboldIt.otf</string>
 	</array>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Invite app</string>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

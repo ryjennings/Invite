@@ -289,7 +289,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     for (BusyDetails *busyDetail in relavantBusyTimes) {
         [[AppDelegate user].protoEvent.invitees enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             if ([busyDetail.email isEqualToString:[((PFObject *)obj) objectForKey:EMAIL_KEY]] && withinHour(busyDetail)) {
-                [unavailablePersons addObject:busyDetail.name];
+                [unavailablePersons addObject:(busyDetail.name ? busyDetail.name : busyDetail.email)];
             }
         }];
     }
