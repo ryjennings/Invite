@@ -103,7 +103,7 @@ extension UIFont
     
     class func inviteNavigationButtonFont() -> UIFont
     {
-        return UIFont.proximaNovaRegularFontOfSize(14)
+        return UIFont.proximaNovaRegularFontOfSize(16)
     }
     
     class func inviteTableHeaderFont() -> UIFont

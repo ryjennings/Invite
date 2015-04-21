@@ -62,6 +62,11 @@ extension UIColor
         return UIColor(red: 64/255, green: 102/255, blue: 128/255, alpha: 1)
     }
     
+    class func inviteSlateButtonColor() -> UIColor
+    {
+        return UIColor(red: 0.29, green: 0.34, blue: 0.37, alpha: 1)
+    }
+    
     // MARK: - App Styles
     
     class func inviteNavigationSubviewColor() -> UIColor

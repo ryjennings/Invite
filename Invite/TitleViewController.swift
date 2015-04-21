@@ -42,8 +42,6 @@ enum TitleSection: Int {
     {
         super.viewDidDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        
-//        [self.messageTextView removeObserver:self forKeyPath:@"contentSize"];
     }
 
     func tableHeaderView() -> UIView
@@ -118,7 +116,7 @@ enum TitleSection: Int {
         let text = inputText[indexPath.row] as String
         var cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
         cell.delegate = self
-        cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "First, let's name this\nevent. Tap here\nto add a title." : "Tap here to add a description"
+        cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "First, let's name this event. Tap here to add a title." : "Tap here to add a description"
         cell.placeholderLabel.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.inviteQuestionFont() : UIFont.proximaNovaRegularFontOfSize(16)
         cell.placeholderLabel.hidden = Bool(count(text))
@@ -142,18 +140,6 @@ enum TitleSection: Int {
         cell.contentView.backgroundColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.clearColor() : UIColor.whiteColor()
         return cell
     }
-    
-//    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
-//    {
-//        if (indexPath.section == TitleSection.Title.rawValue) {
-//            return 120
-//        } else {
-//            let text = inputText[indexPath.section] as NSString
-//            let textViewWidth = self.view.frame.size.width - (tableView.separatorInset.left * 2)
-//            let frame = text.boundingRectWithSize(CGSizeMake(textViewWidth, CGFloat.max), options: (.UsesLineFragmentOrigin | .UsesFontLeading), attributes: [NSFontAttributeName: indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaRegularFontOfSize(24) : UIFont.proximaNovaRegularFontOfSize(16)], context: nil)
-//            return frame.size.height + 25
-//        }
-//    }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {

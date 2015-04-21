@@ -3,6 +3,7 @@
 //
 
 #import "AppDelegate.h"
+#import "OBGradientView.h"
 #import "StringConstants.h"
 #import "TimeframeCollectionCell.h"
 #import "TimeframeCollectionLayout.h"

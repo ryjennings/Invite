@@ -10,8 +10,13 @@ import UIKit
 import MapKit
 import ParseUI
 
-@objc(DashboardCell) class DashboardCell: UICollectionViewCell
+@objc(DashboardCell) class DashboardCell: UICollectionViewCell, MKMapViewDelegate
 {
+    let titleFont = UIFont.proximaNovaLightFontOfSize(28)
+    let timeframeFont = UIFont.proximaNovaSemiboldFontOfSize(14)
+    let descriptionFont = UIFont.proximaNovaRegularFontOfSize(14)
+    let newlineFont = UIFont.proximaNovaRegularFontOfSize(12)
+    
     var event: PFObject! {
         didSet {
             configureEvent()
@@ -22,17 +27,32 @@ import ParseUI
     var mapView = MKMapView()
     var label = UILabel()
     var annotation: MKPlacemark?
+    var mapGradient = OBGradientView()
+    var labelGradient = OBGradientView()
     
     override init(frame: CGRect)
     {
         super.init(frame: frame)
+        mapView.delegate = self
         prepareConstraints()
     }
     
     required init(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
+        mapView.delegate = self
         prepareConstraints()
+    }
+    
+    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView!
+    {
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier("PinIdentifier") as? MKPinAnnotationView
+        if (pinView == nil) {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "PinIdentifier")
+//            pinView?.image = UIImage(named: "confirm_location")
+            pinView?.animatesDrop = true
+        }
+        return pinView
     }
     
     func configureEvent()
@@ -46,11 +66,11 @@ import ParseUI
         } else {
             t = "No title"
         }
-        labelString.appendAttributedString(NSAttributedString(string: t, attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(30), NSForegroundColorAttributeName: UIColor.inviteBlueColor()]))
-        labelString.appendAttributedString(NSAttributedString(string: "\n\n"))
+        labelString.appendAttributedString(NSAttributedString(string: t, attributes: [NSFontAttributeName: titleFont, NSForegroundColorAttributeName: UIColor.inviteBlueColor()]))
+        labelString.appendAttributedString(NSAttributedString(string: "\n\n", attributes: [NSFontAttributeName: newlineFont]))
         
-        labelString.appendAttributedString(NSAttributedString(string: AppDelegate.presentationTimeframeFromStartDate(event.objectForKey(EVENT_START_DATE_KEY) as! NSDate, endDate: event.objectForKey(EVENT_END_DATE_KEY) as! NSDate) as String, attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(14), NSForegroundColorAttributeName: UIColor.lightGrayColor()]))
-        labelString.appendAttributedString(NSAttributedString(string: "\n\n"))
+        labelString.appendAttributedString(NSAttributedString(string: AppDelegate.presentationTimeframeFromStartDate(event.objectForKey(EVENT_START_DATE_KEY) as! NSDate, endDate: event.objectForKey(EVENT_END_DATE_KEY) as! NSDate) as String, attributes: [NSFontAttributeName: timeframeFont, NSForegroundColorAttributeName: UIColor.inviteSlateButtonColor()]))
+        labelString.appendAttributedString(NSAttributedString(string: "\n\n", attributes: [NSFontAttributeName: newlineFont]))
         
         var d = ""
         if let description = event.objectForKey(EVENT_DESCRIPTION_KEY) as? String {
@@ -58,7 +78,9 @@ import ParseUI
         } else {
             d = "No description"
         }
-        labelString.appendAttributedString(NSAttributedString(string: d, attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(20), NSForegroundColorAttributeName: UIColor.inviteTableLabelColor()]))
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = 4
+        labelString.appendAttributedString(NSAttributedString(string: d, attributes: [NSFontAttributeName: descriptionFont, NSForegroundColorAttributeName: UIColor.inviteSlateButtonColor(), NSParagraphStyleAttributeName: style]))
         
         label.attributedText = labelString
 //        if ((event.objectForKey(EVENT_COVER_IMAGE_KEY)) != nil) {
@@ -117,13 +139,30 @@ import ParseUI
         eventView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[mapView]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["mapView": mapView]))
         eventView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[mapView]", options: NSLayoutFormatOptions(0), metrics: nil, views: ["mapView": mapView]))
         eventView.addConstraint(NSLayoutConstraint(item: mapView, attribute: .Height, relatedBy: .Equal, toItem: eventView, attribute: .Height, multiplier: 0.5, constant: 0))
+        
+        // Map Gradient
+        mapGradient.setTranslatesAutoresizingMaskIntoConstraints(false)
+        mapGradient.colors = [UIColor.clearColor(), UIColor(white: 0, alpha: 0.1)]
+        eventView.addSubview(mapGradient)
+        eventView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[mapGradient]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["mapGradient": mapGradient]))
+        eventView.addConstraint(NSLayoutConstraint(item: mapGradient, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 30))
+        eventView.addConstraint(NSLayoutConstraint(item: mapGradient, attribute: .Bottom, relatedBy: .Equal, toItem: mapView, attribute: .Bottom, multiplier: 1, constant: 0))
 
         // Label
         label.setTranslatesAutoresizingMaskIntoConstraints(false)
-        label.numberOfLines = 10
+        label.numberOfLines = 0
         eventView.addSubview(label)
         eventView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[label]-30-|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        eventView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[mapView]-12-[label]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        eventView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[mapView]-15-[label]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        
+        // Label Gradient
+        labelGradient.setTranslatesAutoresizingMaskIntoConstraints(false)
+        labelGradient.colors = [UIColor(white: 1, alpha: 0),  UIColor.whiteColor(), UIColor.whiteColor()]
+        labelGradient.locations = [0, 0.75, 1]
+        eventView.addSubview(labelGradient)
+        eventView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[labelGradient]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["labelGradient": labelGradient]))
+        eventView.addConstraint(NSLayoutConstraint(item: labelGradient, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 50))
+        eventView.addConstraint(NSLayoutConstraint(item: labelGradient, attribute: .Bottom, relatedBy: .Equal, toItem: eventView, attribute: .Bottom, multiplier: 1, constant: 0))
     }
     
     override func layoutSubviews()

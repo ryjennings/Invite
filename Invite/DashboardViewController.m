@@ -28,15 +28,24 @@
 {
     [super viewDidLoad];
     
-    [_createEventButton setTitle:[NSLocalizedString(@"dashboard_button_addnewevent", nil) uppercaseString] forState:UIControlStateNormal];
-    _createEventButton.layer.cornerRadius = kCornerRadius;
-    _createEventButton.clipsToBounds = YES;
-    _createEventButton.titleLabel.font = [UIFont inviteButtonTitleFont];
-    _createEventButtonLeadingConstraint.constant = kDashboardPadding;
+    self.view.backgroundColor = [UIColor inviteSlateColor];
+    
+    [_createEventButton setTitle:NSLocalizedString(@"dashboard_button_addnewevent", nil) forState:UIControlStateNormal];
+    [_createEventButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    _createEventButton.layer.cornerRadius = kCornerRadius;
+//    _createEventButton.clipsToBounds = YES;
+    _createEventButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
+    _createEventButton.backgroundColor = [UIColor inviteSlateButtonColor];
+
+//    _createEventButtonLeadingConstraint.constant = kDashboardPadding;
     
     [_settingsButton setTitle:NSLocalizedString(@"navigation_button_settings", nil)];
     
     [_collectionView registerClass:[DashboardCell class] forCellWithReuseIdentifier:DASHBOARD_CELL_IDENTIFIER];
+    
+    self.navigationItem.title = @"Invite";
+    
+    [self configureOnboarding];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseLoaded:) name:PARSE_LOADED_NOTIFICATION object:nil];
@@ -50,6 +59,17 @@
 - (IBAction)settings:(id)sender
 {
     
+}
+
+- (void)configureOnboarding
+{
+    DashboardOnboardingView *onboarding = [[DashboardOnboardingView alloc] init];
+    onboarding.translatesAutoresizingMaskIntoConstraints = NO;
+    onboarding.backgroundColor = [UIColor clearColor];
+    [self.view insertSubview:onboarding atIndex:0];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[onboarding(280)]" options:0 metrics:nil views:@{@"onboarding": onboarding}]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
 }
 
 #pragma mark - Navigation

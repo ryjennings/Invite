@@ -58,6 +58,10 @@
 		0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377C1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift */; };
 		074437801AE02C9C002A6C4D /* DateFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */; };
 		074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074AA5921A9C353C009DC152 /* LaunchViewController.m */; };
+		074ABE931AE47ACE00C093C7 /* TimeframePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */; };
+		074ABE951AE49A3500C093C7 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE941AE49A3500C093C7 /* DateCell.swift */; };
+		074ABE971AE4A34F00C093C7 /* TimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE961AE4A34F00C093C7 /* TimeCell.swift */; };
+		074ABE991AE4A53000C093C7 /* ClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE981AE4A53000C093C7 /* ClockView.swift */; };
 		074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */; };
 		074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074FF55B1A965924000483FF /* TimeframeViewController.m */; };
 		075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075249E51ACB397C00D279DA /* InviteTheme.swift */; };
@@ -87,6 +91,8 @@
 		07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE501AAA2F17002B9962 /* EventViewController.m */; };
 		07BC8E391ACB13EB0050C4E9 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */; };
 		07BC8E3C1ACB29CE0050C4E9 /* DashboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BC8E3B1ACB29CE0050C4E9 /* DashboardCell.swift */; };
+		07D2D9C51AE5A6D4008E1733 /* DashboardOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */; };
+		07D2D9C91AE616E2008E1733 /* OBGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D2D9C81AE616E2008E1733 /* OBGradientView.m */; };
 		07D9DD351AD83789008FF016 /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD341AD83789008FF016 /* BasicCell.swift */; };
 		07D9DD371AD8386B008FF016 /* InputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD361AD8386B008FF016 /* InputCell.swift */; };
 		07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD381AD83E42008FF016 /* RadioCell.swift */; };
@@ -174,6 +180,10 @@
 		0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateFlowLayout.m; sourceTree = "<group>"; };
 		074AA5911A9C353C009DC152 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
 		074AA5921A9C353C009DC152 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
+		074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframePickerViewController.swift; sourceTree = "<group>"; };
+		074ABE941AE49A3500C093C7 /* DateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
+		074ABE961AE4A34F00C093C7 /* TimeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeCell.swift; sourceTree = "<group>"; };
+		074ABE981AE4A53000C093C7 /* ClockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClockView.swift; sourceTree = "<group>"; };
 		074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframeHourCell.swift; sourceTree = "<group>"; };
 		074FF55A1A965924000483FF /* TimeframeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeViewController.h; sourceTree = "<group>"; };
 		074FF55B1A965924000483FF /* TimeframeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeViewController.m; sourceTree = "<group>"; };
@@ -230,6 +240,9 @@
 		07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		07BC8E3B1ACB29CE0050C4E9 /* DashboardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardCell.swift; sourceTree = "<group>"; };
 		07C2098C1A8C2159002B3961 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
+		07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardOnboardingView.swift; sourceTree = "<group>"; };
+		07D2D9C71AE616E2008E1733 /* OBGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBGradientView.h; sourceTree = "<group>"; };
+		07D2D9C81AE616E2008E1733 /* OBGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBGradientView.m; sourceTree = "<group>"; };
 		07D9DD341AD83789008FF016 /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCell.swift; sourceTree = "<group>"; };
 		07D9DD361AD8386B008FF016 /* InputCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputCell.swift; sourceTree = "<group>"; };
 		07D9DD381AD83E42008FF016 /* RadioCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioCell.swift; sourceTree = "<group>"; };
@@ -365,6 +378,7 @@
 				075249E51ACB397C00D279DA /* InviteTheme.swift */,
 				0744377E1AE02C9C002A6C4D /* DateFlowLayout.h */,
 				0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */,
+				07D2D9C61AE616E2008E1733 /* OBGradientView */,
 				075D10621ADC859D00C86130 /* SDWebImage */,
 				072836771AD3188700B158AC /* Categories */,
 				078924701AB369C5005EE7FB /* Launch */,
@@ -427,6 +441,8 @@
 				075D10951ADC922A00C86130 /* ProfileCell.m */,
 				074437771AE025D0002A6C4D /* InviteesCell.h */,
 				074437781AE025D0002A6C4D /* InviteesCell.m */,
+				074ABE941AE49A3500C093C7 /* DateCell.swift */,
+				074ABE961AE4A34F00C093C7 /* TimeCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -508,6 +524,7 @@
 				07B65A321AA4D81700A6F1A2 /* TimeframeCollectionLayout.h */,
 				07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */,
 				074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */,
+				074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */,
 			);
 			name = Timeframe;
 			sourceTree = "<group>";
@@ -526,6 +543,7 @@
 			children = (
 				07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */,
 				0728367A1AD43F5700B158AC /* ProgressView.swift */,
+				074ABE981AE4A53000C093C7 /* ClockView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -535,6 +553,7 @@
 			children = (
 				071F694B1A8C143F009A8380 /* DashboardViewController.h */,
 				071F694C1A8C143F009A8380 /* DashboardViewController.m */,
+				07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */,
 			);
 			name = Dashboard;
 			sourceTree = "<group>";
@@ -563,6 +582,15 @@
 				073845171A969CFB00E2929A /* Timeframe.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		07D2D9C61AE616E2008E1733 /* OBGradientView */ = {
+			isa = PBXGroup;
+			children = (
+				07D2D9C71AE616E2008E1733 /* OBGradientView.h */,
+				07D2D9C81AE616E2008E1733 /* OBGradientView.m */,
+			);
+			path = OBGradientView;
 			sourceTree = "<group>";
 		};
 		07D9DD3E1AD880FD008FF016 /* Title/Description */ = {
@@ -695,6 +723,8 @@
 				07BC8E391ACB13EB0050C4E9 /* ProfileImageView.swift in Sources */,
 				07D9DD371AD8386B008FF016 /* InputCell.swift in Sources */,
 				07D9DD3D1AD880F4008FF016 /* TitleViewController.swift in Sources */,
+				07D2D9C91AE616E2008E1733 /* OBGradientView.m in Sources */,
+				07D2D9C51AE5A6D4008E1733 /* DashboardOnboardingView.swift in Sources */,
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
 				07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */,
 				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
@@ -705,9 +735,11 @@
 				075D10961ADC922A00C86130 /* ProfileCell.m in Sources */,
 				074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */,
 				0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */,
+				074ABE971AE4A34F00C093C7 /* TimeCell.swift in Sources */,
 				075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */,
 				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,
 				074437801AE02C9C002A6C4D /* DateFlowLayout.m in Sources */,
+				074ABE931AE47ACE00C093C7 /* TimeframePickerViewController.swift in Sources */,
 				075D10881ADC859D00C86130 /* SDWebImageDecoder.m in Sources */,
 				0728366E1AD2F1FC00B158AC /* UIFont+Invite.swift in Sources */,
 				075D108B1ADC859D00C86130 /* SDWebImageManager.m in Sources */,
@@ -715,6 +747,7 @@
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
 				074437791AE025D0002A6C4D /* InviteesCell.m in Sources */,
 				075D10911ADC859D00C86130 /* UIImageView+HighlightedWebCache.m in Sources */,
+				074ABE991AE4A53000C093C7 /* ClockView.swift in Sources */,
 				075D108E1ADC859D00C86130 /* UIImage+GIF.m in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
 				075D10861ADC859D00C86130 /* SDImageCache.m in Sources */,
@@ -722,6 +755,7 @@
 				075D108A1ADC859D00C86130 /* SDWebImageDownloaderOperation.m in Sources */,
 				07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */,
 				07D9DD3B1AD868B5008FF016 /* MapCell.swift in Sources */,
+				074ABE951AE49A3500C093C7 /* DateCell.swift in Sources */,
 				075D108D1ADC859D00C86130 /* UIButton+WebCache.m in Sources */,
 				075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */,
 				075D10891ADC859D00C86130 /* SDWebImageDownloader.m in Sources */,

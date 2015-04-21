@@ -85,6 +85,8 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define INVITEES_CELL_IDENTIFIER @"InviteesCellIdentifier"
 #define INVITEES_COLLECTION_CELL_IDENTIFIER @"InviteesCollectionCellIdentifier"
 #define INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER @"InviteesCollectionHeaderViewIdentifier"
+#define DATE_CELL_IDENTIFIER @"DateCellIdentifier"
+#define TIME_CELL_IDENTIFIER @"TimeCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

@@ -138,7 +138,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     label.textAlignment = NSTextAlignmentCenter;
     label.numberOfLines = 0;
     label.font = [UIFont inviteQuestionFont];
-    label.text = @"When would you like this\nevent to start and end?";
+    label.text = @"When would you like this event to start and end?";
     [_headerView addSubview:label];
     [_headerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[label]-15-|" options:0 metrics:nil views:@{@"label": label}]];
     [_headerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-34-[label]" options:0 metrics:nil views:@{@"label": label}]];

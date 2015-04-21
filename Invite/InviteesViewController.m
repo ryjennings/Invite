@@ -76,7 +76,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     label.textAlignment = NSTextAlignmentCenter;
     label.numberOfLines = 0;
     label.font = [UIFont inviteQuestionFont];
-    label.text = @"Who would you like to\ninvite to this event?";
+    label.text = @"Who would you like to invite to this event?";
     [view addSubview:label];
     
     [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[label]-15-|" options:0 metrics:nil views:@{@"label": label}]];

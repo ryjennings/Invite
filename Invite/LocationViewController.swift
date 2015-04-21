@@ -72,7 +72,7 @@ enum LocationSection: Int {
         label.textAlignment = .Center
         label.numberOfLines = 0
         label.font = UIFont.inviteQuestionFont()
-        label.text = "Where are you having\nthis event?"
+        label.text = "Where are you having this event?"
         view.addSubview(label)
         
         let views = ["bar": searchBarView, "label": label]
