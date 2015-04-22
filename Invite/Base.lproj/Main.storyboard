@@ -33,7 +33,16 @@
                     <view key="view" contentMode="scaleToFill" id="t6P-DO-OKW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="wV3-Ik-4TE">
+                                <rect key="frame" x="225" y="224" width="151" height="151"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.16862745100000001" green="0.20392156859999999" blue="0.24313725489999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="wV3-Ik-4TE" secondAttribute="centerX" id="6OA-GG-E5s"/>
+                            <constraint firstAttribute="centerY" secondItem="wV3-Ik-4TE" secondAttribute="centerY" id="8tx-A5-xbb"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Go7-fM-gyL"/>
                     <connections>
@@ -200,7 +209,7 @@
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Oc-69-qeH">
                                             <rect key="frame" x="15" y="15" width="570" height="44"/>
-                                            <state key="normal" title="CREATE EVENT">
+                                            <state key="normal" title="Create this event!">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
@@ -297,7 +306,7 @@
                                                                             <constraint firstAttribute="height" constant="20" id="Hp2-C9-HlG"/>
                                                                         </constraints>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                 </subviews>
@@ -323,7 +332,7 @@
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W7r-H8-ZKK">
                                                                 <rect key="frame" x="0.0" y="0.0" width="80" height="79"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                         </subviews>
@@ -429,7 +438,7 @@
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hRa-T8-pUx">
                                             <rect key="frame" x="15" y="15" width="570" height="44"/>
-                                            <state key="normal" title="NEXT">
+                                            <state key="normal" title="Next, invite people!">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
@@ -538,7 +547,7 @@
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kdF-tv-MTt">
                                             <rect key="frame" x="15" y="15" width="570" height="44"/>
-                                            <state key="normal" title="NEXT">
+                                            <state key="normal" title="Next, choose a time!">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
@@ -695,7 +704,7 @@
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hOT-JU-aHJ">
                                             <rect key="frame" x="15" y="15" width="570" height="44"/>
-                                            <state key="normal" title="NEXT">
+                                            <state key="normal" title="Next, review and send!">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
@@ -855,10 +864,10 @@
             </objects>
             <point key="canvasLocation" x="1736" y="-947"/>
         </scene>
-        <!--View Controller-->
+        <!--Settings-->
         <scene sceneID="t5L-CI-T9N">
             <objects>
-                <viewController id="sW5-JF-rN3" sceneMemberID="viewController">
+                <viewController id="sW5-JF-rN3" customClass="SettingsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="2uM-eZ-Me9"/>
                         <viewControllerLayoutGuide type="bottom" id="xN9-Xd-9e3"/>
@@ -867,9 +876,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="vov-OC-eDo">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="vov-OC-eDo">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.89411764709999997" green="0.92549019610000005" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="PPh-MV-NyJ">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="BasicCellIdentifier" textLabel="NGT-m0-eOg" style="IBUITableViewCellStyleDefault" id="kvm-lJ-zv9" customClass="BasicCell">
                                         <autoresizingMask key="autoresizingMask"/>
@@ -896,8 +910,12 @@
                             <constraint firstItem="vov-OC-eDo" firstAttribute="bottom" secondItem="xN9-Xd-9e3" secondAttribute="top" id="dJO-uG-EAx"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="nP6-78-D6n">
-                        <barButtonItem key="rightBarButtonItem" title="Close" id="czn-Tk-SBX"/>
+                    <navigationItem key="navigationItem" title="Settings" id="nP6-78-D6n">
+                        <barButtonItem key="rightBarButtonItem" title="Close" id="czn-Tk-SBX">
+                            <connections>
+                                <action selector="close:" destination="sW5-JF-rN3" id="v3d-QI-sxx"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="121-GU-6fP" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -925,7 +943,7 @@
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="897-Sr-BCQ">
                                             <rect key="frame" x="15" y="15" width="570" height="44"/>
-                                            <state key="normal" title="NEXT">
+                                            <state key="normal" title="Next, select a location!">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
@@ -1247,8 +1265,28 @@
             </objects>
             <point key="canvasLocation" x="3851" y="-259"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="aa1-PP-hdq">
+            <objects>
+                <viewController id="kYY-fq-kt5" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="50R-Cv-FXk"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfq-yl-XFI"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Eug-MB-usr">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gaS-PZ-UAZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
     </scenes>
+    <resources>
+        <image name="logo" width="151" height="151"/>
+    </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="bir-cY-Gg3"/>
+        <segue reference="Ad0-0I-kb4"/>
     </inferredMetricsTieBreakers>
 </document>

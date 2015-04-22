@@ -44,7 +44,7 @@ enum LocationSection: Int {
         
         nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
         nextButton.clipsToBounds = true
-        nextButton.titleLabel!.font = UIFont.inviteButtonTitleFont()
+        nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
         
         navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 4, steps: 5)
 

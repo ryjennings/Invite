@@ -4,6 +4,7 @@
 
 #import "AppDelegate.h"
 #import "OBGradientView.h"
+#import "SDiPhoneVersion.h"
 #import "StringConstants.h"
 #import "TimeframeCollectionCell.h"
 #import "TimeframeCollectionLayout.h"

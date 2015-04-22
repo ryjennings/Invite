@@ -14,12 +14,13 @@
 #import "LoginViewController.h"
 #import "StringConstants.h"
 #import "Invite-Swift.h"
+#import "SDiPhoneVersion.h"
 
 @interface DashboardViewController ()
 @property (nonatomic, weak) IBOutlet UIButton *createEventButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *settingsButton;
 @property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
-@property (nonatomic, weak) IBOutlet NSLayoutConstraint *createEventButtonLeadingConstraint;
+@property (nonatomic, assign) BOOL isParseLoaded;
 @end
 
 @implementation DashboardViewController
@@ -28,24 +29,20 @@
 {
     [super viewDidLoad];
     
+    _isParseLoaded = NO;
+    
     self.view.backgroundColor = [UIColor inviteSlateColor];
     
     [_createEventButton setTitle:NSLocalizedString(@"dashboard_button_addnewevent", nil) forState:UIControlStateNormal];
     [_createEventButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    _createEventButton.layer.cornerRadius = kCornerRadius;
-//    _createEventButton.clipsToBounds = YES;
     _createEventButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
     _createEventButton.backgroundColor = [UIColor inviteSlateButtonColor];
-
-//    _createEventButtonLeadingConstraint.constant = kDashboardPadding;
     
     [_settingsButton setTitle:NSLocalizedString(@"navigation_button_settings", nil)];
     
     [_collectionView registerClass:[DashboardCell class] forCellWithReuseIdentifier:DASHBOARD_CELL_IDENTIFIER];
     
     self.navigationItem.title = @"Invite";
-    
-    [self configureOnboarding];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseLoaded:) name:PARSE_LOADED_NOTIFICATION object:nil];
@@ -66,10 +63,39 @@
     DashboardOnboardingView *onboarding = [[DashboardOnboardingView alloc] init];
     onboarding.translatesAutoresizingMaskIntoConstraints = NO;
     onboarding.backgroundColor = [UIColor clearColor];
-    [self.view insertSubview:onboarding atIndex:0];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[onboarding(280)]" options:0 metrics:nil views:@{@"onboarding": onboarding}]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+
+    if ([SDiPhoneVersion deviceSize] == iPhone35inch || [SDiPhoneVersion deviceSize] == iPhone4inch) {
+        
+        UIScrollView *scrollView = [[UIScrollView alloc] init];
+        scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+        scrollView.backgroundColor = [UIColor clearColor];
+        scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+        [self.view addSubview:scrollView];
+        [scrollView addSubview:onboarding];
+        
+        OBGradientView *gradientView = [[OBGradientView alloc] init];
+        gradientView.colors = @[[UIColor inviteSlateClearColor], [UIColor inviteSlateColor]];
+        gradientView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addSubview:gradientView];
+
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[gradientView]|" options:0 metrics:nil views:@{@"gradientView": gradientView}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[gradientView(30)]-60-|" options:0 metrics:nil views:@{@"gradientView": gradientView}]];
+
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:@{@"scrollView": scrollView}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-64-[scrollView]-60-|" options:0 metrics:nil views:@{@"scrollView": scrollView}]];
+
+        [scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[onboarding(280)]" options:0 metrics:nil views:@{@"onboarding": onboarding}]];
+        [scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[onboarding]|" options:0 metrics:nil views:@{@"onboarding": onboarding}]];
+        [scrollView addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:scrollView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+        
+    } else {
+        
+        [self.view addSubview:onboarding];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[onboarding(300)]" options:0 metrics:nil views:@{@"onboarding": onboarding}]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+        
+    }
 }
 
 #pragma mark - Navigation
@@ -90,7 +116,8 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [AppDelegate user].events.count;
+    NSInteger items = [AppDelegate user].events.count;
+    return items;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -131,6 +158,12 @@
 
 - (void)parseLoaded:(NSNotification *)notification
 {
+    _isParseLoaded = YES;
+
+    if (![AppDelegate user].events) {
+        [self configureOnboarding];
+    }
+
     [_collectionView reloadData];
 }
 

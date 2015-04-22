@@ -52,7 +52,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
     _nextButton.layer.cornerRadius = kCornerRadius;
     _nextButton.clipsToBounds = YES;
-    _nextButton.titleLabel.font = [UIFont inviteButtonTitleFont];
+    _nextButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
 
     _tableView.tableHeaderView = [self tableHeaderView];
 

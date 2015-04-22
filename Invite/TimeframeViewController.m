@@ -107,7 +107,7 @@ NSString *const TimeframeCollectionCellId = @"TimeframeCollectionCellId";
     
     _nextButton.layer.cornerRadius = kCornerRadius;
     _nextButton.clipsToBounds = YES;
-    _nextButton.titleLabel.font = [UIFont inviteButtonTitleFont];
+    _nextButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
 
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat daysCellWidth = (screenRect.size.width - 4) / 5;

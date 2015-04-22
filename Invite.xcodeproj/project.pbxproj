@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */; };
+		070DAA4F1AE85D6900E111F6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */; };
 		071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 071F694C1A8C143F009A8380 /* DashboardViewController.m */; };
 		071F694F1A8C1A3D009A8380 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 071F694E1A8C1A3D009A8380 /* Localizable.strings */; };
 		072463161A8BD3AA00820834 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 072463141A8BD3AA00820834 /* Bolts.framework */; };
@@ -116,6 +118,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		070DAA4B1AE8489C00E111F6 /* SDiPhoneVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDiPhoneVersion.h; sourceTree = "<group>"; };
+		070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDiPhoneVersion.m; sourceTree = "<group>"; };
+		070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		071F694B1A8C143F009A8380 /* DashboardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashboardViewController.h; sourceTree = "<group>"; };
 		071F694C1A8C143F009A8380 /* DashboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashboardViewController.m; sourceTree = "<group>"; };
 		071F694E1A8C1A3D009A8380 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -290,6 +295,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		070DAA4A1AE8489C00E111F6 /* SDiPhoneVersion */ = {
+			isa = PBXGroup;
+			children = (
+				070DAA4B1AE8489C00E111F6 /* SDiPhoneVersion.h */,
+				070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */,
+			);
+			path = SDiPhoneVersion;
+			sourceTree = "<group>";
+		};
+		070DAA501AE85D7300E111F6 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 		0724632E1A8BD44200820834 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -378,6 +400,7 @@
 				075249E51ACB397C00D279DA /* InviteTheme.swift */,
 				0744377E1AE02C9C002A6C4D /* DateFlowLayout.h */,
 				0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */,
+				070DAA4A1AE8489C00E111F6 /* SDiPhoneVersion */,
 				07D2D9C61AE616E2008E1733 /* OBGradientView */,
 				075D10621ADC859D00C86130 /* SDWebImage */,
 				072836771AD3188700B158AC /* Categories */,
@@ -389,6 +412,7 @@
 				07A313291A96AA410066EE3E /* Timeframe */,
 				078924721AB369DC005EE7FB /* Location */,
 				07B8EE521AAA2F22002B9962 /* Event */,
+				070DAA501AE85D7300E111F6 /* Settings */,
 				074B03091AD638C600B539A9 /* Cells */,
 				07BC8E3A1ACB13EF0050C4E9 /* Views */,
 				07D01A341A9A9E7500860650 /* Model */,
@@ -743,6 +767,7 @@
 				075D10881ADC859D00C86130 /* SDWebImageDecoder.m in Sources */,
 				0728366E1AD2F1FC00B158AC /* UIFont+Invite.swift in Sources */,
 				075D108B1ADC859D00C86130 /* SDWebImageManager.m in Sources */,
+				070DAA4F1AE85D6900E111F6 /* SettingsViewController.swift in Sources */,
 				07D9DD351AD83789008FF016 /* BasicCell.swift in Sources */,
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
 				074437791AE025D0002A6C4D /* InviteesCell.m in Sources */,
@@ -778,6 +803,7 @@
 				075D10921ADC859D00C86130 /* UIImageView+WebCache.m in Sources */,
 				0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */,
 				074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */,
+				070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

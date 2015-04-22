@@ -33,7 +33,7 @@ enum TimeframeSection: Int {
         
         nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
         nextButton.clipsToBounds = true
-        nextButton.titleLabel!.font = UIFont.inviteButtonTitleFont()
+        nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
         
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
