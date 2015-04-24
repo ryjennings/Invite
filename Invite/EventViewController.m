@@ -30,7 +30,7 @@ typedef NS_ENUM(NSUInteger, EventSection) {
     EventSectionCount
 };
 
-@interface EventViewController () <UINavigationControllerDelegate>
+@interface EventViewController ()
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UIScrollView *mapScrollView;
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;

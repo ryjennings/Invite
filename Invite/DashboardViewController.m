@@ -20,7 +20,6 @@
 @property (nonatomic, weak) IBOutlet UIButton *createEventButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *settingsButton;
 @property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
-@property (nonatomic, assign) BOOL isParseLoaded;
 @end
 
 @implementation DashboardViewController
@@ -29,8 +28,12 @@
 {
     [super viewDidLoad];
     
-    _isParseLoaded = NO;
-    
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+
+    if (![AppDelegate user].events) {
+        [self configureOnboarding];
+    }
+
     self.view.backgroundColor = [UIColor inviteSlateColor];
     
     [_createEventButton setTitle:NSLocalizedString(@"dashboard_button_addnewevent", nil) forState:UIControlStateNormal];
@@ -43,13 +46,17 @@
     [_collectionView registerClass:[DashboardCell class] forCellWithReuseIdentifier:DASHBOARD_CELL_IDENTIFIER];
     
     self.navigationItem.title = @"Invite";
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseLoaded:) name:PARSE_LOADED_NOTIFICATION object:nil];
 }
 
-- (void)dealloc
+- (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -156,23 +163,18 @@
     [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[AppDelegate user].events.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
 }
 
-- (void)parseLoaded:(NSNotification *)notification
-{
-    _isParseLoaded = YES;
-
-    if (![AppDelegate user].events) {
-        [self configureOnboarding];
-    }
-
-    [_collectionView reloadData];
-}
-
 - (IBAction)logout:(id)sender
 {
+//    [FBSession.activeSession closeAndClearTokenInformation];
+    
     [FBSession.activeSession closeAndClearTokenInformation];
-    [AppDelegate clearUser];
-    LoginViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:LOGIN_VIEW_CONTROLLER];
-    [self.navigationController setViewControllers:@[controller]];
+    [FBSession.activeSession close];
+    [FBSession setActiveSession:nil];
+    
+//    LoginViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:LOGIN_VIEW_CONTROLLER];
+//    controller.prepareForSegueFromLaunchViewController = NO;
+//    [self.navigationController setViewControllers:@[controller] animated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

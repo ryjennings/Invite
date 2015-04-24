@@ -21,6 +21,9 @@
     [super viewDidLoad];
 
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseLoaded:) name:PARSE_LOADED_NOTIFICATION object:nil];
 
     NSString *email = [AppDelegate objectForKey:EMAIL_KEY];
     
@@ -40,18 +43,44 @@
             }
         }];
 
-        DashboardViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:DASHBOARD_VIEW_CONTROLLER];
-        [self performSelector:@selector(gotoViewController:) withObject:controller afterDelay:0.5];
         
     } else {
         LoginViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:LOGIN_VIEW_CONTROLLER];
-        [self performSelector:@selector(gotoViewController:) withObject:controller afterDelay:0.5];
+        controller.prepareForSegueFromLaunchViewController = YES;
+        
+        
+        [self performSelector:@selector(gotoLoginViewController:) withObject:controller afterDelay:0.5];
     }
 }
 
-- (void)gotoViewController:(UIViewController *)controller
+- (void)viewWillAppear:(BOOL)animated
 {
-    [self.navigationController setViewControllers:@[controller] animated:YES];
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)gotoDashboardViewController:(UIViewController *)controller
+{
+    LoginViewController *loginController = [self.storyboard instantiateViewControllerWithIdentifier:LOGIN_VIEW_CONTROLLER];
+//    [self.navigationController pushViewController:controller animated:YES];
+    [self.navigationController setViewControllers:@[loginController, controller] animated:YES];
+}
+
+- (void)gotoLoginViewController:(UIViewController *)controller
+{
+    [self.navigationController pushViewController:controller animated:NO];
+//    [self.navigationController setViewControllers:@[controller] animated:NO];
+}
+
+- (void)parseLoaded:(NSNotification *)notification
+{
+    DashboardViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:DASHBOARD_VIEW_CONTROLLER];
+    [self performSelector:@selector(gotoDashboardViewController:) withObject:controller afterDelay:0.5];
 }
 
 @end

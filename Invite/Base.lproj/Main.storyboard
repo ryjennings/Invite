@@ -64,10 +64,95 @@
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="fJh-YJ-Bg6">
+                                <rect key="frame" x="225" y="224" width="151" height="151"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IC4-vi-7go">
+                                <rect key="frame" x="150" y="383" width="300" height="100"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Invite" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hl3-6w-gr4">
+                                        <rect key="frame" x="0.0" y="0.0" width="300" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="Ne3-at-v7N"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let's simplify scheduling." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zPj-fD-4c3">
+                                        <rect key="frame" x="0.0" y="50" width="300" height="50"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s0l-ct-lla">
+                                        <rect key="frame" x="40" y="52" width="220" height="1"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="HJp-j7-Ki9"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="Hl3-6w-gr4" firstAttribute="top" secondItem="IC4-vi-7go" secondAttribute="top" id="0kq-0v-dgS"/>
+                                    <constraint firstItem="s0l-ct-lla" firstAttribute="leading" secondItem="IC4-vi-7go" secondAttribute="leading" constant="40" id="0xS-hB-jEX"/>
+                                    <constraint firstAttribute="trailing" secondItem="Hl3-6w-gr4" secondAttribute="trailing" id="4fW-q4-zHv"/>
+                                    <constraint firstAttribute="height" constant="100" id="A6K-ba-X2Y"/>
+                                    <constraint firstAttribute="width" constant="300" id="BEY-18-g32"/>
+                                    <constraint firstItem="zPj-fD-4c3" firstAttribute="top" secondItem="Hl3-6w-gr4" secondAttribute="bottom" id="Bro-lx-lAH"/>
+                                    <constraint firstItem="Hl3-6w-gr4" firstAttribute="leading" secondItem="IC4-vi-7go" secondAttribute="leading" id="OaH-nQ-aJX"/>
+                                    <constraint firstAttribute="centerX" secondItem="s0l-ct-lla" secondAttribute="centerX" id="aDh-Zk-JVT"/>
+                                    <constraint firstItem="zPj-fD-4c3" firstAttribute="leading" secondItem="Hl3-6w-gr4" secondAttribute="leading" id="gBm-8t-ffQ"/>
+                                    <constraint firstAttribute="bottom" secondItem="zPj-fD-4c3" secondAttribute="bottom" id="hZY-aZ-PJH"/>
+                                    <constraint firstItem="zPj-fD-4c3" firstAttribute="trailing" secondItem="Hl3-6w-gr4" secondAttribute="trailing" id="nvd-nZ-Vld"/>
+                                    <constraint firstAttribute="centerY" secondItem="s0l-ct-lla" secondAttribute="centerY" constant="-2" id="rWU-gt-2c5"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JiS-Ab-79x">
+                                <rect key="frame" x="0.0" y="480" width="600" height="120"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ImH-VM-U7t">
+                                        <rect key="frame" x="270" y="29" width="61" height="61"/>
+                                        <state key="normal" image="firstlaunch_facebook">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="loginToFacebook:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Fma-3i-qvS"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="120" id="j2k-aL-PKF"/>
+                                    <constraint firstItem="ImH-VM-U7t" firstAttribute="centerX" secondItem="JiS-Ab-79x" secondAttribute="centerX" id="wpK-nf-ubG"/>
+                                    <constraint firstAttribute="centerY" secondItem="ImH-VM-U7t" secondAttribute="centerY" id="xb6-Ii-l2B"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.16862745100000001" green="0.20392156859999999" blue="0.24313725489999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="JiS-Ab-79x" secondAttribute="bottom" id="Af0-dO-pb5"/>
+                            <constraint firstAttribute="centerY" secondItem="IC4-vi-7go" secondAttribute="centerY" constant="-133" id="TsM-MN-vNM"/>
+                            <constraint firstItem="JiS-Ab-79x" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="XYj-pM-Vow"/>
+                            <constraint firstAttribute="trailing" secondItem="JiS-Ab-79x" secondAttribute="trailing" id="mNc-aF-UyI"/>
+                            <constraint firstAttribute="centerY" secondItem="fJh-YJ-Bg6" secondAttribute="centerY" id="nXH-hR-OPA"/>
+                            <constraint firstAttribute="centerX" secondItem="IC4-vi-7go" secondAttribute="centerX" id="quq-NN-ynC"/>
+                            <constraint firstAttribute="centerX" secondItem="fJh-YJ-Bg6" secondAttribute="centerX" id="wzq-3g-cSV"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Cvp-1L-1ra"/>
                     <connections>
+                        <outlet property="facebookView" destination="JiS-Ab-79x" id="U4F-0X-c52"/>
+                        <outlet property="facebookViewBottomConstraint" destination="Af0-dO-pb5" id="VSK-VU-yFI"/>
+                        <outlet property="inviteLabel" destination="Hl3-6w-gr4" id="18c-cH-d72"/>
+                        <outlet property="lineView" destination="s0l-ct-lla" id="CDn-o1-tGj"/>
+                        <outlet property="logo" destination="fJh-YJ-Bg6" id="Pwi-rv-HIc"/>
+                        <outlet property="logoCenterYConstraint" destination="nXH-hR-OPA" id="Tr9-nH-4mv"/>
+                        <outlet property="messageLabel" destination="zPj-fD-4c3" id="Muh-zr-B2t"/>
+                        <outlet property="messageView" destination="IC4-vi-7go" id="N6d-Cl-FDa"/>
+                        <outlet property="messageViewCenterYConstraint" destination="TsM-MN-vNM" id="gj0-nd-O5u"/>
                         <segue destination="Tg8-E4-TKE" kind="show" identifier="SegueToDashboard" id="z7a-gN-2Zh"/>
                     </connections>
                 </viewController>
@@ -1282,8 +1367,26 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gaS-PZ-UAZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="e13-Sr-GfI">
+            <objects>
+                <viewController id="sbZ-bY-8wl" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="L0o-yo-YbA"/>
+                        <viewControllerLayoutGuide type="bottom" id="Lbt-2R-T63"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9pE-XT-GKA">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="v8H-s7-Zhb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
     </scenes>
     <resources>
+        <image name="firstlaunch_facebook" width="61" height="61"/>
         <image name="logo" width="151" height="151"/>
     </resources>
     <inferredMetricsTieBreakers>

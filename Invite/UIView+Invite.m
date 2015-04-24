@@ -8,6 +8,8 @@
 
 #import "UIView+Invite.h"
 
+#import "LoginViewController.h"
+
 @implementation UIView (Invite)
 
 + (void)appearanceObjC
@@ -16,6 +18,7 @@
     [[UIButton appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundColor:[UIColor clearColor]];
     [[UIButton appearanceWhenContainedIn:[UIToolbar class], nil] setBackgroundColor:[UIColor clearColor]];
     [[UIButton appearanceWhenContainedIn:[UITableViewCell class], nil] setBackgroundColor:[UIColor clearColor]];
+    [[UIButton appearanceWhenContainedIn:[LoginViewController class], nil] setBackgroundColor:[UIColor clearColor]];
 }
 
 @end
