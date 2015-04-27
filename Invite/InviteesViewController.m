@@ -11,7 +11,6 @@
 #import "AppDelegate.h"
 #import "Event.h"
 #import "Invite-Swift.h"
-#import "ProfileCell.h"
 #import "StringConstants.h"
 
 #import "UIImageView+WebCache.h"
@@ -79,7 +78,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     label.text = @"Who would you like to invite to this event?";
     [view addSubview:label];
     
-    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[label]-15-|" options:0 metrics:nil views:@{@"label": label}]];
+    [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-50-[label]-50-|" options:0 metrics:nil views:@{@"label": label}]];
     [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-34-[label]" options:0 metrics:nil views:@{@"label": label}]];
     
     return view;

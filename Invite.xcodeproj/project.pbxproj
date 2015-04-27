@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */; };
 		070DAA4F1AE85D6900E111F6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */; };
+		071408741AEC9D660081F304 /* DatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071408731AEC9D660081F304 /* DatePickerView.swift */; };
+		071408761AEDC8E70081F304 /* ErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071408751AEDC8E70081F304 /* ErrorViewController.swift */; };
+		071408791AEDCFE40081F304 /* ACAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071408781AEDCFE40081F304 /* ACAlertView.swift */; };
+		0714087B1AEE13FC0081F304 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0714087A1AEE13FC0081F304 /* ProfileCell.swift */; };
 		071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 071F694C1A8C143F009A8380 /* DashboardViewController.m */; };
 		071F694F1A8C1A3D009A8380 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 071F694E1A8C1A3D009A8380 /* Localizable.strings */; };
 		072463161A8BD3AA00820834 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 072463141A8BD3AA00820834 /* Bolts.framework */; };
@@ -53,8 +57,6 @@
 		073274011A892BFB007700B3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 073274001A892BFB007700B3 /* Images.xcassets */; };
 		073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073274021A892BFB007700B3 /* LaunchScreen.xib */; };
 		073274101A892BFB007700B3 /* InviteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0732740F1A892BFB007700B3 /* InviteTests.m */; };
-		073845181A969CFB00E2929A /* Timeframe.m in Sources */ = {isa = PBXBuildFile; fileRef = 073845171A969CFB00E2929A /* Timeframe.m */; };
-		0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0738451A1A96A6A200E2929A /* TimeframeCollectionCell.m */; };
 		074437791AE025D0002A6C4D /* InviteesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 074437781AE025D0002A6C4D /* InviteesCell.m */; };
 		0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */; };
 		0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377C1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift */; };
@@ -65,7 +67,6 @@
 		074ABE971AE4A34F00C093C7 /* TimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE961AE4A34F00C093C7 /* TimeCell.swift */; };
 		074ABE991AE4A53000C093C7 /* ClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE981AE4A53000C093C7 /* ClockView.swift */; };
 		074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */; };
-		074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074FF55B1A965924000483FF /* TimeframeViewController.m */; };
 		075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075249E51ACB397C00D279DA /* InviteTheme.swift */; };
 		0755CE491A8D22E500FF05B7 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755CE481A8D22E500FF05B7 /* User.m */; };
 		075D10841ADC859D00C86130 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10641ADC859D00C86130 /* MKAnnotationView+WebCache.m */; };
@@ -84,12 +85,10 @@
 		075D10911ADC859D00C86130 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D107F1ADC859D00C86130 /* UIImageView+HighlightedWebCache.m */; };
 		075D10921ADC859D00C86130 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10811ADC859D00C86130 /* UIImageView+WebCache.m */; };
 		075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10831ADC859D00C86130 /* UIView+WebCacheOperation.m */; };
-		075D10961ADC922A00C86130 /* ProfileCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10951ADC922A00C86130 /* ProfileCell.m */; };
 		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
 		078924741AB36DCE005EE7FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078924731AB36DCE005EE7FB /* MapKit.framework */; };
-		07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */; };
 		07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE501AAA2F17002B9962 /* EventViewController.m */; };
 		07BC8E391ACB13EB0050C4E9 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */; };
 		07BC8E3C1ACB29CE0050C4E9 /* DashboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BC8E3B1ACB29CE0050C4E9 /* DashboardCell.swift */; };
@@ -121,6 +120,10 @@
 		070DAA4B1AE8489C00E111F6 /* SDiPhoneVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDiPhoneVersion.h; sourceTree = "<group>"; };
 		070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDiPhoneVersion.m; sourceTree = "<group>"; };
 		070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		071408731AEC9D660081F304 /* DatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
+		071408751AEDC8E70081F304 /* ErrorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorViewController.swift; sourceTree = "<group>"; };
+		071408781AEDCFE40081F304 /* ACAlertView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACAlertView.swift; sourceTree = "<group>"; };
+		0714087A1AEE13FC0081F304 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		071F694B1A8C143F009A8380 /* DashboardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashboardViewController.h; sourceTree = "<group>"; };
 		071F694C1A8C143F009A8380 /* DashboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashboardViewController.m; sourceTree = "<group>"; };
 		071F694E1A8C1A3D009A8380 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -173,10 +176,6 @@
 		073274091A892BFB007700B3 /* InviteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InviteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0732740E1A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0732740F1A892BFB007700B3 /* InviteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InviteTests.m; sourceTree = "<group>"; };
-		073845161A969CFB00E2929A /* Timeframe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timeframe.h; sourceTree = "<group>"; };
-		073845171A969CFB00E2929A /* Timeframe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Timeframe.m; sourceTree = "<group>"; };
-		073845191A96A6A200E2929A /* TimeframeCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeCollectionCell.h; sourceTree = "<group>"; };
-		0738451A1A96A6A200E2929A /* TimeframeCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeCollectionCell.m; sourceTree = "<group>"; };
 		074437771AE025D0002A6C4D /* InviteesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesCell.h; sourceTree = "<group>"; };
 		074437781AE025D0002A6C4D /* InviteesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesCell.m; sourceTree = "<group>"; };
 		0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteesCollectionCell.swift; sourceTree = "<group>"; };
@@ -190,8 +189,6 @@
 		074ABE961AE4A34F00C093C7 /* TimeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeCell.swift; sourceTree = "<group>"; };
 		074ABE981AE4A53000C093C7 /* ClockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClockView.swift; sourceTree = "<group>"; };
 		074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframeHourCell.swift; sourceTree = "<group>"; };
-		074FF55A1A965924000483FF /* TimeframeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeViewController.h; sourceTree = "<group>"; };
-		074FF55B1A965924000483FF /* TimeframeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeViewController.m; sourceTree = "<group>"; };
 		075249E51ACB397C00D279DA /* InviteTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteTheme.swift; sourceTree = "<group>"; };
 		0755CE471A8D22E500FF05B7 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		0755CE481A8D22E500FF05B7 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
@@ -228,8 +225,6 @@
 		075D10811ADC859D00C86130 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		075D10821ADC859D00C86130 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		075D10831ADC859D00C86130 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
-		075D10941ADC922A00C86130 /* ProfileCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileCell.h; sourceTree = "<group>"; };
-		075D10951ADC922A00C86130 /* ProfileCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileCell.m; sourceTree = "<group>"; };
 		075ED6261A994FEC0015F9E6 /* BusyDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusyDetails.h; sourceTree = "<group>"; };
 		075ED6271A994FEC0015F9E6 /* BusyDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusyDetails.m; sourceTree = "<group>"; };
 		0775B0701A93BFB900C15303 /* InviteesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesViewController.h; sourceTree = "<group>"; };
@@ -238,8 +233,6 @@
 		0786EB7B1A8E70ED006FDCA6 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		0786EB7C1A8E70ED006FDCA6 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		078924731AB36DCE005EE7FB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		07B65A321AA4D81700A6F1A2 /* TimeframeCollectionLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeframeCollectionLayout.h; sourceTree = "<group>"; };
-		07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeframeCollectionLayout.m; sourceTree = "<group>"; };
 		07B8EE4F1AAA2F17002B9962 /* EventViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventViewController.h; sourceTree = "<group>"; };
 		07B8EE501AAA2F17002B9962 /* EventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventViewController.m; sourceTree = "<group>"; };
 		07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
@@ -310,6 +303,15 @@
 				070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */,
 			);
 			name = Settings;
+			sourceTree = "<group>";
+		};
+		071408771AEDCA240081F304 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				071408751AEDC8E70081F304 /* ErrorViewController.swift */,
+				071408781AEDCFE40081F304 /* ACAlertView.swift */,
+			);
+			name = Error;
 			sourceTree = "<group>";
 		};
 		0724632E1A8BD44200820834 /* Frameworks */ = {
@@ -412,6 +414,7 @@
 				07A313291A96AA410066EE3E /* Timeframe */,
 				078924721AB369DC005EE7FB /* Location */,
 				07B8EE521AAA2F22002B9962 /* Event */,
+				071408771AEDCA240081F304 /* Error */,
 				070DAA501AE85D7300E111F6 /* Settings */,
 				074B03091AD638C600B539A9 /* Cells */,
 				07BC8E3A1ACB13EF0050C4E9 /* Views */,
@@ -461,8 +464,7 @@
 				07D9DD341AD83789008FF016 /* BasicCell.swift */,
 				07D9DD361AD8386B008FF016 /* InputCell.swift */,
 				07D9DD381AD83E42008FF016 /* RadioCell.swift */,
-				075D10941ADC922A00C86130 /* ProfileCell.h */,
-				075D10951ADC922A00C86130 /* ProfileCell.m */,
+				0714087A1AEE13FC0081F304 /* ProfileCell.swift */,
 				074437771AE025D0002A6C4D /* InviteesCell.h */,
 				074437781AE025D0002A6C4D /* InviteesCell.m */,
 				074ABE941AE49A3500C093C7 /* DateCell.swift */,
@@ -541,12 +543,6 @@
 		07A313291A96AA410066EE3E /* Timeframe */ = {
 			isa = PBXGroup;
 			children = (
-				074FF55A1A965924000483FF /* TimeframeViewController.h */,
-				074FF55B1A965924000483FF /* TimeframeViewController.m */,
-				073845191A96A6A200E2929A /* TimeframeCollectionCell.h */,
-				0738451A1A96A6A200E2929A /* TimeframeCollectionCell.m */,
-				07B65A321AA4D81700A6F1A2 /* TimeframeCollectionLayout.h */,
-				07B65A331AA4D81700A6F1A2 /* TimeframeCollectionLayout.m */,
 				074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */,
 				074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */,
 			);
@@ -568,6 +564,7 @@
 				07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */,
 				0728367A1AD43F5700B158AC /* ProgressView.swift */,
 				074ABE981AE4A53000C093C7 /* ClockView.swift */,
+				071408731AEC9D660081F304 /* DatePickerView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -602,8 +599,6 @@
 				0786EB7C1A8E70ED006FDCA6 /* Event.m */,
 				075ED6261A994FEC0015F9E6 /* BusyDetails.h */,
 				075ED6271A994FEC0015F9E6 /* BusyDetails.m */,
-				073845161A969CFB00E2929A /* Timeframe.h */,
-				073845171A969CFB00E2929A /* Timeframe.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -749,16 +744,15 @@
 				07D9DD3D1AD880F4008FF016 /* TitleViewController.swift in Sources */,
 				07D2D9C91AE616E2008E1733 /* OBGradientView.m in Sources */,
 				07D2D9C51AE5A6D4008E1733 /* DashboardOnboardingView.swift in Sources */,
+				071408741AEC9D660081F304 /* DatePickerView.swift in Sources */,
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
+				071408761AEDC8E70081F304 /* ErrorViewController.swift in Sources */,
 				07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */,
 				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
 				0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */,
 				07E1FD901ACE4EDD00F619D0 /* AppDelegate+Swift.swift in Sources */,
+				071408791AEDCFE40081F304 /* ACAlertView.swift in Sources */,
 				0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */,
-				07B65A341AA4D81700A6F1A2 /* TimeframeCollectionLayout.m in Sources */,
-				075D10961ADC922A00C86130 /* ProfileCell.m in Sources */,
-				074FF55C1A965924000483FF /* TimeframeViewController.m in Sources */,
-				0738451B1A96A6A200E2929A /* TimeframeCollectionCell.m in Sources */,
 				074ABE971AE4A34F00C093C7 /* TimeCell.swift in Sources */,
 				075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */,
 				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,
@@ -794,7 +788,6 @@
 				075D108C1ADC859D00C86130 /* SDWebImagePrefetcher.m in Sources */,
 				075D108F1ADC859D00C86130 /* UIImage+MultiFormat.m in Sources */,
 				075D10871ADC859D00C86130 /* SDWebImageCompat.m in Sources */,
-				073845181A969CFB00E2929A /* Timeframe.m in Sources */,
 				072836761AD315BF00B158AC /* UIView+Invite.m in Sources */,
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
 				07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */,
@@ -802,6 +795,7 @@
 				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
 				075D10921ADC859D00C86130 /* UIImageView+WebCache.m in Sources */,
 				0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */,
+				0714087B1AEE13FC0081F304 /* ProfileCell.swift in Sources */,
 				074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */,
 				070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */,
 			);

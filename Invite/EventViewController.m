@@ -70,7 +70,7 @@ typedef NS_ENUM(NSUInteger, EventSection) {
     
     _createEventButton.layer.cornerRadius = kCornerRadius;
     _createEventButton.clipsToBounds = YES;
-    _createEventButton.titleLabel.font = [UIFont inviteButtonTitleFont];
+    _createEventButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
     
     _tableView.estimatedRowHeight = 100;
     _tableView.rowHeight = UITableViewAutomaticDimension;
@@ -151,9 +151,9 @@ typedef NS_ENUM(NSUInteger, EventSection) {
         
             BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
             
-            NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:[AppDelegate user].protoEvent.title attributes:@{NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:30], NSForegroundColorAttributeName: [UIColor inviteBlueColor]}];
+            NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:[AppDelegate user].protoEvent.title attributes:@{NSFontAttributeName: [UIFont proximaNovaLightFontOfSize:28], NSForegroundColorAttributeName: [UIColor inviteBlueColor]}];
             [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\n"]];
-            [att appendAttributedString:[[NSAttributedString alloc] initWithString:[AppDelegate presentationTimeframeFromStartDate:[AppDelegate user].protoEvent.timeframe.start endDate:[AppDelegate user].protoEvent.timeframe.end] attributes:@{NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:14], NSForegroundColorAttributeName: [UIColor lightGrayColor]}]];
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:[AppDelegate presentationTimeframeFromStartDate:[AppDelegate user].protoEvent.startDate endDate:[AppDelegate user].protoEvent.endDate] attributes:@{NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:14], NSForegroundColorAttributeName: [UIColor lightGrayColor]}]];
             [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\n"]];
             [att appendAttributedString:[[NSAttributedString alloc] initWithString:[AppDelegate user].protoEvent.eventDescription attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSForegroundColorAttributeName: [UIColor inviteTableLabelColor]}]];
             

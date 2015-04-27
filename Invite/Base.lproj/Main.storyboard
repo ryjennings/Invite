@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="gzc-E7-h5z">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="gzc-E7-h5z">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -563,14 +563,14 @@
                                                 </textView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="B1F-Oj-4Mg" secondAttribute="trailing" constant="15" id="3st-vg-2Vv"/>
+                                                <constraint firstAttribute="centerX" secondItem="SJO-EW-eL3" secondAttribute="centerX" id="2M0-Kv-9JC"/>
+                                                <constraint firstAttribute="centerX" secondItem="B1F-Oj-4Mg" secondAttribute="centerX" id="2fi-hE-aVl"/>
                                                 <constraint firstItem="SJO-EW-eL3" firstAttribute="top" secondItem="cXf-g0-wGr" secondAttribute="top" constant="10" id="BTT-8C-UmJ"/>
                                                 <constraint firstAttribute="bottom" secondItem="SJO-EW-eL3" secondAttribute="bottom" constant="10" id="SoV-xL-g5N"/>
                                                 <constraint firstAttribute="bottom" secondItem="B1F-Oj-4Mg" secondAttribute="bottom" constant="10" id="em6-82-VvX"/>
                                                 <constraint firstItem="SJO-EW-eL3" firstAttribute="leading" secondItem="cXf-g0-wGr" secondAttribute="leading" constant="15" id="hGC-lm-Gwf"/>
                                                 <constraint firstItem="B1F-Oj-4Mg" firstAttribute="top" secondItem="cXf-g0-wGr" secondAttribute="top" constant="10" id="mHm-i9-9Qo"/>
                                                 <constraint firstItem="B1F-Oj-4Mg" firstAttribute="leading" secondItem="cXf-g0-wGr" secondAttribute="leading" constant="15" id="tfu-e8-l8m"/>
-                                                <constraint firstAttribute="trailing" secondItem="SJO-EW-eL3" secondAttribute="trailing" constant="15" id="tvS-5P-rnV"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -578,6 +578,43 @@
                                             <outlet property="placeholderLabel" destination="SJO-EW-eL3" id="Pay-xC-deV"/>
                                             <outlet property="textView" destination="B1F-Oj-4Mg" id="APo-Ng-Hzu"/>
                                             <outlet property="textViewLeadingConstraint" destination="tfu-e8-l8m" id="VVY-6D-lpz"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProfileCellIdentifier" rowHeight="54" id="o97-nM-LDJ" customClass="ProfileCell">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="o97-nM-LDJ" id="UdY-yF-Zi1">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ukq-wt-jtZ" customClass="ProfileImageView" customModule="Invite" customModuleProvider="target">
+                                                    <rect key="frame" x="15" y="7" width="40" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="9zK-tf-yaJ"/>
+                                                        <constraint firstAttribute="width" secondItem="ukq-wt-jtZ" secondAttribute="height" multiplier="1:1" id="Efa-ag-skl"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IAW-EN-Ntz">
+                                                    <rect key="frame" x="70" y="0.0" width="522" height="53"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" priority="750" constant="53" id="gZ7-W0-Bxu"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="IAW-EN-Ntz" firstAttribute="top" secondItem="UdY-yF-Zi1" secondAttribute="top" id="1Mf-Vx-gIT"/>
+                                                <constraint firstItem="IAW-EN-Ntz" firstAttribute="leading" secondItem="ukq-wt-jtZ" secondAttribute="trailing" constant="15" id="5Y7-IN-7Ia"/>
+                                                <constraint firstAttribute="trailing" secondItem="IAW-EN-Ntz" secondAttribute="trailing" constant="8" id="ZJe-40-DHw"/>
+                                                <constraint firstItem="ukq-wt-jtZ" firstAttribute="leading" secondItem="UdY-yF-Zi1" secondAttribute="leading" constant="15" id="ZR9-xk-1UH"/>
+                                                <constraint firstAttribute="centerY" secondItem="ukq-wt-jtZ" secondAttribute="centerY" id="dCF-tz-886"/>
+                                                <constraint firstAttribute="bottom" secondItem="IAW-EN-Ntz" secondAttribute="bottom" id="qJd-RF-IGW"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="label" destination="IAW-EN-Ntz" id="cBL-OI-b4i"/>
+                                            <outlet property="profileImageView" destination="ukq-wt-jtZ" id="yHU-Fr-7dj"/>
+                                            <outlet property="profileImageViewLeadingConstraint" destination="ZR9-xk-1UH" id="fiV-3d-C8N"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -1132,7 +1169,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Timeframe" id="9DC-1t-5Fy">
-                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="OBi-NC-PKL"/>
+                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="OBi-NC-PKL">
+                            <connections>
+                                <action selector="cancel:" destination="54b-Pj-89S" id="N3O-Rx-Xa9"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="nextButton" destination="897-Sr-BCQ" id="cB9-Ol-WbX"/>

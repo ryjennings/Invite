@@ -109,7 +109,7 @@ import ParseUI
                 let coordinate = CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!)
                 annotation = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
                 mapView.addAnnotation(annotation)
-                mapView.showAnnotations([annotation!], animated: true)
+                mapView.showAnnotations([annotation!], animated: false)
             } else {
                 mapView.removeAnnotation(annotation)
         }

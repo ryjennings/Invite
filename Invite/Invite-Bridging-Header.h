@@ -6,6 +6,5 @@
 #import "OBGradientView.h"
 #import "SDiPhoneVersion.h"
 #import "StringConstants.h"
-#import "TimeframeCollectionCell.h"
-#import "TimeframeCollectionLayout.h"
+#import "UIImageView+WebCache.h"
 #import "UIView+Invite.h"

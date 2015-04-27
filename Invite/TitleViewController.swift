@@ -10,6 +10,7 @@ import UIKit
 
 enum TitleSection: Int {
     case Title = 0
+    case Creator
     case Description
     case Count
 }
@@ -19,13 +20,18 @@ enum TitleSection: Int {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var nextButton: UIButton!
     
+    let kMastheadViewHeight = 50
+    let kNextButtonTitle = "Next, invite people!"
+    
     var inputText: [String]!
     
     override func viewDidLoad()
     {
+        super.viewDidLoad()
+                
         inputText = [String](count: TitleSection.Count.rawValue, repeatedValue: "")
         navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 1, steps: 5)
-        tableView.tableHeaderView = tableHeaderView()
+//        tableView.tableHeaderView = tableHeaderView()
         tableView.separatorStyle = .None
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -33,6 +39,18 @@ enum TitleSection: Int {
         nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
         nextButton.clipsToBounds = true
         nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
+        
+//        CATransition *animation = [CATransition animation];
+//        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+//        animation.type = kCATransitionFade;
+//        animation.duration = 0.75;
+//        [aLabel.layer addAnimation:animation forKey:@"kCATransitionFade"];
+        
+        var animation = CATransition()
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        animation.type = kCATransitionFade;
+        animation.duration = 0.75
+        nextButton.titleLabel!.layer.addAnimation(animation, forKey: "kCATransitionFade")
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
@@ -87,6 +105,8 @@ enum TitleSection: Int {
         switch (section) {
         case TitleSection.Title.rawValue:
             return nil
+        case TitleSection.Creator.rawValue:
+            return "Creator"
         case TitleSection.Description.rawValue:
             return "Description"
         default:
@@ -101,30 +121,33 @@ enum TitleSection: Int {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        switch (section) {
-        case TitleSection.Title.rawValue:
-            return 1
-        case TitleSection.Description.rawValue:
-            return 1
-        default:
-            return 0
-        }
+        return 1
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
+        if (indexPath.section == TitleSection.Creator.rawValue) {
+            var cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
+            cell.label.textColor = UIColor.inviteTableLabelColor()
+            cell.label.font = UIFont.inviteTableLabelFont()
+            cell.label.text = AppDelegate.parseUser().objectForKey(FULL_NAME_KEY) as? String
+            cell.profileImageViewLeadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
+            cell.profileImageView.sd_setImageWithURL(NSURL(string: NSString(format: "https://graph.facebook.com/%@/picture?type=square&width=150&height=150", AppDelegate.parseUser().objectForKey(FACEBOOK_ID_KEY) as! String) as String))
+            return cell
+        }
+        
         let text = inputText[indexPath.row] as String
         var cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
         cell.delegate = self
-        cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "First, let's name this event. Tap here to add a title." : "Tap here to add a description"
+        cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "Let's create a new event. First, tap here to give the event a title." : "Tap here to add a description"
         cell.placeholderLabel.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
-        cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.inviteQuestionFont() : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.proximaNovaRegularFontOfSize(16)
         cell.placeholderLabel.hidden = Bool(count(text))
         cell.placeholderLabel.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteQuestionColor() : UIColor(white: 0.9, alpha: 1)
         cell.placeholderLabel.numberOfLines = 0
         cell.textView.tag = indexPath.section
         cell.textView.text = text
-        cell.textView.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaSemiboldFontOfSize(30) : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.textView.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.proximaNovaRegularFontOfSize(16)
         cell.textView.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteBlueColor() : UIColor.inviteTableLabelColor()
         cell.textView.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.textView.textContainer.lineFragmentPadding = 0
@@ -134,8 +157,8 @@ enum TitleSection: Int {
         addDoneToolBarToKeyboard(cell.textView)
         
         cell.selectionStyle = .None
-        cell.textViewLeadingConstraint.constant = cell.separatorInset.left
-        cell.labelLeadingConstraint.constant = cell.separatorInset.left
+        cell.textViewLeadingConstraint.constant = indexPath.section == TitleSection.Title.rawValue ? 50 : SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
+        cell.labelLeadingConstraint.constant = indexPath.section == TitleSection.Title.rawValue ? 50 : SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
         cell.backgroundColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.clearColor() : UIColor.whiteColor()
         cell.contentView.backgroundColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.clearColor() : UIColor.whiteColor()
         return cell
@@ -175,6 +198,36 @@ enum TitleSection: Int {
         })
     }
     
+    override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool
+    {
+        if (count(inputText[TitleSection.Title.rawValue]) > 0 && count(inputText[TitleSection.Description.rawValue]) > 0) {
+            return true
+        } else {
+            animateButtonToError(true)
+            AppDelegate.delay(2) {
+                self.animateButtonToError(false)
+            }
+            return false
+        }
+    }
+    
+    func animateButtonToError(error: Bool)
+    {
+        UIView.animateWithDuration(0.75, animations: {
+            self.nextButton.backgroundColor = error ? UIColor.inviteTableHeaderColor() : UIColor.inviteBlueColor()
+        })
+        nextButton.enabled = !error
+        if (error) {
+            if (count(inputText[TitleSection.Title.rawValue]) == 0) {
+                nextButton.setTitle("Add a title", forState: .Normal)
+            } else {
+                nextButton.setTitle("Add a description", forState: .Normal)
+            }
+        } else {
+            nextButton.setTitle(kNextButtonTitle, forState: .Normal)
+        }
+    }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
     {
         if (segue.identifier == SEGUE_TO_INVITEES) {
@@ -206,5 +259,10 @@ enum TitleSection: Int {
     {
         AppDelegate.nilProtoEvent()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func restoreNextButton()
+    {
+        
     }
 }

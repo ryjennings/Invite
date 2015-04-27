@@ -83,8 +83,8 @@
     
     _event = [PFObject objectWithClassName:CLASS_EVENT_KEY];
     _event[EVENT_CREATOR_KEY] = [AppDelegate parseUser];
-    _event[EVENT_START_DATE_KEY] = _timeframe.start;
-    _event[EVENT_END_DATE_KEY] = _timeframe.end;
+    _event[EVENT_START_DATE_KEY] = _startDate;
+    _event[EVENT_END_DATE_KEY] = _endDate;
     _event[EVENT_TITLE_KEY] = _title;
     _event[EVENT_DESCRIPTION_KEY] = _eventDescription;
     _event[EVENT_LOCATION_KEY] = _location;

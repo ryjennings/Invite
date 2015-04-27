@@ -20,6 +20,10 @@
 @property (nonatomic, weak) IBOutlet UIButton *createEventButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *settingsButton;
 @property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
+
+@property (nonatomic, strong) UIScrollView *onboardingScrollView;
+@property (nonatomic, strong) OBGradientView *gradientView;
+@property (nonatomic, strong) DashboardOnboardingView *onboarding;
 @end
 
 @implementation DashboardViewController
@@ -46,17 +50,22 @@
     [_collectionView registerClass:[DashboardCell class] forCellWithReuseIdentifier:DASHBOARD_CELL_IDENTIFIER];
     
     self.navigationItem.title = @"Invite";
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+}
+
+- (void)dealloc
+{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -67,40 +76,40 @@
 
 - (void)configureOnboarding
 {
-    DashboardOnboardingView *onboarding = [[DashboardOnboardingView alloc] init];
-    onboarding.translatesAutoresizingMaskIntoConstraints = NO;
-    onboarding.backgroundColor = [UIColor clearColor];
+    _onboarding = [[DashboardOnboardingView alloc] init];
+    _onboarding.translatesAutoresizingMaskIntoConstraints = NO;
+    _onboarding.backgroundColor = [UIColor clearColor];
 
     if ([SDiPhoneVersion deviceSize] == iPhone35inch || [SDiPhoneVersion deviceSize] == iPhone4inch) {
         
-        UIScrollView *scrollView = [[UIScrollView alloc] init];
-        scrollView.translatesAutoresizingMaskIntoConstraints = NO;
-        scrollView.backgroundColor = [UIColor clearColor];
-        scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-        [self.view addSubview:scrollView];
-        [scrollView addSubview:onboarding];
+        _onboardingScrollView = [[UIScrollView alloc] init];
+        _onboardingScrollView.translatesAutoresizingMaskIntoConstraints = NO;
+        _onboardingScrollView.backgroundColor = [UIColor clearColor];
+        _onboardingScrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+        [self.view addSubview:_onboardingScrollView];
+        [_onboardingScrollView addSubview:_onboarding];
         
-        OBGradientView *gradientView = [[OBGradientView alloc] init];
-        gradientView.colors = @[[UIColor inviteSlateClearColor], [UIColor inviteSlateColor]];
-        gradientView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.view addSubview:gradientView];
+        _gradientView = [[OBGradientView alloc] init];
+        _gradientView.colors = @[[UIColor inviteSlateClearColor], [UIColor inviteSlateColor]];
+        _gradientView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addSubview:_gradientView];
 
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[gradientView]|" options:0 metrics:nil views:@{@"gradientView": gradientView}]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[gradientView(30)]-60-|" options:0 metrics:nil views:@{@"gradientView": gradientView}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[gradientView]|" options:0 metrics:nil views:@{@"gradientView": _gradientView}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[gradientView(30)]-60-|" options:0 metrics:nil views:@{@"gradientView": _gradientView}]];
 
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:@{@"scrollView": scrollView}]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-64-[scrollView]-60-|" options:0 metrics:nil views:@{@"scrollView": scrollView}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:@{@"scrollView": _onboardingScrollView}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-64-[scrollView]-60-|" options:0 metrics:nil views:@{@"scrollView": _onboardingScrollView}]];
 
-        [scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[onboarding(280)]" options:0 metrics:nil views:@{@"onboarding": onboarding}]];
-        [scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[onboarding]|" options:0 metrics:nil views:@{@"onboarding": onboarding}]];
-        [scrollView addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:scrollView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+        [_onboardingScrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[onboarding(280)]" options:0 metrics:nil views:@{@"onboarding": _onboarding}]];
+        [_onboardingScrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[onboarding]|" options:0 metrics:nil views:@{@"onboarding": _onboarding}]];
+        [_onboardingScrollView addConstraint:[NSLayoutConstraint constraintWithItem:_onboarding attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:_onboardingScrollView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
         
     } else {
         
-        [self.view addSubview:onboarding];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[onboarding(300)]" options:0 metrics:nil views:@{@"onboarding": onboarding}]];
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:onboarding attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+        [self.view addSubview:_onboarding];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[onboarding(300)]" options:0 metrics:nil views:@{@"onboarding": _onboarding}]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_onboarding attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_onboarding attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
         
     }
 }
@@ -151,11 +160,21 @@
 - (void)eventCreated:(NSNotification *)notification
 {
     // Add event to local user
-
+    [self dismissOnboarding];
     [self dismissViewControllerAnimated:YES completion:nil];
     [AppDelegate user].protoEvent = nil;
     [_collectionView reloadData];
     [self performSelector:@selector(scrollToItemAtIndexPath) withObject:nil afterDelay:0.5];
+}
+
+- (void)dismissOnboarding
+{
+    [_onboardingScrollView removeFromSuperview];
+    [_onboarding removeFromSuperview];
+    [_gradientView removeFromSuperview];
+    _onboardingScrollView = nil;
+    _onboarding = nil;
+    _gradientView = nil;
 }
 
 - (void)scrollToItemAtIndexPath

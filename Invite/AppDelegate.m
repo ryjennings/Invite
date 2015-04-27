@@ -261,5 +261,10 @@
     [AppDelegate user].protoEvent = nil;
 }
 
++ (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
+{
+    [AppDelegate user].protoEvent.startDate = startDate;
+    [AppDelegate user].protoEvent.endDate = endDate;
+}
 
 @end

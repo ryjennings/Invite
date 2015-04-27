@@ -11,19 +11,20 @@
 #import <Parse/Parse.h>
 
 #import "User.h"
-#import "Timeframe.h"
 
 @interface Event : NSObject
 
-@property (nonatomic, strong) PFObject *location;
 @property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) Timeframe *timeframe;
 @property (nonatomic, strong) NSString *eventDescription;
 @property (nonatomic, strong) NSArray *invitees;
+@property (nonatomic, strong) NSArray *emails;
+@property (nonatomic, strong) NSDate *startDate;
+@property (nonatomic, strong) NSDate *endDate;
+@property (nonatomic, strong) PFObject *location;
+
 //@property (nonatomic, strong) UIImage *coverImage;
 
 @property (nonatomic, strong) NSArray *inviteeEmails;
-@property (nonatomic, strong) NSArray *emails;
 
 @property (nonatomic, strong) NSArray *allInvitees;
 

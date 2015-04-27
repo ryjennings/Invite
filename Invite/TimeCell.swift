@@ -24,6 +24,5 @@ import UIKit
     func prepareCell()
     {
         clockViewLeadingConstraint.constant = separatorInset.left
-        label.text = "Tap here to set a start time"
     }
 }

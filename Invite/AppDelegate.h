@@ -46,5 +46,6 @@
 + (NSArray *)locations;
 + (void)addToProtoEventTitle:(NSString *)title description:(NSString *)description;
 + (void)nilProtoEvent;
++ (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 
 @end
