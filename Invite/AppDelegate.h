@@ -42,10 +42,12 @@
 
 // Weird methods needed because Swift doesn't like @class
 
-+ (void)addToProtoEventLocation:(PFObject *)location;
-+ (NSArray *)locations;
 + (void)addToProtoEventTitle:(NSString *)title description:(NSString *)description;
-+ (void)nilProtoEvent;
 + (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
++ (void)addToProtoEventLocation:(PFObject *)location;
++ (void)nilProtoEvent;
++ (NSArray *)locations;
++ (NSSet *)busyTimes;
++ (NSArray *)events;
 
 @end

@@ -29,6 +29,8 @@ enum TimeframeRow: Int {
     var startDate: NSDate!
     var endDate: NSDate!
     
+    var busyTimes: NSSet!
+    
     // keyboard height 270.0
     let kDatePickerViewHeight = CGFloat(314.0)
     
@@ -39,18 +41,16 @@ enum TimeframeRow: Int {
     {
         navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 3, steps: 5)
         
+        busyTimes = AppDelegate.busyTimes()
+        let events = AppDelegate.events()
+        
         tableView.tableHeaderView = tableHeaderView()
-//        tableView.estimatedRowHeight = 100
-//        tableView.rowHeight = UITableViewAutomaticDimension
         
         nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
         nextButton.clipsToBounds = true
         nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
         
         configureDatePicker()
-        
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     }
     
     func configureDatePicker()
@@ -67,7 +67,6 @@ enum TimeframeRow: Int {
     override func viewDidDisappear(animated: Bool)
     {
         super.viewDidDisappear(animated)
-//        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     func tableHeaderView() -> UIView
@@ -208,14 +207,14 @@ enum TimeframeRow: Int {
     {
         showDatePicker(false)
         if (datePickerView.isSelectingStartDate) {
-            var cell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: TimeframeRow.StartDate.rawValue, inSection: TimeframeSection.Timeframe.rawValue)) as! TimeCell
-            cell.label.text = formattedDate(date)
             startDate = date
+            if (endDate == nil) {
+                endDate = startDate
+            }
         } else {
-            var cell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: TimeframeRow.EndDate.rawValue, inSection: TimeframeSection.Timeframe.rawValue)) as! TimeCell
-            cell.label.text = formattedDate(date)
             endDate = date
         }
+        tableView.reloadData()
     }
     
     @IBAction func cancel(sender: UIBarButtonItem)

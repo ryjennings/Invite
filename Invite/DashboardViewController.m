@@ -184,15 +184,10 @@
 
 - (IBAction)logout:(id)sender
 {
-//    [FBSession.activeSession closeAndClearTokenInformation];
-    
     [FBSession.activeSession closeAndClearTokenInformation];
     [FBSession.activeSession close];
     [FBSession setActiveSession:nil];
     
-//    LoginViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:LOGIN_VIEW_CONTROLLER];
-//    controller.prepareForSegueFromLaunchViewController = NO;
-//    [self.navigationController setViewControllers:@[controller] animated:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

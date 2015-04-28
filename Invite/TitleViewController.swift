@@ -25,13 +25,14 @@ enum TitleSection: Int {
     
     var inputText: [String]!
     
+    let shouldValidate = false
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
                 
         inputText = [String](count: TitleSection.Count.rawValue, repeatedValue: "")
         navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 1, steps: 5)
-//        tableView.tableHeaderView = tableHeaderView()
         tableView.separatorStyle = .None
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -39,12 +40,6 @@ enum TitleSection: Int {
         nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
         nextButton.clipsToBounds = true
         nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
-        
-//        CATransition *animation = [CATransition animation];
-//        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-//        animation.type = kCATransitionFade;
-//        animation.duration = 0.75;
-//        [aLabel.layer addAnimation:animation forKey:@"kCATransitionFade"];
         
         var animation = CATransition()
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
@@ -200,6 +195,9 @@ enum TitleSection: Int {
     
     override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool
     {
+        if !shouldValidate {
+            return true
+        }
         if (count(inputText[TitleSection.Title.rawValue]) > 0 && count(inputText[TitleSection.Description.rawValue]) > 0) {
             return true
         } else {

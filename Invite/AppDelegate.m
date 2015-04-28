@@ -240,20 +240,21 @@
 
 #pragma mark - Weird methods needed because Swift doesn't like @class
 
-+ (void)addToProtoEventLocation:(PFObject *)location
-{
-    [AppDelegate user].protoEvent.location = location;
-}
-
-+ (NSArray *)locations
-{
-    return [AppDelegate user].locations;
-}
-
 + (void)addToProtoEventTitle:(NSString *)title description:(NSString *)description
 {
     [AppDelegate user].protoEvent.title = title;
     [AppDelegate user].protoEvent.eventDescription = description;
+}
+
++ (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
+{
+    [AppDelegate user].protoEvent.startDate = startDate;
+    [AppDelegate user].protoEvent.endDate = endDate;
+}
+
++ (void)addToProtoEventLocation:(PFObject *)location
+{
+    [AppDelegate user].protoEvent.location = location;
 }
 
 + (void)nilProtoEvent
@@ -261,10 +262,19 @@
     [AppDelegate user].protoEvent = nil;
 }
 
-+ (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
++ (NSArray *)locations
 {
-    [AppDelegate user].protoEvent.startDate = startDate;
-    [AppDelegate user].protoEvent.endDate = endDate;
+    return [AppDelegate user].locations;
+}
+
++ (NSSet *)busyTimes
+{
+    return [AppDelegate user].busyTimes;
+}
+
++ (NSArray *)events
+{
+    return [AppDelegate user].events;
 }
 
 @end
