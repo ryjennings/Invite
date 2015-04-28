@@ -208,7 +208,7 @@ enum TimeframeRow: Int {
         showDatePicker(false)
         if (datePickerView.isSelectingStartDate) {
             startDate = date
-            if (endDate == nil) {
+            if (endDate == nil || endDate.earlierDate(startDate).isEqualToDate(endDate)) {
                 endDate = startDate
             }
         } else {

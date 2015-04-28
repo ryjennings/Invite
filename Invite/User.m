@@ -59,7 +59,32 @@
         
     } else {
         
-        _events = [object objectForKey:EVENTS_KEY];
+        // Delete old events
+        NSMutableArray *mEvents = [[object objectForKey:EVENTS_KEY] mutableCopy];
+        NSDate *date = [NSDate date];
+        BOOL save = NO;
+        for (PFObject *event in mEvents) {
+            NSDate *startDate = [event objectForKey:EVENT_START_DATE_KEY];
+            if ([[startDate earlierDate:date] isEqualToDate:startDate]) {
+                [_parse removeObject:event forKey:EVENTS_KEY];
+                [mEvents removeObject:event];
+                save = YES;
+            }
+        }
+        if (save) {
+            [_parse saveInBackground];
+        }
+        _events = [mEvents sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            NSDate *e1start = [((PFObject *)obj1) objectForKey:EVENT_START_DATE_KEY];
+            NSDate *e2start = [((PFObject *)obj2) objectForKey:EVENT_START_DATE_KEY];
+            if ([[e1start earlierDate:e2start] isEqualToDate:e1start]) {
+                return NSOrderedAscending;
+            } else if ([[e1start earlierDate:e2start] isEqualToDate:e2start]) {
+                return NSOrderedDescending;
+            }
+            return NSOrderedSame;
+        }];
+        
         _friends = [object objectForKey:FRIENDS_KEY];
         _friendEmails = [object objectForKey:FRIENDS_EMAILS_KEY];
         _locations = [object objectForKey:LOCATIONS_KEY];

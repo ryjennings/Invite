@@ -34,7 +34,7 @@
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 
-    if (![AppDelegate user].events) {
+    if (![AppDelegate user].events.count) {
         [self configureOnboarding];
     }
 
@@ -52,16 +52,6 @@
     self.navigationItem.title = @"Invite";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
 }
 
 - (void)dealloc
