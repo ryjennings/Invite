@@ -49,7 +49,7 @@
     _inviteLabel.font = [UIFont proximaNovaLightFontOfSize:36];
     _lineView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
     _messageLabel.font = [UIFont proximaNovaRegularFontOfSize:16];
-    _facebookView.backgroundColor = [UIColor inviteGreenColor];
+    _facebookView.backgroundColor = [UIColor inviteSlateButtonColor];
 
 //    if (_prepareForSegueFromLaunchViewController) {
 //        _messageView.alpha = 0;

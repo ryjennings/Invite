@@ -64,8 +64,8 @@
         NSDate *date = [NSDate date];
         BOOL save = NO;
         for (PFObject *event in mEvents) {
-            NSDate *startDate = [event objectForKey:EVENT_START_DATE_KEY];
-            if ([[startDate earlierDate:date] isEqualToDate:startDate]) {
+            NSDate *endDate = [event objectForKey:EVENT_END_DATE_KEY];
+            if ([[endDate earlierDate:date] isEqualToDate:endDate]) {
                 [_parse removeObject:event forKey:EVENTS_KEY];
                 [mEvents removeObject:event];
                 save = YES;
