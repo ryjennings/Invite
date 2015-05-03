@@ -45,8 +45,6 @@ import MapKit
         mapView.scrollEnabled = false
         mapView.userInteractionEnabled = false
         mapView.layer.cornerRadius = 50
-//        mapView.layer.borderColor = UIColor.inviteTableLabelColor().CGColor
-//        mapView.layer.borderWidth = 1
         
         label.textColor = UIColor.inviteTableLabelColor()
         label.font = UIFont.inviteTableLabelFont()
@@ -54,6 +52,7 @@ import MapKit
         
         textField.placeholder = "Give this location a nickname"
         textField.font = UIFont.inviteTableLabelFont()
+        textField.textColor = UIColor.inviteTableLabelColor()
         textField.delegate = self
     }
     

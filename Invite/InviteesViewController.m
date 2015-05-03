@@ -20,15 +20,21 @@
 
 typedef NS_ENUM(NSUInteger, InviteesSection) {
     InviteesSectionFriends,
+    InviteesSectionContacts,
     InviteesSectionEmail,
     InviteesSectionCount
 };
 
-@interface InviteesViewController () <UITableViewDataSource, UITableViewDelegate, InputCellDelegate>
+@interface InviteesViewController () <UITableViewDataSource, UITableViewDelegate, InputCellDelegate, ContactsViewControllerDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UIButton *nextButton;
+
 @property (nonatomic, strong) NSArray *friends;
-@property (nonatomic, strong) NSMutableArray *invitees;
+@property (nonatomic, strong) NSMutableArray *selectedFriends;
+
+@property (nonatomic, strong) NSMutableArray *contacts;
+@property (nonatomic, strong) NSMutableArray *selectedContacts;
+
 @property (nonatomic, strong) NSString *textViewText;
 @property (nonatomic, assign) BOOL noPreviousFriends;
 @end
@@ -45,8 +51,11 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     
-    _invitees = [NSMutableArray array];
     _friends = [AppDelegate user].friends;
+    _selectedFriends = [NSMutableArray array];
+    _contacts = [NSMutableArray array];
+    _selectedContacts = [NSMutableArray array];
+    
     _noPreviousFriends = !_friends.count;
 
     _nextButton.layer.cornerRadius = kCornerRadius;
@@ -102,6 +111,8 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     switch (section) {
         case InviteesSectionFriends:
             return _noPreviousFriends ? 1 : _friends.count;
+        case InviteesSectionContacts:
+            return _contacts.count ? _contacts.count + 1 : 1;
         default:
             return 1;
     }
@@ -119,7 +130,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     UITableViewHeaderFooterView *footerView = (UITableViewHeaderFooterView *)view;
     
     NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-    [style setLineSpacing:4];
+    style.lineSpacing = 4;
 
     NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"invitees_newfriends_footer", nil) attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}];
     
@@ -130,7 +141,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 {
     if (section == InviteesSectionEmail) {
         NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-        [style setLineSpacing:6];
+        style.lineSpacing = 4;
         return [NSLocalizedString(@"invitees_newfriends_footer", nil) boundingRectWithSize:CGSizeMake(self.view.frame.size.width - (_tableView.separatorInset.left * 2), CGFLOAT_MAX)
                                                                                    options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
                                                                                 attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}
@@ -150,7 +161,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
             NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"invitees_nopreviousfriends", nil) attributes:@{NSFontAttributeName: kNoPreviousFriendsFont}];
             NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-            [style setLineSpacing:6];
+            style.lineSpacing = 6;
             [att addAttribute:NSParagraphStyleAttributeName value:style range:NSMakeRange(0, [att.string length])];
             
             cell.textLabel.numberOfLines = 0;
@@ -169,7 +180,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
             
             cell.label.textColor = [UIColor inviteTableLabelColor];
             cell.label.font = [UIFont inviteTableLabelFont];
-            cell.accessoryView = [[UIImageView alloc] initWithImage:([_invitees containsObject:friend] ? [UIImage imageNamed:@"list_selected"] : [UIImage imageNamed:@"list_select"])];
+            cell.accessoryView = [[UIImageView alloc] initWithImage:([_selectedFriends containsObject:friend] ? [UIImage imageNamed:@"list_selected"] : [UIImage imageNamed:@"list_select"])];
             cell.profileImageViewLeadingConstraint.constant = cell.separatorInset.left;
             
             if ([friend objectForKey:FULL_NAME_KEY]) {
@@ -191,24 +202,54 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
             
         }
         
-    } else {
+    } else if (indexPath.section == InviteesSectionEmail) {
+        
         InputCell *cell = (InputCell *)[tableView dequeueReusableCellWithIdentifier:INPUT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.delegate = self;
-        cell.placeholderLabel.text = @"Enter your friends' email addresses";
+        cell.placeholderLabel.text = @"Tap to enter your friends' email addresses";
         cell.placeholderLabel.font = [UIFont inviteTableLabelFont];
-        cell.placeholderLabel.hidden = cell.textView.text.length;
-        cell.placeholderLabel.textColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+        cell.placeholderLabel.textColor = [UIColor inviteTableLabelColor];
         cell.textView.tag = indexPath.row;
         cell.textView.text = _textViewText;
+        cell.textView.textColor = [UIColor inviteTableLabelColor];
         cell.textView.font = [UIFont inviteTableLabelFont];
         cell.textView.textContainer.lineFragmentPadding = 0;
-        cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0);
+        cell.textView.textContainerInset = UIEdgeInsetsMake(4, 0, 0, 0);
         cell.textView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         [self addDoneToolBarToKeyboard:cell.textView];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.textViewLeadingConstraint.constant = cell.separatorInset.left;
         cell.labelLeadingConstraint.constant = cell.separatorInset.left;
         return cell;
+        
+    } else {
+        
+        if (!_contacts.count || indexPath.row == 0) {
+            
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER forIndexPath:indexPath];
+            cell.textLabel.textColor = [UIColor inviteTableLabelColor];
+            cell.textLabel.text = !_contacts.count ? @"Choose invitees from your Contacts" : @"Choose more invitees from your Contacts";
+            cell.accessoryView = nil;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            return cell;
+            
+        } else {
+            
+            ProfileCell *cell = (ProfileCell *)[tableView dequeueReusableCellWithIdentifier:PROFILE_CELL_IDENTIFIER forIndexPath:indexPath];
+            NSString *contact = _contacts[indexPath.row - 1];
+
+            cell.label.textColor = [UIColor inviteTableLabelColor];
+            cell.label.font = [UIFont inviteTableLabelFont];
+            cell.accessoryView = [[UIImageView alloc] initWithImage:([_selectedContacts containsObject:contact] ? [UIImage imageNamed:@"list_selected"] : [UIImage imageNamed:@"list_select"])];
+            cell.profileImageViewLeadingConstraint.constant = cell.separatorInset.left;
+            
+            cell.label.text = contact;
+            
+            cell.profileImageView.person = contact;
+            return cell;
+
+        }
     }
 }
 
@@ -217,8 +258,12 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     switch (section) {
         case InviteesSectionFriends:
             return @"Previously Invited Friends";
-        default:
+        case InviteesSectionContacts:
+            return @"Browse Contacts";
+        case InviteesSectionEmail:
             return @"New Friends";
+        default:
+            return nil;
     }
 }
 
@@ -234,19 +279,34 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+
     if (_noPreviousFriends || indexPath.section == InviteesSectionEmail) {
         return;
     }
     
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-
-    PFObject *friend = _friends[indexPath.row];
+    if (indexPath.section == InviteesSectionContacts) {
+        if (indexPath.row == 0) {
+            [self performSegueWithIdentifier:SEGUE_TO_CONTACTS sender:self];
+        } else {
+            PFObject *contact = _contacts[indexPath.row - 1];
+            if ([_selectedContacts containsObject:contact]) {
+                [_selectedContacts removeObject:contact];
+                cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_select"]];
+            } else {
+                [_selectedContacts addObject:contact];
+                cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_selected"]];
+            }
+        }
+        return;
+    }
     
-    if ([_invitees containsObject:friend]) {
-        [_invitees removeObject:friend];
+    PFObject *friend = _friends[indexPath.row];
+    if ([_selectedFriends containsObject:friend]) {
+        [_selectedFriends removeObject:friend];
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_select"]];
     } else {
-        [_invitees addObject:friend];
+        [_selectedFriends addObject:friend];
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_selected"]];
     }
 }
@@ -257,7 +317,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     if (indexPath.section == InviteesSectionFriends) {
         if (_noPreviousFriends) {
             NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-            [style setLineSpacing:6];
+            style.lineSpacing = 6;
             CGRect frame = [NSLocalizedString(@"invitees_nopreviousfriends", nil) boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
                                                        options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
                                                                                             attributes:@{NSFontAttributeName: kNoPreviousFriendsFont, NSParagraphStyleAttributeName: style}
@@ -266,12 +326,19 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         } else {
             return 54;
         }
+    } else if (indexPath.section == InviteesSectionContacts) {
+        if (indexPath.row == 0) {
+            return 44;
+        } else {
+            return 54;
+        }
     } else {
         CGRect frame = [_textViewText boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
                                           options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
                                        attributes:@{NSFontAttributeName: [UIFont inviteTableLabelFont]}
                                           context:nil];
-        return frame.size.height + 25;
+        CGFloat height = frame.size.height + 30;
+        return height;
     }
 }
 
@@ -283,28 +350,34 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         
         // Add email addresses to invitees
         
+        NSMutableArray *allInvitees = [[NSMutableArray alloc] initWithArray:_selectedFriends];
+        NSMutableArray *emailAddresses = [NSMutableArray array];
+        
         if (_textViewText.length) {
-            NSMutableArray *allInvitees = [[NSMutableArray alloc] initWithArray:_invitees];
             NSArray *components = [_textViewText componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             NSString *string = [components componentsJoinedByString:@""];
-            NSArray *emailAddresses = [string componentsSeparatedByString:@","];
-            if (emailAddresses.count) {
-                [AppDelegate user].protoEvent.emails = emailAddresses;
-            }
-            [allInvitees addObjectsFromArray:emailAddresses];
-            [AppDelegate user].protoEvent.allInvitees = allInvitees;
+            emailAddresses = [[string componentsSeparatedByString:@","] mutableCopy];
         }
         
-        [AppDelegate user].protoEvent.invitees = _invitees;
+        [emailAddresses addObjectsFromArray:_selectedContacts];
+        if (emailAddresses.count) {
+            [AppDelegate user].protoEvent.emails = emailAddresses;
+        }
+        [allInvitees addObjectsFromArray:emailAddresses];
+        [AppDelegate user].protoEvent.allInvitees = allInvitees;
+        
+        [AppDelegate user].protoEvent.invitees = _selectedFriends;
         
         NSMutableArray *inviteeEmails = [NSMutableArray array];
-        for (PFObject *invitee in _invitees) {
+        for (PFObject *invitee in _selectedFriends) {
             [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
         }
         if (inviteeEmails.count) {
             [AppDelegate user].protoEvent.inviteeEmails = inviteeEmails;
         }
         
+    } else if ([segue.identifier isEqualToString:SEGUE_TO_CONTACTS]) {
+        ((ContactsViewController *)segue.destinationViewController).delegate = self;
     }
 }
 
@@ -362,6 +435,21 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 - (void)doneButtonClickedDismissKeyboard
 {
     [self.view endEditing:YES];
+}
+
+#pragma mark - ContactsViewControllerDelegate
+
+- (void)contactsViewController:(ContactsViewController *)vc didSelectEmailAddresses:(NSArray *)emails
+{
+    for (NSString *email in emails) {
+        if (![_contacts containsObject:email]) {
+            [_contacts addObject:email];
+        }
+        if (![_selectedContacts containsObject:email]) {
+            [_selectedContacts addObject:email];
+        }
+    }
+    [_tableView reloadData];
 }
 
 @end

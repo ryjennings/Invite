@@ -83,6 +83,7 @@
 		075D10911ADC859D00C86130 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D107F1ADC859D00C86130 /* UIImageView+HighlightedWebCache.m */; };
 		075D10921ADC859D00C86130 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10811ADC859D00C86130 /* UIImageView+WebCache.m */; };
 		075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10831ADC859D00C86130 /* UIView+WebCacheOperation.m */; };
+		075E2FD61AF2D33E0089CFDC /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 075E2FD51AF2D33E0089CFDC /* AddressBook.framework */; };
 		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
@@ -102,6 +103,7 @@
 		07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */; };
 		07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */; };
 		07E1FD901ACE4EDD00F619D0 /* AppDelegate+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8F1ACE4EDD00F619D0 /* AppDelegate+Swift.swift */; };
+		07F270B31AF58416000ECFEE /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F270B21AF58416000ECFEE /* ContactsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -221,6 +223,7 @@
 		075D10811ADC859D00C86130 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		075D10821ADC859D00C86130 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		075D10831ADC859D00C86130 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		075E2FD51AF2D33E0089CFDC /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		075ED6261A994FEC0015F9E6 /* BusyDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusyDetails.h; sourceTree = "<group>"; };
 		075ED6271A994FEC0015F9E6 /* BusyDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusyDetails.m; sourceTree = "<group>"; };
 		0775B0701A93BFB900C15303 /* InviteesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesViewController.h; sourceTree = "<group>"; };
@@ -248,6 +251,7 @@
 		07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = "../../Downloads/parse-library-1/ParseUI.framework"; sourceTree = "<group>"; };
 		07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Invite.swift"; sourceTree = "<group>"; };
 		07E1FD8F1ACE4EDD00F619D0 /* AppDelegate+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Swift.swift"; sourceTree = "<group>"; };
+		07F270B21AF58416000ECFEE /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,6 +259,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				075E2FD61AF2D33E0089CFDC /* AddressBook.framework in Frameworks */,
 				078924741AB36DCE005EE7FB /* MapKit.framework in Frameworks */,
 				07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */,
 				0724632D1A8BD42900820834 /* libsqlite3.dylib in Frameworks */,
@@ -304,6 +309,7 @@
 		0724632E1A8BD44200820834 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				075E2FD51AF2D33E0089CFDC /* AddressBook.framework */,
 				078924731AB36DCE005EE7FB /* MapKit.framework */,
 				07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */,
 				0724632F1A8BD61A00820834 /* FacebookSDK.framework */,
@@ -570,6 +576,7 @@
 			children = (
 				0775B0701A93BFB900C15303 /* InviteesViewController.h */,
 				0775B0711A93BFB900C15303 /* InviteesViewController.m */,
+				07F270B21AF58416000ECFEE /* ContactsViewController.swift */,
 				0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */,
 				0744377C1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift */,
 			);
@@ -732,6 +739,7 @@
 				07D2D9C51AE5A6D4008E1733 /* DashboardOnboardingView.swift in Sources */,
 				071408741AEC9D660081F304 /* DatePickerView.swift in Sources */,
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
+				07F270B31AF58416000ECFEE /* ContactsViewController.swift in Sources */,
 				07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */,
 				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
 				0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */,

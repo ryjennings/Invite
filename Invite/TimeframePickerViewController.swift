@@ -184,7 +184,11 @@ enum TimeframeRow: Int {
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
-        return 54
+        if (indexPath.section == TimeframeSection.Timeframe.rawValue) {
+            return 54
+        } else {
+            return 44
+        }
     }
     
     func showDatePicker(show: Bool)

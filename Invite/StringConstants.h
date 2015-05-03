@@ -73,6 +73,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define SEGUE_TO_EVENT @"SegueToEvent"
 #define SEGUE_TO_START_DATE @"SegueToStartDate"
 #define SEGUE_TO_END_DATE @"SegueToEndDate"
+#define SEGUE_TO_CONTACTS @"SegueToContacts"
 
 // Table cell identifiers
 #define MAP_CELL_IDENTIFIER @"MapCellIdentifier"

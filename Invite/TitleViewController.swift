@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AddressBook
 
 enum TitleSection: Int {
     case Title = 0
@@ -134,11 +135,11 @@ enum TitleSection: Int {
         let text = inputText[indexPath.row] as String
         var cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
         cell.delegate = self
-        cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "Let's create a new event. First, tap here to give the event a title." : "Tap here to add a description"
+        cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "Let's create a new event. First, tap here to give the event a title." : "Tap to add a description"
         cell.placeholderLabel.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.proximaNovaRegularFontOfSize(16)
         cell.placeholderLabel.hidden = Bool(count(text))
-        cell.placeholderLabel.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteQuestionColor() : UIColor(white: 0.9, alpha: 1)
+        cell.placeholderLabel.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteQuestionColor() : UIColor.inviteTableLabelColor()
         cell.placeholderLabel.numberOfLines = 0
         cell.textView.tag = indexPath.section
         cell.textView.text = text
@@ -146,14 +147,18 @@ enum TitleSection: Int {
         cell.textView.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteBlueColor() : UIColor.inviteTableLabelColor()
         cell.textView.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.textView.textContainer.lineFragmentPadding = 0
-        cell.textView.contentInset = indexPath.section == TitleSection.Title.rawValue ? UIEdgeInsetsMake(1, 0, 0, 0) : UIEdgeInsetsMake(1, 0, 0, 0)
-        cell.textView.textContainerInset = UIEdgeInsetsMake(1, 0, 0, 0)
+//        cell.textView.contentInset = indexPath.section == TitleSection.Title.rawValue ? UIEdgeInsetsMake(1, 0, 0, 0) : UIEdgeInsetsMake(1, 0, 0, 0)
+        cell.textView.textContainerInset = UIEdgeInsetsMake(0, 0, 0, 0)
         cell.textView.autocapitalizationType = indexPath.section == TitleSection.Title.rawValue ? UITextAutocapitalizationType.Words : UITextAutocapitalizationType.Sentences
         addDoneToolBarToKeyboard(cell.textView)
         
         cell.selectionStyle = .None
         cell.textViewLeadingConstraint.constant = indexPath.section == TitleSection.Title.rawValue ? 50 : SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
         cell.labelLeadingConstraint.constant = indexPath.section == TitleSection.Title.rawValue ? 50 : SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
+        cell.labelTopConstraint.constant = 13
+        cell.textViewTopConstraint.constant = 13
+        cell.labelBottomConstraint.constant = 14
+        cell.textViewBottomConstraint.constant = 14
         cell.backgroundColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.clearColor() : UIColor.whiteColor()
         cell.contentView.backgroundColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.clearColor() : UIColor.whiteColor()
         return cell

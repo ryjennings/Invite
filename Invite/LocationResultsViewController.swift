@@ -48,7 +48,7 @@ import AddressBookUI
         attributedText.appendAttributedString(NSAttributedString(string: placemark.addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", "), attributes: [NSForegroundColorAttributeName: UIColor.inviteTableLabelColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12)]))
             
         var style = NSMutableParagraphStyle()
-        style.lineSpacing = 3
+        style.lineSpacing = 4
         attributedText.addAttribute(NSParagraphStyleAttributeName, value: style, range: NSMakeRange(0, count(attributedText.string)))
         
         cell.textLabel?.numberOfLines = 0

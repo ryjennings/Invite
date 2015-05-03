@@ -15,7 +15,11 @@ import UIKit
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var labelLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var textViewLeadingConstraint: NSLayoutConstraint!
-            
+    @IBOutlet weak var labelTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var textViewTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var labelBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var textViewBottomConstraint: NSLayoutConstraint!
+
     // MARK: - UITextViewDelegate
 
     func textViewDidChange(textView: UITextView)

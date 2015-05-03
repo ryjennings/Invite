@@ -10,6 +10,8 @@ import UIKit
 
 @objc(BasicCell) class BasicCell: UITableViewCell
 {
+    
+    
     override func awakeFromNib()
     {
         textLabel?.font = UIFont.inviteTableLabelFont()
