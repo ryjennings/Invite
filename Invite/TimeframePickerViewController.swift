@@ -25,7 +25,7 @@ enum TimeframeRow: Int {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var nextButton: UIButton!
     
-    var conflicts: Array<AnyObject> = []
+    var conflicts = [BusyDetails]()
     var startDate: NSDate!
     var endDate: NSDate!
     
@@ -51,6 +51,70 @@ enum TimeframeRow: Int {
         nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
         
         configureDatePicker()
+        nextButton.hidden = true
+    }
+    
+    override func viewWillAppear(animated: Bool)
+    {
+        if (startDate == nil) {
+            AppDelegate.delay(0.5) {
+                self.showDatePicker(true)
+            };
+        }
+    }
+    
+    func determineConflicts()
+    {
+        conflicts.removeAll(keepCapacity: true)
+        if (busyTimes != nil) {
+            busyTimes.enumerateObjectsUsingBlock { (object, stop) -> Void in
+                var busy = object as! BusyDetails
+                
+                // If busy end is earlier than start OR busy start is later than end
+                if busy.end.earlierDate(self.startDate).isEqualToDate(busy.end) || busy.start.laterDate(self.endDate).isEqualToDate(busy.start) {
+                    return
+                    
+                    
+                    
+                    
+                    
+                } else {
+                    // busy end is later than start AND busy start is earlier than end
+                    
+                    if busy.end.earlierDate(self.endDate).isEqualToDate(busy.end) {
+                        
+                        // busy end is somewhere between start and end
+                        
+                        if busy.start.earlierDate(self.startDate).isEqualToDate(busy.start) {
+                            // first half
+                            busy.circle = BusyDetailsCircle.RedGreen
+                        } else {
+                            // full
+                            busy.circle = BusyDetailsCircle.Red
+                        }
+                    } else {
+                        
+                        // busy end is later than end
+                        
+                        if busy.start.earlierDate(self.startDate).isEqualToDate(busy.start) {
+                            // full
+                            busy.circle = BusyDetailsCircle.Red
+                        } else {
+                            // second half
+                            busy.circle = BusyDetailsCircle.GreenRed
+                        }
+                    }
+
+                    self.conflicts.append(busy)
+
+                }
+            }
+            if tableView.numberOfSections() == 1 && conflicts.count > 0 {
+                tableView.insertSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Fade)
+            } else if tableView.numberOfSections() == 2 && conflicts.count == 0 {
+                tableView.deleteSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Fade)
+            }
+        }
     }
     
     func configureDatePicker()
@@ -111,7 +175,7 @@ enum TimeframeRow: Int {
     {
         switch (section) {
         case TimeframeSection.Timeframe.rawValue:
-            return "Start and End Times"
+            return "Timeframe"
         case TimeframeSection.Conflicts.rawValue:
             return "Conflicts"
         default:
@@ -121,6 +185,9 @@ enum TimeframeRow: Int {
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
+        if startDate == nil {
+            return 0
+        }
         return TimeframeSection.Count.rawValue
     }
     
@@ -140,28 +207,37 @@ enum TimeframeRow: Int {
     {
         if (indexPath.section == TimeframeSection.Timeframe.rawValue) {
             
-            var cell = tableView.dequeueReusableCellWithIdentifier(TIME_CELL_IDENTIFIER, forIndexPath: indexPath) as! TimeCell
-            cell.prepareCell()
+            var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_RIGHT_CELL_IDENTIFIER, forIndexPath: indexPath) as! BasicCell
+            cell.textLabel?.font = UIFont.inviteTableMediumFont()
+            cell.detailTextLabel?.font = UIFont.inviteTableMediumFont()
+            cell.selectionStyle = UITableViewCellSelectionStyle.None
+//            var att = NSMutableAttributedString()
             
             if (indexPath.row == TimeframeRow.StartDate.rawValue) {
-                if (startDate == nil) {
-                    cell.label.text = "Tap here to set a start time"
-                } else {
-                    cell.label.text = formattedDate(startDate)
-                }
+//                att.appendAttributedString(NSAttributedString(string: "Start date: ", attributes: [NSFontAttributeName: UIFont.inviteTableMediumFont()]))
+//                att.appendAttributedString(NSAttributedString(string: formattedDate(startDate), attributes: [NSFontAttributeName: UIFont.inviteTableMediumBoldFont()]))
+                cell.textLabel?.text = formattedDate(startDate)
+                cell.detailTextLabel?.text = "Start Date"
             } else {
-                if (endDate == nil) {
-                    cell.label.text = "Tap here to set an end time"
-                } else {
-                    cell.label.text = formattedDate(endDate)
-                }
+//                att.appendAttributedString(NSAttributedString(string: "End date: ", attributes: [NSFontAttributeName: UIFont.inviteTableMediumFont()]))
+//                att.appendAttributedString(NSAttributedString(string: formattedDate(endDate), attributes: [NSFontAttributeName: UIFont.inviteTableMediumBoldFont()]))
+                cell.textLabel?.text = formattedDate(endDate)
+                cell.detailTextLabel?.text = "End Date"
             }
+            
+//            cell.textLabel?.attributedText = att
 
             return cell
             
         } else {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) as! BasicCell
-            cell.textLabel!.text = "There are no conflicts with this time! You're good to go!"
+            var cell = tableView.dequeueReusableCellWithIdentifier(CONFLICT_CELL_IDENTIFIER, forIndexPath: indexPath) as! ConflictCell
+            cell.conflictViewLeadingConstraint.constant = cell.separatorInset.left
+            
+            if (conflicts.count == 0) {
+                cell.label.text = "There are no conflicts with this time! You're good to go!"
+            } else {
+                cell.label.text = conflicts[indexPath.row].name
+            }
             return cell
         }
     }
@@ -172,6 +248,17 @@ enum TimeframeRow: Int {
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .ShortStyle
         return dateFormatter.stringFromDate(date)
+    }
+    
+    func hourFromDate(date: NSDate) -> Int
+    {
+        let calendar = NSCalendar.currentCalendar()
+        let components = calendar.components(NSCalendarUnit.CalendarUnitHour, fromDate: date)
+        var hour = components.hour
+        if hour > 12 {
+            hour -= 12
+        }
+        return hour
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
@@ -209,8 +296,12 @@ enum TimeframeRow: Int {
     
     func datePickerView(datePickerView: DatePickerView, hasSelectedDate date: NSDate)
     {
+        var insertCells = false
         showDatePicker(false)
         if (datePickerView.isSelectingStartDate) {
+            if startDate == nil {
+                insertCells = true
+            }
             startDate = date
             if (endDate == nil || endDate.earlierDate(startDate).isEqualToDate(endDate)) {
                 endDate = startDate
@@ -218,7 +309,15 @@ enum TimeframeRow: Int {
         } else {
             endDate = date
         }
-        tableView.reloadData()
+        if insertCells {
+            tableView.insertSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: UITableViewRowAnimation.Fade)
+//            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0), NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+        } else {
+            tableView.reloadData()
+        }
+        determineConflicts()
+        
+        nextButton.hidden = false
     }
     
     @IBAction func cancel(sender: UIBarButtonItem)

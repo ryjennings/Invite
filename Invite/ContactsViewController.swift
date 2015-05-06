@@ -13,9 +13,17 @@ class Contact {
     let name: String
     let lastName: String
     var emails = [String]()
-    init(name: String, lastName: String) {
-        self.name = name
-        self.lastName = lastName
+    init(name: String?, lastName: String?) {
+        if let name = name {
+            self.name = name
+        } else {
+            self.name = ""
+        }
+        if let lastName = lastName {
+            self.lastName = lastName
+        } else {
+            self.lastName = ""
+        }
     }
 }
 
@@ -38,17 +46,23 @@ class Contact {
         if !self.determineStatus() {
             println("not authorized")
             return
+        } else {
+            createTableDataFromContacts()
         }
 
+    }
+    
+    func createTableDataFromContacts()
+    {
         let people = ABAddressBookCopyArrayOfAllPeople(adbk).takeRetainedValue() as NSArray as [ABRecord]
         for person: ABRecordRef in people {
-            let name = ABRecordCopyCompositeName(person).takeRetainedValue() as String
-            let lastName = ABRecordCopyValue(person, kABPersonLastNameProperty).takeRetainedValue() as! String
+            let name = ABRecordCopyCompositeName(person)?.takeRetainedValue() as? String
+            let lastName = ABRecordCopyValue(person, kABPersonLastNameProperty)?.takeRetainedValue() as? String
             let emailsRef: ABMultiValueRef = ABRecordCopyValue(person, kABPersonEmailProperty).takeRetainedValue() as ABMultiValueRef
             if ABMultiValueGetCount(emailsRef) > 0 {
                 let emails: NSArray = ABMultiValueCopyArrayOfAllValues(emailsRef).takeUnretainedValue() as NSArray
                 var contactEmails = [String]()
-                var contact = Contact(name: name, lastName: lastName)
+                var contact = Contact(name: name, lastName: lastName!)
                 for email in emails {
                     if (email as! String).rangeOfString("@") != nil {
                         contactEmails.append(email as! String)
@@ -60,6 +74,7 @@ class Contact {
         }
         
         tableData = tableData.sorted { $0.lastName < $1.lastName }
+        tableView.reloadData()
     }
     
     override func viewDidLayoutSubviews()
@@ -136,6 +151,7 @@ class Contact {
                 dispatch_async(dispatch_get_main_queue()) {
                     if granted {
                         ok = self.createAddressBook()
+                        self.createTableDataFromContacts()
                     }
                 }
             }

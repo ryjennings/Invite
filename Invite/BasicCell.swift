@@ -14,7 +14,7 @@ import UIKit
     
     override func awakeFromNib()
     {
-        textLabel?.font = UIFont.inviteTableLabelFont()
+        textLabel?.font = UIFont.inviteTableSmallFont()
         textLabel?.textColor = UIColor.inviteTableLabelColor()
     }
 }

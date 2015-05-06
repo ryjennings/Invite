@@ -78,6 +78,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 // Table cell identifiers
 #define MAP_CELL_IDENTIFIER @"MapCellIdentifier"
 #define BASIC_CELL_IDENTIFIER @"BasicCellIdentifier"
+#define BASIC_RIGHT_CELL_IDENTIFIER @"BasicRightCellIdentifier"
 #define INPUT_CELL_IDENTIFIER @"InputCellIdentifier"
 #define RADIO_CELL_IDENTIFIER @"RadioCellIdentifier"
 #define DASHBOARD_CELL_IDENTIFIER @"DashboardCellIdentifier"
@@ -86,8 +87,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define INVITEES_CELL_IDENTIFIER @"InviteesCellIdentifier"
 #define INVITEES_COLLECTION_CELL_IDENTIFIER @"InviteesCollectionCellIdentifier"
 #define INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER @"InviteesCollectionHeaderViewIdentifier"
-#define DATE_CELL_IDENTIFIER @"DateCellIdentifier"
-#define TIME_CELL_IDENTIFIER @"TimeCellIdentifier"
+#define CONFLICT_CELL_IDENTIFIER @"ConflictCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

@@ -24,6 +24,7 @@ class ProfileImageView: UIImageView
     {
         layer.cornerRadius = 20
         clipsToBounds = true
+        backgroundColor = UIColor.inviteLightSlateColor()
     }
     
     func prepareLabelForEmail(email: String)
@@ -55,7 +56,6 @@ class ProfileImageView: UIImageView
         initialsLabel.textColor = UIColor.whiteColor()
         initialsLabel.text = displayText.uppercaseString
         initialsLabel.backgroundColor = UIColor.clearColor()
-        backgroundColor = UIColor.inviteLightSlateColor()
         initialsLabel.textAlignment = .Center
         initialsLabel.font = UIFont.proximaNovaRegularFontOfSize(22)
         initialsLabel.minimumScaleFactor = 10/22 // minimum/maximum

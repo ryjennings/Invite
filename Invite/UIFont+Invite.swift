@@ -111,9 +111,19 @@ extension UIFont
         return UIFont.proximaNovaSemiboldFontOfSize(14)
     }
     
-    class func inviteTableLabelFont() -> UIFont
+    class func inviteTableSmallFont() -> UIFont
     {
         return UIFont.proximaNovaRegularFontOfSize(14)
+    }
+    
+    class func inviteTableMediumFont() -> UIFont
+    {
+        return UIFont.proximaNovaRegularFontOfSize(16)
+    }
+    
+    class func inviteTableMediumBoldFont() -> UIFont
+    {
+        return UIFont.proximaNovaSemiboldFontOfSize(16)
     }
     
     class func inviteTitleFont() -> UIFont

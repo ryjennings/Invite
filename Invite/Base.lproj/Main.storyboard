@@ -1162,61 +1162,61 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TimeCellIdentifier" rowHeight="54" id="RR1-SU-6Cb" customClass="TimeCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="BasicRightCellIdentifier" textLabel="7HD-Xa-Mge" detailTextLabel="aXd-sf-1Mn" style="IBUITableViewCellStyleValue1" id="q19-Ne-5zk" customClass="BasicCell">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="q19-Ne-5zk" id="eB3-El-jwy">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="7HD-Xa-Mge">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aXd-sf-1Mn">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ConflictCellIdentifier" rowHeight="54" id="RR1-SU-6Cb" customClass="ConflictCell">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RR1-SU-6Cb" id="Kvd-yL-yZ2">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sof-n7-wRT">
-                                                    <rect key="frame" x="70" y="7" width="522" height="40"/>
+                                                    <rect key="frame" x="40" y="7" width="552" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="40" id="TRu-v5-mrg"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8xX-6D-S0D" customClass="ClockView">
-                                                    <rect key="frame" x="15" y="7" width="40" height="40"/>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cBK-GT-YNC" customClass="ConflictView">
+                                                    <rect key="frame" x="15" y="17" width="20" height="20"/>
                                                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" secondItem="8xX-6D-S0D" secondAttribute="height" multiplier="1:1" id="eeD-nB-bmX"/>
-                                                        <constraint firstAttribute="width" constant="40" id="hWq-Su-RPi"/>
+                                                        <constraint firstAttribute="width" constant="20" id="8mU-bi-ydY"/>
+                                                        <constraint firstAttribute="width" secondItem="cBK-GT-YNC" secondAttribute="height" multiplier="1:1" id="vKe-Yg-LaQ"/>
                                                     </constraints>
                                                 </view>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="sof-n7-wRT" secondAttribute="trailing" constant="8" id="EtG-ec-lP4"/>
-                                                <constraint firstAttribute="centerY" secondItem="8xX-6D-S0D" secondAttribute="centerY" id="Kiy-Du-s5J"/>
-                                                <constraint firstItem="8xX-6D-S0D" firstAttribute="leading" secondItem="Kvd-yL-yZ2" secondAttribute="leading" constant="15" id="Y0h-Lb-K48"/>
-                                                <constraint firstItem="8xX-6D-S0D" firstAttribute="top" secondItem="sof-n7-wRT" secondAttribute="top" id="aeC-SY-DHB"/>
-                                                <constraint firstItem="sof-n7-wRT" firstAttribute="leading" secondItem="8xX-6D-S0D" secondAttribute="trailing" constant="15" id="dsc-F3-6wP"/>
+                                                <constraint firstItem="cBK-GT-YNC" firstAttribute="leading" secondItem="Kvd-yL-yZ2" secondAttribute="leading" constant="15" id="FgW-QB-uYM"/>
+                                                <constraint firstAttribute="centerY" secondItem="cBK-GT-YNC" secondAttribute="centerY" id="b93-Ir-o6i"/>
+                                                <constraint firstItem="sof-n7-wRT" firstAttribute="leading" secondItem="cBK-GT-YNC" secondAttribute="trailing" constant="5" id="gNq-Y6-F8D"/>
                                                 <constraint firstAttribute="centerY" secondItem="sof-n7-wRT" secondAttribute="centerY" id="kTN-7e-JAP"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="clockView" destination="8xX-6D-S0D" id="0SC-SJ-puh"/>
-                                            <outlet property="clockViewLeadingConstraint" destination="Y0h-Lb-K48" id="WZF-Q7-sge"/>
+                                            <outlet property="conflictView" destination="cBK-GT-YNC" id="Lwg-NX-P5M"/>
+                                            <outlet property="conflictViewLeadingConstraint" destination="FgW-QB-uYM" id="G1E-8c-acH"/>
                                             <outlet property="label" destination="sof-n7-wRT" id="uDX-8P-cIn"/>
-                                        </connections>
-                                    </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="DateCellIdentifier" rowHeight="162" id="Xj4-KW-7un" customClass="DateCell">
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Xj4-KW-7un" id="65c-0G-qro">
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="bn5-tc-cst">
-                                                    <rect key="frame" x="0.0" y="0.0" width="600" height="162"/>
-                                                    <date key="date" timeIntervalSinceReferenceDate="451189202.67696398">
-                                                        <!--2015-04-20 02:20:02 +0000-->
-                                                    </date>
-                                                </datePicker>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="bn5-tc-cst" firstAttribute="top" secondItem="65c-0G-qro" secondAttribute="top" id="5Mc-Oa-2cG"/>
-                                                <constraint firstItem="bn5-tc-cst" firstAttribute="leading" secondItem="65c-0G-qro" secondAttribute="leading" id="YJ1-LB-b7i"/>
-                                                <constraint firstAttribute="trailing" secondItem="bn5-tc-cst" secondAttribute="trailing" id="zJE-dG-heJ"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="datePicker" destination="bn5-tc-cst" id="9Bu-Eq-2ir"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

@@ -125,7 +125,7 @@ enum TitleSection: Int {
         if (indexPath.section == TitleSection.Creator.rawValue) {
             var cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
             cell.label.textColor = UIColor.inviteTableLabelColor()
-            cell.label.font = UIFont.inviteTableLabelFont()
+            cell.label.font = UIFont.inviteTableSmallFont()
             cell.label.text = AppDelegate.parseUser().objectForKey(FULL_NAME_KEY) as? String
             cell.profileImageViewLeadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
             cell.profileImageView.sd_setImageWithURL(NSURL(string: NSString(format: "https://graph.facebook.com/%@/picture?type=square&width=150&height=150", AppDelegate.parseUser().objectForKey(FACEBOOK_ID_KEY) as! String) as String))
@@ -137,13 +137,13 @@ enum TitleSection: Int {
         cell.delegate = self
         cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "Let's create a new event. First, tap here to give the event a title." : "Tap to add a description"
         cell.placeholderLabel.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
-        cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.inviteTableMediumFont()
         cell.placeholderLabel.hidden = Bool(count(text))
         cell.placeholderLabel.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteQuestionColor() : UIColor.inviteTableLabelColor()
         cell.placeholderLabel.numberOfLines = 0
         cell.textView.tag = indexPath.section
         cell.textView.text = text
-        cell.textView.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.proximaNovaRegularFontOfSize(16)
+        cell.textView.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.inviteTableMediumFont()
         cell.textView.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteBlueColor() : UIColor.inviteTableLabelColor()
         cell.textView.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.textView.textContainer.lineFragmentPadding = 0

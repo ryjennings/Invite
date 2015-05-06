@@ -47,11 +47,11 @@ import MapKit
         mapView.layer.cornerRadius = 50
         
         label.textColor = UIColor.inviteTableLabelColor()
-        label.font = UIFont.inviteTableLabelFont()
+        label.font = UIFont.inviteTableSmallFont()
         label.text = "Retrieving location..."
         
         textField.placeholder = "Give this location a nickname"
-        textField.font = UIFont.inviteTableLabelFont()
+        textField.font = UIFont.inviteTableSmallFont()
         textField.textColor = UIColor.inviteTableLabelColor()
         textField.delegate = self
     }

@@ -179,7 +179,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
             PFObject *friend = (PFObject *)_friends[indexPath.row];
             
             cell.label.textColor = [UIColor inviteTableLabelColor];
-            cell.label.font = [UIFont inviteTableLabelFont];
+            cell.label.font = [UIFont inviteTableSmallFont];
             cell.accessoryView = [[UIImageView alloc] initWithImage:([_selectedFriends containsObject:friend] ? [UIImage imageNamed:@"list_selected"] : [UIImage imageNamed:@"list_select"])];
             cell.profileImageViewLeadingConstraint.constant = cell.separatorInset.left;
             
@@ -207,12 +207,12 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         InputCell *cell = (InputCell *)[tableView dequeueReusableCellWithIdentifier:INPUT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.delegate = self;
         cell.placeholderLabel.text = @"Tap to enter your friends' email addresses";
-        cell.placeholderLabel.font = [UIFont inviteTableLabelFont];
+        cell.placeholderLabel.font = [UIFont inviteTableSmallFont];
         cell.placeholderLabel.textColor = [UIColor inviteTableLabelColor];
         cell.textView.tag = indexPath.row;
         cell.textView.text = _textViewText;
         cell.textView.textColor = [UIColor inviteTableLabelColor];
-        cell.textView.font = [UIFont inviteTableLabelFont];
+        cell.textView.font = [UIFont inviteTableSmallFont];
         cell.textView.textContainer.lineFragmentPadding = 0;
         cell.textView.textContainerInset = UIEdgeInsetsMake(4, 0, 0, 0);
         cell.textView.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -240,7 +240,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
             NSString *contact = _contacts[indexPath.row - 1];
 
             cell.label.textColor = [UIColor inviteTableLabelColor];
-            cell.label.font = [UIFont inviteTableLabelFont];
+            cell.label.font = [UIFont inviteTableSmallFont];
             cell.accessoryView = [[UIImageView alloc] initWithImage:([_selectedContacts containsObject:contact] ? [UIImage imageNamed:@"list_selected"] : [UIImage imageNamed:@"list_select"])];
             cell.profileImageViewLeadingConstraint.constant = cell.separatorInset.left;
             
@@ -335,7 +335,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     } else {
         CGRect frame = [_textViewText boundingRectWithSize:CGSizeMake(textViewWidth, CGFLOAT_MAX)
                                           options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading)
-                                       attributes:@{NSFontAttributeName: [UIFont inviteTableLabelFont]}
+                                       attributes:@{NSFontAttributeName: [UIFont inviteTableSmallFont]}
                                           context:nil];
         CGFloat height = frame.size.height + 30;
         return height;

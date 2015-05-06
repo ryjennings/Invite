@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
+    BusyDetailsCircleRedGreen,
+    BusyDetailsCircleRed,
+    BusyDetailsCircleGreenRed,
+    BusyDetailsCircleGreen
+};
+
 @interface BusyDetails : NSObject
 
 @property (nonatomic, strong) NSString *name;
@@ -18,6 +25,8 @@
 @property (nonatomic, strong) NSDate *start;
 @property (nonatomic, strong) NSDate *endBaseDate;
 @property (nonatomic, strong) NSDate *end;
+
+@property (nonatomic, assign) BusyDetailsCircle circle;
 
 + (BusyDetails *)busyDetailsWithName:(NSString *)name
                                email:(NSString *)email

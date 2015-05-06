@@ -29,7 +29,7 @@ import UIKit
     
     var isSelectingStartDate = true {
         didSet {
-            datePicker.minimumDate = !isSelectingStartDate ? selectedDate : nil
+            datePicker.minimumDate = !isSelectingStartDate ? selectedDate : NSDate()
         }
     }
 
@@ -61,7 +61,6 @@ import UIKit
         datePicker.setTranslatesAutoresizingMaskIntoConstraints(false)
         datePicker.addTarget(self, action: "pickerChanged:", forControlEvents: .ValueChanged)
         datePicker.minuteInterval = 15
-        datePicker.setDate(NSDate(), animated: false)
         view.addSubview(datePicker)
         
         var minute = 0
@@ -76,13 +75,15 @@ import UIKit
             , fromDate: datePicker.date)
         let intervals = [0, 15, 30, 45]
         for interval in intervals {
-            if interval < components.minute {
+            if interval < components.minute + 15 {
                 minute = interval
             }
         }
         components.minute = minute
         components.second = 0
         selectedDate = calendar.dateFromComponents(components)!
+        datePicker.setDate(selectedDate, animated: false)
+        datePicker.minimumDate = selectedDate
         
         let views = ["toolbar": toolbar, "view": view, "picker": datePicker]
         

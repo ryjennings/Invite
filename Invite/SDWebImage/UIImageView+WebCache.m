@@ -55,7 +55,12 @@ static char imageURLKey;
             dispatch_main_sync_safe(^{
                 if (!wself) return;
                 if (image) {
-                    wself.image = image;
+                    [UIView transitionWithView:wself
+                                      duration:0.5f
+                                       options:UIViewAnimationOptionTransitionCrossDissolve
+                                    animations:^{
+                                        wself.image = image;
+                                    } completion:NULL];
                     [wself setNeedsLayout];
                 } else {
                     if ((options & SDWebImageDelayPlaceholder)) {

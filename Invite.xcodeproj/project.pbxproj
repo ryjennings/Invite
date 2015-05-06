@@ -55,15 +55,14 @@
 		073274011A892BFB007700B3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 073274001A892BFB007700B3 /* Images.xcassets */; };
 		073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073274021A892BFB007700B3 /* LaunchScreen.xib */; };
 		073274101A892BFB007700B3 /* InviteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0732740F1A892BFB007700B3 /* InviteTests.m */; };
+		07380CF91AFA972C00A6E19D /* ConflictCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07380CF81AFA972C00A6E19D /* ConflictCell.swift */; };
+		07380CFB1AFA980800A6E19D /* ConflictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07380CFA1AFA980800A6E19D /* ConflictView.swift */; };
 		074437791AE025D0002A6C4D /* InviteesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 074437781AE025D0002A6C4D /* InviteesCell.m */; };
 		0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */; };
 		0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377C1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift */; };
 		074437801AE02C9C002A6C4D /* DateFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */; };
 		074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074AA5921A9C353C009DC152 /* LaunchViewController.m */; };
 		074ABE931AE47ACE00C093C7 /* TimeframePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */; };
-		074ABE951AE49A3500C093C7 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE941AE49A3500C093C7 /* DateCell.swift */; };
-		074ABE971AE4A34F00C093C7 /* TimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE961AE4A34F00C093C7 /* TimeCell.swift */; };
-		074ABE991AE4A53000C093C7 /* ClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE981AE4A53000C093C7 /* ClockView.swift */; };
 		074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */; };
 		075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075249E51ACB397C00D279DA /* InviteTheme.swift */; };
 		0755CE491A8D22E500FF05B7 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755CE481A8D22E500FF05B7 /* User.m */; };
@@ -174,6 +173,8 @@
 		073274091A892BFB007700B3 /* InviteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InviteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0732740E1A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0732740F1A892BFB007700B3 /* InviteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InviteTests.m; sourceTree = "<group>"; };
+		07380CF81AFA972C00A6E19D /* ConflictCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConflictCell.swift; sourceTree = "<group>"; };
+		07380CFA1AFA980800A6E19D /* ConflictView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConflictView.swift; sourceTree = "<group>"; };
 		074437771AE025D0002A6C4D /* InviteesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesCell.h; sourceTree = "<group>"; };
 		074437781AE025D0002A6C4D /* InviteesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesCell.m; sourceTree = "<group>"; };
 		0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteesCollectionCell.swift; sourceTree = "<group>"; };
@@ -183,9 +184,6 @@
 		074AA5911A9C353C009DC152 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
 		074AA5921A9C353C009DC152 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframePickerViewController.swift; sourceTree = "<group>"; };
-		074ABE941AE49A3500C093C7 /* DateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
-		074ABE961AE4A34F00C093C7 /* TimeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeCell.swift; sourceTree = "<group>"; };
-		074ABE981AE4A53000C093C7 /* ClockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClockView.swift; sourceTree = "<group>"; };
 		074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframeHourCell.swift; sourceTree = "<group>"; };
 		075249E51ACB397C00D279DA /* InviteTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteTheme.swift; sourceTree = "<group>"; };
 		0755CE471A8D22E500FF05B7 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
@@ -459,8 +457,7 @@
 				0714087A1AEE13FC0081F304 /* ProfileCell.swift */,
 				074437771AE025D0002A6C4D /* InviteesCell.h */,
 				074437781AE025D0002A6C4D /* InviteesCell.m */,
-				074ABE941AE49A3500C093C7 /* DateCell.swift */,
-				074ABE961AE4A34F00C093C7 /* TimeCell.swift */,
+				07380CF81AFA972C00A6E19D /* ConflictCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -555,8 +552,8 @@
 			children = (
 				07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */,
 				0728367A1AD43F5700B158AC /* ProgressView.swift */,
-				074ABE981AE4A53000C093C7 /* ClockView.swift */,
 				071408731AEC9D660081F304 /* DatePickerView.swift */,
+				07380CFA1AFA980800A6E19D /* ConflictView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -745,7 +742,6 @@
 				0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */,
 				07E1FD901ACE4EDD00F619D0 /* AppDelegate+Swift.swift in Sources */,
 				0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */,
-				074ABE971AE4A34F00C093C7 /* TimeCell.swift in Sources */,
 				075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */,
 				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,
 				074437801AE02C9C002A6C4D /* DateFlowLayout.m in Sources */,
@@ -758,15 +754,15 @@
 				071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */,
 				074437791AE025D0002A6C4D /* InviteesCell.m in Sources */,
 				075D10911ADC859D00C86130 /* UIImageView+HighlightedWebCache.m in Sources */,
-				074ABE991AE4A53000C093C7 /* ClockView.swift in Sources */,
 				075D108E1ADC859D00C86130 /* UIImage+GIF.m in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
 				075D10861ADC859D00C86130 /* SDImageCache.m in Sources */,
+				07380CF91AFA972C00A6E19D /* ConflictCell.swift in Sources */,
 				075D10841ADC859D00C86130 /* MKAnnotationView+WebCache.m in Sources */,
 				075D108A1ADC859D00C86130 /* SDWebImageDownloaderOperation.m in Sources */,
 				07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */,
 				07D9DD3B1AD868B5008FF016 /* MapCell.swift in Sources */,
-				074ABE951AE49A3500C093C7 /* DateCell.swift in Sources */,
+				07380CFB1AFA980800A6E19D /* ConflictView.swift in Sources */,
 				075D108D1ADC859D00C86130 /* UIButton+WebCache.m in Sources */,
 				075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */,
 				075D10891ADC859D00C86130 /* SDWebImageDownloader.m in Sources */,
