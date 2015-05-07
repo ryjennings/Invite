@@ -197,7 +197,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="hSx-aW-wrD" kind="presentation" identifier="SegueToInvitees" id="9wc-gd-bh7"/>
+                                    <segue destination="hSx-aW-wrD" kind="presentation" identifier="SegueToInvitees" modalPresentationStyle="formSheet" id="9wc-gd-bh7"/>
                                 </connections>
                             </button>
                         </subviews>
