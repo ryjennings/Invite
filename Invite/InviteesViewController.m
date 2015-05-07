@@ -281,7 +281,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 
-    if (_noPreviousFriends || indexPath.section == InviteesSectionEmail) {
+    if ((_noPreviousFriends && indexPath.section == InviteesSectionFriends) || indexPath.section == InviteesSectionEmail) {
         return;
     }
     
