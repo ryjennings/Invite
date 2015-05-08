@@ -40,7 +40,7 @@
     
     [InviteTheme customizeAppAppearance];
     
-    [self performSelector:@selector(crash) withObject:nil afterDelay:5.0];
+//    [self performSelector:@selector(crash) withObject:nil afterDelay:5.0];
     
     return YES;
 }
