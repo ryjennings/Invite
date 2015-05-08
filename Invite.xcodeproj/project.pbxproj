@@ -121,9 +121,7 @@
 		070DAA4B1AE8489C00E111F6 /* SDiPhoneVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDiPhoneVersion.h; sourceTree = "<group>"; };
 		070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDiPhoneVersion.m; sourceTree = "<group>"; };
 		070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		071338C01AFC7BEA002B07D3 /* ParseCrashReporting.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseCrashReporting.framework; path = "../../Downloads/parse-library-1/ParseCrashReporting.framework"; sourceTree = "<group>"; };
 		071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
-		071338C41AFC7D6D002B07D3 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		071338C61AFC7FA9002B07D3 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
 		071338C81AFC7FB2002B07D3 /* ParseCrashReporting.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseCrashReporting.framework; sourceTree = "<group>"; };
 		071408731AEC9D660081F304 /* DatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
@@ -253,7 +251,6 @@
 		07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Invite-Bridging-Header.h"; sourceTree = "<group>"; };
 		07DDBF251AC7BEDA0058E1CA /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationResultsViewController.swift; sourceTree = "<group>"; };
-		07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = "../../Downloads/parse-library-1/ParseUI.framework"; sourceTree = "<group>"; };
 		07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Invite.swift"; sourceTree = "<group>"; };
 		07E1FD8F1ACE4EDD00F619D0 /* AppDelegate+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Swift.swift"; sourceTree = "<group>"; };
 		07F270B21AF58416000ECFEE /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
@@ -318,12 +315,9 @@
 			children = (
 				071338C81AFC7FB2002B07D3 /* ParseCrashReporting.framework */,
 				071338C61AFC7FA9002B07D3 /* ParseUI.framework */,
-				071338C41AFC7D6D002B07D3 /* libsqlite3.0.dylib */,
 				071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */,
-				071338C01AFC7BEA002B07D3 /* ParseCrashReporting.framework */,
 				075E2FD51AF2D33E0089CFDC /* AddressBook.framework */,
 				078924731AB36DCE005EE7FB /* MapKit.framework */,
-				07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */,
 				0724632F1A8BD61A00820834 /* FacebookSDK.framework */,
 				0724632C1A8BD42900820834 /* libsqlite3.dylib */,
 				0724632A1A8BD41900820834 /* libz.dylib */,
