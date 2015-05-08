@@ -10,14 +10,12 @@ import UIKit
 
 @objc(ConflictView) class ConflictView: UIView
 {
-//    - (void)drawRect:(CGRect)rect
-//    {
-//    CGContextRef ctx = UIGraphicsGetCurrentContext();
-//    CGContextAddEllipseInRect(ctx, rect);
-//    CGContextSetFillColor(ctx, CGColorGetComponents([[UIColor blueColor] CGColor]));
-//    CGContextFillPath(ctx);
-//    }
-    
+    var type = BusyDetailsCircle.Green {
+        didSet {
+            self.setNeedsDisplay()
+        }
+    }
+
     override func awakeFromNib()
     {
         backgroundColor = UIColor.clearColor()
@@ -25,36 +23,32 @@ import UIKit
     
     override func drawRect(rect: CGRect)
     {
-//        UIBezierPath *path = [UIBezierPath bezierPath];
-//        CGPoint point = CGPointMake(0, 50);
-//        CGFloat radius = 20.0;
-//        CGFloat lineLength = 45.0;
-//        
-//        [path moveToPoint:point];
-//        point.x += lineLength;
-//        [path addLineToPoint:point];
-//        point.x += radius;
-//        [path addArcWithCenter:point radius:radius startAngle:M_PI endAngle:M_PI * 2.0 clockwise:YES];
-//        point.x += radius * 2.0;
-//        [path addArcWithCenter:point radius:radius startAngle:M_PI endAngle:M_PI * 2.0 clockwise:YES];
-//        point.x += radius * 2.0;
-//        [path addArcWithCenter:point radius:radius startAngle:M_PI endAngle:M_PI * 2.0 clockwise:YES];
-//        point.x += radius * 2.0;
-//        [path addArcWithCenter:point radius:radius startAngle:M_PI endAngle:M_PI * 2.0 clockwise:YES];
-//        point.x += lineLength + radius;
-//        [path addLineToPoint:point];
-//        
-//        path.lineWidth = 2.0;
-//        [[UIColor blackColor] setStroke];
-//        [[UIColor clearColor] setFill];
-//        
-//        [path stroke];
-        
         var path = UIBezierPath()
         let radius: CGFloat = 10
-        path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat(0), endAngle: CGFloat(M_PI * 2), clockwise: true) // full circle
-        UIColor.inviteGreenColor().setFill()
-        path.fill()
         
+        switch type {
+        case .Green:
+            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat(0), endAngle: CGFloat(M_PI * 2), clockwise: true) // full circle
+            UIColor.inviteGreenColor().setFill()
+            path.fill()
+        case .GreenRed:
+            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat(M_PI / 2), endAngle: CGFloat((3 * M_PI) / 2), clockwise: true) // first half
+            UIColor.inviteGreenColor().setFill()
+            path.fill()
+            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat((3 * M_PI) / 2), endAngle: CGFloat(M_PI / 2), clockwise: true) // second half
+            UIColor.inviteRedColor().setFill()
+            path.fill()
+        case .Red:
+            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat(0), endAngle: CGFloat(M_PI * 2), clockwise: true) // full circle
+            UIColor.inviteRedColor().setFill()
+            path.fill()
+        case .RedGreen:
+            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat(M_PI / 2), endAngle: CGFloat((3 * M_PI) / 2), clockwise: true) // first half
+            UIColor.inviteRedColor().setFill()
+            path.fill()
+            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat((3 * M_PI) / 2), endAngle: CGFloat(M_PI / 2), clockwise: true) // second half
+            UIColor.inviteGreenColor().setFill()
+            path.fill()
+        }
     }
 }

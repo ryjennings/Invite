@@ -51,29 +51,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Invite/DatePickerView.swift"
-            timestampString = "452628123.106188"
+            filePath = "Invite/TimeframePickerViewController.swift"
+            timestampString = "452734168.904118"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
-            landmarkName = "DatePickerView"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Invite/ConflictView.swift"
-            timestampString = "452636645.031572"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
-            landmarkName = "drawRect(_:)"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
+            landmarkName = "determineConflicts()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -83,13 +67,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Invite/InviteesViewController.m"
-            timestampString = "452659189.547469"
+            filePath = "Invite/TimeframePickerViewController.swift"
+            timestampString = "452734447.167411"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "282"
-            endingLineNumber = "282"
-            landmarkName = "-tableView:didSelectRowAtIndexPath:"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
+            landmarkName = "determineConflicts()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Invite/AppDelegate.m"
+            timestampString = "452754493.749564"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "288"
+            endingLineNumber = "288"
+            landmarkName = "-crash"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

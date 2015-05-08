@@ -20,6 +20,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    // Enable Crash Reporting
+    [ParseCrashReporting enable];
+    
     [Parse setApplicationId:@"bDCtNhAgLH0h8TClwos5BxTLJ9q2gIs19uG8dSjD"
                   clientKey:@"XRnFQGL8mad8vS1iVt1JDxT1UPInSsffw0JLDOWK"];
     
@@ -36,6 +39,8 @@
     [application registerForRemoteNotifications];
     
     [InviteTheme customizeAppAppearance];
+    
+    [self performSelector:@selector(crash) withObject:nil afterDelay:5.0];
     
     return YES;
 }
@@ -275,6 +280,11 @@
 + (NSArray *)events
 {
     return [AppDelegate user].events;
+}
+
+- (void)crash
+{
+    [NSException raise:NSGenericException format:@"Everything is ok. This is just a test crash."];
 }
 
 @end

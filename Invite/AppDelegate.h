@@ -10,6 +10,7 @@
 #import <CoreData/CoreData.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <Parse/Parse.h>
+#import <ParseCrashReporting/ParseCrashReporting.h>
 
 @class User;
 

@@ -186,7 +186,7 @@
                     NSString *email = [friend objectForKey:EMAIL_KEY];
                     EventResponse response = [rsvp[[AppDelegate keyFromEmail:email]] integerValue];
                     
-                    if (response == EventResponseGoing || response == EventResponseMaybe) {
+//                    if (response == EventResponseGoing || response == EventResponseMaybe) {
                         [busyTimes addObject:[BusyDetails busyDetailsWithName:[friend objectForKey:FULL_NAME_KEY]
                                                                         email:email
                                                                    eventTitle:[event objectForKey:EVENT_TITLE_KEY]
@@ -195,7 +195,7 @@
                                                                 startBaseDate:startBaseDate
                                                                           end:end
                                                                   endBaseDate:endBaseDate]];
-                    }
+//                    }
                 }];
             }
             

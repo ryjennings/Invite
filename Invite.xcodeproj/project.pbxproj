@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */; };
 		070DAA4F1AE85D6900E111F6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */; };
+		071338C31AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */; };
+		071338C71AFC7FA9002B07D3 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 071338C61AFC7FA9002B07D3 /* ParseUI.framework */; };
+		071338C91AFC7FB2002B07D3 /* ParseCrashReporting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 071338C81AFC7FB2002B07D3 /* ParseCrashReporting.framework */; };
 		071408741AEC9D660081F304 /* DatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071408731AEC9D660081F304 /* DatePickerView.swift */; };
 		0714087B1AEE13FC0081F304 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0714087A1AEE13FC0081F304 /* ProfileCell.swift */; };
 		071F694D1A8C143F009A8380 /* DashboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 071F694C1A8C143F009A8380 /* DashboardViewController.m */; };
@@ -99,7 +102,6 @@
 		07D9DD3D1AD880F4008FF016 /* TitleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD3C1AD880F4008FF016 /* TitleViewController.swift */; };
 		07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF251AC7BEDA0058E1CA /* LocationViewController.swift */; };
 		07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */; };
-		07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */; };
 		07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */; };
 		07E1FD901ACE4EDD00F619D0 /* AppDelegate+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8F1ACE4EDD00F619D0 /* AppDelegate+Swift.swift */; };
 		07F270B31AF58416000ECFEE /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F270B21AF58416000ECFEE /* ContactsViewController.swift */; };
@@ -119,6 +121,11 @@
 		070DAA4B1AE8489C00E111F6 /* SDiPhoneVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDiPhoneVersion.h; sourceTree = "<group>"; };
 		070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDiPhoneVersion.m; sourceTree = "<group>"; };
 		070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		071338C01AFC7BEA002B07D3 /* ParseCrashReporting.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseCrashReporting.framework; path = "../../Downloads/parse-library-1/ParseCrashReporting.framework"; sourceTree = "<group>"; };
+		071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
+		071338C41AFC7D6D002B07D3 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		071338C61AFC7FA9002B07D3 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
+		071338C81AFC7FB2002B07D3 /* ParseCrashReporting.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseCrashReporting.framework; sourceTree = "<group>"; };
 		071408731AEC9D660081F304 /* DatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
 		0714087A1AEE13FC0081F304 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		071F694B1A8C143F009A8380 /* DashboardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashboardViewController.h; sourceTree = "<group>"; };
@@ -257,9 +264,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				071338C91AFC7FB2002B07D3 /* ParseCrashReporting.framework in Frameworks */,
+				071338C71AFC7FA9002B07D3 /* ParseUI.framework in Frameworks */,
+				071338C31AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib in Frameworks */,
 				075E2FD61AF2D33E0089CFDC /* AddressBook.framework in Frameworks */,
 				078924741AB36DCE005EE7FB /* MapKit.framework in Frameworks */,
-				07E1D0D91AAE550700D4B9D1 /* ParseUI.framework in Frameworks */,
 				0724632D1A8BD42900820834 /* libsqlite3.dylib in Frameworks */,
 				0724632B1A8BD41900820834 /* libz.dylib in Frameworks */,
 				072463291A8BD40D00820834 /* SystemConfiguration.framework in Frameworks */,
@@ -307,6 +316,11 @@
 		0724632E1A8BD44200820834 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				071338C81AFC7FB2002B07D3 /* ParseCrashReporting.framework */,
+				071338C61AFC7FA9002B07D3 /* ParseUI.framework */,
+				071338C41AFC7D6D002B07D3 /* libsqlite3.0.dylib */,
+				071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */,
+				071338C01AFC7BEA002B07D3 /* ParseCrashReporting.framework */,
 				075E2FD51AF2D33E0089CFDC /* AddressBook.framework */,
 				078924731AB36DCE005EE7FB /* MapKit.framework */,
 				07E1D0D81AAE550700D4B9D1 /* ParseUI.framework */,
@@ -620,6 +634,7 @@
 				073273E91A892BFB007700B3 /* Sources */,
 				073273EA1A892BFB007700B3 /* Frameworks */,
 				073273EB1A892BFB007700B3 /* Resources */,
+				071338BF1AFC795B002B07D3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -723,6 +738,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		071338BF1AFC795B002B07D3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Parse Crash Reporting\"\nexport PATH=/usr/local/bin:$PATH\nCLOUD_CODE_DIR=${PROJECT_DIR}/parse\n\nif [ -d ${CLOUD_CODE_DIR} ]; then\ncd ${CLOUD_CODE_DIR}\nparse symbols MyApp --path=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\necho \"Finished uploading symbol\"\nelse\necho \"Unable to upload symbols\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		073273E91A892BFB007700B3 /* Sources */ = {

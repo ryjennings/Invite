@@ -8,12 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
-    BusyDetailsCircleRedGreen,
-    BusyDetailsCircleRed,
-    BusyDetailsCircleGreenRed,
-    BusyDetailsCircleGreen
-};
+#import "StringConstants.h"
 
 @interface BusyDetails : NSObject
 

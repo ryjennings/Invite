@@ -13,6 +13,13 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
     EventResponseNoResponse
 };
 
+typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
+    BusyDetailsCircleRedGreen,
+    BusyDetailsCircleRed,
+    BusyDetailsCircleGreenRed,
+    BusyDetailsCircleGreen
+};
+
 #define kCornerRadius 6.f
 #define kDashboardPadding 25.f
 

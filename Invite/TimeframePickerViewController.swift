@@ -66,19 +66,31 @@ enum TimeframeRow: Int {
     func determineConflicts()
     {
         conflicts.removeAll(keepCapacity: true)
+        
         if (busyTimes != nil) {
             busyTimes.enumerateObjectsUsingBlock { (object, stop) -> Void in
                 var busy = object as! BusyDetails
                 
+                var dateFormatter = NSDateFormatter()
+                dateFormatter.timeZone = NSTimeZone.localTimeZone()
+                dateFormatter.dateStyle = .MediumStyle
+                dateFormatter.timeStyle = .ShortStyle
+                let stz = dateFormatter.stringFromDate(self.startDate)
+                let etz = dateFormatter.stringFromDate(self.endDate)
+                let bstz = dateFormatter.stringFromDate(busy.start)
+                let betz = dateFormatter.stringFromDate(busy.end)
+                
                 // If busy end is earlier than start OR busy start is later than end
-                if busy.end.earlierDate(self.startDate).isEqualToDate(busy.end) || busy.start.laterDate(self.endDate).isEqualToDate(busy.start) {
+                
+                
+                if (busy.end.earlierDate(self.startDate).isEqualToDate(busy.end) && busy.end != self.startDate) || // busy end is before start
+                    (busy.start.laterDate(self.endDate).isEqualToDate(busy.start) && busy.start != self.endDate) { // busy start is after end
                     return
+                }
+                
                     
                     
                     
-                    
-                    
-                } else {
                     // busy end is later than start AND busy start is earlier than end
                     
                     if busy.end.earlierDate(self.endDate).isEqualToDate(busy.end) {
@@ -107,12 +119,14 @@ enum TimeframeRow: Int {
 
                     self.conflicts.append(busy)
 
-                }
+
             }
             if tableView.numberOfSections() == 1 && conflicts.count > 0 {
                 tableView.insertSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Fade)
             } else if tableView.numberOfSections() == 2 && conflicts.count == 0 {
                 tableView.deleteSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Fade)
+            } else {
+                tableView.reloadData()
             }
         }
     }
@@ -188,6 +202,9 @@ enum TimeframeRow: Int {
         if startDate == nil {
             return 0
         }
+        if conflicts.count == 0 {
+            return 1
+        }
         return TimeframeSection.Count.rawValue
     }
     
@@ -197,7 +214,7 @@ enum TimeframeRow: Int {
         case TimeframeSection.Timeframe.rawValue:
             return 2
         case TimeframeSection.Conflicts.rawValue:
-            return 1
+            return conflicts.count
         default:
             return 0
         }
@@ -236,7 +253,8 @@ enum TimeframeRow: Int {
             if (conflicts.count == 0) {
                 cell.label.text = "There are no conflicts with this time! You're good to go!"
             } else {
-                cell.label.text = conflicts[indexPath.row].name
+                cell.conflictView.type = conflicts[indexPath.row].circle
+                cell.label.text = conflicts[indexPath.row].name ?? conflicts[indexPath.row].email
             }
             return cell
         }
@@ -309,12 +327,12 @@ enum TimeframeRow: Int {
         } else {
             endDate = date
         }
-        if insertCells {
-            tableView.insertSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: UITableViewRowAnimation.Fade)
-//            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0), NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
-        } else {
-            tableView.reloadData()
-        }
+//        if insertCells {
+//            tableView.insertSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: UITableViewRowAnimation.Fade)
+////            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0), NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+//        } else {
+//            tableView.reloadData()
+//        }
         determineConflicts()
         
         nextButton.hidden = false

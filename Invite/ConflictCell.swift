@@ -13,7 +13,7 @@ import UIKit
     @IBOutlet weak var conflictView: ConflictView!
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var conflictViewLeadingConstraint: NSLayoutConstraint!
-    
+        
     var busy: BusyDetails!
     
     override func awakeFromNib()
@@ -21,5 +21,4 @@ import UIKit
         label.textColor = UIColor.inviteTableLabelColor()
         label.font = UIFont.inviteTableSmallFont()
     }
-    
 }
