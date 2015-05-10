@@ -10,8 +10,8 @@ import UIKit
 import AddressBook
 
 class Contact {
-    let name: String
-    let lastName: String
+    let name: String?
+    let lastName: String?
     var emails = [String]()
     init(name: String?, lastName: String?) {
         if let name = name {
@@ -62,7 +62,7 @@ class Contact {
             if ABMultiValueGetCount(emailsRef) > 0 {
                 let emails: NSArray = ABMultiValueCopyArrayOfAllValues(emailsRef).takeUnretainedValue() as NSArray
                 var contactEmails = [String]()
-                var contact = Contact(name: name, lastName: lastName!)
+                var contact = Contact(name: name, lastName: lastName)
                 for email in emails {
                     if (email as! String).rangeOfString("@") != nil {
                         contactEmails.append(email as! String)
@@ -204,7 +204,7 @@ class Contact {
         var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) as! BasicCell
         let name = tableData[indexPath.section].name
         cell.textLabel?.text = tableData[indexPath.section].emails[indexPath.row]
-        cell.accessoryView = UIImageView(image: UIImage(named: contains(selectedEmails, name) ? "list_selected" : "list_select"))
+        cell.accessoryView = UIImageView(image: UIImage(named: contains(selectedEmails, name!) ? "list_selected" : "list_select"))
         cell.selectionStyle = .None
         return cell
     }
