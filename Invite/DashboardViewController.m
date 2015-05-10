@@ -59,11 +59,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (IBAction)settings:(id)sender
-{
-    
-}
-
 - (void)configureOnboarding
 {
     _onboarding = [[DashboardOnboardingView alloc] init];

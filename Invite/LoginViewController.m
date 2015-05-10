@@ -151,7 +151,7 @@
 
         _receivedUser = YES;
 
-        [AppDelegate setObject:[facebookUser objectForKey:EMAIL_KEY] forKey:EMAIL_KEY];
+        [UserDefaults setObject:[facebookUser objectForKey:EMAIL_KEY] key:EMAIL_KEY];
 
         PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
         [query whereKey:EMAIL_KEY equalTo:[facebookUser objectForKey:EMAIL_KEY]];

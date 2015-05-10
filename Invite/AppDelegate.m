@@ -172,35 +172,13 @@
     return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
 }
 
-#pragma mark - NSUserDefaults
-
-+ (void)removeObjectForKey:(NSString *)key
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults removeObjectForKey:key];
-    [defaults synchronize];
-}
-
-+ (void)setObject:(id)object forKey:(NSString *)key
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:object forKey:key];
-    [defaults synchronize];
-}
-
-+ (id)objectForKey:(NSString *)key
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults objectForKey:key];
-}
-
 #pragma mark - User
 
 + (void)clearUser
 {
     AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     delegate.user = nil;
-    [AppDelegate removeObjectForKey:EMAIL_KEY];
+    [UserDefaults removeObjectForKey:EMAIL_KEY];
 }
 
 + (AppDelegate *)app

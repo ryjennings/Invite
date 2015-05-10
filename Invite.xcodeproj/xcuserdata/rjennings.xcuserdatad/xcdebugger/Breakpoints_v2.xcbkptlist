@@ -84,11 +84,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/AppDelegate.m"
-            timestampString = "452754493.749564"
+            timestampString = "452929865.978918"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
             landmarkName = "-crash"
             landmarkType = "5">
          </BreakpointContent>

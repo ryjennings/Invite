@@ -31,10 +31,6 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
-+ (void)removeObjectForKey:(NSString *)key;
-+ (void)setObject:(id)object forKey:(NSString *)key;
-+ (id)objectForKey:(NSString *)key;
-
 + (void)clearUser;
 
 + (NSString *)keyFromEmail:(NSString *)email;

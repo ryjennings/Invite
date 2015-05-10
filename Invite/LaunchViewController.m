@@ -10,6 +10,7 @@
 
 #import "AppDelegate.h"
 #import "DashboardViewController.h"
+#import "Invite-Swift.h"
 #import "LoginViewController.h"
 #import "StringConstants.h"
 #import "User.h"
@@ -25,7 +26,7 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(parseLoaded:) name:PARSE_LOADED_NOTIFICATION object:nil];
 
-    NSString *email = [AppDelegate objectForKey:EMAIL_KEY];
+    NSString *email = [UserDefaults objectForKey:EMAIL_KEY];
     
     if (email) {
         

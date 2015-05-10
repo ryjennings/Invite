@@ -20,6 +20,11 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
     BusyDetailsCircleGreen
 };
 
+// NSUserDefault Keys
+#define kSendMeEmail @"SendMeEmail"
+#define kShowAvailability @"ShowAvailability"
+#define kRemoveEventsAfterExpire @"RemoveEventsAfterExpire"
+
 #define kCornerRadius 6.f
 #define kDashboardPadding 25.f
 
@@ -81,6 +86,7 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define SEGUE_TO_START_DATE @"SegueToStartDate"
 #define SEGUE_TO_END_DATE @"SegueToEndDate"
 #define SEGUE_TO_CONTACTS @"SegueToContacts"
+#define SEGUE_TO_SETTINGS @"SegueToSettings"
 
 // Table cell identifiers
 #define MAP_CELL_IDENTIFIER @"MapCellIdentifier"
@@ -89,12 +95,12 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define INPUT_CELL_IDENTIFIER @"InputCellIdentifier"
 #define RADIO_CELL_IDENTIFIER @"RadioCellIdentifier"
 #define DASHBOARD_CELL_IDENTIFIER @"DashboardCellIdentifier"
-#define TIMEFRAME_CELL_IDENTIFIER @"TimeframeCellIdentifier"
 #define PROFILE_CELL_IDENTIFIER @"ProfileCellIdentifier"
 #define INVITEES_CELL_IDENTIFIER @"InviteesCellIdentifier"
 #define INVITEES_COLLECTION_CELL_IDENTIFIER @"InviteesCollectionCellIdentifier"
 #define INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER @"InviteesCollectionHeaderViewIdentifier"
 #define CONFLICT_CELL_IDENTIFIER @"ConflictCellIdentifier"
+#define TOGGLE_CELL_IDENTIFIER @"ToggleCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

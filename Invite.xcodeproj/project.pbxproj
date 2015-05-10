@@ -88,6 +88,8 @@
 		075E2FD61AF2D33E0089CFDC /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 075E2FD51AF2D33E0089CFDC /* AddressBook.framework */; };
 		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
+		077811671AFF216F00D5DC4D /* ToggleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811661AFF216F00D5DC4D /* ToggleCell.swift */; };
+		077811691AFF237800D5DC4D /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811681AFF237800D5DC4D /* UserDefaults.swift */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
 		078924741AB36DCE005EE7FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078924731AB36DCE005EE7FB /* MapKit.framework */; };
 		07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE501AAA2F17002B9962 /* EventViewController.m */; };
@@ -232,6 +234,8 @@
 		0775B0701A93BFB900C15303 /* InviteesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesViewController.h; sourceTree = "<group>"; };
 		0775B0711A93BFB900C15303 /* InviteesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesViewController.m; sourceTree = "<group>"; };
 		0775B0731A93E6B000C15303 /* StringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConstants.h; sourceTree = "<group>"; };
+		077811661AFF216F00D5DC4D /* ToggleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleCell.swift; sourceTree = "<group>"; };
+		077811681AFF237800D5DC4D /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		0786EB7B1A8E70ED006FDCA6 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		0786EB7C1A8E70ED006FDCA6 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		078924731AB36DCE005EE7FB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -395,6 +399,7 @@
 			children = (
 				073273F41A892BFB007700B3 /* AppDelegate.h */,
 				073273F51A892BFB007700B3 /* AppDelegate.m */,
+				077811681AFF237800D5DC4D /* UserDefaults.swift */,
 				07E1FD8F1ACE4EDD00F619D0 /* AppDelegate+Swift.swift */,
 				0775B0731A93E6B000C15303 /* StringConstants.h */,
 				07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */,
@@ -466,6 +471,7 @@
 				074437771AE025D0002A6C4D /* InviteesCell.h */,
 				074437781AE025D0002A6C4D /* InviteesCell.m */,
 				07380CF81AFA972C00A6E19D /* ConflictCell.swift */,
+				077811661AFF216F00D5DC4D /* ToggleCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -783,6 +789,7 @@
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
 				075D10861ADC859D00C86130 /* SDImageCache.m in Sources */,
 				07380CF91AFA972C00A6E19D /* ConflictCell.swift in Sources */,
+				077811691AFF237800D5DC4D /* UserDefaults.swift in Sources */,
 				075D10841ADC859D00C86130 /* MKAnnotationView+WebCache.m in Sources */,
 				075D108A1ADC859D00C86130 /* SDWebImageDownloaderOperation.m in Sources */,
 				07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */,
@@ -805,6 +812,7 @@
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
 				07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */,
 				07BC8E3C1ACB29CE0050C4E9 /* DashboardCell.swift in Sources */,
+				077811671AFF216F00D5DC4D /* ToggleCell.swift in Sources */,
 				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
 				075D10921ADC859D00C86130 /* UIImageView+WebCache.m in Sources */,
 				0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */,
