@@ -26,6 +26,7 @@ import MapKit
     {
         didSet {
             locationManager.stopUpdatingLocation()
+            locationManager.delegate = nil
             showPlacemark(MKPlacemark(placemark: placemark))
         }
     }
@@ -72,6 +73,7 @@ import MapKit
     {
         setupLocationManager()
         locationManager.startUpdatingLocation()
+        locationManager.delegate = self
         mapView.setUserTrackingMode(.Follow, animated: true)
     }
     
@@ -79,7 +81,6 @@ import MapKit
     {
         if (locationManager == nil) {
             locationManager = CLLocationManager()
-            locationManager.delegate = self
             locationManager.requestWhenInUseAuthorization()
         }
     }

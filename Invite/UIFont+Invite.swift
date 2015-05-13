@@ -128,7 +128,7 @@ extension UIFont
     
     class func inviteTitleFont() -> UIFont
     {
-        return UIFont.proximaNovaLightFontOfSize(36)
+        return UIFont.proximaNovaLightFontOfSize(28)
     }
     
     class func inviteOnboardingBulletHeaderFont() -> UIFont

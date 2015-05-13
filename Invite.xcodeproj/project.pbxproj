@@ -90,6 +90,7 @@
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		077811671AFF216F00D5DC4D /* ToggleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811661AFF216F00D5DC4D /* ToggleCell.swift */; };
 		077811691AFF237800D5DC4D /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811681AFF237800D5DC4D /* UserDefaults.swift */; };
+		0778116B1B01382600D5DC4D /* TitleDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0778116A1B01382600D5DC4D /* TitleDateCell.swift */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
 		078924741AB36DCE005EE7FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078924731AB36DCE005EE7FB /* MapKit.framework */; };
 		07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE501AAA2F17002B9962 /* EventViewController.m */; };
@@ -236,6 +237,7 @@
 		0775B0731A93E6B000C15303 /* StringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConstants.h; sourceTree = "<group>"; };
 		077811661AFF216F00D5DC4D /* ToggleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleCell.swift; sourceTree = "<group>"; };
 		077811681AFF237800D5DC4D /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		0778116A1B01382600D5DC4D /* TitleDateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleDateCell.swift; sourceTree = "<group>"; };
 		0786EB7B1A8E70ED006FDCA6 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		0786EB7C1A8E70ED006FDCA6 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		078924731AB36DCE005EE7FB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -472,6 +474,7 @@
 				074437781AE025D0002A6C4D /* InviteesCell.m */,
 				07380CF81AFA972C00A6E19D /* ConflictCell.swift */,
 				077811661AFF216F00D5DC4D /* ToggleCell.swift */,
+				0778116A1B01382600D5DC4D /* TitleDateCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -778,6 +781,7 @@
 				074437801AE02C9C002A6C4D /* DateFlowLayout.m in Sources */,
 				074ABE931AE47ACE00C093C7 /* TimeframePickerViewController.swift in Sources */,
 				075D10881ADC859D00C86130 /* SDWebImageDecoder.m in Sources */,
+				0778116B1B01382600D5DC4D /* TitleDateCell.swift in Sources */,
 				0728366E1AD2F1FC00B158AC /* UIFont+Invite.swift in Sources */,
 				075D108B1ADC859D00C86130 /* SDWebImageManager.m in Sources */,
 				070DAA4F1AE85D6900E111F6 /* SettingsViewController.swift in Sources */,

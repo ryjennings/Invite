@@ -101,6 +101,7 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER @"InviteesCollectionHeaderViewIdentifier"
 #define CONFLICT_CELL_IDENTIFIER @"ConflictCellIdentifier"
 #define TOGGLE_CELL_IDENTIFIER @"ToggleCellIdentifier"
+#define TITLE_DATE_CELL_IDENTIFIER @"TitleDateCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

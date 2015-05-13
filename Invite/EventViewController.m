@@ -17,18 +17,53 @@
 
 #import <MapKit/MapKit.h>
 
+// Facebook:
+// Date
+// Title
+// Host
+// RSVP
+// Timeframe
+// Location
+// Invitees
+// Description
+
 typedef NS_ENUM(NSUInteger, EventMode) {
-    EventModePreviewing,
-    EventModeViewing
+    EventModePreview,
+    EventModeView
 };
 
-typedef NS_ENUM(NSUInteger, EventSection) {
-    // EventSectionLocation is in the table header
-    EventSectionMessage,
-    EventSectionDetails, // Title, timeframe, description
-    EventSectionRSVP,
-    EventSectionInvitees,
-    EventSectionCount
+typedef NS_ENUM(NSUInteger, EventPreviewRow) {
+    // Map in background
+    EventPreviewRowTitle, // contains Date
+    EventPreviewRowHost,
+    EventPreviewRowTimeframe,
+    EventPreviewRowLocation,
+    EventPreviewRowDescription,
+    EventPreviewRowCount
+};
+
+typedef NS_ENUM(NSUInteger, EventViewRow) {
+    // Map in background
+    EventViewRowTitle, // contains Date
+    EventViewRowHost,
+    EventViewRowRSVP,
+    EventViewRowTimeframe,
+    EventViewRowLocation,
+    EventViewRowDescription,
+    EventViewRowCount
+};
+
+typedef NS_ENUM(NSUInteger, EventPreviewSection) {
+    EventPreviewSectionMessage,
+    EventPreviewSectionDetails,
+    EventPreviewSectionInvitees,
+    EventPreviewSectionCount
+};
+
+typedef NS_ENUM(NSUInteger, EventViewSection) {
+    EventViewSectionDetails,
+    EventViewSectionInvitees,
+    EventViewSectionCount
 };
 
 @interface EventViewController ()
@@ -55,19 +90,29 @@ typedef NS_ENUM(NSUInteger, EventSection) {
     
     CLLocationDegrees latitude;
     CLLocationDegrees longitude;
+    
     if (_event) {
-        _mode = EventModeViewing;
-        self.navigationItem.title = [_event objectForKey:EVENT_TITLE_KEY];
+        
         _isCreator = [((PFObject *)[_event objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
-        _showRSVP = !_isCreator;
+
+        _mode = _isCreator ? EventModePreview : EventModeView;
+        
+        self.navigationItem.title = [_event objectForKey:EVENT_TITLE_KEY];
+        
         _rsvpDictionary = [_event objectForKey:EVENT_RSVP_KEY];
+        
         PFObject *location = [_event objectForKey:EVENT_LOCATION_KEY];
         longitude = ((NSString *)[location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
         latitude = ((NSString *)[location objectForKey:LOCATION_LATITUDE_KEY]).doubleValue;
+        
+        _createEventButton.hidden = YES;
+        
     } else {
-        _mode = EventModePreviewing;
-        _showRSVP = NO;
+        
+        _mode = EventModePreview;
+        
         self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:5 steps:5];
+        
         NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
         for (PFObject *invitee in [AppDelegate user].protoEvent.invitees) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
@@ -79,13 +124,15 @@ typedef NS_ENUM(NSUInteger, EventSection) {
             [rsvp setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:email]];
         }
         _rsvpDictionary = rsvp;
+        
         longitude = ((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
         latitude = ((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LATITUDE_KEY]).doubleValue;
-    }
     
-    _createEventButton.layer.cornerRadius = kCornerRadius;
-    _createEventButton.clipsToBounds = YES;
-    _createEventButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
+        _createEventButton.layer.cornerRadius = kCornerRadius;
+        _createEventButton.clipsToBounds = YES;
+        _createEventButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
+        
+    }
     
     _tableView.estimatedRowHeight = 100;
     _tableView.rowHeight = UITableViewAutomaticDimension;
@@ -99,7 +146,11 @@ typedef NS_ENUM(NSUInteger, EventSection) {
         [_mapView addAnnotation:placemark];
         [_mapView showAnnotations:@[placemark] animated:YES];
     }];
+}
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
@@ -128,37 +179,35 @@ typedef NS_ENUM(NSUInteger, EventSection) {
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    switch (section) {
-        case EventSectionDetails:
-            return @"Event Details";
-        case EventSectionInvitees:
-            return @"Invited Friends";
-        case EventSectionRSVP:
-            return _showRSVP ? @"RSVP For This Event" : nil;
-        default:
-            return nil;
+    if ((_mode == EventModePreview && section == EventPreviewSectionDetails) ||
+        (_mode == EventModeView && section == EventViewSectionDetails)) {
+        return @"Event Details";
+    } else if ((_mode == EventModePreview && section == EventPreviewSectionInvitees) ||
+               (_mode == EventModeView && section == EventViewSectionInvitees)) {
+        return @"Invited Friends";
+    } else {
+        return nil;
     }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return EventSectionCount;
+    return _mode == EventModePreview ? EventPreviewSectionCount : EventViewSectionCount;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ((_mode == EventModeViewing && section == EventSectionMessage)
-        || (_mode == EventModePreviewing && section == EventSectionRSVP)
-        || (!_showRSVP && section == EventSectionRSVP)
-        ) {
-        return 0;
+    if ((_mode == EventModeView && section == EventViewSectionInvitees) ||
+        (_mode == EventModePreview && section == EventPreviewSectionMessage) ||
+        (_mode == EventModePreview && section == EventPreviewSectionInvitees)) {
+        return 1;
     }
-    return 1;
+    return _mode == EventModePreview ? EventPreviewRowCount : EventViewRowCount;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == EventSectionMessage) {
+    if (_mode == EventModePreview && indexPath.section == EventPreviewSectionMessage) {
         
         BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
         cell.textLabel.text = @"Alright, we're ready to send this invite off! Please review, and if everything looks alright, tap the button below!";
@@ -170,62 +219,132 @@ typedef NS_ENUM(NSUInteger, EventSection) {
         
     }
     
-    if (indexPath.section == EventSectionDetails) {
-    
-        BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
+//    EventViewRowTitle, // contains Date
+//    EventViewRowHost,
+//    EventViewRowRSVP,
+//    EventViewRowTimeframe,
+//    EventViewRowLocation,
+//    EventViewRowDescription,
+//    EventViewRowCount
+
+    if (indexPath.row == EventViewRowTitle || indexPath.row == EventPreviewRowTitle) {
         
-        NSString *title;
-        NSString *description;
+        NSString *title = _mode == EventModeView ? [_event objectForKey:EVENT_TITLE_KEY] : [AppDelegate user].protoEvent.title;
+        
+        NSDate *startDate = _mode == EventModePreview ? [AppDelegate user].protoEvent.startDate : [_event objectForKey:EVENT_START_DATE_KEY];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMMM"];
+        NSString *month = [[formatter stringFromDate:startDate] uppercaseString];
+        [formatter setDateFormat:@"dd"];
+        NSString *day = [formatter stringFromDate:startDate];
+        
+        NSMutableAttributedString *dateAtt = [[NSMutableAttributedString alloc] init];
+        [dateAtt appendAttributedString:[[NSAttributedString alloc] initWithString:month attributes:@{NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:9], NSForegroundColorAttributeName: [UIColor whiteColor]}]];
+        [dateAtt appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:@{NSFontAttributeName: [UIFont proximaNovaLightFontOfSize:0]}]];
+        [dateAtt appendAttributedString:[[NSAttributedString alloc] initWithString:day attributes:@{NSFontAttributeName: [UIFont proximaNovaLightFontOfSize:22], NSForegroundColorAttributeName: [UIColor whiteColor]}]];
+        
+        TitleDateCell *cell = (TitleDateCell *)[tableView dequeueReusableCellWithIdentifier:TITLE_DATE_CELL_IDENTIFIER];
+        cell.label.text = title;
+        cell.dateLabel.attributedText = dateAtt;
+        cell.dateLabelLeadingConstraint.constant = [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15;
+        return cell;
+        
+    }
+    
+    if (indexPath.row == EventViewRowHost || indexPath.row == EventPreviewRowHost) {
+        
+        BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_RIGHT_CELL_IDENTIFIER];
+        cell.textLabel.text = [AppDelegate user].fullName;
+        cell.detailTextLabel.text = @"Host";
+        return cell;
+        
+    }
+    
+    if (indexPath.row == EventViewRowRSVP) {
+        
+        EventResponse response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
+        RadioCell *cell = (RadioCell *)[tableView dequeueReusableCellWithIdentifier:RADIO_CELL_IDENTIFIER];
+        cell.segments.selectedSegmentIndex = response;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.segmentsLeadingConstraint.constant = cell.separatorInset.left;
+        return cell;
+        
+    }
+    
+    if (indexPath.row == EventViewRowTimeframe || indexPath.row == EventPreviewRowTimeframe) {
+
         NSDate *startDate;
         NSDate *endDate;
-        
-        if (_mode == EventModeViewing) {
-            title = [_event objectForKey:EVENT_TITLE_KEY];
-            description = [_event objectForKey:EVENT_DESCRIPTION_KEY];
+        if (_mode == EventModeView) {
             startDate = [_event objectForKey:EVENT_START_DATE_KEY];
             endDate = [_event objectForKey:EVENT_END_DATE_KEY];
         } else {
-            title = [AppDelegate user].protoEvent.title;
-            description = [AppDelegate user].protoEvent.eventDescription;
             startDate = [AppDelegate user].protoEvent.startDate;
             endDate = [AppDelegate user].protoEvent.endDate;
         }
-        
-        NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:title attributes:@{NSFontAttributeName: [UIFont proximaNovaLightFontOfSize:28], NSForegroundColorAttributeName: [UIColor inviteBlueColor]}];
-        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\n"]];
-        [att appendAttributedString:[[NSAttributedString alloc] initWithString:[AppDelegate presentationTimeframeFromStartDate:startDate endDate:endDate] attributes:@{NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:14], NSForegroundColorAttributeName: [UIColor lightGrayColor]}]];
-        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\n"]];
-        [att appendAttributedString:[[NSAttributedString alloc] initWithString:description attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSForegroundColorAttributeName: [UIColor inviteTableLabelColor]}]];
-        
-        cell.textLabel.attributedText = att;
-        cell.textLabel.numberOfLines = 0;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
+
+        BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
+        cell.textLabel.text = [AppDelegate presentationTimeframeFromStartDate:startDate endDate:endDate];
+        cell.textLabel.textColor = [UIColor lightGrayColor];
+        cell.textLabel.font = [UIFont proximaNovaSemiboldFontOfSize:14];
         return cell;
-        
+
     }
     
-    if (indexPath.section == EventSectionInvitees) {
-        
-        InviteesCell *cell = (InviteesCell *)[tableView dequeueReusableCellWithIdentifier:INVITEES_CELL_IDENTIFIER forIndexPath:indexPath];
-        if (_mode == EventModePreviewing) {
-            cell.userInvitees = [AppDelegate user].protoEvent.invitees;
-            cell.emailInvitees = [AppDelegate user].protoEvent.emails;
-        } else {
-            cell.userInvitees = [_event objectForKey:EVENT_INVITEES_KEY];
-        }
-        cell.rsvpDictionary = _rsvpDictionary;
-        [cell prepareCell];
-        return cell;
-            
-    }
-    
-    EventResponse response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
-    RadioCell *cell = (RadioCell *)[tableView dequeueReusableCellWithIdentifier:RADIO_CELL_IDENTIFIER];
-    cell.segments.selectedSegmentIndex = response;
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.segmentsLeadingConstraint.constant = cell.separatorInset.left;
+    BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
     return cell;
+
+    
+//    if (indexPath.section == EventSectionDetails) {
+//    
+//        BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
+//        
+//        NSString *title;
+//        NSString *description;
+//        NSDate *startDate;
+//        NSDate *endDate;
+//        
+//        if (_mode == EventModeViewing) {
+//            title = [_event objectForKey:EVENT_TITLE_KEY];
+//            description = [_event objectForKey:EVENT_DESCRIPTION_KEY];
+//            startDate = [_event objectForKey:EVENT_START_DATE_KEY];
+//            endDate = [_event objectForKey:EVENT_END_DATE_KEY];
+//        } else {
+//            title = [AppDelegate user].protoEvent.title;
+//            description = [AppDelegate user].protoEvent.eventDescription;
+//            startDate = [AppDelegate user].protoEvent.startDate;
+//            endDate = [AppDelegate user].protoEvent.endDate;
+//        }
+//        
+//        NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:title attributes:@{NSFontAttributeName: [UIFont proximaNovaLightFontOfSize:28], NSForegroundColorAttributeName: [UIColor inviteBlueColor]}];
+//        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\n"]];
+//        [att appendAttributedString:[[NSAttributedString alloc] initWithString:[AppDelegate presentationTimeframeFromStartDate:startDate endDate:endDate] attributes:@{NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:14], NSForegroundColorAttributeName: [UIColor lightGrayColor]}]];
+//        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\n"]];
+//        [att appendAttributedString:[[NSAttributedString alloc] initWithString:description attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSForegroundColorAttributeName: [UIColor inviteTableLabelColor]}]];
+//        
+//        cell.textLabel.attributedText = att;
+//        cell.textLabel.numberOfLines = 0;
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        
+//        return cell;
+//        
+//    }
+//    
+//    if (indexPath.section == EventSectionInvitees) {
+//        
+//        InviteesCell *cell = (InviteesCell *)[tableView dequeueReusableCellWithIdentifier:INVITEES_CELL_IDENTIFIER forIndexPath:indexPath];
+//        if (_mode == EventModePreviewing) {
+//            cell.userInvitees = [AppDelegate user].protoEvent.invitees;
+//            cell.emailInvitees = [AppDelegate user].protoEvent.emails;
+//        } else {
+//            cell.userInvitees = [_event objectForKey:EVENT_INVITEES_KEY];
+//        }
+//        cell.rsvpDictionary = _rsvpDictionary;
+//        [cell prepareCell];
+//        return cell;
+//            
+//    }
+//    
     
 }
 

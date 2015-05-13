@@ -121,8 +121,10 @@ enum TimeframeRow: Int {
 
 
             }
-            if tableView.numberOfSections() == 1 && conflicts.count > 0 {
-                tableView.insertSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Fade)
+            if tableView.numberOfSections() == 0 && conflicts.count > 0 {
+                tableView.insertSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: UITableViewRowAnimation.Fade)
+            } else if tableView.numberOfSections() == 0 {
+                tableView.insertSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Fade)
             } else if tableView.numberOfSections() == 2 && conflicts.count == 0 {
                 tableView.deleteSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Fade)
             } else {
