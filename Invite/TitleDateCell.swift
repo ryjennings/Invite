@@ -16,6 +16,8 @@ import UIKit
     
     override func awakeFromNib()
     {
+        super.awakeFromNib()
+
         dateLabel.backgroundColor = UIColor.inviteBlueColor()
         dateLabel.numberOfLines = 2
         dateLabel.layer.cornerRadius = 40
@@ -24,5 +26,11 @@ import UIKit
         label.textColor = UIColor.inviteBlueColor()
         label.font = UIFont.inviteTitleFont()
         label.numberOfLines = 0
+    }
+
+    override func setHighlighted(highlighted: Bool, animated: Bool)
+    {
+        super.setHighlighted(highlighted, animated: animated)
+        dateLabel.backgroundColor = UIColor.inviteBlueColor()
     }
 }

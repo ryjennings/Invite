@@ -31,10 +31,13 @@ import UIKit
         defaults.synchronize()
     }
     
-    class func objectForKey(key: String) -> AnyObject
+    class func objectForKey(key: String) -> AnyObject?
     {
         var defaults = NSUserDefaults.standardUserDefaults()
-        return defaults.objectForKey(key)!
+        if let object: AnyObject = defaults.objectForKey(key) {
+            return object
+        }
+        return nil
     }
     
     class func boolForKey(key: String) -> Bool

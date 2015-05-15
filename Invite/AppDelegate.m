@@ -42,6 +42,9 @@
     
 //    [self performSelector:@selector(crash) withObject:nil afterDelay:5.0];
     
+    _reachability = [Reachability reachabilityForInternetConnection];
+    [_reachability startNotifier];
+
     return YES;
 }
 
@@ -225,8 +228,13 @@
 
 + (void)addToProtoEventTitle:(NSString *)title description:(NSString *)description
 {
-    [AppDelegate user].protoEvent.title = title;
-    [AppDelegate user].protoEvent.eventDescription = description;
+    if ([AppDelegate user].protoEvent) {
+        [AppDelegate user].protoEvent.title = title;
+        [AppDelegate user].protoEvent.eventDescription = description;
+    } else {
+        [[AppDelegate user].eventToDisplay setObject:title forKey:EVENT_TITLE_KEY];
+        [[AppDelegate user].eventToDisplay setObject:description forKey:EVENT_DESCRIPTION_KEY];
+    }
 }
 
 + (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
@@ -259,6 +267,13 @@
 {
     return [AppDelegate user].events;
 }
+
++ (BOOL)hasProtoEvent
+{
+    return [AppDelegate user].protoEvent;
+}
+
+#pragma mark - Crash
 
 - (void)crash
 {

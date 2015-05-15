@@ -48,6 +48,7 @@ typedef NS_ENUM(NSUInteger, EventPreviewRow) {
     EventPreviewRowTimeframe,
     EventPreviewRowLocation,
     EventPreviewRowDescription,
+    EventPreviewRowPadding,
     EventPreviewRowCount
 };
 
@@ -59,6 +60,7 @@ typedef NS_ENUM(NSUInteger, EventViewRow) {
     EventViewRowTimeframe,
     EventViewRowLocation,
     EventViewRowDescription,
+    EventViewRowPadding,
     EventViewRowCount
 };
 
@@ -80,6 +82,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 @property (nonatomic, weak) IBOutlet UIScrollView *mapScrollView;
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;
 @property (nonatomic, weak) IBOutlet UIButton *createEventButton;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *closeButton;
 
 @property (nonatomic) EventMode mode;
 @property (nonatomic, assign) BOOL isCreator;
@@ -105,6 +108,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         _isCreator = [((PFObject *)[_event objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
 
         _mode = _isCreator ? EventModePreview : EventModeView;
+
+        [_closeButton setTitle:@"Close"];
         
         self.navigationItem.title = [_event objectForKey:EVENT_TITLE_KEY];
         
@@ -121,7 +126,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         _mode = EventModePreview;
         
         self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:5 steps:5];
-        
+
+        [_closeButton setTitle:@"Cancel"];
+
         NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
         for (PFObject *invitee in [AppDelegate user].protoEvent.invitees) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
@@ -143,8 +150,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         
     }
     
-//    _tableView.estimatedRowHeight = 100;
-//    _tableView.rowHeight = UITableViewAutomaticDimension;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _mapScrollView.backgroundColor = [UIColor inviteBackgroundSlateColor];
     
@@ -163,6 +168,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    [_tableView reloadData];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -229,14 +235,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         
     }
     
-//    EventViewRowTitle, // contains Date
-//    EventViewRowHost,
-//    EventViewRowRSVP,
-//    EventViewRowTimeframe,
-//    EventViewRowLocation,
-//    EventViewRowDescription,
-//    EventViewRowCount
-
     if ((_mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowTitle) ||
         (_mode == EventModePreview && indexPath.section == EventPreviewSectionDetails && indexPath.row == EventPreviewRowTitle)) {
         
@@ -339,6 +337,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     }
     
     BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
+    cell.textLabel.text = @"";
     return cell;
 }
 
@@ -407,6 +406,11 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         
         return 80;
         
+    } else if ((_mode == EventModeView && indexPath.row == EventViewRowPadding) ||
+               (_mode == EventModePreview && indexPath.row == EventPreviewRowPadding)) {
+        
+        return 25;
+        
     }
     
     CGRect frame = CGRectIntegral([text boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
@@ -426,6 +430,38 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    if (_mode == EventModePreview && indexPath.section == EventPreviewSectionMessage) {
+        
+        return;
+        
+    } else if ((_mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowTitle) ||
+               (_mode == EventModePreview && indexPath.section == EventPreviewSectionDetails && indexPath.row == EventPreviewRowTitle)) {
+        
+        TitleViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:TITLE_VIEW_CONTROLLER];
+        vc.preTitle = [self textForRow:EventRowTitle];
+        vc.preDescription = [self textForRow:EventRowDescription];
+        [self.navigationController pushViewController:vc animated:YES];
+        
+    } else if ((_mode == EventModeView && indexPath.row == EventViewRowHost) ||
+               (_mode == EventModePreview && indexPath.row == EventPreviewRowHost)) {
+        
+    } else if ((_mode == EventModeView && indexPath.row == EventViewRowTimeframe) ||
+               (_mode == EventModePreview && indexPath.row == EventPreviewRowTimeframe)) {
+        
+    } else if ((_mode == EventModeView && indexPath.row == EventViewRowLocation) ||
+               (_mode == EventModePreview && indexPath.row == EventPreviewRowLocation)) {
+        
+    } else if ((_mode == EventModeView && indexPath.row == EventViewRowDescription) ||
+               (_mode == EventModePreview && indexPath.row == EventPreviewRowDescription)) {
+        
+    } else if ((_mode == EventModeView && indexPath.section == EventViewSectionInvitees) ||
+               (_mode == EventModePreview && indexPath.section == EventPreviewSectionInvitees)) {
+        
+    } else if ((_mode == EventModeView && indexPath.row == EventViewRowPadding) ||
+               (_mode == EventModePreview && indexPath.row == EventPreviewRowPadding)) {
+        
+    }
 }
 
 #pragma mark - Notifications
@@ -482,7 +518,11 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     switch (row) {
         case EventRowMessage:
         {
-            return @"Alright, we're ready to send this invite off! Please review, and if everything looks alright, tap the button below!";
+            if ([AppDelegate user].protoEvent) {
+                return @"Alright, we're ready to send this invite off! Please review, and if everything looks alright, tap the button below!";
+            } else {
+                return @"Since you created this event, you can make changes at any time. Just tap on a row to edit those details.";
+            }
         }
         case EventRowTitle:
         {
@@ -505,8 +545,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
             }
             return [AppDelegate presentationTimeframeFromStartDate:startDate endDate:endDate];
         }
-        case EventRowLocation:
         case EventRowDescription:
+        {
+            return _mode == EventModePreview && [AppDelegate user].protoEvent ? [AppDelegate user].protoEvent.eventDescription : [_event objectForKey:EVENT_DESCRIPTION_KEY];
+        }
         default:
             return nil;
     }
@@ -552,7 +594,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     } else {
         eventDescription = [_event objectForKey:EVENT_DESCRIPTION_KEY];
     }
-    NSAttributedString *att = [[NSAttributedString alloc] initWithString:[eventDescription stringByAppendingString:@"\n "] attributes:@{NSForegroundColorAttributeName: [UIColor inviteTableLabelColor], NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSParagraphStyleAttributeName: style}];
+    NSAttributedString *att = [[NSAttributedString alloc] initWithString:eventDescription attributes:@{NSForegroundColorAttributeName: [UIColor inviteTableLabelColor], NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSParagraphStyleAttributeName: style}];
     return att;
 }
 

@@ -20,6 +20,10 @@ enum TitleSection: Int {
 {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var nextButton: UIButton!
+    @IBOutlet weak var rightButton: UIBarButtonItem!
+    
+    var preTitle: String?
+    var preDescription: String?
     
     let kMastheadViewHeight = 50
     let kNextButtonTitle = "Next, invite people!"
@@ -31,8 +35,17 @@ enum TitleSection: Int {
     override func viewDidLoad()
     {
         super.viewDidLoad()
-                
+        
         inputText = [String](count: TitleSection.Count.rawValue, repeatedValue: "")
+        
+        if let preTitle = preTitle {
+            inputText[0] = preTitle
+        }
+        
+        if let preDescription = preDescription {
+            inputText[2] = preDescription
+        }
+        
         navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 1, steps: 5)
         tableView.separatorStyle = .None
         tableView.estimatedRowHeight = 100
@@ -41,6 +54,10 @@ enum TitleSection: Int {
         nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
         nextButton.clipsToBounds = true
         nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
+        nextButton.hidden = !AppDelegate.hasProtoEvent()
+        
+        rightButton.title = AppDelegate.hasProtoEvent() ? "Cancel" : "Save"
+        rightButton.action = AppDelegate.hasProtoEvent() ? "cancel:" : "save"
         
         var animation = CATransition()
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
@@ -56,29 +73,6 @@ enum TitleSection: Int {
     {
         super.viewDidDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-
-    func tableHeaderView() -> UIView
-    {
-        var view = UIView(frame: CGRectMake(0, 0, 0, 100))
-        view.backgroundColor = UIColor.clearColor()
-        
-        var label = UILabel()
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
-        label.backgroundColor = UIColor.clearColor()
-        label.textColor = UIColor.inviteQuestionColor()
-        label.textAlignment = .Center
-        label.numberOfLines = 0
-        label.font = UIFont.inviteQuestionFont()
-        label.text = "Let's create a new event!"
-        view.addSubview(label)
-        
-        let views = ["label": label]
-        
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-15-[label]-15-|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-34-[label]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        
-        return view
     }
 
     // MARK: - UITableView
@@ -132,7 +126,7 @@ enum TitleSection: Int {
             return cell
         }
         
-        let text = inputText[indexPath.row] as String
+        let text = inputText[indexPath.section] as String
         var cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
         cell.delegate = self
         cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "Let's create a new event. First, tap here to give the event a title." : "Tap to add a description"
@@ -262,6 +256,12 @@ enum TitleSection: Int {
     {
         AppDelegate.nilProtoEvent()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func save()
+    {
+        AppDelegate.addToProtoEventTitle(inputText[TitleSection.Title.rawValue], description: inputText[TitleSection.Description.rawValue])
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func restoreNextButton()

@@ -71,15 +71,22 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define NAME_KEY @"name"
 
 // Controllers
+#define LAUNCH_VIEW_CONTROLLER @"LaunchViewController"
 #define LOGIN_VIEW_CONTROLLER @"LoginViewController"
 #define DASHBOARD_VIEW_CONTROLLER @"DashboardViewController"
+#define TITLE_VIEW_CONTROLLER @"TitleViewController"
+#define INVITEES_VIEW_CONTROLLER @"InviteesViewController"
+#define TIMEFRAME_VIEW_CONTROLLER @"TimeframePickerViewController"
+#define LOCATION_VIEW_CONTROLLER @"LocationViewController"
 #define EVENT_VIEW_CONTROLLER @"EventViewController"
-#define LOCATION_RESULTS_TABLE_VIEW_CONTROLLER @"LocationResultsTableViewController"
+#define EVENT_NAVIGATION_CONTROLLER @"EventNavigationController"
+#define SETTINGS_VIEW_CONTROLLER @"SettingsViewController"
 
 // Segues
 #define SEGUE_TO_LOGIN @"SegueToLogin"
 #define SEGUE_TO_DASHBOARD @"SegueToDashboard"
 #define SEGUE_TO_INVITEES @"SegueToInvitees"
+#define SEGUE_TO_TITLE @"SegueToTitle"
 #define SEGUE_TO_TIMEFRAME @"SegueToTimeframe"
 #define SEGUE_TO_LOCATION @"SegueToLocation"
 #define SEGUE_TO_EVENT @"SegueToEvent"

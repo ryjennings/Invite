@@ -51,16 +51,6 @@
     _messageLabel.font = [UIFont proximaNovaRegularFontOfSize:16];
     _facebookView.backgroundColor = [UIColor inviteSlateButtonColor];
 
-//    if (_prepareForSegueFromLaunchViewController) {
-//        _messageView.alpha = 0;
-//        _messageViewCenterYConstraint.constant = kMessageStartingCenterY + 35;
-//        _facebookViewBottomConstraint.constant = -120;
-//    } else {
-//        _logoCenterYConstraint.constant = kAmountToMoveUp;
-//        _messageViewCenterYConstraint.constant = kMessageStartingCenterY + kAmountToMoveUp;
-//        _facebookViewBottomConstraint.constant = 0;
-//    }
-    
     [self showFacebookLogin];
         
     // Notifications
@@ -119,9 +109,7 @@
 - (void)showDashboard
 {
     DashboardViewController *controller = (DashboardViewController *)[self.storyboard instantiateViewControllerWithIdentifier:DASHBOARD_VIEW_CONTROLLER];
-
     [self.navigationController pushViewController:controller animated:YES];
-//    [self.navigationController setViewControllers:@[controller] animated:YES];
 }
 
 - (void)pushDashboard
@@ -213,20 +201,31 @@
 
 - (IBAction)loginToFacebook:(id)sender
 {
-    for (id object in self.loginView.subviews) {
-        if ([[object class] isSubclassOfClass:[UIButton class]]) {
-            UIButton *button = (UIButton *)object;
-            [button sendActionsForControlEvents:UIControlEventTouchUpInside];
+    switch ([[AppDelegate app].reachability currentReachabilityStatus]) {
+        case NotReachable:
+            [AlertViewController alert:@"The Internet connection appears to be offline." vc:self];
+            return;
+        default:
+        {
+            for (id object in self.loginView.subviews) {
+                if ([[object class] isSubclassOfClass:[UIButton class]]) {
+                    UIButton *button = (UIButton *)object;
+                    [button sendActionsForControlEvents:UIControlEventTouchUpInside];
+                }
+            }
         }
+            break;
     }
 }
 
 - (void)applicationWillResignActive:(NSNotification *)notification
 {
-    _messageView.alpha = 0;
-    _messageViewCenterYConstraint.constant = kMessageStartingCenterY;
-    _facebookViewBottomConstraint.constant = -120;
-    _logoCenterYConstraint.constant = 0;
+    if (_receivedUser) {
+        _messageView.alpha = 0;
+        _messageViewCenterYConstraint.constant = kMessageStartingCenterY;
+        _facebookViewBottomConstraint.constant = -120;
+        _logoCenterYConstraint.constant = 0;
+    }
 }
 
 @end

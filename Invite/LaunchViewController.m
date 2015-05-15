@@ -44,12 +44,9 @@
             }
         }];
 
-        
     } else {
         LoginViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:LOGIN_VIEW_CONTROLLER];
         controller.prepareForSegueFromLaunchViewController = YES;
-        
-        
         [self performSelector:@selector(gotoLoginViewController:) withObject:controller afterDelay:0.5];
     }
 }
@@ -68,14 +65,12 @@
 - (void)gotoDashboardViewController:(UIViewController *)controller
 {
     LoginViewController *loginController = [self.storyboard instantiateViewControllerWithIdentifier:LOGIN_VIEW_CONTROLLER];
-//    [self.navigationController pushViewController:controller animated:YES];
     [self.navigationController setViewControllers:@[loginController, controller] animated:YES];
 }
 
 - (void)gotoLoginViewController:(UIViewController *)controller
 {
     [self.navigationController pushViewController:controller animated:NO];
-//    [self.navigationController setViewControllers:@[controller] animated:NO];
 }
 
 - (void)parseLoaded:(NSNotification *)notification

@@ -25,7 +25,7 @@
         <!--Launch View Controller-->
         <scene sceneID="2qi-14-wZo">
             <objects>
-                <viewController id="6gb-xG-seE" customClass="LaunchViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LaunchViewController" id="6gb-xG-seE" customClass="LaunchViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pgc-JO-H4O"/>
                         <viewControllerLayoutGuide type="bottom" id="Ltb-Gs-4TH"/>
@@ -197,7 +197,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="hSx-aW-wrD" kind="presentation" identifier="SegueToInvitees" modalPresentationStyle="formSheet" id="9wc-gd-bh7"/>
+                                    <segue destination="hSx-aW-wrD" kind="presentation" identifier="SegueToTitle" modalPresentationStyle="formSheet" id="9wc-gd-bh7"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -239,7 +239,7 @@
         <!--Navigation Controller-->
         <scene sceneID="Uml-rq-mgG">
             <objects>
-                <navigationController storyboardIdentifier="EventViewController" id="kPU-iI-QDW" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="EventNavigationController" id="kPU-iI-QDW" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="kT2-9u-8cu">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -255,7 +255,7 @@
         <!--Event View Controller-->
         <scene sceneID="IDP-P6-kPo">
             <objects>
-                <viewController id="vUf-2g-qse" customClass="EventViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="EventViewController" id="vUf-2g-qse" customClass="EventViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="JRg-ZA-r0K"/>
                         <viewControllerLayoutGuide type="bottom" id="6cz-8D-gJH"/>
@@ -575,6 +575,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="800"/>
                     <connections>
+                        <outlet property="closeButton" destination="Qaf-tN-BZG" id="4dN-eK-cxz"/>
                         <outlet property="createEventButton" destination="0Oc-69-qeH" id="N0p-Jd-zvX"/>
                         <outlet property="mapScrollView" destination="jOH-Hn-XOd" id="pds-qc-rL0"/>
                         <outlet property="mapView" destination="X1Z-bg-uQ4" id="0ST-3N-FpJ"/>
@@ -604,7 +605,7 @@
         <!--Title-->
         <scene sceneID="3WM-GO-vSK">
             <objects>
-                <viewController id="eE0-gB-syp" customClass="TitleViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TitleViewController" id="eE0-gB-syp" customClass="TitleViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="mOz-sd-bmw"/>
                         <viewControllerLayoutGuide type="bottom" id="rjC-ZQ-Tfo"/>
@@ -744,6 +745,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="nextButton" destination="hRa-T8-pUx" id="9ai-mV-FFP"/>
+                        <outlet property="rightButton" destination="xtd-Ut-HXo" id="6ZP-Df-1fU"/>
                         <outlet property="tableView" destination="px8-qw-N3C" id="jEj-Ck-APx"/>
                     </connections>
                 </viewController>
@@ -754,7 +756,7 @@
         <!--Contacts-->
         <scene sceneID="8bL-Bu-Jm6">
             <objects>
-                <viewController id="Sh2-0c-u2q" customClass="ContactsViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ContactsViewController" id="Sh2-0c-u2q" customClass="ContactsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="WYC-cl-AR3"/>
                         <viewControllerLayoutGuide type="bottom" id="Xss-iK-4mS"/>
@@ -814,7 +816,7 @@
         <!--Invitees-->
         <scene sceneID="Eiq-ey-LhU">
             <objects>
-                <viewController id="yYW-xh-XCd" customClass="InviteesViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="InviteesViewController" id="yYW-xh-XCd" customClass="InviteesViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Nfm-3H-xAU"/>
                         <viewControllerLayoutGuide type="bottom" id="ZOG-XV-z07"/>
@@ -972,7 +974,7 @@
         <!--Location-->
         <scene sceneID="r0E-ra-XEt">
             <objects>
-                <viewController id="MPz-7T-uR7" customClass="LocationViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LocationViewController" id="MPz-7T-uR7" customClass="LocationViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dZx-gD-QFe"/>
                         <viewControllerLayoutGuide type="bottom" id="3lP-Ce-I7z"/>
@@ -1153,7 +1155,7 @@
         <!--Settings-->
         <scene sceneID="t5L-CI-T9N">
             <objects>
-                <viewController id="sW5-JF-rN3" customClass="SettingsViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SettingsViewController" id="sW5-JF-rN3" customClass="SettingsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="2uM-eZ-Me9"/>
                         <viewControllerLayoutGuide type="bottom" id="xN9-Xd-9e3"/>
@@ -1235,7 +1237,7 @@
         <!--Timeframe-->
         <scene sceneID="Eph-vr-Mpd">
             <objects>
-                <viewController id="54b-Pj-89S" customClass="TimeframePickerViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TimeframePickerViewController" id="54b-Pj-89S" customClass="TimeframePickerViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="kUX-rR-Z4W"/>
                         <viewControllerLayoutGuide type="bottom" id="DSd-Ag-cWJ"/>
@@ -1378,6 +1380,6 @@
         <image name="logo" width="151" height="151"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Ad0-0I-kb4"/>
+        <segue reference="bir-cY-Gg3"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -103,7 +103,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:SEGUE_TO_INVITEES]) {
+    if ([segue.identifier isEqualToString:SEGUE_TO_TITLE]) {
         [AppDelegate user].protoEvent = [Event createEvent];
     }
 }

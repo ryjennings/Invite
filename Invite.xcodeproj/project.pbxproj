@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070C88B51B05227E005E7CDD /* LabelCell.swift */; };
+		070C88B81B068CBA005E7CDD /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070C88B71B068CBA005E7CDD /* AlertViewController.swift */; };
+		070C88BB1B069C01005E7CDD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 070C88BA1B069C01005E7CDD /* Reachability.m */; };
 		070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */; };
 		070DAA4F1AE85D6900E111F6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */; };
 		071338C31AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */; };
@@ -123,6 +125,9 @@
 
 /* Begin PBXFileReference section */
 		070C88B51B05227E005E7CDD /* LabelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelCell.swift; sourceTree = "<group>"; };
+		070C88B71B068CBA005E7CDD /* AlertViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
+		070C88B91B069C01005E7CDD /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		070C88BA1B069C01005E7CDD /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		070DAA4B1AE8489C00E111F6 /* SDiPhoneVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDiPhoneVersion.h; sourceTree = "<group>"; };
 		070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDiPhoneVersion.m; sourceTree = "<group>"; };
 		070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -410,6 +415,8 @@
 				075249E51ACB397C00D279DA /* InviteTheme.swift */,
 				0744377E1AE02C9C002A6C4D /* DateFlowLayout.h */,
 				0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */,
+				070C88B91B069C01005E7CDD /* Reachability.h */,
+				070C88BA1B069C01005E7CDD /* Reachability.m */,
 				070DAA4A1AE8489C00E111F6 /* SDiPhoneVersion */,
 				07D2D9C61AE616E2008E1733 /* OBGradientView */,
 				075D10621ADC859D00C86130 /* SDWebImage */,
@@ -423,6 +430,7 @@
 				078924721AB369DC005EE7FB /* Location */,
 				07B8EE521AAA2F22002B9962 /* Event */,
 				070DAA501AE85D7300E111F6 /* Settings */,
+				070C88B71B068CBA005E7CDD /* AlertViewController.swift */,
 				074B03091AD638C600B539A9 /* Cells */,
 				07BC8E3A1ACB13EF0050C4E9 /* Views */,
 				07D01A341A9A9E7500860650 /* Model */,
@@ -818,6 +826,7 @@
 				072836761AD315BF00B158AC /* UIView+Invite.m in Sources */,
 				070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */,
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
+				070C88BB1B069C01005E7CDD /* Reachability.m in Sources */,
 				07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */,
 				07BC8E3C1ACB29CE0050C4E9 /* DashboardCell.swift in Sources */,
 				077811671AFF216F00D5DC4D /* ToggleCell.swift in Sources */,
@@ -827,6 +836,7 @@
 				0714087B1AEE13FC0081F304 /* ProfileCell.swift in Sources */,
 				074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */,
 				070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */,
+				070C88B81B068CBA005E7CDD /* AlertViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

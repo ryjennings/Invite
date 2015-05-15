@@ -12,6 +12,8 @@
 #import <Parse/Parse.h>
 #import <ParseCrashReporting/ParseCrashReporting.h>
 
+#import "Reachability.h"
+
 @class User;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
@@ -23,6 +25,7 @@
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 @property (nonatomic, strong) User *user;
+@property (nonatomic, strong) Reachability *reachability;
 
 + (AppDelegate *)app;
 + (User *)user;
@@ -46,5 +49,6 @@
 + (NSArray *)locations;
 + (NSSet *)busyTimes;
 + (NSArray *)events;
++ (BOOL)hasProtoEvent;
 
 @end
