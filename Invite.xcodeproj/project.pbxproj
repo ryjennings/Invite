@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070C88B51B05227E005E7CDD /* LabelCell.swift */; };
 		070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */; };
 		070DAA4F1AE85D6900E111F6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */; };
 		071338C31AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */; };
@@ -121,6 +122,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		070C88B51B05227E005E7CDD /* LabelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelCell.swift; sourceTree = "<group>"; };
 		070DAA4B1AE8489C00E111F6 /* SDiPhoneVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDiPhoneVersion.h; sourceTree = "<group>"; };
 		070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDiPhoneVersion.m; sourceTree = "<group>"; };
 		070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -475,6 +477,7 @@
 				07380CF81AFA972C00A6E19D /* ConflictCell.swift */,
 				077811661AFF216F00D5DC4D /* ToggleCell.swift */,
 				0778116A1B01382600D5DC4D /* TitleDateCell.swift */,
+				070C88B51B05227E005E7CDD /* LabelCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -813,6 +816,7 @@
 				075D108F1ADC859D00C86130 /* UIImage+MultiFormat.m in Sources */,
 				075D10871ADC859D00C86130 /* SDWebImageCompat.m in Sources */,
 				072836761AD315BF00B158AC /* UIView+Invite.m in Sources */,
+				070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */,
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
 				07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */,
 				07BC8E3C1ACB29CE0050C4E9 /* DashboardCell.swift in Sources */,

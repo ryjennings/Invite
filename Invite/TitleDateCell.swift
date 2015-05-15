@@ -18,10 +18,11 @@ import UIKit
     {
         dateLabel.backgroundColor = UIColor.inviteBlueColor()
         dateLabel.numberOfLines = 2
-        dateLabel.layer.cornerRadius = 25
+        dateLabel.layer.cornerRadius = 40
         dateLabel.clipsToBounds = true
         
         label.textColor = UIColor.inviteBlueColor()
         label.font = UIFont.inviteTitleFont()
+        label.numberOfLines = 0
     }
 }

@@ -113,7 +113,7 @@ extension UIFont
     
     class func inviteTableSmallFont() -> UIFont
     {
-        return UIFont.proximaNovaRegularFontOfSize(14)
+        return UIFont.proximaNovaRegularFontOfSize(16)
     }
     
     class func inviteTableMediumFont() -> UIFont

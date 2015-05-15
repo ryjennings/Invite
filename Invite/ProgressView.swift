@@ -42,9 +42,9 @@ import UIKit
         for i in 0..<steps {
             let currentRect = CGRectMake(((CGFloat(i) * stepWidth) + (stepWidth / 2)) - (height / 2), 1, height, height)
             ellipseInRect(currentRect, thisStep: i)
-            if (i + 1 == step) {
-                animateCurrentStepInRect(CGRectInset(currentRect, 1.5, 1.5))
-            }
+//            if (i + 1 == step) {
+//                animateCurrentStepInRect(CGRectInset(currentRect, 1.5, 1.5))
+//            }
         }
     }
     
@@ -54,7 +54,7 @@ import UIKit
         CGContextSetStrokeColorWithColor(ctx, UIColor.whiteColor().CGColor)
         CGContextSetFillColorWithColor(ctx, UIColor.whiteColor().CGColor)
         CGContextSetLineWidth(ctx, CGFloat(strokeWidth))
-        if (thisStep < step - 1) {
+        if (thisStep < step) {
             CGContextFillEllipseInRect(ctx, CGRectInset(rect, 1.5, 1.5))
         }
         CGContextStrokeEllipseInRect(ctx, rect)
