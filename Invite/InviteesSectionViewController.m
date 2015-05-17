@@ -1,12 +1,12 @@
 //
-//  InviteesCell.m
+//  InviteesSectionViewController.m
 //  Invite
 //
 //  Created by Ryan Jennings on 4/16/15.
 //  Copyright (c) 2015 Appuous. All rights reserved.
 //
 
-#import "InviteesCell.h"
+#import "InviteesSectionViewController.h"
 
 #import "AppDelegate.h"
 #import "DateFlowLayout.h"
@@ -20,9 +20,11 @@ NSString *const kMaybe = @"Maybe";
 NSString *const kSorry = @"Sorry";
 NSString *const kNoResponse = @"No Response";
 
-@interface InviteesCell () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface InviteesSectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
+@property (nonatomic, weak) IBOutlet UILabel *headerLabel;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *leadingConstraint;
 
 @property (nonatomic, strong) NSMutableDictionary *invitees;
 @property (nonatomic, strong) NSMutableArray *usedIndexes;
@@ -31,12 +33,20 @@ NSString *const kNoResponse = @"No Response";
 
 @end
 
-@implementation InviteesCell
+@implementation InviteesSectionViewController
 
 #pragma mark - UICollectionView
 
-- (void)prepareCell
+- (void)viewDidLoad
 {
+    [super viewDidLoad];
+    
+    _leadingConstraint.constant = [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15;
+
+    _headerLabel.textColor = [UIColor inviteTableHeaderColor];
+    _headerLabel.font = [UIFont inviteTableHeaderFont];
+    _headerLabel.text = @"WHO'S INVITED";
+
     NSMutableArray *going = [NSMutableArray array];
     NSMutableArray *maybe = [NSMutableArray array];
     NSMutableArray *sorry = [NSMutableArray array];
@@ -91,7 +101,7 @@ NSString *const kNoResponse = @"No Response";
     self.flowLayout.headerReferenceSize = CGSizeMake(80, 80);
     self.flowLayout.minimumInteritemSpacing = 0;
     self.flowLayout.minimumLineSpacing = 0;
-    self.flowLayout.sectionInset = UIEdgeInsetsMake(0, self.separatorInset.left, 0, 0);
+    self.flowLayout.sectionInset = UIEdgeInsetsMake(0, [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15, 0, 0);
     self.flowLayout.itemSize = CGSizeMake(60, 80);
     self.collectionView.alwaysBounceVertical = NO;
 }
@@ -110,17 +120,18 @@ NSString *const kNoResponse = @"No Response";
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    NSInteger sections = 0;
-    if (_invitees[@(EventResponseGoing)] && ((NSArray *)_invitees[@(EventResponseGoing)]).count) {
-        sections++;
-    } else if (_invitees[@(EventResponseMaybe)] && ((NSArray *)_invitees[@(EventResponseMaybe)]).count) {
-        sections++;
-    } else if (_invitees[@(EventResponseSorry)] && ((NSArray *)_invitees[@(EventResponseSorry)]).count) {
-        sections++;
-    } else if (_invitees[@(EventResponseNoResponse)] && ((NSArray *)_invitees[@(EventResponseNoResponse)]).count) {
-        sections++;
-    }
-    return sections;
+//    NSInteger sections = 0;
+//    if (_invitees[@(EventResponseGoing)] && ((NSArray *)_invitees[@(EventResponseGoing)]).count) {
+//        sections++;
+//    } else if (_invitees[@(EventResponseMaybe)] && ((NSArray *)_invitees[@(EventResponseMaybe)]).count) {
+//        sections++;
+//    } else if (_invitees[@(EventResponseSorry)] && ((NSArray *)_invitees[@(EventResponseSorry)]).count) {
+//        sections++;
+//    } else if (_invitees[@(EventResponseNoResponse)] && ((NSArray *)_invitees[@(EventResponseNoResponse)]).count) {
+//        sections++;
+//    }
+//    return sections;
+    return _usedIndexes.count;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -169,10 +180,6 @@ NSString *const kNoResponse = @"No Response";
     }
     
     return reusableview;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
 }
 
 @end

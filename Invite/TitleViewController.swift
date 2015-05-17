@@ -126,19 +126,30 @@ enum TitleSection: Int {
             return cell
         }
         
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = 4
+
         let text = inputText[indexPath.section] as String
+        
+        let font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.inviteTableMediumFont()
+        let textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteBlueColor() : UIColor.inviteTableLabelColor()
+        
+        let att = NSAttributedString(string: text, attributes: [NSFontAttributeName: font, NSForegroundColorAttributeName: textColor, NSParagraphStyleAttributeName: style])
+        
         var cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
         cell.delegate = self
+        
         cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "Let's create a new event. First, tap here to give the event a title." : "Tap to add a description"
         cell.placeholderLabel.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.inviteTableMediumFont()
         cell.placeholderLabel.hidden = Bool(count(text))
         cell.placeholderLabel.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteQuestionColor() : UIColor.inviteTableLabelColor()
         cell.placeholderLabel.numberOfLines = 0
+        
         cell.textView.tag = indexPath.section
-        cell.textView.text = text
-        cell.textView.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.inviteTableMediumFont()
-        cell.textView.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteBlueColor() : UIColor.inviteTableLabelColor()
+        cell.textView.font = font;
+        cell.textView.textColor = textColor;
+        cell.textView.attributedText = att
         cell.textView.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.textView.textContainer.lineFragmentPadding = 0
 //        cell.textView.contentInset = indexPath.section == TitleSection.Title.rawValue ? UIEdgeInsetsMake(1, 0, 0, 0) : UIEdgeInsetsMake(1, 0, 0, 0)
@@ -155,12 +166,8 @@ enum TitleSection: Int {
         cell.textViewBottomConstraint.constant = 14
         cell.backgroundColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.clearColor() : UIColor.whiteColor()
         cell.contentView.backgroundColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.clearColor() : UIColor.whiteColor()
+        
         return cell
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
-    {
-
     }
     
     // MARK: - InputCellDelegate
@@ -177,7 +184,7 @@ enum TitleSection: Int {
     func keyboardWillShow(notification: NSNotification)
     {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
-            let contentInsets = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: keyboardSize.height, right: 0) // +50 for done bar
+            let contentInsets = UIEdgeInsets(top: tableView.contentInset.top, left: 0, bottom: keyboardSize.height, right: 0)
             tableView.contentInset = contentInsets
             tableView.scrollIndicatorInsets = contentInsets
         }

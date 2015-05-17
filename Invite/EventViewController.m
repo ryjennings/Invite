@@ -11,7 +11,7 @@
 #import "AppDelegate.h"
 #import "Event.h"
 #import "Invite-Swift.h"
-#import "InviteesCell.h"
+#import "InviteesSectionViewController.h"
 #import "StringConstants.h"
 #import "User.h"
 
@@ -56,7 +56,6 @@ typedef NS_ENUM(NSUInteger, EventViewRow) {
     // Map in background
     EventViewRowTitle, // contains Date
     EventViewRowHost,
-    EventViewRowRSVP,
     EventViewRowTimeframe,
     EventViewRowLocation,
     EventViewRowDescription,
@@ -67,22 +66,29 @@ typedef NS_ENUM(NSUInteger, EventViewRow) {
 typedef NS_ENUM(NSUInteger, EventPreviewSection) {
     EventPreviewSectionMessage,
     EventPreviewSectionDetails,
-    EventPreviewSectionInvitees,
     EventPreviewSectionCount
 };
 
 typedef NS_ENUM(NSUInteger, EventViewSection) {
+    EventViewSectionResponse,
     EventViewSectionDetails,
-    EventViewSectionInvitees,
     EventViewSectionCount
 };
 
-@interface EventViewController () <UITableViewDataSource, UITableViewDelegate>
+#define kPickerViewHeight 314.0
+
+@interface EventViewController () <UITableViewDataSource, UITableViewDelegate, PickerViewDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UIScrollView *mapScrollView;
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;
 @property (nonatomic, weak) IBOutlet UIButton *createEventButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *closeButton;
+
+@property (nonatomic, strong) PickerView *pickerView;
+@property (nonatomic, strong) NSLayoutConstraint *pickerViewBottomConstraint;
+@property (nonatomic, strong) NSString *responseText;
+@property (nonatomic, assign) NSInteger response;
+@property (nonatomic, assign) BOOL showResponseSavedText;
 
 @property (nonatomic) EventMode mode;
 @property (nonatomic, assign) BOOL isCreator;
@@ -94,26 +100,38 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 
 @implementation EventViewController
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        _event = [AppDelegate user].eventToDisplay;
+        _rsvpDictionary = [_event objectForKey:EVENT_RSVP_KEY];
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    _event = [AppDelegate user].eventToDisplay;
     
     CLLocationDegrees latitude;
     CLLocationDegrees longitude;
+    
+    _showResponseSavedText = NO;
     
     if (_event) {
         
         _isCreator = [((PFObject *)[_event objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
 
         _mode = _isCreator ? EventModePreview : EventModeView;
+        
+        if (_mode == EventModeView) {
+            _response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
+        }
 
         [_closeButton setTitle:@"Close"];
         
         self.navigationItem.title = [_event objectForKey:EVENT_TITLE_KEY];
-        
-        _rsvpDictionary = [_event objectForKey:EVENT_RSVP_KEY];
         
         PFObject *location = [_event objectForKey:EVENT_LOCATION_KEY];
         longitude = ((NSString *)[location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
@@ -159,8 +177,27 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         MKPlacemark *placemark = [[MKPlacemark alloc] initWithPlacemark:placemarks[0]];
         [_mapView addAnnotation:placemark];
-        [_mapView showAnnotations:@[placemark] animated:YES];
+        [_mapView showAnnotations:@[placemark] animated:NO];
+        CLLocationCoordinate2D center = self.mapView.region.center;
+        center.latitude -= self.mapView.region.span.latitudeDelta * 0.385;
+        [self.mapView setCenterCoordinate:center animated:NO];
     }];
+    
+    [self configurePickerView];
+}
+
+- (void)configurePickerView
+{
+    EventResponse response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
+    _pickerView = [[PickerView alloc] init];
+    _pickerView.translatesAutoresizingMaskIntoConstraints = NO;
+    _pickerView.delegate = self;
+    _pickerView.initialOption = response == EventResponseNoResponse ? 0 : response;
+    [self.view addSubview:_pickerView];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[picker]|" options:0 metrics:nil views:@{@"picker": _pickerView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[picker(height)]" options:0 metrics:@{@"height": @(kPickerViewHeight)} views:@{@"picker": _pickerView}]];
+    _pickerViewBottomConstraint = [NSLayoutConstraint constraintWithItem:_pickerView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:kPickerViewHeight];
+    [self.view addConstraint:_pickerViewBottomConstraint];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -198,9 +235,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     if ((_mode == EventModePreview && section == EventPreviewSectionDetails) ||
         (_mode == EventModeView && section == EventViewSectionDetails)) {
         return @"Event Details";
-    } else if ((_mode == EventModePreview && section == EventPreviewSectionInvitees) ||
-               (_mode == EventModeView && section == EventViewSectionInvitees)) {
-        return @"Invited Friends";
     } else {
         return nil;
     }
@@ -213,16 +247,57 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ((_mode == EventModeView && section == EventViewSectionInvitees) ||
-        (_mode == EventModePreview && section == EventPreviewSectionMessage) ||
-        (_mode == EventModePreview && section == EventPreviewSectionInvitees)) {
+    if ((_mode == EventModePreview && section == EventPreviewSectionMessage) ||
+        (_mode == EventModeView && section == EventViewSectionResponse)) {
         return 1;
     }
     return _mode == EventModePreview ? EventPreviewRowCount : EventViewRowCount;
 }
 
+- (NSString *)textForResponse:(EventResponse)response
+{
+    switch (response) {
+        case EventResponseGoing:
+            return kGoingText;
+        case EventResponseMaybe:
+            return kMaybeText;
+        case EventResponseSorry:
+            return kSorryText;
+        case EventResponseNoResponse:
+            return kNoResponseText;
+    }
+}
+
+- (NSAttributedString *)attributedStringForReponse
+{
+    NSString *lastLine = _showResponseSavedText ? @"Your response has been saved." : @"Change";
+    
+    NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
+//    [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"Your current response is" attributes:@{NSForegroundColorAttributeName: [UIColor colorWithWhite:1 alpha:0.85], NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:11]}]];
+    [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:4]}]];
+    [att appendAttributedString:[[NSAttributedString alloc] initWithString:[self textForResponse:_response] attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor], NSFontAttributeName: [UIFont inviteQuestionFont]}]];
+    [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:4]}]];
+    [att appendAttributedString:[[NSAttributedString alloc] initWithString:lastLine attributes:@{NSForegroundColorAttributeName: [UIColor colorWithWhite:1 alpha:0.85], NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:11]}]];
+    
+    return att;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (_mode == EventModeView && indexPath.section == EventViewSectionResponse) {
+        
+        BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
+        
+        
+        cell.textLabel.attributedText = [self attributedStringForReponse];
+        cell.textLabel.numberOfLines = 0;
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        cell.backgroundColor = [UIColor inviteBlueColor];
+        
+        return cell;
+        
+    }
+    
     if (_mode == EventModePreview && indexPath.section == EventPreviewSectionMessage) {
         
         BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
@@ -231,6 +306,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         cell.textLabel.textColor = [UIColor inviteQuestionColor];
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
         cell.textLabel.numberOfLines = 0;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.backgroundColor = [UIColor whiteColor];
         return cell;
         
     }
@@ -255,6 +332,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         cell.dateLabel.attributedText = dateAtt;
         cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
         cell.dateLabelLeadingConstraint.constant = [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15;
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        cell.backgroundColor = [UIColor whiteColor];
         return cell;
         
     }
@@ -266,20 +345,22 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         cell.label.text = @"Host";
         cell.cellText.text = [self textForRow:EventRowHost];
         cell.labelLeadingConstraint.constant = [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.backgroundColor = [UIColor whiteColor];
         return cell;
         
     }
     
-    if (_mode == EventModeView && indexPath.row == EventViewRowRSVP) {
-        
-        EventResponse response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
-        RadioCell *cell = (RadioCell *)[tableView dequeueReusableCellWithIdentifier:RADIO_CELL_IDENTIFIER];
-        cell.segments.selectedSegmentIndex = response;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.segmentsLeadingConstraint.constant = cell.separatorInset.left;
-        return cell;
-        
-    }
+//    if (_mode == EventModeView && indexPath.row == EventViewRowRSVP) {
+//        
+//        EventResponse response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
+//        RadioCell *cell = (RadioCell *)[tableView dequeueReusableCellWithIdentifier:RADIO_CELL_IDENTIFIER];
+//        cell.segments.selectedSegmentIndex = response;
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        cell.segmentsLeadingConstraint.constant = cell.separatorInset.left;
+//        return cell;
+//        
+//    }
     
     if ((_mode == EventModeView && indexPath.row == EventViewRowTimeframe) ||
         (_mode == EventModePreview && indexPath.row == EventPreviewRowTimeframe)) {
@@ -289,6 +370,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         cell.cellText.text = [self textForRow:EventRowTimeframe];
         cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
         cell.labelLeadingConstraint.constant = [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15;
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        cell.backgroundColor = [UIColor whiteColor];
         return cell;
 
     }
@@ -302,6 +385,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         cell.cellText.numberOfLines = 0;
         cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
         cell.labelLeadingConstraint.constant = [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15;
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        cell.backgroundColor = [UIColor whiteColor];
         return cell;
         
     }
@@ -314,30 +399,18 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         cell.textLabel.attributedText = [self attributedTextForDescription];
         cell.textLabel.numberOfLines = 0;
         cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        cell.backgroundColor = [UIColor whiteColor];
         
-        return cell;
-        
-    }
-    
-    if ((_mode == EventModeView && indexPath.section == EventViewSectionInvitees) ||
-        (_mode == EventModePreview && indexPath.section == EventPreviewSectionInvitees)) {
-        
-        InviteesCell *cell = (InviteesCell *)[tableView dequeueReusableCellWithIdentifier:INVITEES_CELL_IDENTIFIER forIndexPath:indexPath];
-        if (_mode == EventModePreview && [AppDelegate user].protoEvent) {
-            cell.userInvitees = [AppDelegate user].protoEvent.invitees;
-            cell.emailInvitees = [AppDelegate user].protoEvent.emails;
-        } else {
-            cell.userInvitees = [_event objectForKey:EVENT_INVITEES_KEY];
-        }
-        cell.rsvpDictionary = _rsvpDictionary;
-        [cell prepareCell];
-        cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
         return cell;
         
     }
     
     BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
     cell.textLabel.text = @"";
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.backgroundColor = [UIColor whiteColor];
     return cell;
 }
 
@@ -348,6 +421,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     NSDictionary *attributes = @{};
     CGFloat padding = 0;
     CGFloat leftSeparator = [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15;
+    
+    if (_mode == EventModeView && indexPath.section == EventViewSectionResponse) {
+        
+        return 80;
+        
+    }
     
     if (_mode == EventModePreview && indexPath.section == EventPreviewSectionMessage) {
         
@@ -401,11 +480,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
                                                         context:nil]);
         return frame.size.height + (padding * 2);
         
-    } else if ((_mode == EventModeView && indexPath.section == EventViewSectionInvitees) ||
-               (_mode == EventModePreview && indexPath.section == EventPreviewSectionInvitees)) {
-        
-        return 80;
-        
     } else if ((_mode == EventModeView && indexPath.row == EventViewRowPadding) ||
                (_mode == EventModePreview && indexPath.row == EventPreviewRowPadding)) {
         
@@ -431,6 +505,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
+    if (_mode == EventModeView && indexPath.section == EventViewSectionResponse) {
+        
+        [self showPickerView:YES];
+        
+    }
+    
     if (_mode == EventModePreview && indexPath.section == EventPreviewSectionMessage) {
         
         return;
@@ -455,13 +535,44 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     } else if ((_mode == EventModeView && indexPath.row == EventViewRowDescription) ||
                (_mode == EventModePreview && indexPath.row == EventPreviewRowDescription)) {
         
-    } else if ((_mode == EventModeView && indexPath.section == EventViewSectionInvitees) ||
-               (_mode == EventModePreview && indexPath.section == EventPreviewSectionInvitees)) {
-        
     } else if ((_mode == EventModeView && indexPath.row == EventViewRowPadding) ||
                (_mode == EventModePreview && indexPath.row == EventPreviewRowPadding)) {
         
     }
+}
+
+- (void)showPickerView:(BOOL)show
+{
+    _pickerViewBottomConstraint.constant = show ? 0 : kPickerViewHeight;
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.25];
+    [UIView setAnimationCurve:7];
+    [UIView setAnimationBeginsFromCurrentState:YES];
+    
+    [self.view layoutIfNeeded];
+    
+    [UIView commitAnimations];
+}
+
+#pragma mark - PickerViewDelegate
+
+- (void)pickerView:(PickerView *)pickerView hasSelectedResponse:(EventResponse)response text:(NSString *)text
+{
+    if (response != _response) {
+        _showResponseSavedText = YES;
+    }
+
+    _responseText = text;
+    _response = response;
+
+    [self responseChanged:response];
+    
+    BasicCell *cell = (BasicCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:EventViewSectionResponse]];
+
+    cell.textLabel.attributedText = [self attributedStringForReponse];
+
+    [self showPickerView:NO];
 }
 
 #pragma mark - Notifications
@@ -496,11 +607,26 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     [[AppDelegate user].protoEvent submitEvent];
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:SEGUE_TO_INVITEES_SECTION]) {
+        
+        if (_mode == EventModePreview && [AppDelegate user].protoEvent) {
+            ((InviteesSectionViewController *)segue.destinationViewController).userInvitees = [AppDelegate user].protoEvent.invitees;
+            ((InviteesSectionViewController *)segue.destinationViewController).emailInvitees = [AppDelegate user].protoEvent.emails;
+        } else {
+            ((InviteesSectionViewController *)segue.destinationViewController).userInvitees = [_event objectForKey:EVENT_INVITEES_KEY];
+        }
+        ((InviteesSectionViewController *)segue.destinationViewController).rsvpDictionary = _rsvpDictionary;
+        
+    }
+}
+
 #pragma mark - RSVP
 
-- (IBAction)rsvpChanged:(UISegmentedControl *)control
+- (void)responseChanged:(EventResponse)response
 {
-    [_rsvpDictionary setValue:@(control.selectedSegmentIndex) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
+    [_rsvpDictionary setValue:@(response) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
     _event[EVENT_RSVP_KEY] = _rsvpDictionary;
     [_event saveInBackground];
 }

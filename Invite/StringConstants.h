@@ -25,6 +25,11 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define kShowAvailability @"ShowAvailability"
 #define kRemoveEventsAfterExpire @"RemoveEventsAfterExpire"
 
+#define kGoingText @"I'll be there!"
+#define kMaybeText @"Maybe"
+#define kSorryText @"Sorry, I can't make it"
+#define kNoResponseText @"You have not yet responded"
+
 #define kCornerRadius 6.f
 #define kDashboardPadding 25.f
 
@@ -94,6 +99,7 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define SEGUE_TO_END_DATE @"SegueToEndDate"
 #define SEGUE_TO_CONTACTS @"SegueToContacts"
 #define SEGUE_TO_SETTINGS @"SegueToSettings"
+#define SEGUE_TO_INVITEES_SECTION @"SegueToInviteesSection"
 
 // Table cell identifiers
 #define MAP_CELL_IDENTIFIER @"MapCellIdentifier"
