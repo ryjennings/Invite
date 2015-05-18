@@ -31,7 +31,7 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define kNoResponseText @"You have not yet responded"
 
 #define kCornerRadius 6.f
-#define kDashboardPadding 25.f
+#define kFooterPadding 20.f
 
 // Classes
 #define CLASS_PERSON_KEY @"Person"

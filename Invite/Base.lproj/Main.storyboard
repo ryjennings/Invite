@@ -1119,6 +1119,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="label" destination="42Z-vz-6F2" id="6T7-vL-OMH"/>
+                                            <outlet property="leadingConstraint" destination="pDF-Il-kWa" id="wDi-1z-IkG"/>
                                             <outlet property="toggle" destination="MaN-dz-dIg" id="4mj-b1-mPG"/>
                                         </connections>
                                     </tableViewCell>

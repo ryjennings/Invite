@@ -16,7 +16,6 @@
 #import "UIImageView+WebCache.h"
 
 #define kNoPreviousFriendsFont [UIFont proximaNovaRegularFontOfSize:16]
-#define kFooterPadding 20
 
 typedef NS_ENUM(NSUInteger, InviteesSection) {
     InviteesSectionFriends,

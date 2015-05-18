@@ -17,6 +17,8 @@ import ParseUI
     let descriptionFont = UIFont.proximaNovaRegularFontOfSize(14)
     let newlineFont = UIFont.proximaNovaRegularFontOfSize(12)
     
+    let kDashboardPadding: CGFloat = 25
+    
     var event: PFObject! {
         didSet {
             configureEvent()
@@ -49,7 +51,6 @@ import ParseUI
         var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier("PinIdentifier") as? MKPinAnnotationView
         if (pinView == nil) {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "PinIdentifier")
-//            pinView?.image = UIImage(named: "confirm_location")
             pinView?.animatesDrop = true
         }
         return pinView

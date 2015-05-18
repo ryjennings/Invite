@@ -47,8 +47,9 @@ typedef NS_ENUM(NSUInteger, EventPreviewRow) {
     EventPreviewRowHost,
     EventPreviewRowTimeframe,
     EventPreviewRowLocation,
+    EventPreviewRowPadding1,
     EventPreviewRowDescription,
-    EventPreviewRowPadding,
+    EventPreviewRowPadding2,
     EventPreviewRowCount
 };
 
@@ -58,8 +59,9 @@ typedef NS_ENUM(NSUInteger, EventViewRow) {
     EventViewRowHost,
     EventViewRowTimeframe,
     EventViewRowLocation,
+    EventViewRowPadding1,
     EventViewRowDescription,
-    EventViewRowPadding,
+    EventViewRowPadding2,
     EventViewRowCount
 };
 
@@ -77,7 +79,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 
 #define kPickerViewHeight 314.0
 
-@interface EventViewController () <UITableViewDataSource, UITableViewDelegate, PickerViewDelegate>
+@interface EventViewController () <UITableViewDataSource, UITableViewDelegate, PickerViewDelegate, MKMapViewDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UIScrollView *mapScrollView;
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;
@@ -170,6 +172,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _mapScrollView.backgroundColor = [UIColor inviteBackgroundSlateColor];
+    
+    _mapView.delegate = self;
     
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude
@@ -480,8 +484,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
                                                         context:nil]);
         return frame.size.height + (padding * 2);
         
-    } else if ((_mode == EventModeView && indexPath.row == EventViewRowPadding) ||
-               (_mode == EventModePreview && indexPath.row == EventPreviewRowPadding)) {
+    } else if ((_mode == EventModeView && indexPath.row == EventViewRowPadding1) ||
+               (_mode == EventModePreview && indexPath.row == EventPreviewRowPadding1)) {
+        
+        return 10;
+        
+    } else if ((_mode == EventModeView && indexPath.row == EventViewRowPadding2) ||
+               (_mode == EventModePreview && indexPath.row == EventPreviewRowPadding2)) {
         
         return 25;
         
@@ -534,9 +543,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         
     } else if ((_mode == EventModeView && indexPath.row == EventViewRowDescription) ||
                (_mode == EventModePreview && indexPath.row == EventPreviewRowDescription)) {
-        
-    } else if ((_mode == EventModeView && indexPath.row == EventViewRowPadding) ||
-               (_mode == EventModePreview && indexPath.row == EventPreviewRowPadding)) {
         
     }
 }
@@ -723,6 +729,27 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     NSAttributedString *att = [[NSAttributedString alloc] initWithString:eventDescription attributes:@{NSForegroundColorAttributeName: [UIColor inviteTableLabelColor], NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSParagraphStyleAttributeName: style}];
     return att;
 }
+
+//func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView!
+//{
+//    var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier("PinIdentifier") as? MKPinAnnotationView
+//    if (pinView == nil) {
+//        pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "PinIdentifier")
+//        pinView?.animatesDrop = true
+//    }
+//    return pinView
+//}
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    MKPinAnnotationView *pinView = (MKPinAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:@"PinIdentifier"];
+    if (!pinView) {
+        pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"PinIdentifier"];
+        pinView.animatesDrop = YES;
+    }
+    return pinView;
+}
+
 
 /* SAVED EVENT IMAGE CODE:
  

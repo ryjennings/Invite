@@ -12,6 +12,8 @@ import UIKit
 {
     @IBOutlet weak var toggle: UISwitch!
     @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
+    
     var key: String! {
         didSet {
             toggle.setOn(UserDefaults.boolForKey(key), animated: true)
@@ -22,6 +24,7 @@ import UIKit
     {
         label.font = UIFont.inviteTableSmallFont()
         label.textColor = UIColor.inviteTableLabelColor()
+        leadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
     }
     
     @IBAction func switched(toggle: UISwitch)
