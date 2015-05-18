@@ -1231,7 +1231,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sof-n7-wRT">
-                                                    <rect key="frame" x="40" y="7" width="552" height="40"/>
+                                                    <rect key="frame" x="33" y="7" width="559" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="40" id="TRu-v5-mrg"/>
                                                     </constraints>
@@ -1240,10 +1240,10 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cBK-GT-YNC" customClass="ConflictView">
-                                                    <rect key="frame" x="15" y="17" width="20" height="20"/>
+                                                    <rect key="frame" x="15" y="22" width="10" height="10"/>
                                                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="20" id="8mU-bi-ydY"/>
+                                                        <constraint firstAttribute="width" constant="10" id="8mU-bi-ydY"/>
                                                         <constraint firstAttribute="width" secondItem="cBK-GT-YNC" secondAttribute="height" multiplier="1:1" id="vKe-Yg-LaQ"/>
                                                     </constraints>
                                                 </view>
@@ -1252,7 +1252,7 @@
                                                 <constraint firstAttribute="trailing" secondItem="sof-n7-wRT" secondAttribute="trailing" constant="8" id="EtG-ec-lP4"/>
                                                 <constraint firstItem="cBK-GT-YNC" firstAttribute="leading" secondItem="Kvd-yL-yZ2" secondAttribute="leading" constant="15" id="FgW-QB-uYM"/>
                                                 <constraint firstAttribute="centerY" secondItem="cBK-GT-YNC" secondAttribute="centerY" id="b93-Ir-o6i"/>
-                                                <constraint firstItem="sof-n7-wRT" firstAttribute="leading" secondItem="cBK-GT-YNC" secondAttribute="trailing" constant="5" id="gNq-Y6-F8D"/>
+                                                <constraint firstItem="sof-n7-wRT" firstAttribute="leading" secondItem="cBK-GT-YNC" secondAttribute="trailing" constant="8" id="gNq-Y6-F8D"/>
                                                 <constraint firstAttribute="centerY" secondItem="sof-n7-wRT" secondAttribute="centerY" id="kTN-7e-JAP"/>
                                             </constraints>
                                         </tableViewCellContentView>

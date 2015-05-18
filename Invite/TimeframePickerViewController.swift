@@ -49,9 +49,9 @@ enum TimeframeRow: Int {
         nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
         nextButton.clipsToBounds = true
         nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
+        nextButton.enabled = false
         
         configureDatePicker()
-        nextButton.hidden = true
     }
     
     override func viewWillAppear(animated: Bool)
@@ -88,8 +88,14 @@ enum TimeframeRow: Int {
                     return
                 }
                 
+                // busy start == start && busy end == end
+                
+                if busy.start == self.startDate && busy.end == self.endDate {
                     
-                    
+                    busy.circle = BusyDetailsCircle.Red
+
+                } else {
+                
                     
                     // busy end is later than start AND busy start is earlier than end
                     
@@ -97,9 +103,11 @@ enum TimeframeRow: Int {
                         
                         // busy end is somewhere between start and end
                         
+                        
                         if busy.start.earlierDate(self.startDate).isEqualToDate(busy.start) {
                             // first half
-                            busy.circle = BusyDetailsCircle.RedGreen
+//                            busy.circle = BusyDetailsCircle.RedGreen
+                            busy.circle = BusyDetailsCircle.Red
                         } else {
                             // full
                             busy.circle = BusyDetailsCircle.Red
@@ -113,11 +121,13 @@ enum TimeframeRow: Int {
                             busy.circle = BusyDetailsCircle.Red
                         } else {
                             // second half
-                            busy.circle = BusyDetailsCircle.GreenRed
+//                            busy.circle = BusyDetailsCircle.GreenRed
+                            busy.circle = BusyDetailsCircle.Red
                         }
                     }
-
-                    self.conflicts.append(busy)
+                }
+                
+                self.conflicts.append(busy)
 
 
             }
@@ -202,7 +212,7 @@ enum TimeframeRow: Int {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
         if startDate == nil {
-            return 0
+            return 1
         }
         if conflicts.count == 0 {
             return 1
@@ -230,22 +240,15 @@ enum TimeframeRow: Int {
             cell.textLabel?.font = UIFont.inviteTableMediumFont()
             cell.detailTextLabel?.font = UIFont.inviteTableMediumFont()
             cell.selectionStyle = UITableViewCellSelectionStyle.None
-//            var att = NSMutableAttributedString()
             
             if (indexPath.row == TimeframeRow.StartDate.rawValue) {
-//                att.appendAttributedString(NSAttributedString(string: "Start date: ", attributes: [NSFontAttributeName: UIFont.inviteTableMediumFont()]))
-//                att.appendAttributedString(NSAttributedString(string: formattedDate(startDate), attributes: [NSFontAttributeName: UIFont.inviteTableMediumBoldFont()]))
-                cell.textLabel?.text = formattedDate(startDate)
-                cell.detailTextLabel?.text = "Start Date"
+                cell.textLabel?.text = startDate == nil ? "Select start time" : formattedDate(startDate)
+                cell.detailTextLabel?.text = "Start time"
             } else {
-//                att.appendAttributedString(NSAttributedString(string: "End date: ", attributes: [NSFontAttributeName: UIFont.inviteTableMediumFont()]))
-//                att.appendAttributedString(NSAttributedString(string: formattedDate(endDate), attributes: [NSFontAttributeName: UIFont.inviteTableMediumBoldFont()]))
-                cell.textLabel?.text = formattedDate(endDate)
-                cell.detailTextLabel?.text = "End Date"
+                cell.textLabel?.text = endDate == nil ? "Select end time" : formattedDate(endDate)
+                cell.detailTextLabel?.text = "End time"
             }
             
-//            cell.textLabel?.attributedText = att
-
             return cell
             
         } else {
@@ -337,7 +340,7 @@ enum TimeframeRow: Int {
 //        }
         determineConflicts()
         
-        nextButton.hidden = false
+        nextButton.enabled = true
     }
     
     @IBAction func cancel(sender: UIBarButtonItem)

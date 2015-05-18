@@ -185,7 +185,7 @@
                     NSDictionary *rsvp = [event objectForKey:EVENT_RSVP_KEY];
                     NSString *email = [friend objectForKey:EMAIL_KEY];
                     EventResponse response = [rsvp[[AppDelegate keyFromEmail:email]] integerValue];
-                    
+#warning Uncomment conditional
 //                    if (response == EventResponseGoing || response == EventResponseMaybe) {
                         [busyTimes addObject:[BusyDetails busyDetailsWithName:[friend objectForKey:FULL_NAME_KEY]
                                                                         email:email

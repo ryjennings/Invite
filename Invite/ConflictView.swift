@@ -24,30 +24,36 @@ import UIKit
     override func drawRect(rect: CGRect)
     {
         var path = UIBezierPath()
-        let radius: CGFloat = 10
+        let radius: CGFloat = 5
         
         switch type {
         case .Green:
-            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat(0), endAngle: CGFloat(M_PI * 2), clockwise: true) // full circle
+            path.addArcWithCenter(CGPointMake(radius, radius), radius: radius, startAngle: CGFloat(0), endAngle: CGFloat(M_PI * 2), clockwise: true) // full circle
             UIColor.inviteGreenColor().setFill()
             path.fill()
         case .GreenRed:
-            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat(M_PI / 2), endAngle: CGFloat((3 * M_PI) / 2), clockwise: true) // first half
-            UIColor.inviteGreenColor().setFill()
+            path.addArcWithCenter(CGPointMake(radius, radius), radius: radius, startAngle: CGFloat(M_PI / 2), endAngle: CGFloat((3 * M_PI) / 2), clockwise: true) // first half
+            UIColor.inviteBlueAlphaColor().setFill()
             path.fill()
-            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat((3 * M_PI) / 2), endAngle: CGFloat(M_PI / 2), clockwise: true) // second half
-            UIColor.inviteRedColor().setFill()
+            
+            path.removeAllPoints()
+            
+            path.addArcWithCenter(CGPointMake(radius, radius), radius: radius, startAngle: CGFloat((3 * M_PI) / 2), endAngle: CGFloat(M_PI / 2), clockwise: true) // second half
+            UIColor.inviteBlueColor().setFill()
             path.fill()
         case .Red:
-            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat(0), endAngle: CGFloat(M_PI * 2), clockwise: true) // full circle
+            path.addArcWithCenter(CGPointMake(radius, radius), radius: radius, startAngle: CGFloat(0), endAngle: CGFloat(M_PI * 2), clockwise: true) // full circle
             UIColor.inviteRedColor().setFill()
             path.fill()
         case .RedGreen:
-            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat(M_PI / 2), endAngle: CGFloat((3 * M_PI) / 2), clockwise: true) // first half
-            UIColor.inviteRedColor().setFill()
+            path.addArcWithCenter(CGPointMake(radius, radius), radius: radius, startAngle: CGFloat(M_PI / 2), endAngle: CGFloat((3 * M_PI) / 2), clockwise: true) // first half
+            UIColor.inviteBlueColor().setFill()
             path.fill()
-            path.addArcWithCenter(CGPointMake(10, 10), radius: radius, startAngle: CGFloat((3 * M_PI) / 2), endAngle: CGFloat(M_PI / 2), clockwise: true) // second half
-            UIColor.inviteGreenColor().setFill()
+            
+            path.removeAllPoints()
+            
+            path.addArcWithCenter(CGPointMake(radius, radius), radius: radius, startAngle: CGFloat((3 * M_PI) / 2), endAngle: CGFloat(M_PI / 2), clockwise: true) // second half
+            UIColor.inviteBlueAlphaColor().setFill()
             path.fill()
         }
     }

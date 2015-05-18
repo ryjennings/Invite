@@ -102,6 +102,11 @@ import MapKit
         })
     }
     
+    deinit
+    {
+        locationManager.delegate = nil
+    }
+    
     // MARK: UITextFieldDelegate
     
     func textFieldDidEndEditing(textField: UITextField)

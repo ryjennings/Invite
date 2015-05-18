@@ -45,7 +45,7 @@ import UIKit
         toolbar.barStyle = .BlackTranslucent
         toolbar.items = [
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
-            UIBarButtonItem(title: "Select Date", style: .Done, target: self, action: "dismissPicker:"),
+            UIBarButtonItem(title: "Select Time", style: .Done, target: self, action: "dismissPicker:"),
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)]
         self.addSubview(toolbar)
         self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[toolbar]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["toolbar": toolbar]))
