@@ -655,7 +655,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
             if (_mode == EventModePreview) {
                 host = [AppDelegate user].fullName;
             } else {
-                host = [_event objectForKey:EVENT_CREATOR_KEY];
+                host = [[_event objectForKey:EVENT_CREATOR_KEY] objectForKey:FULL_NAME_KEY];
             }
             return host;
         }

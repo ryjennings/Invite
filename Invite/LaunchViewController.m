@@ -36,6 +36,7 @@
         [query includeKey:FRIENDS_KEY];
         [query includeKey:LOCATIONS_KEY];
         [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_LOCATION_KEY]];
+        [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_CREATOR_KEY]];
         [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_INVITEES_KEY]];
         [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             
