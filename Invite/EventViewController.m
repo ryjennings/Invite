@@ -355,17 +355,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         
     }
     
-//    if (_mode == EventModeView && indexPath.row == EventViewRowRSVP) {
-//        
-//        EventResponse response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
-//        RadioCell *cell = (RadioCell *)[tableView dequeueReusableCellWithIdentifier:RADIO_CELL_IDENTIFIER];
-//        cell.segments.selectedSegmentIndex = response;
-//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//        cell.segmentsLeadingConstraint.constant = cell.separatorInset.left;
-//        return cell;
-//        
-//    }
-    
     if ((_mode == EventModeView && indexPath.row == EventViewRowTimeframe) ||
         (_mode == EventModePreview && indexPath.row == EventPreviewRowTimeframe)) {
 
@@ -662,7 +651,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         }
         case EventRowHost:
         {
-            return [AppDelegate user].fullName;
+            NSString *host;
+            if (_mode == EventModePreview) {
+                host = [AppDelegate user].fullName;
+            } else {
+                host = [_event objectForKey:EVENT_CREATOR_KEY];
+            }
+            return host;
         }
         case EventRowTimeframe:
         {
@@ -729,16 +724,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     NSAttributedString *att = [[NSAttributedString alloc] initWithString:eventDescription attributes:@{NSForegroundColorAttributeName: [UIColor inviteTableLabelColor], NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSParagraphStyleAttributeName: style}];
     return att;
 }
-
-//func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView!
-//{
-//    var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier("PinIdentifier") as? MKPinAnnotationView
-//    if (pinView == nil) {
-//        pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "PinIdentifier")
-//        pinView?.animatesDrop = true
-//    }
-//    return pinView
-//}
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
 {
