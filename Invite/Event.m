@@ -13,10 +13,9 @@
 
 @interface Event ()
 
-@property (nonatomic, strong) NSMutableArray *invitee;
-@property (nonatomic, strong) NSMutableArray *email;
-@property (nonatomic, strong) NSMutableArray *iEmails;
-
+@property (nonatomic, strong) NSMutableArray *actualInviteesToInvite;
+@property (nonatomic, strong) NSMutableArray *actualEmailsToInvite;
+@property (nonatomic, strong) NSMutableArray *inviteeEmails;
 @property (nonatomic, strong) PFObject *event;
 @end
 
@@ -30,20 +29,13 @@
 
 - (void)submitEvent
 {
-    // INVITEE - invitee selected from table above email field
-    // EMAIL - invitee added to email field
-    // PARSE - Person on Parse
+    _actualEmailsToInvite = [_emails mutableCopy];
+    _actualInviteesToInvite = [_invitees mutableCopy];
     
-    _email = [_emails mutableCopy];
-    _invitee = [_invitees mutableCopy];
-    
-    _iEmails = [NSMutableArray array];
-    
-    [_invitees enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [_iEmails addObject:[((PFObject *)obj) objectForKey:EMAIL_KEY]];
-    }];
-        
     if (_emails.count) {
+        
+        // Check to see if any database user has email address
+        
         PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
         [query whereKey:EMAIL_KEY containedIn:_emails];
         [query findObjectsInBackgroundWithBlock:^(NSArray *persons, NSError *error) {
@@ -56,27 +48,33 @@
 
 - (void)reallySubmitEventWithPersons:(NSArray *)persons
 {
-    // PARSE who were listed in email field
+    _inviteeEmails = [NSMutableArray array];
+    [_invitees enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [_inviteeEmails addObject:[((PFObject *)obj) objectForKey:EMAIL_KEY]];
+    }];
+    
+    // If email address exists for any database user, move user from emails to invitees
     
     for (PFObject *person in persons) {
         
-        if (![_iEmails containsObject:person[EMAIL_KEY]]) {
+        if (![_inviteeEmails containsObject:person[EMAIL_KEY]]) {
             
-            // PARSE who is not currently INVITEE
-            [_invitee addObject:person];
+            [_actualInviteesToInvite addObject:person];
+            [_inviteeEmails addObject:[person objectForKey:EMAIL_KEY]];
+
         }
         
-        [_email removeObject:person[EMAIL_KEY]];
+        [_actualEmailsToInvite removeObject:person[EMAIL_KEY]];
     }
     
     NSMutableArray *save = [NSMutableArray array];
     
     // Create a new Person for all emails left
-    for (NSString *email in _email) {
+    for (NSString *email in _actualEmailsToInvite) {
         
         PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
         person[EMAIL_KEY] = email;
-        [_invitee addObject:person];
+        [_actualInviteesToInvite addObject:person];
         [save addObject:person];
         
     }
@@ -89,12 +87,6 @@
     _event[EVENT_DESCRIPTION_KEY] = _eventDescription;
     _event[EVENT_LOCATION_KEY] = _location;
     
-//    if (_coverImage) {
-//        NSData *coverData = UIImagePNGRepresentation(_coverImage);
-//        PFFile *coverFile = [PFFile fileWithName:@"cover.png" data:coverData];
-//        _event[EVENT_COVER_IMAGE_KEY] = coverFile;
-//    }
-    
     [save addObject:_event];
     
     [PFObject saveAllInBackground:save target:self selector:@selector(eventCreatedWithResult:error:)];
@@ -104,31 +96,32 @@
 {
     if ([result boolValue]) { // success
         
+        NSMutableArray *save = _actualInviteesToInvite;
+
         // By now the new event and all people who had to be created for this event have been created...
-        [_event addUniqueObjectsFromArray:_invitee forKey:EVENT_INVITEES_KEY];
+        [_event addUniqueObjectsFromArray:_actualInviteesToInvite forKey:EVENT_INVITEES_KEY];
         
         // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
         NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
-        for (PFObject *invitee in _invitee) {
+        for (PFObject *invitee in _actualInviteesToInvite) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
                 [rsvp setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:email]];
             }
         }
         _event[EVENT_RSVP_KEY] = rsvp;
-//        _emails = [AppDelegate emailsFromKeys:[rsvp allKeys]];
         
-        for (PFObject *person in _invitee) {
+        for (PFObject *person in _actualInviteesToInvite) {
             [self makeAdjustmentsToPerson:person event:_event];
         }
         
         [[AppDelegate parseUser] addUniqueObject:_event forKey:EVENTS_KEY];
         
         // Add to _invitee since we are done
-        [_invitee addObject:_event];
-        [_invitee addObject:[AppDelegate parseUser]];
+        [save addObject:_event];
+        [save addObject:[AppDelegate parseUser]];
         
-        [PFObject saveAllInBackground:_invitee block:^(BOOL succeeded, NSError *error) {
+        [PFObject saveAllInBackground:save block:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
                 
                 if (![AppDelegate user].events) {
@@ -188,12 +181,9 @@
 
 - (void)sendPushNotification
 {
-    NSMutableArray *emails = [NSMutableArray arrayWithArray:_inviteeEmails];
-    [emails addObjectsFromArray:_emails];
-    
     if (_inviteeEmails) {
         PFQuery *query = [PFInstallation query];
-        [query whereKey:EMAIL_KEY containedIn:emails];
+        [query whereKey:EMAIL_KEY containedIn:_inviteeEmails];
         
         // Send push notification to query
         [PFPush sendPushMessageToQueryInBackground:query
@@ -202,3 +192,9 @@
 }
 
 @end
+
+//    if (_coverImage) {
+//        NSData *coverData = UIImagePNGRepresentation(_coverImage);
+//        PFFile *coverFile = [PFFile fileWithName:@"cover.png" data:coverData];
+//        _event[EVENT_COVER_IMAGE_KEY] = coverFile;
+//    }

@@ -55,6 +55,14 @@ NSString *const kNoResponse = @"No Response";
     _invitees = [NSMutableDictionary dictionary];
     _usedIndexes = [NSMutableArray array];
     
+    if (_userInvitees) {
+        NSMutableArray *inviteeEmails = [NSMutableArray array];
+        for (PFObject *invitee in _userInvitees) {
+            [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
+        }
+        [noresponse addObjectsFromArray:inviteeEmails];
+    }
+    
     if (_emailInvitees.count) {
         [noresponse addObjectsFromArray:_emailInvitees];
     }
@@ -120,17 +128,6 @@ NSString *const kNoResponse = @"No Response";
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-//    NSInteger sections = 0;
-//    if (_invitees[@(EventResponseGoing)] && ((NSArray *)_invitees[@(EventResponseGoing)]).count) {
-//        sections++;
-//    } else if (_invitees[@(EventResponseMaybe)] && ((NSArray *)_invitees[@(EventResponseMaybe)]).count) {
-//        sections++;
-//    } else if (_invitees[@(EventResponseSorry)] && ((NSArray *)_invitees[@(EventResponseSorry)]).count) {
-//        sections++;
-//    } else if (_invitees[@(EventResponseNoResponse)] && ((NSArray *)_invitees[@(EventResponseNoResponse)]).count) {
-//        sections++;
-//    }
-//    return sections;
     return _usedIndexes.count;
 }
 

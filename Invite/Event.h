@@ -22,14 +22,7 @@
 @property (nonatomic, strong) NSDate *endDate;
 @property (nonatomic, strong) PFObject *location;
 
-//@property (nonatomic, strong) UIImage *coverImage;
-
-@property (nonatomic, strong) NSArray *inviteeEmails;
-
-@property (nonatomic, strong) NSArray *allInvitees;
-
 + (Event *)createEvent;
-
 - (void)submitEvent;
 
 @end

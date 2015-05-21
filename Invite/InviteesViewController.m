@@ -349,7 +349,6 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         
         // Add email addresses to invitees
         
-        NSMutableArray *allInvitees = [[NSMutableArray alloc] initWithArray:_selectedFriends];
         NSMutableArray *emailAddresses = [NSMutableArray array];
         
         if (_textViewText.length) {
@@ -362,18 +361,8 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         if (emailAddresses.count) {
             [AppDelegate user].protoEvent.emails = emailAddresses;
         }
-        [allInvitees addObjectsFromArray:emailAddresses];
-        [AppDelegate user].protoEvent.allInvitees = allInvitees;
         
         [AppDelegate user].protoEvent.invitees = _selectedFriends;
-        
-        NSMutableArray *inviteeEmails = [NSMutableArray array];
-        for (PFObject *invitee in _selectedFriends) {
-            [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
-        }
-        if (inviteeEmails.count) {
-            [AppDelegate user].protoEvent.inviteeEmails = inviteeEmails;
-        }
         
     } else if ([segue.identifier isEqualToString:SEGUE_TO_CONTACTS]) {
         ((ContactsViewController *)segue.destinationViewController).delegate = self;

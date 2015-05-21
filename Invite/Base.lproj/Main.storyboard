@@ -264,22 +264,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="900"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jOH-Hn-XOd">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="900"/>
-                                <subviews>
-                                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="X1Z-bg-uQ4">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="900"/>
-                                    </mapView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="centerX" secondItem="X1Z-bg-uQ4" secondAttribute="centerX" id="2lP-Wp-tZH"/>
-                                    <constraint firstAttribute="bottom" secondItem="X1Z-bg-uQ4" secondAttribute="bottom" id="Q2r-Ha-obf"/>
-                                    <constraint firstAttribute="centerY" secondItem="X1Z-bg-uQ4" secondAttribute="centerY" id="Y3A-H6-Dgk"/>
-                                    <constraint firstItem="X1Z-bg-uQ4" firstAttribute="leading" secondItem="jOH-Hn-XOd" secondAttribute="leading" id="bWj-Bi-uPa"/>
-                                    <constraint firstAttribute="trailing" secondItem="X1Z-bg-uQ4" secondAttribute="trailing" id="eEt-aC-7AP"/>
-                                    <constraint firstItem="X1Z-bg-uQ4" firstAttribute="top" secondItem="jOH-Hn-XOd" secondAttribute="top" id="zbs-8E-NHb"/>
-                                </constraints>
-                            </scrollView>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="IKd-VZ-HWN">
+                                <rect key="frame" x="0.0" y="44" width="600" height="856"/>
+                            </mapView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="X5h-zm-eS2">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="900"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -474,11 +461,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="X5h-zm-eS2" firstAttribute="top" secondItem="vhw-RV-1ra" secondAttribute="top" id="0QV-LJ-Wf3"/>
-                            <constraint firstAttribute="trailing" secondItem="jOH-Hn-XOd" secondAttribute="trailing" id="EHU-vH-dLP"/>
-                            <constraint firstItem="jOH-Hn-XOd" firstAttribute="top" secondItem="vhw-RV-1ra" secondAttribute="top" id="S9j-z5-9lJ"/>
-                            <constraint firstItem="jOH-Hn-XOd" firstAttribute="leading" secondItem="vhw-RV-1ra" secondAttribute="leading" id="WkB-LN-rmO"/>
-                            <constraint firstItem="6cz-8D-gJH" firstAttribute="top" secondItem="jOH-Hn-XOd" secondAttribute="bottom" id="aBa-do-ZrE"/>
+                            <constraint firstItem="IKd-VZ-HWN" firstAttribute="top" secondItem="JRg-ZA-r0K" secondAttribute="bottom" id="98I-6z-HAI"/>
+                            <constraint firstItem="IKd-VZ-HWN" firstAttribute="leading" secondItem="vhw-RV-1ra" secondAttribute="leading" id="KI6-kE-QeC"/>
+                            <constraint firstAttribute="trailing" secondItem="IKd-VZ-HWN" secondAttribute="trailing" id="TuK-Pt-i9q"/>
                             <constraint firstItem="X5h-zm-eS2" firstAttribute="bottom" secondItem="6cz-8D-gJH" secondAttribute="top" id="eQ4-r2-dLr"/>
+                            <constraint firstItem="6cz-8D-gJH" firstAttribute="top" secondItem="IKd-VZ-HWN" secondAttribute="bottom" id="r2I-BK-Ahp"/>
                             <constraint firstItem="X5h-zm-eS2" firstAttribute="leading" secondItem="vhw-RV-1ra" secondAttribute="leading" id="rFg-N9-cw0"/>
                             <constraint firstAttribute="trailing" secondItem="X5h-zm-eS2" secondAttribute="trailing" id="rWG-FA-MVr"/>
                         </constraints>
@@ -493,10 +480,9 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="900"/>
                     <connections>
-                        <outlet property="closeButton" destination="Qaf-tN-BZG" id="4dN-eK-cxz"/>
-                        <outlet property="createEventButton" destination="0Oc-69-qeH" id="N0p-Jd-zvX"/>
-                        <outlet property="mapScrollView" destination="jOH-Hn-XOd" id="pds-qc-rL0"/>
-                        <outlet property="mapView" destination="X1Z-bg-uQ4" id="0ST-3N-FpJ"/>
+                        <outlet property="bottomButton" destination="0Oc-69-qeH" id="MAM-Lj-cm3"/>
+                        <outlet property="mapView" destination="IKd-VZ-HWN" id="jII-AP-tf2"/>
+                        <outlet property="rightButton" destination="Qaf-tN-BZG" id="bdT-pa-ff2"/>
                         <outlet property="tableView" destination="X5h-zm-eS2" id="lza-bO-W2b"/>
                     </connections>
                 </viewController>

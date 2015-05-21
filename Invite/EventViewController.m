@@ -80,24 +80,21 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 #define kPickerViewHeight 314.0
 
 @interface EventViewController () <UITableViewDataSource, UITableViewDelegate, PickerViewDelegate, MKMapViewDelegate>
+
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
-@property (nonatomic, weak) IBOutlet UIScrollView *mapScrollView;
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;
-@property (nonatomic, weak) IBOutlet UIButton *createEventButton;
-@property (nonatomic, weak) IBOutlet UIBarButtonItem *closeButton;
+@property (nonatomic, weak) IBOutlet UIButton *bottomButton;
+@property (nonatomic, weak) IBOutlet UIBarButtonItem *rightButton;
 
 @property (nonatomic, strong) PickerView *pickerView;
 @property (nonatomic, strong) NSLayoutConstraint *pickerViewBottomConstraint;
-@property (nonatomic, strong) NSString *responseText;
 @property (nonatomic, assign) NSInteger response;
-@property (nonatomic, assign) BOOL showResponseSavedText;
+@property (nonatomic, assign) BOOL showResponseHasBeenSaved;
 
 @property (nonatomic) EventMode mode;
-@property (nonatomic, assign) BOOL isCreator;
-@property (nonatomic, assign) BOOL showRSVP;
-
-@property (nonatomic, strong) NSMutableDictionary *rsvpDictionary;
 @property (nonatomic, strong) PFObject *event;
+@property (nonatomic, strong) NSMutableDictionary *rsvpDictionary;
+
 @end
 
 @implementation EventViewController
@@ -119,19 +116,19 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     CLLocationDegrees latitude;
     CLLocationDegrees longitude;
     
-    _showResponseSavedText = NO;
+    _showResponseHasBeenSaved = NO;
     
     if (_event) {
         
-        _isCreator = [((PFObject *)[_event objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
+        BOOL isCreator = [((PFObject *)[_event objectForKey:EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
 
-        _mode = _isCreator ? EventModePreview : EventModeView;
+        _mode = isCreator ? EventModePreview : EventModeView;
         
         if (_mode == EventModeView) {
             _response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
         }
 
-        [_closeButton setTitle:@"Close"];
+        [_rightButton setTitle:@"Close"];
         
         self.navigationItem.title = [_event objectForKey:EVENT_TITLE_KEY];
         
@@ -139,7 +136,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         longitude = ((NSString *)[location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
         latitude = ((NSString *)[location objectForKey:LOCATION_LATITUDE_KEY]).doubleValue;
         
-        _createEventButton.hidden = YES;
+        _bottomButton.hidden = YES;
         
     } else {
         
@@ -147,7 +144,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         
         self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:5 steps:5];
 
-        [_closeButton setTitle:@"Cancel"];
+        [_rightButton setTitle:@"Cancel"];
 
         NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
         for (PFObject *invitee in [AppDelegate user].protoEvent.invitees) {
@@ -164,14 +161,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         longitude = ((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
         latitude = ((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LATITUDE_KEY]).doubleValue;
     
-        _createEventButton.layer.cornerRadius = kCornerRadius;
-        _createEventButton.clipsToBounds = YES;
-        _createEventButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
+        _bottomButton.layer.cornerRadius = kCornerRadius;
+        _bottomButton.clipsToBounds = YES;
+        _bottomButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
         
     }
     
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _mapScrollView.backgroundColor = [UIColor inviteBackgroundSlateColor];
     
     _mapView.delegate = self;
     
@@ -274,10 +270,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 
 - (NSAttributedString *)attributedStringForReponse
 {
-    NSString *lastLine = _showResponseSavedText ? @"Your response has been saved." : @"Change";
+    NSString *lastLine = _showResponseHasBeenSaved ? @"Your response has been saved." : @"Change";
     
     NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
-//    [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"Your current response is" attributes:@{NSForegroundColorAttributeName: [UIColor colorWithWhite:1 alpha:0.85], NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:11]}]];
     [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:4]}]];
     [att appendAttributedString:[[NSAttributedString alloc] initWithString:[self textForResponse:_response] attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor], NSFontAttributeName: [UIFont inviteQuestionFont]}]];
     [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:4]}]];
@@ -555,10 +550,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 - (void)pickerView:(PickerView *)pickerView hasSelectedResponse:(EventResponse)response text:(NSString *)text
 {
     if (response != _response) {
-        _showResponseSavedText = YES;
+        _showResponseHasBeenSaved = YES;
     }
 
-    _responseText = text;
     _response = response;
 
     [self responseChanged:response];
