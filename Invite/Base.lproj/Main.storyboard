@@ -481,6 +481,7 @@
                     <size key="freeformSize" width="600" height="900"/>
                     <connections>
                         <outlet property="bottomButton" destination="0Oc-69-qeH" id="MAM-Lj-cm3"/>
+                        <outlet property="inviteesContainerView" destination="NTU-az-PtW" id="3ul-Us-Iz4"/>
                         <outlet property="mapView" destination="IKd-VZ-HWN" id="jII-AP-tf2"/>
                         <outlet property="rightButton" destination="Qaf-tN-BZG" id="bdT-pa-ff2"/>
                         <outlet property="tableView" destination="X5h-zm-eS2" id="lza-bO-W2b"/>

@@ -61,16 +61,19 @@
         
         // Delete old events
         NSMutableArray *mEvents = [[object objectForKey:EVENTS_KEY] mutableCopy];
+        NSMutableArray *eventsToRemove = [NSMutableArray array];
         NSDate *date = [NSDate date];
         BOOL save = NO;
         for (PFObject *event in mEvents) {
             NSDate *endDate = [event objectForKey:EVENT_END_DATE_KEY];
             if ([[endDate earlierDate:date] isEqualToDate:endDate]) {
                 [_parse removeObject:event forKey:EVENTS_KEY];
-                [mEvents removeObject:event];
+//                [mEvents removeObject:event];
+                [eventsToRemove addObject:event];
                 save = YES;
             }
         }
+        [mEvents removeObjectsInArray:eventsToRemove];
         if (save) {
             [_parse saveInBackground];
         }

@@ -108,12 +108,9 @@
             if (email && email.length > 0) {
                 [rsvp setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:email]];
             }
+            [Event makeAdjustmentsToPerson:invitee event:_event];
         }
         _event[EVENT_RSVP_KEY] = rsvp;
-        
-        for (PFObject *person in _actualInviteesToInvite) {
-            [self makeAdjustmentsToPerson:person event:_event];
-        }
         
         [[AppDelegate parseUser] addUniqueObject:_event forKey:EVENTS_KEY];
         
@@ -144,7 +141,7 @@
     }
 }
 
-- (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event
++ (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event
 {
     // Add event to invitee
     [person addUniqueObject:event forKey:EVENTS_KEY];
@@ -153,15 +150,10 @@
     [[AppDelegate parseUser] addUniqueObject:person forKey:FRIENDS_KEY];
     
     // Add location
-    [[AppDelegate parseUser] addUniqueObject:_location forKey:EVENT_LOCATIONS_KEY];
+//    [[AppDelegate parseUser] addUniqueObject:_location forKey:EVENT_LOCATIONS_KEY];
     
     // Add person to local friends
-    if (![AppDelegate user].friends) {
-        [AppDelegate user].friends = [NSArray array];
-    }
-    NSMutableArray *friends = [[AppDelegate user].friends mutableCopy];
-    [friends addObject:person];
-    [AppDelegate user].friends = friends;
+    [self addPersonToFriends:person];
     
     // Add invitee's email to creator's (user's) friendEmails
     [[AppDelegate parseUser] addUniqueObject:[person objectForKey:EMAIL_KEY] forKey:FRIENDS_EMAILS_KEY];
@@ -177,6 +169,24 @@
     // Add creator (user) to invitee's friends
     [person addUniqueObject:[AppDelegate parseUser] forKey:FRIENDS_KEY];
     [person addUniqueObject:[AppDelegate user].email forKey:FRIENDS_EMAILS_KEY];
+}
+
++ (void)addPersonToFriends:(PFObject *)friend
+{
+    if (![AppDelegate user].friends) {
+        [AppDelegate user].friends = [NSArray array];
+    }
+
+    NSMutableArray *friends = [[AppDelegate user].friends mutableCopy];
+    NSMutableArray *friendsEmails = [NSMutableArray array];
+    for (PFObject *f in friends) {
+        [friendsEmails addObject:[f objectForKey:EMAIL_KEY]];
+    }
+    
+    if (![friendsEmails containsObject:[friend objectForKey:EMAIL_KEY]]) {
+        [friends addObject:friend];
+    }
+    [AppDelegate user].friends = friends;
 }
 
 - (void)sendPushNotification

@@ -55,13 +55,13 @@ NSString *const kNoResponse = @"No Response";
     _invitees = [NSMutableDictionary dictionary];
     _usedIndexes = [NSMutableArray array];
     
-    if (_userInvitees) {
-        NSMutableArray *inviteeEmails = [NSMutableArray array];
-        for (PFObject *invitee in _userInvitees) {
-            [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
-        }
-        [noresponse addObjectsFromArray:inviteeEmails];
-    }
+//    if (_userInvitees) {
+//        NSMutableArray *inviteeEmails = [NSMutableArray array];
+//        for (PFObject *invitee in _userInvitees) {
+//            [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
+//        }
+//        [noresponse addObjectsFromArray:inviteeEmails];
+//    }
     
     if (_emailInvitees.count) {
         [noresponse addObjectsFromArray:_emailInvitees];

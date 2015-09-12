@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "Event.h"
 #import "Invite-Swift.h"
+#import "InviteesViewController.h"
 #import "InviteesSectionViewController.h"
 #import "StringConstants.h"
 #import "User.h"
@@ -85,6 +86,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;
 @property (nonatomic, weak) IBOutlet UIButton *bottomButton;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *rightButton;
+@property (nonatomic, weak) IBOutlet UIView *inviteesContainerView;
+@property (nonatomic, strong) UITapGestureRecognizer *inviteesTap;
 
 @property (nonatomic, strong) PickerView *pickerView;
 @property (nonatomic, strong) NSLayoutConstraint *pickerViewBottomConstraint;
@@ -138,6 +141,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         
         _bottomButton.hidden = YES;
         
+        _inviteesTap = [[UITapGestureRecognizer alloc] init];
+        [_inviteesTap addTarget:self action:@selector(addMoreInvitees:)];
+        [_inviteesContainerView addGestureRecognizer:_inviteesTap];
+        
     } else {
         
         _mode = EventModePreview;
@@ -184,6 +191,19 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     }];
     
     [self configurePickerView];
+}
+
+- (void)addMoreInvitees:(UITapGestureRecognizer *)tap
+{
+    InviteesViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:INVITEES_VIEW_CONTROLLER];
+    
+    NSMutableArray *inviteesEmails = [NSMutableArray array];
+    for (PFObject *invitee in [_event objectForKey:EVENT_INVITEES_KEY]) {
+        [inviteesEmails addObject:[invitee objectForKey:EMAIL_KEY]];
+    }
+    vc.preInviteesEmails = inviteesEmails;
+    
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)configurePickerView

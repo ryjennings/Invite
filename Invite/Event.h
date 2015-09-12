@@ -23,6 +23,7 @@
 @property (nonatomic, strong) PFObject *location;
 
 + (Event *)createEvent;
++ (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event;
 - (void)submitEvent;
 
 @end

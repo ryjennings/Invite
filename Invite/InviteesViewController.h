@@ -10,4 +10,6 @@
 
 @interface InviteesViewController : UIViewController
 
+@property (nonatomic, strong) NSArray *preInviteesEmails;
+
 @end

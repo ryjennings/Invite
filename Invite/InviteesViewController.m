@@ -25,6 +25,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 };
 
 @interface InviteesViewController () <UITableViewDataSource, UITableViewDelegate, InputCellDelegate, ContactsViewControllerDelegate>
+
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UIButton *nextButton;
 
@@ -36,6 +37,9 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
 @property (nonatomic, strong) NSString *textViewText;
 @property (nonatomic, assign) BOOL noPreviousFriends;
+
+@property (nonatomic, assign) BOOL cancelSegue;
+
 @end
 
 @implementation InviteesViewController
@@ -57,9 +61,15 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     
     _noPreviousFriends = !_friends.count;
 
-    _nextButton.layer.cornerRadius = kCornerRadius;
-    _nextButton.clipsToBounds = YES;
-    _nextButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
+    _cancelSegue = _preInviteesEmails;
+    if (_preInviteesEmails) {
+        [_nextButton setTitle:@"Add more invitees" forState:UIControlStateNormal];
+        [_nextButton addTarget:self action:@selector(saveNewInvitees:) forControlEvents:UIControlEventTouchUpInside];
+    } else {
+        _nextButton.layer.cornerRadius = kCornerRadius;
+        _nextButton.clipsToBounds = YES;
+        _nextButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
+    }
 
     _tableView.tableHeaderView = [self tableHeaderView];
 
@@ -69,6 +79,56 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)saveNewInvitees:(UIButton *)button
+{
+    // First, check if any of the email addresses are invitee addresses
+    
+    NSMutableArray *emails = [self allEmailAddresses];
+    NSMutableArray *emailsToRemove = [NSMutableArray array];
+
+    for (PFObject *invitee in _selectedFriends) {
+        if ([emails containsObject:[invitee objectForKey:EMAIL_KEY]]) {
+            [emailsToRemove addObject:[invitee objectForKey:EMAIL_KEY]];
+        }
+    }
+    [emails removeObjectsInArray:emailsToRemove];
+
+    NSMutableArray *save = [NSMutableArray array];
+
+    for (NSString *email in emails) {
+        
+        PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
+        person[EMAIL_KEY] = email;
+        [_selectedFriends addObject:person];
+        [save addObject:person];
+        
+    }
+    
+    [PFObject saveAllInBackground:save target:self selector:@selector(personsCreatedWithResult:error:)];
+}
+
+- (void)personsCreatedWithResult:(NSNumber *)result error:(NSError *)error
+{
+    if ([result boolValue]) { // success
+
+        NSMutableDictionary *rsvpDictionary = [[[AppDelegate user].eventToDisplay objectForKey:EVENT_RSVP_KEY] mutableCopy];
+        NSMutableArray *save = [NSMutableArray array];
+        
+        for (PFObject *friend in _selectedFriends) {
+            [Event makeAdjustmentsToPerson:friend event:[AppDelegate user].eventToDisplay];
+            [save addObject:friend];
+            [rsvpDictionary setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:[friend objectForKey:EMAIL_KEY]]];
+            [[AppDelegate user].eventToDisplay addUniqueObject:friend forKey:EVENT_INVITEES_KEY];
+        }
+        
+        [AppDelegate user].eventToDisplay[EVENT_RSVP_KEY] = rsvpDictionary;
+        [save addObject:[AppDelegate user].eventToDisplay];
+        [PFObject saveAllInBackground:save];
+        [self dismissViewControllerAnimated:YES completion:nil];
+        
+    }
 }
 
 - (UIView *)tableHeaderView
@@ -120,7 +180,7 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
-    headerView.textLabel.textColor = [UIColor inviteTableHeaderColor];
+    headerView.textLabel.textColor  = [UIColor inviteTableHeaderColor];
     headerView.textLabel.font = [UIFont inviteTableHeaderFont];
 }
 
@@ -179,7 +239,13 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
             
             cell.label.textColor = [UIColor inviteTableLabelColor];
             cell.label.font = [UIFont inviteTableSmallFont];
-            cell.accessoryView = [[UIImageView alloc] initWithImage:([_selectedFriends containsObject:friend] ? [UIImage imageNamed:@"list_selected"] : [UIImage imageNamed:@"list_select"])];
+            
+            if ([_preInviteesEmails containsObject:[friend objectForKey:EMAIL_KEY]]) {
+                cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_selected"]];
+            } else {
+                cell.accessoryView = [[UIImageView alloc] initWithImage:([_selectedFriends containsObject:friend] ? [UIImage imageNamed:@"list_selected"] : [UIImage imageNamed:@"list_select"])];
+            }
+            
             cell.profileImageViewLeadingConstraint.constant = cell.separatorInset.left;
             
             if ([friend objectForKey:FULL_NAME_KEY]) {
@@ -301,6 +367,9 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     }
     
     PFObject *friend = _friends[indexPath.row];
+    if ([_preInviteesEmails containsObject:[friend objectForKey:EMAIL_KEY]]) {
+        return;
+    }
     if ([_selectedFriends containsObject:friend]) {
         [_selectedFriends removeObject:friend];
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"list_select"]];
@@ -343,30 +412,36 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
 #pragma mark - Navigation
 
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    return !([identifier isEqualToString:SEGUE_TO_TIMEFRAME] && _preInviteesEmails);
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:SEGUE_TO_TIMEFRAME]) {
         
-        // Add email addresses to invitees
+        // Emails
+        [AppDelegate user].protoEvent.emails = [self allEmailAddresses];
         
-        NSMutableArray *emailAddresses = [NSMutableArray array];
-        
-        if (_textViewText.length) {
-            NSArray *components = [_textViewText componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            NSString *string = [components componentsJoinedByString:@""];
-            emailAddresses = [[string componentsSeparatedByString:@","] mutableCopy];
-        }
-        
-        [emailAddresses addObjectsFromArray:_selectedContacts];
-        if (emailAddresses.count) {
-            [AppDelegate user].protoEvent.emails = emailAddresses;
-        }
-        
+        // Invitees
         [AppDelegate user].protoEvent.invitees = _selectedFriends;
         
     } else if ([segue.identifier isEqualToString:SEGUE_TO_CONTACTS]) {
         ((ContactsViewController *)segue.destinationViewController).delegate = self;
     }
+}
+
+- (NSMutableArray *)allEmailAddresses
+{
+    NSMutableArray *emailAddresses = [NSMutableArray array];
+    if (_textViewText.length) {
+        NSArray *components = [_textViewText componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSString *string = [components componentsJoinedByString:@""];
+        emailAddresses = [[string componentsSeparatedByString:@","] mutableCopy];
+    }
+    [emailAddresses addObjectsFromArray:_selectedContacts];
+    return emailAddresses;
 }
 
 - (IBAction)cancel:(id)sender
