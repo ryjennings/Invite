@@ -34,7 +34,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:PARSE_LOADED_NOTIFICATION object:self];
 }
 
-- (void)createParseUserFromFacebookUser:(id<FBGraphUser>)user
+- (void)createParseUserFromFacebookUser:(NSDictionary *)user
 {
     [self createUserFromObject:user];
 }
@@ -48,10 +48,9 @@
     _lastName = [object objectForKey:LAST_NAME_KEY];
     _email = [object objectForKey:EMAIL_KEY];
     _firstName = [object objectForKey:FIRST_NAME_KEY];
-
-    _facebookID = [object objectForKey:parseObject ? FACEBOOK_ID_KEY : ID_KEY];
-    _facebookLink = [object objectForKey:parseObject ? FACEBOOK_LINK_KEY : LINK_KEY];
-    _fullName = [object objectForKey:parseObject ? FULL_NAME_KEY : NAME_KEY];
+    _facebookID = [object objectForKey:FACEBOOK_ID_KEY];
+    _facebookLink = [object objectForKey:FACEBOOK_LINK_KEY];
+    _fullName = [object objectForKey:FULL_NAME_KEY];
 
     if (!parseObject) {
         

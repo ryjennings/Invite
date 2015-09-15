@@ -12,28 +12,28 @@ import UIKit
 {
     class func removeObjectForKey(key: String)
     {
-        var defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = NSUserDefaults.standardUserDefaults()
         defaults.removeObjectForKey(key)
         defaults.synchronize()
     }
     
     class func setObject(object: AnyObject, key: String)
     {
-        var defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = NSUserDefaults.standardUserDefaults()
         defaults.setObject(object, forKey: key)
         defaults.synchronize()
     }
     
     class func setBool(b: Bool, key: String)
     {
-        var defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = NSUserDefaults.standardUserDefaults()
         defaults.setBool(b, forKey: key)
         defaults.synchronize()
     }
     
     class func objectForKey(key: String) -> AnyObject?
     {
-        var defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = NSUserDefaults.standardUserDefaults()
         if let object: AnyObject = defaults.objectForKey(key) {
             return object
         }
@@ -42,7 +42,7 @@ import UIKit
     
     class func boolForKey(key: String) -> Bool
     {
-        var defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = NSUserDefaults.standardUserDefaults()
         return defaults.boolForKey(key)
     }
 }

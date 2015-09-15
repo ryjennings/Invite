@@ -20,7 +20,7 @@ import UIKit
         prepareView()
     }
 
-    required init(coder aDecoder: NSCoder)
+    required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
         prepareView()
@@ -36,7 +36,7 @@ import UIKit
     
     func configureTitle()
     {
-        titleLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.backgroundColor = UIColor.clearColor()
         titleLabel.textAlignment = .Center
         titleLabel.font = UIFont.inviteQuestionFont()
@@ -46,12 +46,12 @@ import UIKit
         
         let views = ["title": titleLabel]
 
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[title]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[title]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
     }
     
     func configureSubtitle()
     {
-        subtitleLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.backgroundColor = UIColor.clearColor()
         subtitleLabel.textAlignment = .Center
         subtitleLabel.font = UIFont.proximaNovaRegularFontOfSize(16)
@@ -61,20 +61,20 @@ import UIKit
         
         let views = ["subtitle": subtitleLabel, "title": titleLabel]
         
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[subtitle]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-30-[title]-10-[subtitle]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[subtitle]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-30-[title]-10-[subtitle]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
     }
     
     func configureLine()
     {
-        lineView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        lineView.translatesAutoresizingMaskIntoConstraints = false
         lineView.backgroundColor = UIColor(white: 1, alpha: 0.1)
         self.addSubview(lineView)
         
         let views = ["line": lineView, "subtitle": subtitleLabel]
         
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[line]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[subtitle]-10-[line(1)]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[line]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[subtitle]-10-[line(1)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
     }
     
     func configureSteps()
@@ -99,18 +99,18 @@ import UIKit
             }
             
             let step = DashboardStepView(step: i + 1, title: titles[i], text: texts[i])
-            step.setTranslatesAutoresizingMaskIntoConstraints(false)
+            step.translatesAutoresizingMaskIntoConstraints = false
             self.addSubview(step)
             steps.append(step)
             
             let views = ["last": lastView, "step": step]
             
-            self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[step]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+            self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[step]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
             
             if (i == 4) {
-                self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[last]-25-[step]-30-|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+                self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[last]-25-[step]-30-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
             } else {
-                self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[last]-25-[step]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+                self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[last]-25-[step]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
             }
         }
     }
@@ -127,7 +127,7 @@ class DashboardStepView: UIView
         super.init(frame: frame)
     }
     
-    required init(coder aDecoder: NSCoder)
+    required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
     }
@@ -148,8 +148,8 @@ class DashboardStepView: UIView
     
     func configureNumber()
     {
-        var number = UILabel()
-        number.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let number = UILabel()
+        number.translatesAutoresizingMaskIntoConstraints = false
         number.textAlignment = .Center
         number.layer.cornerRadius = 20
         number.layer.borderWidth = 2
@@ -160,8 +160,8 @@ class DashboardStepView: UIView
         number.text = "\(step)"
         self.addSubview(number)
         
-        var titleLabel = UILabel()
-        titleLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let titleLabel = UILabel()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.font = UIFont.proximaNovaSemiboldFontOfSize(14)
         titleLabel.backgroundColor = UIColor.clearColor()
         titleLabel.textColor = UIColor.whiteColor()
@@ -169,14 +169,14 @@ class DashboardStepView: UIView
         titleLabel.numberOfLines = 0
         self.addSubview(titleLabel)
         
-        var textLabel = UILabel()
-        textLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let textLabel = UILabel()
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.backgroundColor = UIColor.clearColor()
         textLabel.preferredMaxLayoutWidth = (SDiPhoneVersion.deviceSize() == DeviceSize.iPhone35inch || SDiPhoneVersion.deviceSize() == DeviceSize.iPhone4inch) ? 230 : 250
         
-        var style = NSMutableParagraphStyle()
+        let style = NSMutableParagraphStyle()
         style.lineSpacing = 4
-        var att = NSMutableAttributedString(string: text, attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12), NSForegroundColorAttributeName: UIColor.whiteColor(), NSParagraphStyleAttributeName: style])
+        let att = NSMutableAttributedString(string: text, attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12), NSForegroundColorAttributeName: UIColor.whiteColor(), NSParagraphStyleAttributeName: style])
         
         textLabel.attributedText = att
         textLabel.numberOfLines = 0
@@ -184,10 +184,10 @@ class DashboardStepView: UIView
         
         let views = ["number": number, "title": titleLabel, "text": textLabel]
         
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[number(40)]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[number(40)]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[number]-10-[title]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[number]-10-[text]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[title]-10-[text]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[number(40)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[number(40)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[number]-10-[title]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[number]-10-[text]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[title]-10-[text]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
     }
 }

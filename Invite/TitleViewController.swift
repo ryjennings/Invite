@@ -59,7 +59,7 @@ enum TitleSection: Int {
         rightButton.title = AppDelegate.hasProtoEvent() ? "Cancel" : "Save"
         rightButton.action = AppDelegate.hasProtoEvent() ? "cancel:" : "save"
         
-        var animation = CATransition()
+        let animation = CATransition()
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         animation.type = kCATransitionFade;
         animation.duration = 0.75
@@ -79,15 +79,15 @@ enum TitleSection: Int {
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
     {
-        var headerView = view as! UITableViewHeaderFooterView
-        headerView.textLabel.textColor = UIColor.inviteTableHeaderColor()
-        headerView.textLabel.font = UIFont.inviteTableHeaderFont()
+        let headerView = view as! UITableViewHeaderFooterView
+        headerView.textLabel!.textColor = UIColor.inviteTableHeaderColor()
+        headerView.textLabel!.font = UIFont.inviteTableHeaderFont()
     }
     
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int)
     {
-        var footerView = view as! UITableViewHeaderFooterView
-        footerView.textLabel.font = UIFont.inviteTableFooterFont()
+        let footerView = view as! UITableViewHeaderFooterView
+        footerView.textLabel!.font = UIFont.inviteTableFooterFont()
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
@@ -117,7 +117,7 @@ enum TitleSection: Int {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         if (indexPath.section == TitleSection.Creator.rawValue) {
-            var cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
             cell.label.textColor = UIColor.inviteTableLabelColor()
             cell.label.font = UIFont.inviteTableSmallFont()
             cell.label.text = AppDelegate.parseUser().objectForKey(FULL_NAME_KEY) as? String
@@ -136,13 +136,13 @@ enum TitleSection: Int {
         
         let att = NSAttributedString(string: text, attributes: [NSFontAttributeName: font, NSForegroundColorAttributeName: textColor, NSParagraphStyleAttributeName: style])
         
-        var cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
         cell.delegate = self
         
         cell.placeholderLabel.text = indexPath.section == TitleSection.Title.rawValue ? "Let's create a new event. First, tap here to give the event a title." : "Tap to add a description"
         cell.placeholderLabel.textAlignment = indexPath.section == TitleSection.Title.rawValue ? .Center : .Left
         cell.placeholderLabel.font = indexPath.section == TitleSection.Title.rawValue ? UIFont.proximaNovaLightFontOfSize(28) : UIFont.inviteTableMediumFont()
-        cell.placeholderLabel.hidden = Bool(count(text))
+        cell.placeholderLabel.hidden = Bool(text.characters.count)
         cell.placeholderLabel.textColor = indexPath.section == TitleSection.Title.rawValue ? UIColor.inviteQuestionColor() : UIColor.inviteTableLabelColor()
         cell.placeholderLabel.numberOfLines = 0
         
@@ -199,12 +199,12 @@ enum TitleSection: Int {
         })
     }
     
-    override func shouldPerformSegueWithIdentifier(identifier: String?, sender: AnyObject?) -> Bool
+    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool
     {
         if !shouldValidate {
             return true
         }
-        if (count(inputText[TitleSection.Title.rawValue]) > 0 && count(inputText[TitleSection.Description.rawValue]) > 0) {
+        if (inputText[TitleSection.Title.rawValue].characters.count > 0 && inputText[TitleSection.Description.rawValue].characters.count > 0) {
             return true
         } else {
             animateButtonToError(true)
@@ -222,7 +222,7 @@ enum TitleSection: Int {
         })
         nextButton.enabled = !error
         if (error) {
-            if (count(inputText[TitleSection.Title.rawValue]) == 0) {
+            if (inputText[TitleSection.Title.rawValue].characters.count == 0) {
                 nextButton.setTitle("Add a title", forState: .Normal)
             } else {
                 nextButton.setTitle("Add a description", forState: .Normal)
@@ -243,7 +243,7 @@ enum TitleSection: Int {
     
     func addDoneToolBarToKeyboard(textView: UITextView)
     {
-        var doneToolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 50))
+        let doneToolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 50))
         doneToolbar.barStyle = .BlackTranslucent
         doneToolbar.items = [
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),

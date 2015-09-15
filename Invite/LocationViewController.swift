@@ -57,16 +57,16 @@ enum LocationSection: Int {
     
     func tableHeaderView() -> UIView
     {
-        var view = UIView(frame: CGRectMake(0, 0, 0, 144))
+        let view = UIView(frame: CGRectMake(0, 0, 0, 144))
         view.backgroundColor = UIColor.clearColor()
         
-        var searchBarView = UIView()
-        searchBarView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let searchBarView = UIView()
+        searchBarView.translatesAutoresizingMaskIntoConstraints = false
         searchBarView.addSubview(searchController.searchBar)
         view.addSubview(searchBarView)
         
-        var label = UILabel()
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = UIColor.clearColor()
         label.textColor = UIColor.inviteQuestionColor()
         label.textAlignment = .Center
@@ -77,9 +77,9 @@ enum LocationSection: Int {
         
         let views = ["bar": searchBarView, "label": label]
         
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bar]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-50-[label]-50-|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]-34-[label]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bar]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-50-[label]-50-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]-34-[label]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         
         return view
     }
@@ -95,15 +95,15 @@ enum LocationSection: Int {
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
     {
-        var headerView = view as! UITableViewHeaderFooterView
-        headerView.textLabel.textColor = UIColor.inviteTableHeaderColor()
-        headerView.textLabel.font = UIFont.inviteTableHeaderFont()
+        let headerView = view as! UITableViewHeaderFooterView
+        headerView.textLabel!.textColor = UIColor.inviteTableHeaderColor()
+        headerView.textLabel!.font = UIFont.inviteTableHeaderFont()
     }
     
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int)
     {
-        var footerView = view as! UITableViewHeaderFooterView
-        footerView.textLabel.font = UIFont.inviteTableFooterFont()
+        let footerView = view as! UITableViewHeaderFooterView
+        footerView.textLabel!.font = UIFont.inviteTableFooterFont()
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
@@ -141,7 +141,7 @@ enum LocationSection: Int {
     
     override func viewDidDisappear(animated: Bool)
     {
-        var mapCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! MapCell
+        let mapCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! MapCell
         mapCell.delegate = nil
     }
     
@@ -149,7 +149,7 @@ enum LocationSection: Int {
     {
         if (indexPath.section == LocationSection.ActiveLocation.rawValue) {
             
-            var cell = tableView.dequeueReusableCellWithIdentifier(MAP_CELL_IDENTIFIER, forIndexPath: indexPath) as! MapCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(MAP_CELL_IDENTIFIER, forIndexPath: indexPath) as! MapCell
             cell.delegate = self
             cell.mapViewLeadingConstraint.constant = cell.separatorInset.left
             if (showCurrentLocation) {
@@ -163,7 +163,7 @@ enum LocationSection: Int {
             
         } else {
             
-            var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) as! UITableViewCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) 
 //            cell.accessoryType = indexPath.row == savedLocationsIndex ? .Checkmark : .None
             cell.accessoryView = indexPath.row == savedLocationsIndex ? UIImageView(image: UIImage(named: "list_selected")) : UIImageView(image: UIImage(named: "list_select"))
             if (indexPath.row == 0) {
@@ -208,10 +208,10 @@ enum LocationSection: Int {
             let parseLongitude = parseLocation.objectForKey(LOCATION_LONGITUDE_KEY) as? Double
             let parseLatitude = parseLocation.objectForKey(LOCATION_LATITUDE_KEY) as? Double
             
-            var geocoder = CLGeocoder()
+            let geocoder = CLGeocoder()
             let location = CLLocation(latitude: parseLatitude!, longitude: parseLongitude!)
-            geocoder.reverseGeocodeLocation(location, completionHandler: { (placemarks: [AnyObject]!, error: NSError!) -> Void in
-                self.activePlacemark = placemarks[0] as! CLPlacemark
+            geocoder.reverseGeocodeLocation(location, completionHandler: { (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
+                self.activePlacemark = placemarks![0]
                 self.showCurrentLocation = false
                 self.activeLocation = parseLocation
                 tableView.reloadData()
@@ -222,13 +222,12 @@ enum LocationSection: Int {
     // MARK: - UISearchResultsUpdating
     
     func updateSearchResultsForSearchController(searchController: UISearchController) {
-        var geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(searchController.searchBar.text, completionHandler: {(placemarks: [AnyObject]!, error: NSError!) -> Void in
-            
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(searchController.searchBar.text!) { (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
             if let locations = placemarks {
                 self.searchResultsController.locations = locations
             }
-        })
+        }
     }
     
     // MARK: - LocationResultsViewControllerDelegate
@@ -281,7 +280,7 @@ enum LocationSection: Int {
     
     func addDoneToolBarToKeyboard(textField: UITextField)
     {
-        var doneToolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 50))
+        let doneToolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 50))
         doneToolbar.barStyle = .BlackTranslucent
         doneToolbar.items = [
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),

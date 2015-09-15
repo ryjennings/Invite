@@ -44,7 +44,7 @@ class Contact {
         super.viewDidLoad()
 
         if !self.determineStatus() {
-            println("not authorized")
+            print("not authorized")
             return
         } else {
             createTableDataFromContacts()
@@ -62,7 +62,7 @@ class Contact {
             if ABMultiValueGetCount(emailsRef) > 0 {
                 let emails: NSArray = ABMultiValueCopyArrayOfAllValues(emailsRef).takeUnretainedValue() as NSArray
                 var contactEmails = [String]()
-                var contact = Contact(name: name, lastName: lastName)
+                let contact = Contact(name: name, lastName: lastName)
                 for email in emails {
                     if (email as! String).rangeOfString("@") != nil {
                         contactEmails.append(email as! String)
@@ -73,7 +73,7 @@ class Contact {
             }
         }
         
-        tableData = tableData.sorted { $0.lastName < $1.lastName }
+        tableData = tableData.sort { $0.lastName < $1.lastName }
         tableView.reloadData()
     }
     
@@ -84,18 +84,18 @@ class Contact {
   
     func tableHeaderView()
     {
-        var header = UIView(frame: CGRectMake(0, 0, view.bounds.size.width, 1000))
+        let header = UIView(frame: CGRectMake(0, 0, view.bounds.size.width, 1000))
         header.backgroundColor = UIColor.clearColor()
 
-        var label = UILabel()
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = UIColor.clearColor()
         label.textColor = UIColor.inviteQuestionColor()
         label.textAlignment = .Left
         label.numberOfLines = 0
         
-        var att = NSMutableAttributedString()
-        var style = NSMutableParagraphStyle()
+        let att = NSMutableAttributedString()
+        let style = NSMutableParagraphStyle()
         style.lineSpacing = 6
         att.appendAttributedString(NSAttributedString(string: "These are the email addresses that we were able to pull from your Contacts app. If you invite one of these friends, they will show up under Previously Invited Friends the next time you create an event.", attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(16), NSParagraphStyleAttributeName: style]))
         
@@ -110,17 +110,17 @@ class Contact {
         let views = ["label": label]
         let metrics = ["leading": leading]
         
-        header.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-leading-[label]-leading-|", options: NSLayoutFormatOptions(0), metrics: metrics, views: views))
-        header.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-34-[label]-14-|", options: NSLayoutFormatOptions(0), metrics: metrics, views: views))
+        header.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-leading-[label]-leading-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: metrics, views: views))
+        header.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-34-[label]-14-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: metrics, views: views))
         
-        var headerWidthConstraint = NSLayoutConstraint(item: header, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: view.bounds.size.width)
+        let headerWidthConstraint = NSLayoutConstraint(item: header, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: view.bounds.size.width)
         header.addConstraint(headerWidthConstraint)
         header.setNeedsLayout()
         header.layoutIfNeeded()
-        var height = header.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
+        let height = header.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
         header.removeConstraint(headerWidthConstraint)
         header.frame = CGRectMake(0, 0, view.bounds.size.width, height)
-        header.setTranslatesAutoresizingMaskIntoConstraints(true)
+        header.translatesAutoresizingMaskIntoConstraints = true
         tableView.tableHeaderView = header
     }
 
@@ -131,7 +131,7 @@ class Contact {
         var err: Unmanaged<CFError>? = nil
         let adbk: ABAddressBook? = ABAddressBookCreateWithOptions(nil, &err).takeRetainedValue()
         if adbk == nil {
-            println(err)
+            print(err)
             self.adbk = nil
             return false
         }
@@ -173,15 +173,15 @@ class Contact {
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
     {
-        var headerView = view as! UITableViewHeaderFooterView
-        headerView.textLabel.textColor = UIColor.inviteTableHeaderColor()
-        headerView.textLabel.font = UIFont.inviteTableHeaderFont()
+        let headerView = view as! UITableViewHeaderFooterView
+        headerView.textLabel!.textColor = UIColor.inviteTableHeaderColor()
+        headerView.textLabel!.font = UIFont.inviteTableHeaderFont()
     }
     
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int)
     {
-        var footerView = view as! UITableViewHeaderFooterView
-        footerView.textLabel.font = UIFont.inviteTableFooterFont()
+        let footerView = view as! UITableViewHeaderFooterView
+        footerView.textLabel!.font = UIFont.inviteTableFooterFont()
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
@@ -201,10 +201,10 @@ class Contact {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) as! BasicCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) as! BasicCell
         let name = tableData[indexPath.section].name
         cell.textLabel?.text = tableData[indexPath.section].emails[indexPath.row]
-        cell.accessoryView = UIImageView(image: UIImage(named: contains(selectedEmails, name!) ? "list_selected" : "list_select"))
+        cell.accessoryView = UIImageView(image: UIImage(named: selectedEmails.contains((name!)) ? "list_selected" : "list_select"))
         cell.selectionStyle = .None
         return cell
     }
@@ -214,16 +214,16 @@ class Contact {
         let selected = UIImageView(image: UIImage(named: "list_selected"))
         let select = UIImageView(image: UIImage(named: "list_select"))
         
-        var cell = tableView.cellForRowAtIndexPath(indexPath) as! BasicCell
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! BasicCell
         let email = tableData[indexPath.section].emails[indexPath.row]
-        if (contains(selectedEmails, email)) {
+        if (selectedEmails.contains(email)) {
             selectedEmails.removeObject(email)
             cell.accessoryView = select
         } else {
             selectedEmails.append(email)
             cell.accessoryView = selected
         }
-        println(selectedEmails)
+        print(selectedEmails)
     }
     
     @IBAction func selectEmails(sender: AnyObject?) {
@@ -242,7 +242,7 @@ class Contact {
 
 extension Array {
     mutating func removeObject<U: Equatable>(object: U) -> Bool {
-        for (idx, objectToCompare) in enumerate(self) {
+        for (idx, objectToCompare) in self.enumerate() {
             if let to = objectToCompare as? U {
                 if object == to {
                     self.removeAtIndex(idx)

@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <FacebookSDK/FacebookSDK.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Parse/Parse.h>
 
 #import "AppDelegate.h"
@@ -40,7 +41,7 @@
 + (instancetype)shared;
 
 - (void)loadParseUser:(PFObject *)user;
-- (void)createParseUserFromFacebookUser:(id<FBGraphUser>)user;
+- (void)createParseUserFromFacebookUser:(NSDictionary *)user;
 
 //- (void)checkForEventsWhereUserIsInvited;
 

@@ -30,7 +30,7 @@
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     // Logs 'install' and 'app activate' App Events.
-    [FBAppEvents activateApp];
+    [FBSDKAppEvents activateApp];
     
     // Notifications
     UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
@@ -172,7 +172,7 @@
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation {
     // attempt to extract a token from the url
-    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+    return [[FBSDKApplicationDelegate sharedInstance] application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
 #pragma mark - User

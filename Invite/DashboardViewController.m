@@ -169,9 +169,9 @@
 
 - (IBAction)logout:(id)sender
 {
-    [FBSession.activeSession closeAndClearTokenInformation];
-    [FBSession.activeSession close];
-    [FBSession setActiveSession:nil];
+//    [FBSession.activeSession closeAndClearTokenInformation];
+//    [FBSession.activeSession close];
+//    [FBSession setActiveSession:nil];
     
     [self.navigationController popViewControllerAnimated:YES];
 }

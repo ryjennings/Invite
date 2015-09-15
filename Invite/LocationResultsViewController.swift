@@ -9,7 +9,7 @@
 import UIKit
 import AddressBookUI
 
-@objc class LocationResultsViewController: UITableViewController, UITableViewDataSource, UITableViewDelegate
+@objc class LocationResultsViewController: UITableViewController
 {
     var delegate: LocationResultsViewControllerDelegate?
     var locations = [AnyObject]()
@@ -39,20 +39,23 @@ import AddressBookUI
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        let placemark = locations[indexPath.row] as! CLPlacemark
-        
-        var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) as! UITableViewCell
-        
-        var attributedText = NSMutableAttributedString(string: placemark.name, attributes: [NSForegroundColorAttributeName: UIColor.inviteDarkBlueColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(15)])
-        attributedText.appendAttributedString(NSAttributedString(string: "\n"))
-        attributedText.appendAttributedString(NSAttributedString(string: placemark.addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", "), attributes: [NSForegroundColorAttributeName: UIColor.inviteTableLabelColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12)]))
-            
-        var style = NSMutableParagraphStyle()
-        style.lineSpacing = 4
-        attributedText.addAttribute(NSParagraphStyleAttributeName, value: style, range: NSMakeRange(0, count(attributedText.string)))
-        
-        cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.attributedText = attributedText
+//        let placemark = locations[indexPath.row] as! CLPlacemark
+        let cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath)
+//        var att = NSMutableAttributedString()
+//        
+//        if let name = placemark.name {
+//            att.appendAttributedString(NSAttributedString(string: name, attributes: [NSForegroundColorAttributeName: UIColor.inviteDarkBlueColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(15)]))
+//        }
+//        att.appendAttributedString(NSAttributedString(string: "\n"))
+//        let formattedAddressLines = placemark.addressDictionary[kABPersonAddressProperty]!.componentsJoinedByString(", ")
+//        att.appendAttributedString(NSAttributedString(string: , attributes: [NSForegroundColorAttributeName: UIColor.inviteTableLabelColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12)]))
+//            
+//        var style = NSMutableParagraphStyle()
+//        style.lineSpacing = 4
+//        attributedText.addAttribute(NSParagraphStyleAttributeName, value: style, range: NSMakeRange(0, attributedText.string.characters.count))
+//        
+//        cell.textLabel?.numberOfLines = 0
+//        cell.textLabel?.attributedText = attributedText
 
         return cell
     }

@@ -23,7 +23,7 @@ import UIKit
     
     override func drawRect(rect: CGRect)
     {
-        var path = UIBezierPath()
+        let path = UIBezierPath()
         let radius: CGFloat = 5
         
         switch type {

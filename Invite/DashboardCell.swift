@@ -41,14 +41,14 @@ import ParseUI
         prepareConstraints()
     }
     
-    required init(coder aDecoder: NSCoder)
+    required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
         mapView.delegate = self
         prepareConstraints()
     }
     
-    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView!
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
     {
         var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier("PinIdentifier") as? MKPinAnnotationView
         if (pinView == nil) {
@@ -65,14 +65,14 @@ import ParseUI
         
         var eventTitle = ""
         if let title = event.objectForKey(EVENT_TITLE_KEY) as? String {
-            eventTitle = count(title) > 0 ? title : "No title"
+            eventTitle = title.characters.count > 0 ? title : "No title"
         } else {
             eventTitle = "No title"
         }
         
         var eventDescription = ""
         if let description = event.objectForKey(EVENT_DESCRIPTION_KEY) as? String {
-            eventDescription = count(description) > 0 ? description : "No description"
+            eventDescription = description.characters.count > 0 ? description : "No description"
         } else {
             eventDescription = "No description"
         }
@@ -89,13 +89,13 @@ import ParseUI
         detailsLabel.attributedText = eventDetails
         
         let startDate = event.objectForKey(EVENT_START_DATE_KEY) as! NSDate
-        var formatter = NSDateFormatter()
+        let formatter = NSDateFormatter()
         formatter.dateFormat = "MMMM"
         let month = (formatter.stringFromDate(startDate) as NSString).uppercaseString
         formatter.dateFormat = "dd"
         let day = formatter.stringFromDate(startDate)
         
-        var att = NSMutableAttributedString()
+        let att = NSMutableAttributedString()
         att.appendAttributedString(NSAttributedString(string: month, attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(9), NSForegroundColorAttributeName: UIColor.whiteColor()]))
         att.appendAttributedString(NSAttributedString(string: "\n", attributes: [NSFontAttributeName: UIFont.proximaNovaLightFontOfSize(0)]))
         att.appendAttributedString(NSAttributedString(string: day, attributes: [NSFontAttributeName: UIFont.proximaNovaLightFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]))
@@ -107,7 +107,7 @@ import ParseUI
         
         if ((event.objectForKey(EVENT_LOCATION_KEY)) != nil) {
             if ((annotation) != nil) {
-                mapView.removeAnnotation(annotation)
+                mapView.removeAnnotation(annotation!)
                 annotation = nil
             }
             let location = event.objectForKey(EVENT_LOCATION_KEY) as! PFObject
@@ -115,10 +115,10 @@ import ParseUI
             let latitude = location.objectForKey(LOCATION_LATITUDE_KEY) as? Double
             let coordinate = CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!)
             annotation = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
-            mapView.addAnnotation(annotation)
+            mapView.addAnnotation(annotation!)
             mapView.showAnnotations([annotation!], animated: false)
         } else {
-            mapView.removeAnnotation(annotation)
+            mapView.removeAnnotation(annotation!)
         }
     }
     
@@ -127,50 +127,50 @@ import ParseUI
         let views = ["cardView": cardView, "mapView": mapView, "detailsLabel": detailsLabel]
         
         // Card view
-        cardView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.layer.cornerRadius = CGFloat(kCornerRadius)
         cardView.clipsToBounds = true
         cardView.backgroundColor = UIColor.whiteColor()
         addSubview(cardView)
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-padding-[cardView]-padding-|", options: NSLayoutFormatOptions(0), metrics: ["padding": kDashboardPadding], views: views))
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-padding-[cardView]-padding-|", options: NSLayoutFormatOptions(0), metrics: ["padding": kDashboardPadding], views: views))
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-padding-[cardView]-padding-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: ["padding": kDashboardPadding], views: views))
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-padding-[cardView]-padding-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: ["padding": kDashboardPadding], views: views))
         
         // Map view
-        mapView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.zoomEnabled = false
         mapView.scrollEnabled = false
         mapView.userInteractionEnabled = false
         cardView.addSubview(mapView)
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[mapView]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["mapView": mapView]))
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[mapView]", options: NSLayoutFormatOptions(0), metrics: nil, views: ["mapView": mapView]))
+        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[mapView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["mapView": mapView]))
+        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[mapView]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["mapView": mapView]))
         cardView.addConstraint(NSLayoutConstraint(item: mapView, attribute: .Height, relatedBy: .Equal, toItem: cardView, attribute: .Height, multiplier: 0.5, constant: 0))
         
         // Map gradient
-        mapGradient.setTranslatesAutoresizingMaskIntoConstraints(false)
+        mapGradient.translatesAutoresizingMaskIntoConstraints = false
         mapGradient.colors = [UIColor.clearColor(), UIColor(white: 0, alpha: 0.1)]
         cardView.addSubview(mapGradient)
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[mapGradient]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["mapGradient": mapGradient]))
+        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[mapGradient]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["mapGradient": mapGradient]))
         cardView.addConstraint(NSLayoutConstraint(item: mapGradient, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 30))
         cardView.addConstraint(NSLayoutConstraint(item: mapGradient, attribute: .Bottom, relatedBy: .Equal, toItem: mapView, attribute: .Bottom, multiplier: 1, constant: 0))
         
         // Details label
-        detailsLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        detailsLabel.translatesAutoresizingMaskIntoConstraints = false
         detailsLabel.numberOfLines = 0
         cardView.addSubview(detailsLabel)
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[detailsLabel]-30-|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[mapView]-15-[detailsLabel]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[detailsLabel]-30-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[mapView]-15-[detailsLabel]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         
         // Details gradient
-        detailsGradient.setTranslatesAutoresizingMaskIntoConstraints(false)
+        detailsGradient.translatesAutoresizingMaskIntoConstraints = false
         detailsGradient.colors = [UIColor(white: 1, alpha: 0),  UIColor.whiteColor(), UIColor.whiteColor()]
         detailsGradient.locations = [0, 0.75, 1]
         cardView.addSubview(detailsGradient)
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[detailsGradient]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["detailsGradient": detailsGradient]))
+        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[detailsGradient]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["detailsGradient": detailsGradient]))
         cardView.addConstraint(NSLayoutConstraint(item: detailsGradient, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 50))
         cardView.addConstraint(NSLayoutConstraint(item: detailsGradient, attribute: .Bottom, relatedBy: .Equal, toItem: cardView, attribute: .Bottom, multiplier: 1, constant: 0))
 
         // Date label
-        dateLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.backgroundColor = UIColor.inviteBlueColor()
         dateLabel.layer.cornerRadius = 40
         dateLabel.clipsToBounds = true

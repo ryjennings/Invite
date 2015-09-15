@@ -26,9 +26,9 @@ enum SettingsSection: Int {
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
     {
-        var headerView = view as! UITableViewHeaderFooterView
-        headerView.textLabel.textColor = UIColor.inviteTableHeaderColor()
-        headerView.textLabel.font = UIFont.inviteTableHeaderFont()
+        let headerView = view as! UITableViewHeaderFooterView
+        headerView.textLabel!.textColor = UIColor.inviteTableHeaderColor()
+        headerView.textLabel!.font = UIFont.inviteTableHeaderFont()
     }
     
 //    func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int)
@@ -66,19 +66,19 @@ enum SettingsSection: Int {
 
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int)
     {
-        var footerView = view as! UITableViewHeaderFooterView
-        var style = NSMutableParagraphStyle()
+        let footerView = view as! UITableViewHeaderFooterView
+        let style = NSMutableParagraphStyle()
         style.lineSpacing = 4
         let att = NSMutableAttributedString(string: titleForSection(section), attributes: [NSFontAttributeName: UIFont.inviteTableFooterFont(), NSParagraphStyleAttributeName: style])
-        footerView.textLabel.attributedText = att
+        footerView.textLabel!.attributedText = att
     }
 
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
     {
-        var style = NSMutableParagraphStyle()
+        let style = NSMutableParagraphStyle()
         style.lineSpacing = 4
         let size = CGSizeMake(self.view.frame.size.width - (tableView.separatorInset.left * 2), CGFloat.max)
-        let options: NSStringDrawingOptions = .UsesLineFragmentOrigin | .UsesFontLeading
+        let options: NSStringDrawingOptions = [.UsesLineFragmentOrigin, .UsesFontLeading]
         return (titleForSection(section) as NSString).boundingRectWithSize(size, options: options, attributes: [NSFontAttributeName: UIFont.inviteTableFooterFont(), NSParagraphStyleAttributeName: style], context: nil).size.height + CGFloat(kFooterPadding)
     }
     
@@ -108,7 +108,7 @@ enum SettingsSection: Int {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        var cell = tableView.dequeueReusableCellWithIdentifier(TOGGLE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ToggleCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(TOGGLE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ToggleCell
         
         if let section = SettingsSection(rawValue: indexPath.section) {
             switch section {

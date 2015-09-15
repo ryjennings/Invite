@@ -51,8 +51,8 @@ class ProfileImageView: UIImageView
     
     func prepareLabelWithText(displayText: String)
     {
-        var initialsLabel = UILabel()
-        initialsLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let initialsLabel = UILabel()
+        initialsLabel.translatesAutoresizingMaskIntoConstraints = false
         initialsLabel.textColor = UIColor.whiteColor()
         initialsLabel.text = displayText.uppercaseString
         initialsLabel.backgroundColor = UIColor.clearColor()
@@ -63,7 +63,7 @@ class ProfileImageView: UIImageView
         addSubview(initialsLabel)
         
         let views = ["label": initialsLabel]
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
     }
 }

@@ -42,7 +42,6 @@ enum TimeframeRow: Int {
         navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 3, steps: 5)
         
         busyTimes = AppDelegate.busyTimes()
-        let events = AppDelegate.events()
         
         tableView.tableHeaderView = tableHeaderView()
         
@@ -69,16 +68,12 @@ enum TimeframeRow: Int {
         
         if (busyTimes != nil) {
             busyTimes.enumerateObjectsUsingBlock { (object, stop) -> Void in
-                var busy = object as! BusyDetails
+                let busy = object as! BusyDetails
                 
-                var dateFormatter = NSDateFormatter()
+                let dateFormatter = NSDateFormatter()
                 dateFormatter.timeZone = NSTimeZone.localTimeZone()
                 dateFormatter.dateStyle = .MediumStyle
                 dateFormatter.timeStyle = .ShortStyle
-                let stz = dateFormatter.stringFromDate(self.startDate)
-                let etz = dateFormatter.stringFromDate(self.endDate)
-                let bstz = dateFormatter.stringFromDate(busy.start)
-                let betz = dateFormatter.stringFromDate(busy.end)
                 
                 // If busy end is earlier than start OR busy start is later than end
                 
@@ -131,11 +126,11 @@ enum TimeframeRow: Int {
 
 
             }
-            if tableView.numberOfSections() == 0 && conflicts.count > 0 {
+            if tableView.numberOfSections == 0 && conflicts.count > 0 {
                 tableView.insertSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: UITableViewRowAnimation.Fade)
-            } else if tableView.numberOfSections() == 0 {
+            } else if tableView.numberOfSections == 0 {
                 tableView.insertSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Fade)
-            } else if tableView.numberOfSections() == 2 && conflicts.count == 0 {
+            } else if tableView.numberOfSections == 2 && conflicts.count == 0 {
                 tableView.deleteSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Fade)
             } else {
                 tableView.reloadData()
@@ -145,11 +140,11 @@ enum TimeframeRow: Int {
     
     func configureDatePicker()
     {
-        datePickerView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        datePickerView.translatesAutoresizingMaskIntoConstraints = false
         datePickerView.delegate = self
         self.view.addSubview(datePickerView)
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[picker]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["picker": datePickerView]))
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[picker(height)]", options: NSLayoutFormatOptions(0), metrics: ["height": kDatePickerViewHeight], views: ["picker": datePickerView]))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[picker]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["picker": datePickerView]))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[picker(height)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: ["height": kDatePickerViewHeight], views: ["picker": datePickerView]))
         datePickerViewBottomConstraint = NSLayoutConstraint(item: datePickerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1, constant: kDatePickerViewHeight)
         self.view.addConstraint(datePickerViewBottomConstraint)
     }
@@ -161,11 +156,11 @@ enum TimeframeRow: Int {
     
     func tableHeaderView() -> UIView
     {
-        var view = UIView(frame: CGRectMake(0, 0, 0, 100))
+        let view = UIView(frame: CGRectMake(0, 0, 0, 100))
         view.backgroundColor = UIColor.clearColor()
         
-        var label = UILabel()
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = UIColor.clearColor()
         label.textColor = UIColor.inviteQuestionColor()
         label.textAlignment = .Center
@@ -176,8 +171,8 @@ enum TimeframeRow: Int {
         
         let views = ["label": label]
         
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-50-[label]-50-|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-34-[label]", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-50-[label]-50-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-34-[label]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         
         return view
     }
@@ -186,15 +181,15 @@ enum TimeframeRow: Int {
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
     {
-        var headerView = view as! UITableViewHeaderFooterView
-        headerView.textLabel.textColor = UIColor.inviteTableHeaderColor()
-        headerView.textLabel.font = UIFont.inviteTableHeaderFont()
+        let headerView = view as! UITableViewHeaderFooterView
+        headerView.textLabel!.textColor = UIColor.inviteTableHeaderColor()
+        headerView.textLabel!.font = UIFont.inviteTableHeaderFont()
     }
     
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int)
     {
-        var footerView = view as! UITableViewHeaderFooterView
-        footerView.textLabel.font = UIFont.inviteTableFooterFont()
+        let footerView = view as! UITableViewHeaderFooterView
+        footerView.textLabel!.font = UIFont.inviteTableFooterFont()
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
@@ -236,7 +231,7 @@ enum TimeframeRow: Int {
     {
         if (indexPath.section == TimeframeSection.Timeframe.rawValue) {
             
-            var cell = tableView.dequeueReusableCellWithIdentifier(BASIC_RIGHT_CELL_IDENTIFIER, forIndexPath: indexPath) as! BasicCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(BASIC_RIGHT_CELL_IDENTIFIER, forIndexPath: indexPath) as! BasicCell
             cell.textLabel?.font = UIFont.inviteTableMediumFont()
             cell.detailTextLabel?.font = UIFont.inviteTableMediumFont()
             cell.selectionStyle = UITableViewCellSelectionStyle.None
@@ -252,7 +247,7 @@ enum TimeframeRow: Int {
             return cell
             
         } else {
-            var cell = tableView.dequeueReusableCellWithIdentifier(CONFLICT_CELL_IDENTIFIER, forIndexPath: indexPath) as! ConflictCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(CONFLICT_CELL_IDENTIFIER, forIndexPath: indexPath) as! ConflictCell
             cell.conflictViewLeadingConstraint.constant = cell.separatorInset.left
             
             if (conflicts.count == 0) {
@@ -267,7 +262,7 @@ enum TimeframeRow: Int {
     
     func formattedDate(date: NSDate) -> String
     {
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .ShortStyle
         return dateFormatter.stringFromDate(date)
@@ -276,7 +271,7 @@ enum TimeframeRow: Int {
     func hourFromDate(date: NSDate) -> Int
     {
         let calendar = NSCalendar.currentCalendar()
-        let components = calendar.components(NSCalendarUnit.CalendarUnitHour, fromDate: date)
+        let components = calendar.components(NSCalendarUnit.Hour, fromDate: date)
         var hour = components.hour
         if hour > 12 {
             hour -= 12

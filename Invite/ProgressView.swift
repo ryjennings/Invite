@@ -30,7 +30,7 @@ import UIKit
         self.backgroundColor = UIColor.clearColor()
     }
 
-    required init(coder aDecoder: NSCoder)
+    required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
     }
@@ -50,7 +50,7 @@ import UIKit
     
     func ellipseInRect(rect: CGRect, thisStep: Int)
     {
-        var ctx = UIGraphicsGetCurrentContext()
+        let ctx = UIGraphicsGetCurrentContext()
         CGContextSetStrokeColorWithColor(ctx, UIColor.whiteColor().CGColor)
         CGContextSetFillColorWithColor(ctx, UIColor.whiteColor().CGColor)
         CGContextSetLineWidth(ctx, CGFloat(strokeWidth))
@@ -62,8 +62,8 @@ import UIKit
     
     func animateCurrentStepInRect(rect: CGRect)
     {
-        var currentStepView = UIView()
-        currentStepView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let currentStepView = UIView()
+        currentStepView.translatesAutoresizingMaskIntoConstraints = false
         currentStepView.backgroundColor = UIColor.whiteColor()
         currentStepView.layer.cornerRadius = rect.size.height / 2
         currentStepView.clipsToBounds = true

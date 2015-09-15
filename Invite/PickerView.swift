@@ -16,7 +16,7 @@ import UIKit
         prepareView()
     }
     
-    required init(coder aDecoder: NSCoder)
+    required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
         prepareView()
@@ -40,34 +40,34 @@ import UIKit
     
     func configureToolbar()
     {
-        toolbar.setTranslatesAutoresizingMaskIntoConstraints(false)
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
         toolbar.barStyle = .BlackTranslucent
         toolbar.items = [
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
             UIBarButtonItem(title: "Select Response", style: .Done, target: self, action: "dismissPicker:"),
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)]
         self.addSubview(toolbar)
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[toolbar]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["toolbar": toolbar]))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[toolbar]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["toolbar": toolbar]))
     }
     
     func configurePicker()
     {
-        var view = UIView()
-        view.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.inviteLightSlateColor()
         self.addSubview(view)
         
-        pickerView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
         pickerView.delegate = self
         view.addSubview(pickerView)
         
         let views = ["toolbar": toolbar, "view": view, "picker": pickerView]
         
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[toolbar(44)][view]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[toolbar(44)][view]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[picker]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[picker]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[picker]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[picker]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
     }
     
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int
@@ -80,7 +80,7 @@ import UIKit
         return pickerOptions.count
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String!
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
     {
         return pickerOptions[row]
     }

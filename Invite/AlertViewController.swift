@@ -21,7 +21,7 @@ class AlertViewController: UIViewController
     
     class func alert(text: String, vc: UIViewController)
     {
-        var alert = AlertViewController()
+        let alert = AlertViewController()
         alert.text = text
         alert.modalPresentationStyle = .Custom
         alert.modalTransitionStyle = .CrossDissolve
@@ -45,19 +45,19 @@ class AlertViewController: UIViewController
     
     func prepareDarkness()
     {
-        darkness.setTranslatesAutoresizingMaskIntoConstraints(false)
+        darkness.translatesAutoresizingMaskIntoConstraints = false
         darkness.backgroundColor = UIColor.blackColor()
         darkness.alpha = 0.5
         self.view.addSubview(darkness)
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[darkness]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["darkness": darkness]))
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[darkness]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["darkness": darkness]))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[darkness]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["darkness": darkness]))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[darkness]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["darkness": darkness]))
     }
     
     func prepareContainer()
     {
-        var blurEffect = UIBlurEffect(style: .Dark)
+        let blurEffect = UIBlurEffect(style: .Dark)
         blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        blurView.translatesAutoresizingMaskIntoConstraints = false
         blurView.layer.cornerRadius = CGFloat(kCornerRadius)
         blurView.clipsToBounds = true
         self.view.addSubview(blurView)
@@ -68,12 +68,12 @@ class AlertViewController: UIViewController
     
     func prepareLabel()
     {
-        var label = UILabel()
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         
-        var style = NSMutableParagraphStyle()
+        let style = NSMutableParagraphStyle()
         style.alignment = .Center
-        var att = NSMutableAttributedString()
+        let att = NSMutableAttributedString()
         att.appendAttributedString(NSAttributedString(string: text, attributes: [NSForegroundColorAttributeName: UIColor.whiteColor(), NSParagraphStyleAttributeName: style, NSFontAttributeName: UIFont.proximaNovaLightFontOfSize(20)]))
         att.appendAttributedString(NSAttributedString(string: "\n\n"))
         att.appendAttributedString(NSAttributedString(string: "Okay", attributes: [NSForegroundColorAttributeName: UIColor.inviteBlueColor(), NSParagraphStyleAttributeName: style, NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(18)]))
@@ -82,8 +82,8 @@ class AlertViewController: UIViewController
         label.backgroundColor = UIColor.clearColor()
         label.numberOfLines = 0
         blurView.addSubview(label)
-        blurView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-25-[label]-25-|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["label": label]))
-        blurView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-50-[label]-50-|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["label": label]))
+        blurView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-25-[label]-25-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["label": label]))
+        blurView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-50-[label]-50-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["label": label]))
     }
 
     func prepareTap()

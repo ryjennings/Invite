@@ -16,7 +16,7 @@ import UIKit
         prepareView()
     }
 
-    required init(coder aDecoder: NSCoder)
+    required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
         prepareView()
@@ -41,24 +41,24 @@ import UIKit
     
     func configureToolbar()
     {
-        toolbar.setTranslatesAutoresizingMaskIntoConstraints(false)
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
         toolbar.barStyle = .BlackTranslucent
         toolbar.items = [
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
             UIBarButtonItem(title: "Select Time", style: .Done, target: self, action: "dismissPicker:"),
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)]
         self.addSubview(toolbar)
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[toolbar]|", options: NSLayoutFormatOptions(0), metrics: nil, views: ["toolbar": toolbar]))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[toolbar]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["toolbar": toolbar]))
     }
     
     func configurePicker()
     {
-        var view = UIView()
-        view.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.inviteLightSlateColor()
         self.addSubview(view)
         
-        datePicker.setTranslatesAutoresizingMaskIntoConstraints(false)
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.addTarget(self, action: "pickerChanged:", forControlEvents: .ValueChanged)
         datePicker.minuteInterval = 15
         view.addSubview(datePicker)
@@ -66,12 +66,7 @@ import UIKit
         var minute = 0
         let calendar = NSCalendar.currentCalendar()
         let components = calendar.components(
-            NSCalendarUnit.CalendarUnitYear |
-                NSCalendarUnit.CalendarUnitMonth |
-                NSCalendarUnit.CalendarUnitDay |
-                NSCalendarUnit.CalendarUnitHour |
-                NSCalendarUnit.CalendarUnitMinute |
-                NSCalendarUnit.CalendarUnitSecond
+            [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
             , fromDate: datePicker.date)
         let intervals = [0, 15, 30, 45]
         for interval in intervals {
@@ -87,11 +82,11 @@ import UIKit
         
         let views = ["toolbar": toolbar, "view": view, "picker": datePicker]
         
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[toolbar(44)][view]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[toolbar(44)][view]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[picker]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[picker]|", options: NSLayoutFormatOptions(0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[picker]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[picker]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
     }
     
     func pickerChanged(picker: UIDatePicker)

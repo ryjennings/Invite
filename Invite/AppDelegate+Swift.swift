@@ -12,26 +12,15 @@ extension AppDelegate
 {
     class func presentationTimeframeFromStartDate(startDate: NSDate!, endDate: NSDate!) -> NSString
     {
-        let eventTimeframeFont = UIFont.boldSystemFontOfSize(10)
-        var presentationString = NSMutableString()
+        let presentationString = NSMutableString()
         let calendar = NSCalendar.currentCalendar()
         let startComponents = calendar.components(
-            NSCalendarUnit.CalendarUnitYear |
-                NSCalendarUnit.CalendarUnitMonth |
-                NSCalendarUnit.CalendarUnitDay |
-                NSCalendarUnit.CalendarUnitHour |
-                NSCalendarUnit.CalendarUnitMinute |
-                NSCalendarUnit.CalendarUnitSecond
+            [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
             , fromDate: startDate)
         let endComponents = calendar.components(
-            NSCalendarUnit.CalendarUnitYear |
-                NSCalendarUnit.CalendarUnitMonth |
-                NSCalendarUnit.CalendarUnitDay |
-                NSCalendarUnit.CalendarUnitHour |
-                NSCalendarUnit.CalendarUnitMinute |
-                NSCalendarUnit.CalendarUnitSecond
+            [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
             , fromDate: endDate)
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .ShortStyle
         presentationString.appendString(dateFormatter.stringFromDate(startDate))

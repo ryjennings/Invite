@@ -29,7 +29,7 @@ class TimeframeHourCell: UITableViewCell
     
     override func drawRect(rect: CGRect)
     {
-        var ctx = UIGraphicsGetCurrentContext()
+        let ctx = UIGraphicsGetCurrentContext()
         CGContextSetFillColorWithColor(ctx, circleColor.CGColor)
         CGContextFillEllipseInRect(ctx, hourLabel.frame)
     }

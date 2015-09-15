@@ -24,7 +24,7 @@ import UIKit
 
     func textViewDidChange(textView: UITextView)
     {
-        placeholderLabel.hidden = Bool(count(textView.text))
+        placeholderLabel.hidden = Bool(textView.text.characters.count)
         if let d = delegate {
             d.textViewDidChange(textView)
         }

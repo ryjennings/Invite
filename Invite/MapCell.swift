@@ -61,7 +61,7 @@ import MapKit
     {
         mapView.addAnnotation(placemark)
         mapView.showAnnotations([placemark], animated: true)
-        label.text = placemark.addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", ")
+//        label.text = placemark.addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", ")
     }
     
     override func awakeFromNib()
@@ -87,19 +87,19 @@ import MapKit
 
     // MARK: CLLocationManager
     
-    func locationManager(manager: CLLocationManager!, didUpdateToLocation newLocation: CLLocation!, fromLocation oldLocation: CLLocation!)
+    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation)
     {
-        var geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(newLocation, completionHandler: { (placemarks: [AnyObject]!, error: NSError!) -> Void in
-            let address = (placemarks[0] as! CLPlacemark).addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", ")
-            self.label.text = address
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(newLocation) { (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
+//            let address = (placemarks[0] as! CLPlacemark).addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", ")
+//            self.label.text = address
             if let d = self.delegate {
                 self.location.setObject(newLocation.coordinate.latitude, forKey: LOCATION_LATITUDE_KEY)
                 self.location.setObject(newLocation.coordinate.longitude, forKey: LOCATION_LONGITUDE_KEY)
-                self.location.setObject(address, forKey: LOCATION_ADDRESS_KEY)
+//                self.location.setObject(address, forKey: LOCATION_ADDRESS_KEY)
                 d.didSetCurrentLocationToLocation(self.location)
             }
-        })
+        }
     }
     
     deinit
@@ -111,7 +111,7 @@ import MapKit
     
     func textFieldDidEndEditing(textField: UITextField)
     {
-        self.location.setObject(textField.text, forKey: LOCATION_NICKNAME_KEY)
+        self.location.setObject(textField.text!, forKey: LOCATION_NICKNAME_KEY)
     }
 }
 
