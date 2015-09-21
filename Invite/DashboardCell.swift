@@ -70,21 +70,13 @@ import ParseUI
             eventTitle = "No title"
         }
         
-        var eventDescription = ""
-        if let description = event.objectForKey(EVENT_DESCRIPTION_KEY) as? String {
-            eventDescription = description.characters.count > 0 ? description : "No description"
-        } else {
-            eventDescription = "No description"
-        }
-        
         eventDetails.appendAttributedString(NSAttributedString(string: eventTitle, attributes: [NSFontAttributeName: titleFont, NSForegroundColorAttributeName: UIColor.inviteBlueColor()]))
         eventDetails.appendAttributedString(NSAttributedString(string: "\n\n", attributes: [NSFontAttributeName: newlineFont]))
-        eventDetails.appendAttributedString(NSAttributedString(string: AppDelegate.presentationTimeframeFromStartDate(event.objectForKey(EVENT_START_DATE_KEY) as! NSDate, endDate: event.objectForKey(EVENT_END_DATE_KEY) as! NSDate) as String, attributes: [NSFontAttributeName: timeframeFont, NSForegroundColorAttributeName: UIColor.inviteSlateButtonColor()]))
+        eventDetails.appendAttributedString(NSAttributedString(string: AppDelegate.presentationTimeframeForStartDate(event.objectForKey(EVENT_START_DATE_KEY) as! NSDate, endDate: event.objectForKey(EVENT_END_DATE_KEY) as! NSDate) as String, attributes: [NSFontAttributeName: timeframeFont, NSForegroundColorAttributeName: UIColor.inviteSlateButtonColor()]))
         eventDetails.appendAttributedString(NSAttributedString(string: "\n\n", attributes: [NSFontAttributeName: newlineFont]))
         
         let style = NSMutableParagraphStyle()
         style.lineSpacing = 4
-        eventDetails.appendAttributedString(NSAttributedString(string: eventDescription, attributes: [NSFontAttributeName: descriptionFont, NSForegroundColorAttributeName: UIColor.inviteSlateButtonColor(), NSParagraphStyleAttributeName: style]))
         
         detailsLabel.attributedText = eventDetails
         

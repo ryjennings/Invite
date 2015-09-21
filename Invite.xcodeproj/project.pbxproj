@@ -92,6 +92,7 @@
 		075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10831ADC859D00C86130 /* UIView+WebCacheOperation.m */; };
 		075E2FD61AF2D33E0089CFDC /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 075E2FD51AF2D33E0089CFDC /* AddressBook.framework */; };
 		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
+		07719E401BAFC11200A99E20 /* NumberedInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07719E3F1BAFC11200A99E20 /* NumberedInputCell.swift */; settings = {ASSET_TAGS = (); }; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		077811671AFF216F00D5DC4D /* ToggleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811661AFF216F00D5DC4D /* ToggleCell.swift */; };
 		077811691AFF237800D5DC4D /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811681AFF237800D5DC4D /* UserDefaults.swift */; };
@@ -107,11 +108,10 @@
 		07D9DD371AD8386B008FF016 /* InputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD361AD8386B008FF016 /* InputCell.swift */; };
 		07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD381AD83E42008FF016 /* RadioCell.swift */; };
 		07D9DD3B1AD868B5008FF016 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD3A1AD868B5008FF016 /* MapCell.swift */; };
-		07D9DD3D1AD880F4008FF016 /* TitleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD3C1AD880F4008FF016 /* TitleViewController.swift */; };
 		07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF251AC7BEDA0058E1CA /* LocationViewController.swift */; };
 		07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */; };
 		07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */; };
-		07E1FD901ACE4EDD00F619D0 /* AppDelegate+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8F1ACE4EDD00F619D0 /* AppDelegate+Swift.swift */; };
+		07E1FD901ACE4EDD00F619D0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8F1ACE4EDD00F619D0 /* AppDelegate.swift */; };
 		07F270B31AF58416000ECFEE /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F270B21AF58416000ECFEE /* ContactsViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -243,6 +243,7 @@
 		075E2FD51AF2D33E0089CFDC /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		075ED6261A994FEC0015F9E6 /* BusyDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusyDetails.h; sourceTree = "<group>"; };
 		075ED6271A994FEC0015F9E6 /* BusyDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusyDetails.m; sourceTree = "<group>"; };
+		07719E3F1BAFC11200A99E20 /* NumberedInputCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberedInputCell.swift; sourceTree = "<group>"; };
 		0775B0701A93BFB900C15303 /* InviteesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesViewController.h; sourceTree = "<group>"; };
 		0775B0711A93BFB900C15303 /* InviteesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesViewController.m; sourceTree = "<group>"; };
 		0775B0731A93E6B000C15303 /* StringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConstants.h; sourceTree = "<group>"; };
@@ -264,12 +265,11 @@
 		07D9DD361AD8386B008FF016 /* InputCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputCell.swift; sourceTree = "<group>"; };
 		07D9DD381AD83E42008FF016 /* RadioCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioCell.swift; sourceTree = "<group>"; };
 		07D9DD3A1AD868B5008FF016 /* MapCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
-		07D9DD3C1AD880F4008FF016 /* TitleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleViewController.swift; sourceTree = "<group>"; };
 		07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Invite-Bridging-Header.h"; sourceTree = "<group>"; };
 		07DDBF251AC7BEDA0058E1CA /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationResultsViewController.swift; sourceTree = "<group>"; };
 		07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Invite.swift"; sourceTree = "<group>"; };
-		07E1FD8F1ACE4EDD00F619D0 /* AppDelegate+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Swift.swift"; sourceTree = "<group>"; };
+		07E1FD8F1ACE4EDD00F619D0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		07F270B21AF58416000ECFEE /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -426,7 +426,7 @@
 				073273F41A892BFB007700B3 /* AppDelegate.h */,
 				073273F51A892BFB007700B3 /* AppDelegate.m */,
 				077811681AFF237800D5DC4D /* UserDefaults.swift */,
-				07E1FD8F1ACE4EDD00F619D0 /* AppDelegate+Swift.swift */,
+				07E1FD8F1ACE4EDD00F619D0 /* AppDelegate.swift */,
 				0775B0731A93E6B000C15303 /* StringConstants.h */,
 				07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */,
 				075249E51ACB397C00D279DA /* InviteTheme.swift */,
@@ -441,7 +441,6 @@
 				078924701AB369C5005EE7FB /* Launch */,
 				078924711AB369CE005EE7FB /* Login */,
 				07D01A321A9A9D5E00860650 /* Dashboard */,
-				07D9DD3E1AD880FD008FF016 /* Title/Description */,
 				07D01A331A9A9D7900860650 /* Invitees */,
 				07A313291A96AA410066EE3E /* Timeframe */,
 				078924721AB369DC005EE7FB /* Location */,
@@ -496,6 +495,7 @@
 				07BC8E3B1ACB29CE0050C4E9 /* DashboardCell.swift */,
 				07D9DD341AD83789008FF016 /* BasicCell.swift */,
 				07D9DD361AD8386B008FF016 /* InputCell.swift */,
+				07719E3F1BAFC11200A99E20 /* NumberedInputCell.swift */,
 				07D9DD381AD83E42008FF016 /* RadioCell.swift */,
 				0714087A1AEE13FC0081F304 /* ProfileCell.swift */,
 				07380CF81AFA972C00A6E19D /* ConflictCell.swift */,
@@ -645,14 +645,6 @@
 			path = OBGradientView;
 			sourceTree = "<group>";
 		};
-		07D9DD3E1AD880FD008FF016 /* Title/Description */ = {
-			isa = PBXGroup;
-			children = (
-				07D9DD3C1AD880F4008FF016 /* TitleViewController.swift */,
-			);
-			name = Title/Description;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -793,7 +785,6 @@
 			files = (
 				07BC8E391ACB13EB0050C4E9 /* ProfileImageView.swift in Sources */,
 				07D9DD371AD8386B008FF016 /* InputCell.swift in Sources */,
-				07D9DD3D1AD880F4008FF016 /* TitleViewController.swift in Sources */,
 				07D2D9C91AE616E2008E1733 /* OBGradientView.m in Sources */,
 				07D2D9C51AE5A6D4008E1733 /* DashboardOnboardingView.swift in Sources */,
 				071408741AEC9D660081F304 /* DatePickerView.swift in Sources */,
@@ -802,7 +793,7 @@
 				07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */,
 				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
 				0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */,
-				07E1FD901ACE4EDD00F619D0 /* AppDelegate+Swift.swift in Sources */,
+				07E1FD901ACE4EDD00F619D0 /* AppDelegate.swift in Sources */,
 				0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */,
 				075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */,
 				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,
@@ -844,6 +835,7 @@
 				072836761AD315BF00B158AC /* UIView+Invite.m in Sources */,
 				070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */,
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
+				07719E401BAFC11200A99E20 /* NumberedInputCell.swift in Sources */,
 				070C88BB1B069C01005E7CDD /* Reachability.m in Sources */,
 				07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */,
 				07BC8E3C1ACB29CE0050C4E9 /* DashboardCell.swift in Sources */,

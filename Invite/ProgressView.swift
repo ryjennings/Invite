@@ -74,7 +74,7 @@ import UIKit
         addConstraint(NSLayoutConstraint(item: currentStepView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: rect.size.height))
         currentStepView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0, 0)
         
-        AppDelegate.delay(0) {
+        delay(0) {
             UIView.animateWithDuration(0.2, delay: 1, options: .CurveEaseInOut, animations: {
                 currentStepView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2, 2)
                 }, completion: { finished in

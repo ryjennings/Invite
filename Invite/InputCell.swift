@@ -11,23 +11,29 @@ import UIKit
 @objc(InputCell) class InputCell: UITableViewCell, UITextViewDelegate
 {
     var delegate: InputCellDelegate?
-    @IBOutlet weak var placeholderLabel: UILabel!
+    @IBOutlet weak var guidance: UILabel!
     @IBOutlet weak var textView: UITextView!
-    @IBOutlet weak var labelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var guidanceLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var textViewLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var labelTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var textViewTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var labelBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var textViewBottomConstraint: NSLayoutConstraint!
 
+    override func awakeFromNib()
+    {
+        super.awakeFromNib()
+
+        self.textView.textContainerInset = UIEdgeInsetsMake(4, 0, 0, 0)
+        self.textView.textContainer.lineFragmentPadding = 0
+
+        self.guidanceLeadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
+        self.textViewLeadingConstraint.constant = self.guidanceLeadingConstraint.constant
+        self.selectionStyle = UITableViewCellSelectionStyle.None
+    }
+    
     // MARK: - UITextViewDelegate
 
     func textViewDidChange(textView: UITextView)
     {
-        placeholderLabel.hidden = Bool(textView.text.characters.count)
-        if let d = delegate {
-            d.textViewDidChange(textView)
-        }
+        guidance.hidden = Bool(textView.text.characters.count)
+        self.delegate?.textViewDidChange(textView)
     }
 }
 

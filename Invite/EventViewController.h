@@ -12,4 +12,6 @@
 
 @interface EventViewController : UIViewController
 
+@property (nonatomic, strong) PFObject *parseEvent;
+
 @end

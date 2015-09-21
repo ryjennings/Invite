@@ -1,5 +1,5 @@
 //
-//  AppDelegate+Swift.swift
+//  AppDelegate.swift
 //  Invite
 //
 //  Created by Ryan Jennings on 4/2/15.
@@ -10,9 +10,9 @@ import UIKit
 
 extension AppDelegate
 {
-    class func presentationTimeframeFromStartDate(startDate: NSDate!, endDate: NSDate!) -> NSString
+    class func presentationTimeframeForStartDate(startDate: NSDate!, endDate: NSDate!) -> NSString
     {
-        let presentationString = NSMutableString()
+        let string = NSMutableString()
         let calendar = NSCalendar.currentCalendar()
         let startComponents = calendar.components(
             [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
@@ -23,7 +23,7 @@ extension AppDelegate
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .ShortStyle
-        presentationString.appendString(dateFormatter.stringFromDate(startDate))
+        string.appendString(dateFormatter.stringFromDate(startDate))
         if (startComponents.day == endComponents.day &&
             startComponents.month == endComponents.month &&
             startComponents.year == endComponents.year) {
@@ -35,17 +35,18 @@ extension AppDelegate
             startComponents.hour == endComponents.hour &&
             startComponents.minute == endComponents.minute &&
             startComponents.second == endComponents.second)) {
-                presentationString.appendString(NSString(format: " - %@", dateFormatter.stringFromDate(endDate)) as String)
+                string.appendString(NSString(format: " - %@", dateFormatter.stringFromDate(endDate)) as String)
         }
-        return presentationString
+        return string
     }
 
-    class func delay(delay: Double, closure: () -> ()) {
-        dispatch_after(
-            dispatch_time(
-                DISPATCH_TIME_NOW,
-                Int64(delay * Double(NSEC_PER_SEC))
-            ),
-            dispatch_get_main_queue(), closure)
-    }
+}
+
+func delay(delay: Double, closure: () -> ()) {
+    dispatch_after(
+        dispatch_time(
+            DISPATCH_TIME_NOW,
+            Int64(delay * Double(NSEC_PER_SEC))
+        ),
+        dispatch_get_main_queue(), closure)
 }

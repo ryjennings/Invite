@@ -56,7 +56,7 @@ enum TimeframeRow: Int {
     override func viewWillAppear(animated: Bool)
     {
         if (startDate == nil) {
-            AppDelegate.delay(0.5) {
+            delay(0.5) {
                 self.showDatePicker(true)
             };
         }

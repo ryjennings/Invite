@@ -43,7 +43,7 @@
 
 // Weird methods needed because Swift doesn't like @class
 
-+ (void)addToProtoEventTitle:(NSString *)title description:(NSString *)description;
++ (void)addToProtoEventTitle:(NSString *)title;
 + (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 + (void)addToProtoEventLocation:(PFObject *)location;
 + (void)nilProtoEvent;

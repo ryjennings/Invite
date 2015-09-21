@@ -271,20 +271,14 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
         
         InputCell *cell = (InputCell *)[tableView dequeueReusableCellWithIdentifier:INPUT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.delegate = self;
-        cell.placeholderLabel.text = @"Tap to enter your friends' email addresses";
-        cell.placeholderLabel.font = [UIFont inviteTableSmallFont];
-        cell.placeholderLabel.textColor = [UIColor inviteTableLabelColor];
+        cell.guidance.text = @"Tap to enter your friends' email addresses";
+        cell.guidance.font = [UIFont inviteTableSmallFont];
+        cell.guidance.textColor = [UIColor inviteTableLabelColor];
         cell.textView.tag = indexPath.row;
         cell.textView.text = _textViewText;
         cell.textView.textColor = [UIColor inviteTableLabelColor];
         cell.textView.font = [UIFont inviteTableSmallFont];
-        cell.textView.textContainer.lineFragmentPadding = 0;
-        cell.textView.textContainerInset = UIEdgeInsetsMake(4, 0, 0, 0);
-        cell.textView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         [self addDoneToolBarToKeyboard:cell.textView];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.textViewLeadingConstraint.constant = cell.separatorInset.left;
-        cell.labelLeadingConstraint.constant = cell.separatorInset.left;
         return cell;
         
     } else {

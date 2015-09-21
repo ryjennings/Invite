@@ -226,14 +226,12 @@
 
 #pragma mark - Weird methods needed because Swift doesn't like @class
 
-+ (void)addToProtoEventTitle:(NSString *)title description:(NSString *)description
++ (void)addToProtoEventTitle:(NSString *)title
 {
     if ([AppDelegate user].protoEvent) {
         [AppDelegate user].protoEvent.title = title;
-        [AppDelegate user].protoEvent.eventDescription = description;
     } else {
         [[AppDelegate user].eventToDisplay setObject:title forKey:EVENT_TITLE_KEY];
-        [[AppDelegate user].eventToDisplay setObject:description forKey:EVENT_DESCRIPTION_KEY];
     }
 }
 

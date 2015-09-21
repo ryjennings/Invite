@@ -15,16 +15,24 @@
 
 @interface Event : NSObject
 
+@property (nonatomic, strong) PFObject *creator;
 @property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSString *eventDescription;
 @property (nonatomic, strong) NSArray *invitees;
 @property (nonatomic, strong) NSArray *emails;
 @property (nonatomic, strong) NSDate *startDate;
 @property (nonatomic, strong) NSDate *endDate;
 @property (nonatomic, strong) PFObject *location;
+@property (nonatomic, strong) NSDictionary *rsvp;
 
 + (Event *)createEvent;
-+ (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event;
++ (Event *)eventFromPFObject:(PFObject *)object;
+
 - (void)submitEvent;
++ (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event;
+
+- (NSString *)timeframe;
+- (NSString *)host;
+
+- (void)saveToParse;
 
 @end

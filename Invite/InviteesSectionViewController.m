@@ -25,6 +25,7 @@ NSString *const kNoResponse = @"No Response";
 @property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
 @property (nonatomic, weak) IBOutlet UILabel *headerLabel;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *leadingConstraint;
+@property (nonatomic, weak) IBOutlet UILabel *noInviteesLabel;
 
 @property (nonatomic, strong) NSMutableDictionary *invitees;
 @property (nonatomic, strong) NSMutableArray *usedIndexes;
@@ -54,6 +55,10 @@ NSString *const kNoResponse = @"No Response";
     
     _invitees = [NSMutableDictionary dictionary];
     _usedIndexes = [NSMutableArray array];
+    
+    _noInviteesLabel.font = [UIFont inviteTableSmallFont];
+    _noInviteesLabel.textColor = [UIColor inviteTableLabelColor];
+    _noInviteesLabel.text = @"Tap";
     
 //    if (_userInvitees) {
 //        NSMutableArray *inviteeEmails = [NSMutableArray array];
@@ -103,15 +108,20 @@ NSString *const kNoResponse = @"No Response";
         [_usedIndexes addObject:@(EventResponseNoResponse)];
     }
     
-    self.collectionView.collectionViewLayout = DateFlowLayout.new;
-    self.flowLayout = ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout);
-    self.flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    self.flowLayout.headerReferenceSize = CGSizeMake(80, 80);
-    self.flowLayout.minimumInteritemSpacing = 0;
-    self.flowLayout.minimumLineSpacing = 0;
-    self.flowLayout.sectionInset = UIEdgeInsetsMake(0, [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15, 0, 0);
-    self.flowLayout.itemSize = CGSizeMake(60, 80);
-    self.collectionView.alwaysBounceVertical = NO;
+    _noInviteesLabel.hidden = _rsvpDictionary.count;
+    _collectionView.hidden = !_rsvpDictionary.count;
+
+    if (_rsvpDictionary.count) {
+        self.collectionView.collectionViewLayout = DateFlowLayout.new;
+        self.flowLayout = ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout);
+        self.flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        self.flowLayout.headerReferenceSize = CGSizeMake(80, 80);
+        self.flowLayout.minimumInteritemSpacing = 0;
+        self.flowLayout.minimumLineSpacing = 0;
+        self.flowLayout.sectionInset = UIEdgeInsetsMake(0, [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15, 0, 0);
+        self.flowLayout.itemSize = CGSizeMake(60, 80);
+        self.collectionView.alwaysBounceVertical = NO;
+    }
 }
 
 - (PFObject *)personForKey:(NSString *)key

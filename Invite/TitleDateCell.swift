@@ -26,6 +26,9 @@ import UIKit
         label.textColor = UIColor.inviteBlueColor()
         label.font = UIFont.inviteTitleFont()
         label.numberOfLines = 0
+
+        self.dateLabelLeadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
+        self.selectionStyle = UITableViewCellSelectionStyle.Gray
     }
 
     override func setHighlighted(highlighted: Bool, animated: Bool)

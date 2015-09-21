@@ -10,18 +10,23 @@ import UIKit
 
 @objc(LabelCell) class LabelCell: UITableViewCell
 {
-    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var cellLabel: UILabel!
     @IBOutlet weak var cellText: UILabel!
     @IBOutlet weak var labelLeadingConstraint: NSLayoutConstraint!
 
-    override func awakeFromNib() {
+    override func awakeFromNib()
+    {
         super.awakeFromNib()
         
-        label.font = UIFont.proximaNovaSemiboldFontOfSize(16)
-        label.textColor = UIColor.lightGrayColor()
+        self.cellLabel.font = UIFont.proximaNovaSemiboldFontOfSize(16)
+        self.cellLabel.textColor = UIColor.lightGrayColor()
         
-        cellText.font = UIFont.inviteTableSmallFont()
-        cellText.textColor = UIColor.inviteTableLabelColor()
+        self.cellText.font = UIFont.inviteTableSmallFont()
+        self.cellText.textColor = UIColor.inviteTableLabelColor()
+        
+        self.labelLeadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
+        self.selectionStyle = UITableViewCellSelectionStyle.Gray
+        self.backgroundColor = UIColor.whiteColor()
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

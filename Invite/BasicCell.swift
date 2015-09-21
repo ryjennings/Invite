@@ -12,8 +12,12 @@ import UIKit
 {
     override func awakeFromNib()
     {
-        textLabel?.font = UIFont.inviteTableSmallFont()
-        textLabel?.textColor = UIColor.inviteTableLabelColor()
-        detailTextLabel?.font = UIFont.inviteTableSmallFont()
+        self.textLabel?.font = UIFont.inviteTableSmallFont()
+        self.textLabel?.textColor = UIColor.inviteTableLabelColor()
+        self.detailTextLabel?.font = UIFont.inviteTableSmallFont()
+
+        self.accessoryType = UITableViewCellAccessoryType.None
+        self.selectionStyle = UITableViewCellSelectionStyle.None
+        self.backgroundColor = UIColor.whiteColor()
     }
 }
