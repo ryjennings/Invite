@@ -54,13 +54,13 @@
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "settingsicon-iPad.png",
+      "filename" : "settingsicon.png",
       "scale" : "1x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "settingsicon-iPad@2x.png",
+      "filename" : "settingsicon@2x-1.png",
       "scale" : "2x"
     },
     {
@@ -106,11 +106,6 @@
       "idiom" : "ipad",
       "filename" : "appicon-ipad@2x.png",
       "scale" : "2x"
-    },
-    {
-      "idiom" : "car",
-      "size" : "120x120",
-      "scale" : "1x"
     },
     {
       "size" : "24x24",

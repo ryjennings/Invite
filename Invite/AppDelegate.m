@@ -268,7 +268,7 @@
 
 + (BOOL)hasProtoEvent
 {
-    return [AppDelegate user].protoEvent;
+    return [AppDelegate user].protoEvent ? YES : NO;
 }
 
 #pragma mark - Crash

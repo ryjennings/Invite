@@ -197,9 +197,6 @@
                                 <state key="normal" title="Add a New Event">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <segue destination="kPU-iI-QDW" kind="presentation" identifier="SegueToEvent" modalPresentationStyle="formSheet" id="zjH-Wg-rs9"/>
-                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.89411764709999997" green="0.92549019610000005" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -251,7 +248,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wpe-uX-R0l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1029" y="472"/>
+            <point key="canvasLocation" x="1029" y="422"/>
         </scene>
         <!--Event View Controller-->
         <scene sceneID="IDP-P6-kPo">
@@ -393,7 +390,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="evC-wc-crt">
-                                                    <rect key="frame" x="15" y="11" width="80" height="21"/>
+                                                    <rect key="frame" x="15" y="11" width="80" height="20.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="80" id="PT1-On-c30"/>
                                                     </constraints>
@@ -401,8 +398,8 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MrB-Yj-v83">
-                                                    <rect key="frame" x="103" y="11" width="482" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MrB-Yj-v83">
+                                                    <rect key="frame" x="103" y="11" width="482" height="22"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -430,8 +427,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="111"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ILq-Xf-cJU">
-                                                    <rect key="frame" x="103" y="20" width="482" height="80"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ILq-Xf-cJU">
+                                                    <rect key="frame" x="103" y="20" width="482" height="81"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="80" id="Sku-q4-Dar"/>
                                                     </constraints>
@@ -653,7 +650,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qkr-YC-zQL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2397" y="1609"/>
+            <point key="canvasLocation" x="2443" y="1601"/>
         </scene>
         <!--Invitees-->
         <scene sceneID="Eiq-ey-LhU">
@@ -998,7 +995,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dic-EX-dIE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1736" y="-947"/>
+            <point key="canvasLocation" x="1736" y="-259"/>
         </scene>
         <!--Settings-->
         <scene sceneID="t5L-CI-T9N">
@@ -1083,7 +1080,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="121-GU-6fP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2443" y="-947"/>
+            <point key="canvasLocation" x="2443" y="-259"/>
         </scene>
         <!--Timeframe-->
         <scene sceneID="Eph-vr-Mpd">
@@ -1361,24 +1358,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="43E-ei-uiz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1736" y="1218"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="DJa-6v-d08">
-            <objects>
-                <viewController id="L25-KR-mL0" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="yJd-H7-f6g"/>
-                        <viewControllerLayoutGuide type="bottom" id="bih-Ft-Bn5"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kmp-79-3xp">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="iZm-1r-3bj" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
+            <point key="canvasLocation" x="1736" y="1210"/>
         </scene>
     </scenes>
     <resources>
@@ -1386,7 +1366,4 @@
         <image name="facebook" width="60" height="60"/>
         <image name="logo" width="151" height="151"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="oSe-6E-Rey"/>
-    </inferredMetricsTieBreakers>
 </document>

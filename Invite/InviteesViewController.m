@@ -38,8 +38,6 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 @property (nonatomic, strong) NSString *textViewText;
 @property (nonatomic, assign) BOOL noPreviousFriends;
 
-@property (nonatomic, assign) BOOL cancelSegue;
-
 @end
 
 @implementation InviteesViewController
@@ -61,7 +59,6 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     
     _noPreviousFriends = !_friends.count;
 
-    _cancelSegue = _preInviteesEmails;
     if (_preInviteesEmails) {
         [_nextButton setTitle:@"Add more invitees" forState:UIControlStateNormal];
         [_nextButton addTarget:self action:@selector(saveNewInvitees:) forControlEvents:UIControlEventTouchUpInside];
