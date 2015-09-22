@@ -116,6 +116,7 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define TOGGLE_CELL_IDENTIFIER @"ToggleCellIdentifier"
 #define TITLE_DATE_CELL_IDENTIFIER @"TitleDateCellIdentifier"
 #define LABEL_CELL_IDENTIFIER @"LabelCellIdentifier"
+#define PADDING_CELL_IDENTIFIER @"PaddingCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

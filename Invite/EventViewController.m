@@ -38,16 +38,18 @@ typedef NS_ENUM(NSUInteger, EventRow) {
     EventRowTitle,
     EventRowHost,
     EventRowTimeframe,
+    EventRowInvitees,
     EventRowLocation
 };
 
 typedef NS_ENUM(NSUInteger, EventPreviewRow) {
     // Map in background
-    EventPreviewRowPadding1,
-    EventPreviewRowTitle, // contains Date
+    EventPreviewRowTopPadding,
+    EventPreviewRowTitle,
+    EventPreviewRowInvitees,
     EventPreviewRowTimeframe,
     EventPreviewRowLocation,
-    EventPreviewRowPadding2,
+    EventPreviewRowBottomPadding,
     EventPreviewRowCount
 };
 
@@ -81,8 +83,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;
 @property (nonatomic, weak) IBOutlet UIButton *bottomButton;
-@property (nonatomic, weak) IBOutlet UIBarButtonItem *rightButton;
 @property (nonatomic, weak) IBOutlet UIView *inviteesContainerView;
+
+@property (nonatomic, strong) UIBarButtonItem *leftBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *rightBarButtonItem;
 
 @property (nonatomic, strong) UITapGestureRecognizer *inviteesTap;
 
@@ -98,8 +102,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 @property (nonatomic, strong) NSString *textViewText;
 @property (nonatomic, strong) NumberedInputCell *titleInputCell;
 
-@property (nonatomic, assign) BOOL autoFocusTitleInput;
-
 @end
 
 @implementation EventViewController
@@ -110,8 +112,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     if (self) {
         if ([AppDelegate user].eventToDisplay) {
             _event = [Event eventFromPFObject:[AppDelegate user].eventToDisplay];
+            _mode = EventModeView;
         } else {
-            _event = [Event createEvent];
+            if (![AppDelegate user].protoEvent) {
+                [AppDelegate user].protoEvent = [Event createEvent];
+            }
+            _event = [AppDelegate user].protoEvent;
+            _mode = EventModePreview;
         }
     }
     return self;
@@ -121,28 +128,22 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 {
     [super viewDidLoad];
     
-    CLLocationDegrees latitude;
-    CLLocationDegrees longitude;
+    CLLocationDegrees latitude = 0;
+    CLLocationDegrees longitude = 0;
     
     _showResponseHasBeenSaved = NO;
     
     _tableView.rowHeight = UITableViewAutomaticDimension;
     _tableView.estimatedRowHeight = 100;
     
-    if (_event) {
-        
+    if (_mode == EventModeView)
+    {
         BOOL isCreator = [_event.creator.objectId isEqualToString:[AppDelegate parseUser].objectId];
+        
+        _response = [[_event.rsvp objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
 
-        _mode = isCreator ? EventModePreview : EventModeView;
-        
-        _autoFocusTitleInput = NO;
-        
-        if (_mode == EventModeView) {
-            _response = [[_event.rsvp objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
-        }
-
-        [_rightButton setTitle:@"Close"];
-        
+        _rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(close:)];
+        self.navigationItem.rightBarButtonItem = _rightBarButtonItem;
         self.navigationItem.title = _event.title;
         
         longitude = ((NSString *)[_event.location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
@@ -153,17 +154,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         _inviteesTap = [[UITapGestureRecognizer alloc] init];
         [_inviteesTap addTarget:self action:@selector(addMoreInvitees:)];
         [_inviteesContainerView addGestureRecognizer:_inviteesTap];
-        
-    } else {
-        
-        _mode = EventModePreview;
-        
-        _autoFocusTitleInput = YES;
-        
-        self.navigationItem.title = @"New Event";
 
-        [_rightButton setTitle:@"Cancel"];
-
+        // For invitees section
         NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
         for (PFObject *invitee in [AppDelegate user].protoEvent.invitees) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
@@ -176,13 +168,31 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         }
         _rsvpDictionary = rsvp;
         
-        longitude = ((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
-        latitude = ((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LATITUDE_KEY]).doubleValue;
+        [self configurePickerView];
+    }
+    else
+    {
+        self.navigationItem.title = @"New Event";
+
+        _leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+        self.navigationItem.leftBarButtonItem = _leftBarButtonItem;
+        
+        _rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Preview" style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
+        self.navigationItem.rightBarButtonItem = _rightBarButtonItem;
+        
+        _inviteesContainerView.alpha = 0;
+        
+        if ([AppDelegate user].protoEvent.location) {
+            longitude = ((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
+            latitude = ((NSString *)[[AppDelegate user].protoEvent.location objectForKey:LOCATION_LATITUDE_KEY]).doubleValue;
+        }
     
         _bottomButton.layer.cornerRadius = kCornerRadius;
         _bottomButton.clipsToBounds = YES;
         _bottomButton.titleLabel.font = [UIFont proximaNovaRegularFontOfSize:18];
         
+        _mapView.alpha = 0.33;
+        self.view.backgroundColor = [UIColor inviteLightSlateColor];
     }
     
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -202,8 +212,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
             [self.mapView setCenterCoordinate:center animated:NO];
         }];
     }
-    
-    [self configurePickerView];
 }
 
 - (void)addMoreInvitees:(UITapGestureRecognizer *)tap
@@ -233,20 +241,19 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     [self.view addConstraint:_pickerViewBottomConstraint];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if ([AppDelegate user].protoEvent.title) {
+        _textViewText = [AppDelegate user].protoEvent.title;
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [self addNotifications];
     [_tableView reloadData];
-    if (_autoFocusTitleInput) {
-        _autoFocusTitleInput = NO;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (_titleInputCell) {
-                [_titleInputCell.textView becomeFirstResponder];
-                [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            }
-        });
-    }
 }
 
 - (void)addNotifications
@@ -348,9 +355,16 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         
     }
     
-    if ((_mode == EventModePreview && indexPath.section == EventPreviewSectionDetails && indexPath.row == EventPreviewRowTitle) ||
-        (_mode == EventModePreview && indexPath.section == EventPreviewSectionDetails && indexPath.row == EventPreviewRowTimeframe) ||
-        (_mode == EventModePreview && indexPath.section == EventPreviewSectionDetails && indexPath.row == EventPreviewRowLocation))
+    // Make sure this check is before NumberedInputCell
+    
+    if (_mode == EventModePreview && indexPath.section == EventPreviewSectionDetails && (indexPath.row == EventPreviewRowTopPadding || indexPath.row == EventPreviewRowBottomPadding))
+    {
+        PaddingCell *cell = (PaddingCell *)[tableView dequeueReusableCellWithIdentifier:PADDING_CELL_IDENTIFIER forIndexPath:indexPath];
+        cell.heightConstraint.constant = 15;
+        return cell;
+    }
+
+    if (_mode == EventModePreview && indexPath.section != EventPreviewSectionMessage)
     {
         BOOL isTitle = indexPath.row == EventPreviewRowTitle;
         
@@ -359,10 +373,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         if (isTitle) {
             _titleInputCell = cell;
             cell.delegate = self;
-            cell.textView.tag = indexPath.row;
             cell.textView.text = _textViewText;
-            cell.textView.textColor = [UIColor inviteBlueColor];
-            cell.textView.font = [UIFont proximaNovaRegularFontOfSize:20];
             [self addAccessoryViewToKeyboardForTextView:cell.textView];
             cell.textView.hidden = NO;
             cell.accessoryType = UITableViewCellAccessoryNone;
@@ -374,6 +385,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
             case EventPreviewRowTitle:
                 cell.guidance.text = @"Give this event a title";
                 break;
+            case EventPreviewRowInvitees:
+                cell.guidance.text = @"Invite people";
+                break;
             case EventPreviewRowTimeframe:
                 cell.guidance.text = @"Set a time";
                 break;
@@ -383,38 +397,28 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
             default:
                 break;
         }
-        cell.guidance.font = [UIFont proximaNovaRegularFontOfSize:20];
-        cell.guidance.textColor = [UIColor inviteTableLabelColor];
-        
-        cell.number.layer.cornerRadius = 15;
-        cell.number.layer.borderWidth = 2;
-        cell.number.layer.borderColor = [UIColor inviteBlueColor].CGColor;
-        cell.number.font = [UIFont proximaNovaRegularFontOfSize:20];
-        cell.number.textColor = [UIColor inviteBlueColor];
-        cell.number.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row];
+        cell.indexPath = indexPath;
         
         return cell;
     }
     
-//    if ((_mode == EventModeView && indexPath.row == EventViewRowTimeframe) ||
-//        (_mode == EventModePreview && indexPath.row == EventPreviewRowTimeframe))
-//    {
-//        LabelCell *cell = (LabelCell *)[tableView dequeueReusableCellWithIdentifier:LABEL_CELL_IDENTIFIER];
-//        cell.cellLabel.text = @"Time";
-//        cell.cellText.text = [self textForRow:EventRowTimeframe];
-//        cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
-//        return cell;
-//    }
-//    
-//    if ((_mode == EventModeView && indexPath.row == EventViewRowLocation) ||
-//        (_mode == EventModePreview && indexPath.row == EventPreviewRowLocation))
-//    {
-//        LabelCell *cell = (LabelCell *)[tableView dequeueReusableCellWithIdentifier:LABEL_CELL_IDENTIFIER];
-//        cell.cellLabel.text = @"Location";
-//        cell.cellText.attributedText = [self attributedTextForLocation];
-//        cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
-//        return cell;
-//    }
+    if (_mode == EventModeView && indexPath.row == EventViewRowTimeframe)
+    {
+        LabelCell *cell = (LabelCell *)[tableView dequeueReusableCellWithIdentifier:LABEL_CELL_IDENTIFIER];
+        cell.cellLabel.text = @"Time";
+        cell.cellText.text = [self textForRow:EventRowTimeframe];
+        cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+        return cell;
+    }
+    
+    if (_mode == EventModeView && indexPath.row == EventViewRowLocation)
+    {
+        LabelCell *cell = (LabelCell *)[tableView dequeueReusableCellWithIdentifier:LABEL_CELL_IDENTIFIER];
+        cell.cellLabel.text = @"Location";
+        cell.cellText.attributedText = [self attributedTextForLocation];
+        cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+        return cell;
+    }
     
     BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
     cell.textLabel.text = @"";
@@ -442,9 +446,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
                 
     } else if ((_mode == EventModeView && indexPath.row == EventViewRowLocation) ||
                (_mode == EventModePreview && indexPath.row == EventPreviewRowLocation)) {
-
+        
         [self performSegueWithIdentifier:SEGUE_TO_LOCATION sender:self];
-
+        
+    } else if (_mode == EventModePreview && indexPath.row == EventPreviewRowInvitees) {
+        
+        [self performSegueWithIdentifier:SEGUE_TO_INVITEES sender:self];
+        
     }
 }
 
@@ -645,6 +653,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 - (void)numberedTextViewDidChange:(UITextView *)textView
 {
     _textViewText = textView.text;
+    
+    if (textView.text.length > 0) {
+        _event.title = textView.text;
+    } else {
+        _titleInputCell.number.text = @"1";
+    }
+    
     [self.tableView beginUpdates];
     [self.tableView endUpdates];
 }
