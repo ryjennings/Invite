@@ -26,6 +26,10 @@
 
 @synthesize creator = _creator;
 @synthesize title = _title;
+@synthesize invitees = _invitees;
+@synthesize startDate = _startDate;
+@synthesize endDate = _endDate;
+@synthesize location = _location;
 
 + (Event *)createEvent
 {
@@ -45,14 +49,8 @@
 
 #pragma mark - Properties
 
-//@property (nonatomic, strong) PFObject *creator;
-//@property (nonatomic, strong) NSString *title;
-//@property (nonatomic, strong) NSArray *invitees;
-//@property (nonatomic, strong) NSArray *emails;
-//@property (nonatomic, strong) NSDate *startDate;
 //@property (nonatomic, strong) NSDate *endDate;
 //@property (nonatomic, strong) PFObject *location;
-//@property (nonatomic, strong) NSDictionary *rsvp;
 
 - (PFObject *)creator
 {
@@ -86,6 +84,70 @@
     _title = title;
 }
 
+- (NSArray *)invitees
+{
+    if (_parseEvent && _parseEvent[EVENT_INVITEES_KEY]) {
+        return _parseEvent[EVENT_INVITEES_KEY];
+    }
+    return _invitees;
+}
+
+- (void)setInvitees:(NSArray *)invitees
+{
+    if (_parseEvent) {
+        _parseEvent[EVENT_INVITEES_KEY] = invitees;
+    }
+    _invitees = invitees;
+}
+
+- (NSDate *)startDate
+{
+    if (_parseEvent && _parseEvent[EVENT_START_DATE_KEY]) {
+        return _parseEvent[EVENT_START_DATE_KEY];
+    }
+    return _startDate;
+}
+
+- (void)setStartDate:(NSDate *)startDate
+{
+    if (_parseEvent) {
+        _parseEvent[EVENT_START_DATE_KEY] = startDate;
+    }
+    _startDate = startDate;
+}
+
+- (NSDate *)endDate
+{
+    if (_parseEvent && _parseEvent[EVENT_END_DATE_KEY]) {
+        return _parseEvent[EVENT_END_DATE_KEY];
+    }
+    return _endDate;
+}
+
+- (void)setEndDate:(NSDate *)endDate
+{
+    if (_parseEvent) {
+        _parseEvent[EVENT_END_DATE_KEY] = endDate;
+    }
+    _endDate = endDate;
+}
+
+- (PFObject *)location
+{
+    if (_parseEvent && _parseEvent[EVENT_LOCATION_KEY]) {
+        return _parseEvent[EVENT_LOCATION_KEY];
+    }
+    return _location;
+}
+
+- (void)setLocation:(PFObject *)location
+{
+    if (_parseEvent) {
+        _parseEvent[EVENT_LOCATION_KEY] = location;
+    }
+    _location = location;
+}
+
 - (void)saveToParse
 {
     [_parseEvent saveInBackground];
@@ -95,8 +157,8 @@
 
 - (NSString *)timeframe
 {
-    if (_startDate && _endDate) {
-        return [AppDelegate presentationTimeframeForStartDate:_startDate endDate:_endDate];
+    if (self.startDate && self.endDate) {
+        return [AppDelegate presentationTimeframeForStartDate:self.startDate endDate:self.endDate];
     }
     return @"Set a time for the event";
 }

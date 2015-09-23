@@ -32,6 +32,16 @@ extension UIColor
         return UIColor(red: 152/255, green: 184/255, blue: 204/255, alpha: 1)
     }
     
+    class func inviteLightSlateClearColor() -> UIColor
+    {
+        return UIColor(red: 152/255, green: 184/255, blue: 204/255, alpha: 0)
+    }
+    
+    class func inviteLightSlate66Color() -> UIColor
+    {
+        return UIColor(red: 152/255, green: 184/255, blue: 204/255, alpha: 0.66)
+    }
+    
     class func inviteGrayColor() -> UIColor
     {
         return UIColor(red: 194/255, green: 200/255, blue: 207/255, alpha: 1)

@@ -53,7 +53,6 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define EVENT_INVITEES_KEY @"invitees"
 #define EVENT_RSVP_KEY @"rsvp"
 #define EVENT_CREATOR_KEY @"creator"
-#define EVENT_COVER_IMAGE_KEY @"cover_image"
 #define EVENT_LOCATIONS_KEY @"locations"
 
 // Keys
@@ -86,6 +85,7 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define EVENT_VIEW_CONTROLLER @"EventViewController"
 #define EVENT_NAVIGATION_CONTROLLER @"EventNavigationController"
 #define SETTINGS_VIEW_CONTROLLER @"SettingsViewController"
+#define INVITEES_SECTION_VIEW_CONTROLLER @"InviteesSectionViewController"
 
 // Segues
 #define SEGUE_TO_LOGIN @"SegueToLogin"
@@ -117,6 +117,8 @@ typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
 #define TITLE_DATE_CELL_IDENTIFIER @"TitleDateCellIdentifier"
 #define LABEL_CELL_IDENTIFIER @"LabelCellIdentifier"
 #define PADDING_CELL_IDENTIFIER @"PaddingCellIdentifier"
+#define NO_CELL_IDENTIFIER @"NoCellIdentifier"
+#define BUTTON_CELL_IDENTIFIER @"ButtonCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

@@ -47,10 +47,9 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
     [super viewDidLoad];
     
     _textViewText = @"";
-    
-    self.navigationItem.titleView = [[ProgressView alloc] initWithFrame:CGRectMake(0, 0, 150, 15) step:2 steps:5];
-    
+        
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    self.navigationItem.title = @"Event Invitees";
     
     _friends = [AppDelegate user].friends;
     _selectedFriends = [NSMutableArray array];
@@ -437,8 +436,19 @@ typedef NS_ENUM(NSUInteger, InviteesSection) {
 
 - (IBAction)cancel:(id)sender
 {
-    [AppDelegate user].protoEvent = nil;
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+//    [AppDelegate user].protoEvent = nil;
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)save:(id)sender
+{
+    // Emails
+    [AppDelegate user].protoEvent.emails = [self allEmailAddresses];
+    
+    // Invitees
+    [AppDelegate user].protoEvent.invitees = _selectedFriends;
+
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Notifications

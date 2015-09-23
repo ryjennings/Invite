@@ -15,4 +15,6 @@
 @property (nonatomic, strong) NSArray *emailInvitees;
 @property (nonatomic, strong) NSDictionary *rsvpDictionary;
 
+- (void)buildInviteesDictionary;
+
 @end

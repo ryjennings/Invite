@@ -179,15 +179,3 @@ import ParseUI
         detailsLabel.preferredMaxLayoutWidth = bounds.size.width - 66
     }
 }
-
-//        if ((event.objectForKey(EVENT_COVER_IMAGE_KEY)) != nil) {
-//
-//            // Setup image view
-//            var coverImageView = PFImageView()
-//            coverImageView.file = event.objectForKey(EVENT_COVER_IMAGE_KEY) as! PFFile
-//            coverImageView.loadInBackground({ (image: UIImage!, error: NSError!) -> Void in
-//                self.eventImageView.image = image
-//            })
-//            eventView.bringSubviewToFront(eventImageView)
-//
-//        }

@@ -23,7 +23,6 @@ enum TimeframeRow: Int {
 @objc(TimeframePickerViewController) class TimeframePickerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, DatePickerViewDelegate
 {
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var nextButton: UIButton!
     
     var conflicts = [BusyDetails]()
     var startDate: NSDate!
@@ -39,17 +38,12 @@ enum TimeframeRow: Int {
     
     override func viewDidLoad()
     {
-        navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 3, steps: 5)
-        
         busyTimes = AppDelegate.busyTimes()
         
         tableView.tableHeaderView = tableHeaderView()
         
-        nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
-        nextButton.clipsToBounds = true
-        nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
-        nextButton.enabled = false
-        
+        self.navigationItem.title = "Event Time"
+
         configureDatePicker()
     }
     
@@ -334,14 +328,20 @@ enum TimeframeRow: Int {
 //            tableView.reloadData()
 //        }
         determineConflicts()
-        
-        nextButton.enabled = true
     }
     
     @IBAction func cancel(sender: UIBarButtonItem)
     {
-        AppDelegate.nilProtoEvent()
-        navigationController?.dismissViewControllerAnimated(true, completion: nil)
+//        AppDelegate.nilProtoEvent()
+        navigationController?.popViewControllerAnimated(true)
+    }
+    
+    @IBAction func save(sender: UIBarButtonItem)
+    {
+        if startDate != nil && endDate != nil {
+            AppDelegate.addToProtoEventStartDate(startDate, endDate: endDate)
+        }
+        navigationController?.popViewControllerAnimated(true)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)

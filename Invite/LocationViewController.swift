@@ -17,7 +17,6 @@ enum LocationSection: Int {
 
 @objc(LocationViewController) class LocationViewController: UIViewController, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, LocationResultsViewControllerDelegate, InputCellDelegate, MapCellDelegate
 {
-    @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     
     var searchController: UISearchController!
@@ -33,6 +32,8 @@ enum LocationSection: Int {
     {
         super.viewDidLoad()
         
+        self.navigationItem.title = "Event Location"
+        
         searchResultsController = LocationResultsViewController()
         searchResultsController.delegate = self
 
@@ -42,12 +43,6 @@ enum LocationSection: Int {
         searchController.searchBar.placeholder = "Search for a location"
         searchController.searchResultsUpdater = self
         
-        nextButton.layer.cornerRadius = CGFloat(kCornerRadius)
-        nextButton.clipsToBounds = true
-        nextButton.titleLabel!.font = UIFont.proximaNovaRegularFontOfSize(18)
-        
-        navigationItem.titleView = ProgressView(frame: CGRectMake(0, 0, 150, 15), step: 4, steps: 5)
-
         tableView.tableHeaderView = tableHeaderView()
         definesPresentationContext = true
 
@@ -298,7 +293,12 @@ enum LocationSection: Int {
     
     @IBAction func cancel(sender: UIBarButtonItem)
     {
-        AppDelegate.nilProtoEvent()
-        navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        navigationController?.popViewControllerAnimated(true)
+    }
+
+    @IBAction func save(sender: UIBarButtonItem)
+    {
+        AppDelegate.addToProtoEventLocation(activeLocation)
+        navigationController?.popViewControllerAnimated(true)
     }
 }

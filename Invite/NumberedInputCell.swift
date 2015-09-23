@@ -55,7 +55,7 @@ import UIKit
         self.selectionStyle = UITableViewCellSelectionStyle.None
     }
     
-    private func showCheckmark()
+    func showCheckmark()
     {
         self.isShowingCheckmark = true
         self.number.layer.borderColor = UIColor.inviteGreenColor().CGColor
@@ -63,7 +63,7 @@ import UIKit
         self.number.text = ""
     }
     
-    private func hideCheckmark()
+    func hideCheckmark()
     {
         self.isShowingCheckmark = false
         self.number.layer.borderColor = UIColor.inviteBlueColor().CGColor

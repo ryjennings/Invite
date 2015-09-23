@@ -24,7 +24,6 @@
 @property (nonatomic, strong) UIScrollView *onboardingScrollView;
 @property (nonatomic, strong) OBGradientView *gradientView;
 @property (nonatomic, strong) DashboardOnboardingView *onboarding;
-@property (nonatomic, strong) PFObject *eventToDisplay;
 @end
 
 @implementation DashboardViewController
@@ -102,14 +101,14 @@
 
 #pragma mark - Navigation
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:SEGUE_TO_EVENT]) {
-        if (_eventToDisplay) {
-            ((EventViewController *)((UINavigationController *)segue.destinationViewController).viewControllers[0]).parseEvent = _eventToDisplay;
-        }
-    }
-}
+//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+//{
+//    if ([segue.identifier isEqualToString:SEGUE_TO_EVENT]) {
+//        if (_eventToDisplay) {
+//            ((EventViewController *)((UINavigationController *)segue.destinationViewController).viewControllers[0]).parseEvent = _eventToDisplay;
+//        }
+//    }
+//}
 
 #pragma mark - UICollectionView
 
@@ -134,7 +133,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    _eventToDisplay = [AppDelegate user].events[indexPath.item];
+    [AppDelegate user].eventToDisplay = [AppDelegate user].events[indexPath.item];
     [self performSegueWithIdentifier:SEGUE_TO_EVENT sender:self];
 }
 

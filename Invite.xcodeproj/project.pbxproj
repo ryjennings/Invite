@@ -48,7 +48,6 @@
 		0728366C1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728365B1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf */; };
 		0728366E1AD2F1FC00B158AC /* UIFont+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */; };
 		072836761AD315BF00B158AC /* UIView+Invite.m in Sources */ = {isa = PBXBuildFile; fileRef = 072836751AD315BF00B158AC /* UIView+Invite.m */; };
-		0728367B1AD43F5700B158AC /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0728367A1AD43F5700B158AC /* ProgressView.swift */; };
 		073273F31A892BFB007700B3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F21A892BFB007700B3 /* main.m */; };
 		073273F61A892BFB007700B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F51A892BFB007700B3 /* AppDelegate.m */; };
 		073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 073273F71A892BFB007700B3 /* Invite.xcdatamodeld */; };
@@ -94,6 +93,7 @@
 		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
 		07719E401BAFC11200A99E20 /* NumberedInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07719E3F1BAFC11200A99E20 /* NumberedInputCell.swift */; settings = {ASSET_TAGS = (); }; };
 		07719E421BB0834800A99E20 /* PaddingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07719E411BB0834800A99E20 /* PaddingCell.swift */; settings = {ASSET_TAGS = (); }; };
+		07719E441BB2165800A99E20 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07719E431BB2165800A99E20 /* ButtonCell.swift */; settings = {ASSET_TAGS = (); }; };
 		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		077811671AFF216F00D5DC4D /* ToggleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811661AFF216F00D5DC4D /* ToggleCell.swift */; };
 		077811691AFF237800D5DC4D /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811681AFF237800D5DC4D /* UserDefaults.swift */; };
@@ -172,7 +172,6 @@
 		0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Invite.swift"; sourceTree = "<group>"; };
 		072836741AD315BF00B158AC /* UIView+Invite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Invite.h"; sourceTree = "<group>"; };
 		072836751AD315BF00B158AC /* UIView+Invite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Invite.m"; sourceTree = "<group>"; };
-		0728367A1AD43F5700B158AC /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		073273ED1A892BFB007700B3 /* Invite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Invite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		073273F11A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		073273F21A892BFB007700B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -246,6 +245,7 @@
 		075ED6271A994FEC0015F9E6 /* BusyDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusyDetails.m; sourceTree = "<group>"; };
 		07719E3F1BAFC11200A99E20 /* NumberedInputCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberedInputCell.swift; sourceTree = "<group>"; };
 		07719E411BB0834800A99E20 /* PaddingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingCell.swift; sourceTree = "<group>"; };
+		07719E431BB2165800A99E20 /* ButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
 		0775B0701A93BFB900C15303 /* InviteesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesViewController.h; sourceTree = "<group>"; };
 		0775B0711A93BFB900C15303 /* InviteesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesViewController.m; sourceTree = "<group>"; };
 		0775B0731A93E6B000C15303 /* StringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConstants.h; sourceTree = "<group>"; };
@@ -505,6 +505,7 @@
 				0778116A1B01382600D5DC4D /* TitleDateCell.swift */,
 				070C88B51B05227E005E7CDD /* LabelCell.swift */,
 				07719E411BB0834800A99E20 /* PaddingCell.swift */,
+				07719E431BB2165800A99E20 /* ButtonCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -598,7 +599,6 @@
 			isa = PBXGroup;
 			children = (
 				07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */,
-				0728367A1AD43F5700B158AC /* ProgressView.swift */,
 				071408731AEC9D660081F304 /* DatePickerView.swift */,
 				070C88BF1B081E42005E7CDD /* PickerView.swift */,
 				07380CFA1AFA980800A6E19D /* ConflictView.swift */,
@@ -827,7 +827,6 @@
 				075D10891ADC859D00C86130 /* SDWebImageDownloader.m in Sources */,
 				075D10851ADC859D00C86130 /* NSData+ImageContentType.m in Sources */,
 				073273F31A892BFB007700B3 /* main.m in Sources */,
-				0728367B1AD43F5700B158AC /* ProgressView.swift in Sources */,
 				0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */,
 				075D10901ADC859D00C86130 /* UIImage+WebP.m in Sources */,
 				073273FC1A892BFB007700B3 /* LoginViewController.m in Sources */,
@@ -840,6 +839,7 @@
 				070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */,
 				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
 				07719E401BAFC11200A99E20 /* NumberedInputCell.swift in Sources */,
+				07719E441BB2165800A99E20 /* ButtonCell.swift in Sources */,
 				070C88BB1B069C01005E7CDD /* Reachability.m in Sources */,
 				07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */,
 				07BC8E3C1ACB29CE0050C4E9 /* DashboardCell.swift in Sources */,

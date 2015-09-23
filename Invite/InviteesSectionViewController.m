@@ -25,7 +25,6 @@ NSString *const kNoResponse = @"No Response";
 @property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
 @property (nonatomic, weak) IBOutlet UILabel *headerLabel;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *leadingConstraint;
-@property (nonatomic, weak) IBOutlet UILabel *noInviteesLabel;
 
 @property (nonatomic, strong) NSMutableDictionary *invitees;
 @property (nonatomic, strong) NSMutableArray *usedIndexes;
@@ -48,6 +47,11 @@ NSString *const kNoResponse = @"No Response";
     _headerLabel.font = [UIFont inviteTableHeaderFont];
     _headerLabel.text = @"WHO'S INVITED";
 
+    [self buildInviteesDictionary];
+}
+
+- (void)buildInviteesDictionary
+{
     NSMutableArray *going = [NSMutableArray array];
     NSMutableArray *maybe = [NSMutableArray array];
     NSMutableArray *sorry = [NSMutableArray array];
@@ -56,17 +60,13 @@ NSString *const kNoResponse = @"No Response";
     _invitees = [NSMutableDictionary dictionary];
     _usedIndexes = [NSMutableArray array];
     
-    _noInviteesLabel.font = [UIFont inviteTableSmallFont];
-    _noInviteesLabel.textColor = [UIColor inviteTableLabelColor];
-    _noInviteesLabel.text = @"Tap";
-    
-//    if (_userInvitees) {
-//        NSMutableArray *inviteeEmails = [NSMutableArray array];
-//        for (PFObject *invitee in _userInvitees) {
-//            [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
-//        }
-//        [noresponse addObjectsFromArray:inviteeEmails];
-//    }
+    if (_userInvitees) {
+        NSMutableArray *inviteeEmails = [NSMutableArray array];
+        for (PFObject *invitee in _userInvitees) {
+            [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
+        }
+        [noresponse addObjectsFromArray:inviteeEmails];
+    }
     
     if (_emailInvitees.count) {
         [noresponse addObjectsFromArray:_emailInvitees];
@@ -108,9 +108,8 @@ NSString *const kNoResponse = @"No Response";
         [_usedIndexes addObject:@(EventResponseNoResponse)];
     }
     
-    _noInviteesLabel.hidden = _rsvpDictionary.count;
     _collectionView.hidden = !_rsvpDictionary.count;
-
+    
     if (_rsvpDictionary.count) {
         self.collectionView.collectionViewLayout = DateFlowLayout.new;
         self.flowLayout = ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout);
@@ -121,6 +120,9 @@ NSString *const kNoResponse = @"No Response";
         self.flowLayout.sectionInset = UIEdgeInsetsMake(0, [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15, 0, 0);
         self.flowLayout.itemSize = CGSizeMake(60, 80);
         self.collectionView.alwaysBounceVertical = NO;
+    } else {
+        self.collectionView.collectionViewLayout = [[UICollectionViewFlowLayout alloc] init];
+        self.flowLayout = nil;
     }
 }
 

@@ -22,7 +22,7 @@ import UIKit
         self.cellLabel.textColor = UIColor.lightGrayColor()
         
         self.cellText.font = UIFont.inviteTableSmallFont()
-        self.cellText.textColor = UIColor.inviteTableLabelColor()
+        self.cellText.textColor = UIColor.inviteTableHeaderColor()
         
         self.labelLeadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
         self.selectionStyle = UITableViewCellSelectionStyle.Gray
