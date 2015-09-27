@@ -3,7 +3,6 @@
 //
 
 #import "AppDelegate.h"
-#import "BusyDetails.h"
 #import "OBGradientView.h"
 #import "SDiPhoneVersion.h"
 #import "StringConstants.h"

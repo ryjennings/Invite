@@ -57,6 +57,11 @@ extension UIColor
         return UIColor(red: 233/255, green: 240/255, blue: 245/255, alpha: 1)
     }
     
+    class func inviteLighterBackgroundSlateColor() -> UIColor
+    {
+        return UIColor(red: 0.96, green: 0.97, blue: 0.98, alpha: 1)
+    }
+    
     class func inviteGreenColor() -> UIColor
     {
         return UIColor(red: 0, green: 217/255, blue: 116/255, alpha: 1)

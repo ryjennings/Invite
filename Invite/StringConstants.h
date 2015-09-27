@@ -7,17 +7,10 @@
 //
 
 typedef NS_ENUM(NSUInteger, EventResponse) {
+    EventResponseNoResponse,
     EventResponseGoing,
     EventResponseMaybe,
-    EventResponseSorry,
-    EventResponseNoResponse
-};
-
-typedef NS_ENUM(NSUInteger, BusyDetailsCircle) {
-    BusyDetailsCircleRedGreen,
-    BusyDetailsCircleRed,
-    BusyDetailsCircleGreenRed,
-    BusyDetailsCircleGreen
+    EventResponseSorry
 };
 
 // NSUserDefault Keys

@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc(InputCell) class InputCell: UITableViewCell, UITextViewDelegate
+@objc(InputCell) class InputCell: UITableViewCell, UITextViewDelegate, NSLayoutManagerDelegate
 {
     var delegate: InputCellDelegate?
     @IBOutlet weak var guidance: UILabel!
@@ -22,6 +22,7 @@ import UIKit
 
         self.textView.textContainerInset = UIEdgeInsetsMake(4, 0, 0, 0)
         self.textView.textContainer.lineFragmentPadding = 0
+        self.textView.layoutManager.delegate = self
 
         self.guidanceLeadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
         self.textViewLeadingConstraint.constant = self.guidanceLeadingConstraint.constant
@@ -34,6 +35,13 @@ import UIKit
     {
         guidance.hidden = Bool(textView.text.characters.count)
         self.delegate?.textViewDidChange(textView)
+    }
+
+    // MARK: - NSLayoutManagerDelegate
+    
+    func layoutManager(layoutManager: NSLayoutManager, lineSpacingAfterGlyphAtIndex glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat
+    {
+        return 4 // UITextView line spacing - This value is SUPER sensitive
     }
 }
 

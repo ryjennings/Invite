@@ -24,11 +24,11 @@ enum TimeframeRow: Int {
 {
     @IBOutlet weak var tableView: UITableView!
     
-    var conflicts = [BusyDetails]()
+    var conflicts = [Reservation]()
     var startDate: NSDate!
     var endDate: NSDate!
     
-    var busyTimes: NSSet!
+    var reservations: NSSet!
     
     // keyboard height 270.0
     let kDatePickerViewHeight = CGFloat(314.0)
@@ -38,7 +38,7 @@ enum TimeframeRow: Int {
     
     override func viewDidLoad()
     {
-        busyTimes = AppDelegate.busyTimes()
+        reservations = AppDelegate.busyTimes()
         
         tableView.tableHeaderView = tableHeaderView()
         
@@ -60,65 +60,10 @@ enum TimeframeRow: Int {
     {
         conflicts.removeAll(keepCapacity: true)
         
-        if (busyTimes != nil) {
-            busyTimes.enumerateObjectsUsingBlock { (object, stop) -> Void in
-                let busy = object as! BusyDetails
-                
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.timeZone = NSTimeZone.localTimeZone()
-                dateFormatter.dateStyle = .MediumStyle
-                dateFormatter.timeStyle = .ShortStyle
-                
-                // If busy end is earlier than start OR busy start is later than end
-                
-                
-                if (busy.end.earlierDate(self.startDate).isEqualToDate(busy.end) && busy.end != self.startDate) || // busy end is before start
-                    (busy.start.laterDate(self.endDate).isEqualToDate(busy.start) && busy.start != self.endDate) { // busy start is after end
-                    return
-                }
-                
-                // busy start == start && busy end == end
-                
-                if busy.start == self.startDate && busy.end == self.endDate {
-                    
-                    busy.circle = BusyDetailsCircle.Red
-
-                } else {
-                
-                    
-                    // busy end is later than start AND busy start is earlier than end
-                    
-                    if busy.end.earlierDate(self.endDate).isEqualToDate(busy.end) {
-                        
-                        // busy end is somewhere between start and end
-                        
-                        
-                        if busy.start.earlierDate(self.startDate).isEqualToDate(busy.start) {
-                            // first half
-//                            busy.circle = BusyDetailsCircle.RedGreen
-                            busy.circle = BusyDetailsCircle.Red
-                        } else {
-                            // full
-                            busy.circle = BusyDetailsCircle.Red
-                        }
-                    } else {
-                        
-                        // busy end is later than end
-                        
-                        if busy.start.earlierDate(self.startDate).isEqualToDate(busy.start) {
-                            // full
-                            busy.circle = BusyDetailsCircle.Red
-                        } else {
-                            // second half
-//                            busy.circle = BusyDetailsCircle.GreenRed
-                            busy.circle = BusyDetailsCircle.Red
-                        }
-                    }
-                }
-                
-                self.conflicts.append(busy)
-
-
+        if (reservations != nil) {
+            reservations.enumerateObjectsUsingBlock { (object, stop) -> Void in
+                let reservation = object as! Reservation
+                self.conflicts.append(reservation)
             }
             if tableView.numberOfSections == 0 && conflicts.count > 0 {
                 tableView.insertSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: UITableViewRowAnimation.Fade)
@@ -247,8 +192,7 @@ enum TimeframeRow: Int {
             if (conflicts.count == 0) {
                 cell.label.text = "There are no conflicts with this time! You're good to go!"
             } else {
-                cell.conflictView.type = conflicts[indexPath.row].circle
-                cell.label.text = conflicts[indexPath.row].name ?? conflicts[indexPath.row].email
+                cell.label.text = conflicts[indexPath.row].userName ?? conflicts[indexPath.row].userEmail
             }
             return cell
         }
@@ -308,12 +252,8 @@ enum TimeframeRow: Int {
     
     func datePickerView(datePickerView: DatePickerView, hasSelectedDate date: NSDate)
     {
-        var insertCells = false
         showDatePicker(false)
         if (datePickerView.isSelectingStartDate) {
-            if startDate == nil {
-                insertCells = true
-            }
             startDate = date
             if (endDate == nil || endDate.earlierDate(startDate).isEqualToDate(endDate)) {
                 endDate = startDate
@@ -321,19 +261,13 @@ enum TimeframeRow: Int {
         } else {
             endDate = date
         }
-//        if insertCells {
-//            tableView.insertSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: UITableViewRowAnimation.Fade)
-////            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0), NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
-//        } else {
-//            tableView.reloadData()
-//        }
         determineConflicts()
     }
     
     @IBAction func cancel(sender: UIBarButtonItem)
     {
 //        AppDelegate.nilProtoEvent()
-        navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     @IBAction func save(sender: UIBarButtonItem)
@@ -341,7 +275,7 @@ enum TimeframeRow: Int {
         if startDate != nil && endDate != nil {
             AppDelegate.addToProtoEventStartDate(startDate, endDate: endDate)
         }
-        navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)

@@ -266,6 +266,11 @@
     return [AppDelegate user].events;
 }
 
++ (NSArray *)friends
+{
+    return [AppDelegate user].friends;
+}
+
 + (BOOL)hasProtoEvent
 {
     return [AppDelegate user].protoEvent ? YES : NO;

@@ -8,8 +8,8 @@
 
 #import "User.h"
 
-#import "BusyDetails.h"
 #import "Event.h"
+#import "Invite-Swift.h"
 #import "StringConstants.h"
 
 @implementation User
@@ -178,10 +178,7 @@
                 startComponents.hour = 0;
                 NSDateComponents *endComponents = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:end];
                 endComponents.hour = 0;
-                
-                NSDate *startBaseDate = [calendar dateFromComponents:startComponents];
-                NSDate *endBaseDate = [calendar dateFromComponents:endComponents];
-                
+                                
                 [eventsThatFriendsAreAttending[event.objectId] enumerateObjectsUsingBlock:^(PFObject *friend, NSUInteger idx, BOOL *stop) {
                     
                     NSDictionary *rsvp = [event objectForKey:EVENT_RSVP_KEY];
@@ -189,14 +186,12 @@
                     EventResponse response = [rsvp[[AppDelegate keyFromEmail:email]] integerValue];
 #warning Uncomment conditional
 //                    if (response == EventResponseGoing || response == EventResponseMaybe) {
-                        [busyTimes addObject:[BusyDetails busyDetailsWithName:[friend objectForKey:FULL_NAME_KEY]
-                                                                        email:email
+                    [busyTimes addObject:[Reservation reservationWithUserName:[friend objectForKey:FULL_NAME_KEY]
+                                                                    userEmail:email
                                                                    eventTitle:[event objectForKey:EVENT_TITLE_KEY]
                                                                 eventResponse:response
-                                                                        start:start
-                                                                startBaseDate:startBaseDate
-                                                                          end:end
-                                                                  endBaseDate:endBaseDate]];
+                                                               eventStartDate:start
+                                                                 eventEndDate:end]];
 //                    }
                 }];
             }

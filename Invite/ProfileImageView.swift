@@ -22,7 +22,7 @@ class ProfileImageView: UIImageView
     
     override func awakeFromNib()
     {
-        layer.cornerRadius = 20
+        layer.cornerRadius = 15
         clipsToBounds = true
         backgroundColor = UIColor.inviteLightSlateColor()
     }

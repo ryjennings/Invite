@@ -50,6 +50,7 @@
 + (NSArray *)locations;
 + (NSSet *)busyTimes;
 + (NSArray *)events;
++ (NSArray *)friends;
 + (BOOL)hasProtoEvent;
 
 @end

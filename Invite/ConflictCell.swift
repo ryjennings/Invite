@@ -14,7 +14,7 @@ import UIKit
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var conflictViewLeadingConstraint: NSLayoutConstraint!
         
-    var busy: BusyDetails!
+    var reservation: Reservation!
     
     override func awakeFromNib()
     {

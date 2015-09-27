@@ -48,6 +48,7 @@
 		0728366C1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728365B1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf */; };
 		0728366E1AD2F1FC00B158AC /* UIFont+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */; };
 		072836761AD315BF00B158AC /* UIView+Invite.m in Sources */ = {isa = PBXBuildFile; fileRef = 072836751AD315BF00B158AC /* UIView+Invite.m */; };
+		073029ED1BB3954B00E2266E /* Reservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073029EC1BB3954B00E2266E /* Reservation.swift */; settings = {ASSET_TAGS = (); }; };
 		073273F31A892BFB007700B3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F21A892BFB007700B3 /* main.m */; };
 		073273F61A892BFB007700B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F51A892BFB007700B3 /* AppDelegate.m */; };
 		073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 073273F71A892BFB007700B3 /* Invite.xcdatamodeld */; };
@@ -90,11 +91,9 @@
 		075D10921ADC859D00C86130 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10811ADC859D00C86130 /* UIImageView+WebCache.m */; };
 		075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10831ADC859D00C86130 /* UIView+WebCacheOperation.m */; };
 		075E2FD61AF2D33E0089CFDC /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 075E2FD51AF2D33E0089CFDC /* AddressBook.framework */; };
-		075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 075ED6271A994FEC0015F9E6 /* BusyDetails.m */; };
 		07719E401BAFC11200A99E20 /* NumberedInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07719E3F1BAFC11200A99E20 /* NumberedInputCell.swift */; settings = {ASSET_TAGS = (); }; };
 		07719E421BB0834800A99E20 /* PaddingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07719E411BB0834800A99E20 /* PaddingCell.swift */; settings = {ASSET_TAGS = (); }; };
 		07719E441BB2165800A99E20 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07719E431BB2165800A99E20 /* ButtonCell.swift */; settings = {ASSET_TAGS = (); }; };
-		0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0775B0711A93BFB900C15303 /* InviteesViewController.m */; };
 		077811671AFF216F00D5DC4D /* ToggleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811661AFF216F00D5DC4D /* ToggleCell.swift */; };
 		077811691AFF237800D5DC4D /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077811681AFF237800D5DC4D /* UserDefaults.swift */; };
 		0778116B1B01382600D5DC4D /* TitleDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0778116A1B01382600D5DC4D /* TitleDateCell.swift */; };
@@ -113,7 +112,7 @@
 		07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */; };
 		07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */; };
 		07E1FD901ACE4EDD00F619D0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8F1ACE4EDD00F619D0 /* AppDelegate.swift */; };
-		07F270B31AF58416000ECFEE /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F270B21AF58416000ECFEE /* ContactsViewController.swift */; };
+		07F9AAD51BB49A76003299C3 /* InviteesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F9AAD41BB49A76003299C3 /* InviteesViewController.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -172,6 +171,7 @@
 		0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Invite.swift"; sourceTree = "<group>"; };
 		072836741AD315BF00B158AC /* UIView+Invite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Invite.h"; sourceTree = "<group>"; };
 		072836751AD315BF00B158AC /* UIView+Invite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Invite.m"; sourceTree = "<group>"; };
+		073029EC1BB3954B00E2266E /* Reservation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reservation.swift; sourceTree = "<group>"; };
 		073273ED1A892BFB007700B3 /* Invite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Invite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		073273F11A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		073273F21A892BFB007700B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -241,13 +241,9 @@
 		075D10821ADC859D00C86130 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		075D10831ADC859D00C86130 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
 		075E2FD51AF2D33E0089CFDC /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
-		075ED6261A994FEC0015F9E6 /* BusyDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusyDetails.h; sourceTree = "<group>"; };
-		075ED6271A994FEC0015F9E6 /* BusyDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusyDetails.m; sourceTree = "<group>"; };
 		07719E3F1BAFC11200A99E20 /* NumberedInputCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberedInputCell.swift; sourceTree = "<group>"; };
 		07719E411BB0834800A99E20 /* PaddingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaddingCell.swift; sourceTree = "<group>"; };
 		07719E431BB2165800A99E20 /* ButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
-		0775B0701A93BFB900C15303 /* InviteesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesViewController.h; sourceTree = "<group>"; };
-		0775B0711A93BFB900C15303 /* InviteesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesViewController.m; sourceTree = "<group>"; };
 		0775B0731A93E6B000C15303 /* StringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringConstants.h; sourceTree = "<group>"; };
 		077811661AFF216F00D5DC4D /* ToggleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleCell.swift; sourceTree = "<group>"; };
 		077811681AFF237800D5DC4D /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
@@ -272,7 +268,7 @@
 		07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationResultsViewController.swift; sourceTree = "<group>"; };
 		07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Invite.swift"; sourceTree = "<group>"; };
 		07E1FD8F1ACE4EDD00F619D0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		07F270B21AF58416000ECFEE /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
+		07F9AAD41BB49A76003299C3 /* InviteesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -619,9 +615,7 @@
 		07D01A331A9A9D7900860650 /* Invitees */ = {
 			isa = PBXGroup;
 			children = (
-				0775B0701A93BFB900C15303 /* InviteesViewController.h */,
-				0775B0711A93BFB900C15303 /* InviteesViewController.m */,
-				07F270B21AF58416000ECFEE /* ContactsViewController.swift */,
+				07F9AAD41BB49A76003299C3 /* InviteesViewController.swift */,
 			);
 			name = Invitees;
 			sourceTree = "<group>";
@@ -633,8 +627,7 @@
 				0755CE481A8D22E500FF05B7 /* User.m */,
 				0786EB7B1A8E70ED006FDCA6 /* Event.h */,
 				0786EB7C1A8E70ED006FDCA6 /* Event.m */,
-				075ED6261A994FEC0015F9E6 /* BusyDetails.h */,
-				075ED6271A994FEC0015F9E6 /* BusyDetails.m */,
+				073029EC1BB3954B00E2266E /* Reservation.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -787,19 +780,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				07BC8E391ACB13EB0050C4E9 /* ProfileImageView.swift in Sources */,
+				07F9AAD51BB49A76003299C3 /* InviteesViewController.swift in Sources */,
 				07D9DD371AD8386B008FF016 /* InputCell.swift in Sources */,
 				07D2D9C91AE616E2008E1733 /* OBGradientView.m in Sources */,
 				07D2D9C51AE5A6D4008E1733 /* DashboardOnboardingView.swift in Sources */,
 				071408741AEC9D660081F304 /* DatePickerView.swift in Sources */,
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
-				07F270B31AF58416000ECFEE /* ContactsViewController.swift in Sources */,
 				07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */,
 				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
 				0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */,
 				07E1FD901ACE4EDD00F619D0 /* AppDelegate.swift in Sources */,
-				0775B0721A93BFB900C15303 /* InviteesViewController.m in Sources */,
 				075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */,
 				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,
+				073029ED1BB3954B00E2266E /* Reservation.swift in Sources */,
 				074437801AE02C9C002A6C4D /* DateFlowLayout.m in Sources */,
 				074ABE931AE47ACE00C093C7 /* TimeframePickerViewController.swift in Sources */,
 				075D10881ADC859D00C86130 /* SDWebImageDecoder.m in Sources */,
@@ -837,7 +830,6 @@
 				072836761AD315BF00B158AC /* UIView+Invite.m in Sources */,
 				07719E421BB0834800A99E20 /* PaddingCell.swift in Sources */,
 				070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */,
-				075ED6281A994FEC0015F9E6 /* BusyDetails.m in Sources */,
 				07719E401BAFC11200A99E20 /* NumberedInputCell.swift in Sources */,
 				07719E441BB2165800A99E20 /* ButtonCell.swift in Sources */,
 				070C88BB1B069C01005E7CDD /* Reachability.m in Sources */,
@@ -1032,10 +1024,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1052,10 +1041,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = InviteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.appuous.$(PRODUCT_NAME:rfc1034identifier)";

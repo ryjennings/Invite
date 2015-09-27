@@ -159,7 +159,6 @@ enum LocationSection: Int {
         } else {
             
             let cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) 
-//            cell.accessoryType = indexPath.row == savedLocationsIndex ? .Checkmark : .None
             cell.accessoryView = indexPath.row == savedLocationsIndex ? UIImageView(image: UIImage(named: "list_selected")) : UIImageView(image: UIImage(named: "list_select"))
             if (indexPath.row == 0) {
                 cell.textLabel?.text = "Use current location"

@@ -11,7 +11,6 @@
 #import "AppDelegate.h"
 #import "Event.h"
 #import "Invite-Swift.h"
-#import "InviteesViewController.h"
 #import "InviteesSectionViewController.h"
 #import "StringConstants.h"
 #import "User.h"
@@ -134,7 +133,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     
     _mapView.delegate = self;
     
-    [self configureGradientView];
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+        [self configureGradientView];
+    }
     [self configureForMode];
 }
 
@@ -362,6 +363,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.button.enabled = readyToSend;
         cell.button.alpha = readyToSend ? 1 : 0.5;
+        cell.backgroundColor = [UIColor clearColor];
+        cell.contentView.backgroundColor = [UIColor clearColor];
         return cell;
     }
     
@@ -370,6 +373,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         PaddingCell *cell = (PaddingCell *)[tableView dequeueReusableCellWithIdentifier:NO_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.heightConstraint.constant = 15;
+        cell.backgroundColor = [UIColor clearColor];
+        cell.contentView.backgroundColor = [UIColor clearColor];
         return cell;
     }
     
