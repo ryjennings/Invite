@@ -24,6 +24,8 @@
 @property (nonatomic, strong) PFObject *location;
 @property (nonatomic, strong) NSDictionary *rsvp;
 
+@property (nonatomic, strong) NSString *savedEmailInput;
+
 + (Event *)createEvent;
 + (Event *)eventFromPFObject:(PFObject *)object;
 

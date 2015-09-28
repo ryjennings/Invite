@@ -147,11 +147,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/InviteesViewController.swift"
-            timestampString = "465031498.149456"
+            timestampString = "465107884.394915"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "393"
-            endingLineNumber = "393"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
             landmarkName = "didDismissSearchController(_:)"
             landmarkType = "5">
          </BreakpointContent>

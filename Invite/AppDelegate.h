@@ -16,6 +16,7 @@
 #import "Reachability.h"
 
 @class User;
+@class Event;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -43,14 +44,17 @@
 
 // Weird methods needed because Swift doesn't like @class
 
-+ (void)addToProtoEventTitle:(NSString *)title;
 + (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 + (void)addToProtoEventLocation:(PFObject *)location;
++ (void)addToProtoEventInvitees:(NSArray *)invitees emails:(NSArray *)emails;
 + (void)nilProtoEvent;
 + (NSArray *)locations;
 + (NSSet *)busyTimes;
 + (NSArray *)events;
 + (NSArray *)friends;
++ (Event *)protoEvent;
++ (Event *)eventToDisplay;
 + (BOOL)hasProtoEvent;
++ (BOOL)hasEventToDisplay;
 
 @end

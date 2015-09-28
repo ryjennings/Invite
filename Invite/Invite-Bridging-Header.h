@@ -8,3 +8,4 @@
 #import "StringConstants.h"
 #import "UIImageView+WebCache.h"
 #import "UIView+Invite.h"
+#import "Event.h"

@@ -12,37 +12,31 @@ import AddressBook
 class Friend
 {
     let fullName: String?
-    let firstName: String?
     let lastName: String?
     let email: String
-    let id: String?
+    let pfObject: PFObject?
     
-    init(fullName: String?, firstName: String?, lastName: String?, email: String, id: String?) {
+    init(fullName: String?, lastName: String?, email: String, pfObject: PFObject?) {
         if let fullName = fullName {
             self.fullName = fullName
         } else {
             self.fullName = nil
-        }
-        if let firstName = firstName {
-            self.firstName = firstName
-        } else {
-            self.firstName = nil
         }
         if let lastName = lastName {
             self.lastName = lastName
         } else {
             self.lastName = nil
         }
-        if let id = id {
-            self.id = id
-        } else {
-            self.id = nil
-        }
         self.email = email
+        if let pfObject = pfObject {
+            self.pfObject = pfObject
+        } else {
+            self.pfObject = nil
+        }
     }
 }
 
-@objc(InviteesViewController) class InviteesViewController: UIViewController, UISearchControllerDelegate, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate, InputCellDelegate, UISearchBarDelegate
+@objc(InviteesViewController) class InviteesViewController: UIViewController, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, InputCellDelegate, UISearchBarDelegate
 {
     @IBOutlet weak var tableView: UITableView!
     
@@ -53,11 +47,15 @@ class Friend
     private var groupedFriends = [String: [Friend]]()
     private var groupedFriendsKeys = [String]()
 
-    private var selectedEmails = [String]()
+    private var selectedFriends = [Friend]()
     
     private var textViewText = ""
     private var showInviteFriendsOnly = false
     private var savedSearchText = ""
+    
+    private var eventInvitees = [PFObject]()
+    private var eventEmails = [String]()
+    private var preEmails = [String]()
 
     var adbk: ABAddressBook!
 
@@ -71,6 +69,7 @@ class Friend
 
         configureSearchController()
         
+        buildPreEmails()
         reloadFriends()
         
         self.tableView.tableHeaderView = tableHeaderView()
@@ -109,7 +108,6 @@ class Friend
         self.searchController.searchBar.autocapitalizationType = UITextAutocapitalizationType.None
         self.searchController.searchBar.autocorrectionType = UITextAutocorrectionType.No
         self.searchController.searchBar.spellCheckingType = UITextSpellCheckingType.No
-        self.searchController.searchResultsUpdater = self
     }
 
     // MARK: - UITableView
@@ -187,6 +185,7 @@ class Friend
             let cell = tableView.dequeueReusableCellWithIdentifier(INPUT_CELL_IDENTIFIER, forIndexPath: indexPath) as! InputCell
             cell.delegate = self
             cell.guidance.text = "Tap to enter your friends' email addresses"
+            cell.guidance.hidden = !(self.textViewText == "")
             cell.guidance.font = UIFont.inviteTableSmallFont()
             cell.guidance.textColor = UIColor.inviteTableLabelColor()
             cell.textView.text = self.textViewText
@@ -197,14 +196,14 @@ class Friend
         } else {
             let cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
             let friend = self.groupedFriends[self.groupedFriendsKeys[indexPath.section - 2]]![indexPath.row]
-            let friendSelected = self.selectedEmails.contains(friend.email)
+            let friendSelected = selectedFriendsContainsFriend(friend)
 
             if friend.fullName == nil {
                 cell.leadingFlexLabelConstraint.constant = -30
                 cell.nameLabel.hidden = true
                 cell.flexLabel.text = friend.email
                 cell.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15, 0, 0)
-            } else if friend.id != nil {
+            } else if friend.pfObject != nil {
                 cell.leadingFlexLabelConstraint.constant = 10
                 cell.nameLabel.hidden = true
                 cell.flexLabel.text = friend.fullName
@@ -225,8 +224,8 @@ class Friend
             cell.profileImageView.layer.borderColor = UIColor.whiteColor().CGColor
             cell.profileImageView.layer.borderWidth = 0
 
-            if friend.id != nil {
-                cell.profileImageView.sd_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friend.id!)/picture?type=square&width=150&height=150"))
+            if friend.pfObject != nil && friend.pfObject![FACEBOOK_ID_KEY] != nil {
+                cell.profileImageView.sd_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friend.pfObject![FACEBOOK_ID_KEY])/picture?type=square&width=150&height=150"))
                 cell.profileImageView.hidden = false
             } else {
                 cell.profileImageView.hidden = true
@@ -256,7 +255,7 @@ class Friend
         cell.backgroundColor = UIColor.whiteColor()
         cell.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
         cell.nameLabel.textColor = UIColor.inviteTableLabelColor()
-        cell.flexLabel.textColor = friend.fullName != nil && friend.id == nil ? UIColor.inviteGrayColor() : UIColor.inviteTableLabelColor()
+        cell.flexLabel.textColor = friend.fullName != nil && friend.pfObject == nil ? UIColor.inviteGrayColor() : UIColor.inviteTableLabelColor()
         cell.profileImageView.layer.borderWidth = 0
     }
     
@@ -267,11 +266,11 @@ class Friend
         } else {
             let cell = tableView.cellForRowAtIndexPath(indexPath) as! ProfileCell
             let friend = self.groupedFriends[self.groupedFriendsKeys[indexPath.section - 2]]![indexPath.row]
-            if self.selectedEmails.contains(friend.email) {
-                removeEmail(friend.email)
+            if selectedFriendsContainsFriend(friend) {
+                removeFriend(friend)
                 unselectCell(cell, friend: friend)
             } else {
-                self.selectedEmails.append(friend.email)
+                self.selectedFriends.append(friend)
                 selectCell(cell, friend: friend)
             }
         }
@@ -346,11 +345,6 @@ class Friend
     {
         self.view.endEditing(true)
     }
-
-    // MARK: - UISearchResultsUpdating
-
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
-    }
     
     // MARK: - Actions
 
@@ -361,7 +355,9 @@ class Friend
     
     @IBAction func save(sender: UIBarButtonItem)
     {
-//        AppDelegate.addToProtoEventLocation(activeLocation)
+        AppDelegate.protoEvent().savedEmailInput = self.textViewText
+        convertFriendsForSave()
+        AppDelegate.addToProtoEventInvitees(self.eventInvitees, emails: self.eventEmails)
         navigationController?.popViewControllerAnimated(true)
     }
     
@@ -429,25 +425,58 @@ class Friend
         }
     }
     
+    private func buildPreEmails()
+    {
+        var event: Event?
+        if AppDelegate.hasProtoEvent() {
+            event = AppDelegate.protoEvent()
+        } else if AppDelegate.hasEventToDisplay() {
+            event = AppDelegate.eventToDisplay()
+        }
+        if event == nil {
+            return
+        }
+        if let invitees = event!.invitees {
+            for invitee in invitees {
+                let i = invitee as! PFObject
+                self.preEmails.append(i[EMAIL_KEY] as! String)
+            }
+        }
+        if let emails = event!.emails as? [String] {
+            for email in emails {
+                let e = email
+                self.preEmails.append(e)
+            }
+            self.textViewText = AppDelegate.protoEvent().savedEmailInput
+        }
+    }
+    
     func addExistingFriends()
     {
         for friend in AppDelegate.friends() {
             let f = friend as! PFObject
             if !self.showInviteFriendsOnly || (self.showInviteFriendsOnly && f[FACEBOOK_ID_KEY] != nil) {
+                
                 let searchText = self.searchController.searchBar.text
                 let fullName = f[FULL_NAME_KEY] as? String
                 let email = f[EMAIL_KEY] as! String
                 let emailContainsText = email.uppercaseString.containsString(searchText!.uppercaseString)
                 
+                let friend = Friend(fullName: fullName, lastName: f[LAST_NAME_KEY] as? String, email: email, pfObject: f)
+                
                 if let fullName = fullName {
                     let nameContainsText = fullName.containsString(searchText!)
                     if searchText == "" || (searchText != "" && (nameContainsText || emailContainsText)) {
-                        self.allFriends.append(Friend(fullName: fullName, firstName:f[FIRST_NAME_KEY] as? String, lastName: f[LAST_NAME_KEY] as? String, email: email, id: f[FACEBOOK_ID_KEY] as? String))
+                        self.allFriends.append(friend)
                     }
                 } else {
                     if searchText == "" || (searchText != "" && emailContainsText) {
-                        self.allFriends.append(Friend(fullName: fullName, firstName:f[FIRST_NAME_KEY] as? String, lastName: f[LAST_NAME_KEY] as? String, email: email, id: f[FACEBOOK_ID_KEY] as? String))
+                        self.allFriends.append(friend)
                     }
+                }
+                
+                if self.preEmails.contains(email) {
+                    self.selectedFriends.append(friend)
                 }
             }
         }
@@ -552,8 +581,14 @@ class Friend
                         let searchText = self.searchController.searchBar.text
                         let nameContainsText = fullName.uppercaseString.containsString(searchText!.uppercaseString)
                         let emailContainsText = email.uppercaseString.containsString(searchText!.uppercaseString)
+                        
+                        let friend = Friend(fullName: fullName, lastName: lastName, email: email as! String, pfObject: nil)
+
                         if searchText == "" || (searchText != "" && (nameContainsText || emailContainsText)) {
-                            self.allFriends.append(Friend(fullName: fullName, firstName: firstName, lastName: lastName, email: email as! String, id: nil))
+                            self.allFriends.append(friend)
+                        }
+                        if self.preEmails.contains(email as! String) {
+                            self.selectedFriends.append(friend)
                         }
                     }
                 }
@@ -576,12 +611,43 @@ class Friend
     }
     
     // MARK: - Other
-
-    func removeEmail(email: String)
+    
+    private func selectedFriendsContainsFriend(aFriend: Friend) -> Bool
     {
-        self.selectedEmails = self.selectedEmails.filter({$0 != email})
+        for friend in self.selectedFriends {
+            if friend.email == aFriend.email {
+                return true
+            }
+        }
+        return false
     }
 
+    private func removeFriend(friend: Friend)
+    {
+        self.selectedFriends = self.selectedFriends.filter({$0.email != friend.email})
+    }
+
+    private func convertFriendsForSave()
+    {
+        // Email addresses from new friends
+        if self.textViewText != "" {
+            let components = self.textViewText.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) as NSArray
+            let string = components.componentsJoinedByString("")
+            self.eventEmails = string.componentsSeparatedByString(",")
+        }
+        
+        // Email addresses and invitees from selected friends
+        for friend in self.selectedFriends {
+            if friend.pfObject != nil {
+                // Invitee
+                self.eventInvitees.append(friend.pfObject!)
+            } else {
+                // Email
+                self.eventEmails.append(friend.email)
+            }
+        }
+    }
+    
     // MARK: - Notifications
     
     func keyboardWillShow(notification: NSNotification)
@@ -600,5 +666,5 @@ class Friend
             self.tableView.contentInset = contentInsets
             self.tableView.scrollIndicatorInsets = contentInsets
         })
-    }    
+    }
 }

@@ -8,10 +8,10 @@
 
 #import "AppDelegate.h"
 
-#import "Event.h"
 #import "Invite-Swift.h"
 #import "StringConstants.h"
 #import "User.h"
+#import "Event.h"
 
 @interface AppDelegate ()
 @end
@@ -226,15 +226,6 @@
 
 #pragma mark - Weird methods needed because Swift doesn't like @class
 
-+ (void)addToProtoEventTitle:(NSString *)title
-{
-    if ([AppDelegate user].protoEvent) {
-        [AppDelegate user].protoEvent.title = title;
-    } else {
-        [[AppDelegate user].eventToDisplay setObject:title forKey:EVENT_TITLE_KEY];
-    }
-}
-
 + (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate
 {
     [AppDelegate user].protoEvent.startDate = startDate;
@@ -244,6 +235,12 @@
 + (void)addToProtoEventLocation:(PFObject *)location
 {
     [AppDelegate user].protoEvent.location = location;
+}
+
++ (void)addToProtoEventInvitees:(NSArray *)invitees emails:(NSArray *)emails
+{
+    [AppDelegate user].protoEvent.invitees = invitees;
+    [AppDelegate user].protoEvent.emails = emails;
 }
 
 + (void)nilProtoEvent
@@ -271,9 +268,24 @@
     return [AppDelegate user].friends;
 }
 
++ (Event *)protoEvent
+{
+    return [AppDelegate user].protoEvent;
+}
+
++ (Event *)eventToDisplay
+{
+    return [Event eventFromPFObject:[AppDelegate user].eventToDisplay];
+}
+
 + (BOOL)hasProtoEvent
 {
     return [AppDelegate user].protoEvent ? YES : NO;
+}
+
++ (BOOL)hasEventToDisplay
+{
+    return [AppDelegate user].eventToDisplay ? YES : NO;
 }
 
 #pragma mark - Crash
