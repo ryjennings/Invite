@@ -14,3 +14,4 @@
 "alert_cannotlogin_message" = "Please try to again.";
 "invitees_nopreviousfriends" = "Haven't sent an event before? That's okay. Enter the email addresses of the friends you would like to invite to this event in the \"New Friends\" section below. We'll remember them so that you can easily invite them to new events in the future!";
 "invitees_newfriends_footer" = "To invite someone not listed below, enter their email address above. Separate multiple email addresses with a comma. Ex: jsmith@appuous.com, jdoe@appuous.com";
+"timeframe_conflict_footer" = "Heads up! You don't need to make any changes, but these friends have an event that conflicts with this time.";

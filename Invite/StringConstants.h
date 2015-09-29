@@ -61,6 +61,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define FRIENDS_KEY @"friends"
 #define FRIENDS_EMAILS_KEY @"friends_emails"
 #define LOCATIONS_KEY @"locations"
+#define OBJECT_ID @"objectId"
 
 // Keys used by Facebook
 #define ID_KEY @"id"
@@ -99,6 +100,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define BASIC_CELL_IDENTIFIER @"BasicCellIdentifier"
 #define BASIC_RIGHT_CELL_IDENTIFIER @"BasicRightCellIdentifier"
 #define INPUT_CELL_IDENTIFIER @"InputCellIdentifier"
+#define NUMBERED_INPUT_CELL_IDENTIFIER @"NumberedInputCellIdentifier"
 #define RADIO_CELL_IDENTIFIER @"RadioCellIdentifier"
 #define DASHBOARD_CELL_IDENTIFIER @"DashboardCellIdentifier"
 #define PROFILE_CELL_IDENTIFIER @"ProfileCellIdentifier"

@@ -79,13 +79,6 @@ enum LocationSection: Int {
         return view
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
-    {
-        if (segue.identifier == "SegueToEvent") {
-            AppDelegate.addToProtoEventLocation(activeLocation)
-        }
-    }
-
     // MARK: - UITableView
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
@@ -124,10 +117,10 @@ enum LocationSection: Int {
         case LocationSection.ActiveLocation.rawValue:
             return 1
         case LocationSection.SavedLocations.rawValue:
-            if (AppDelegate.locations() == nil) {
+            if (AppDelegate.user().locations == nil) {
                 return 1
             } else {
-                return AppDelegate.locations().count + 1 // for current location
+                return AppDelegate.user().locations.count + 1 // for current location
             }
         default:
             return 0
@@ -163,7 +156,7 @@ enum LocationSection: Int {
             if (indexPath.row == 0) {
                 cell.textLabel?.text = "Use current location"
             } else {
-                let location = AppDelegate.locations()[indexPath.row - 1] as! PFObject
+                let location = AppDelegate.user().locations[indexPath.row - 1] as! PFObject
                 let address = location.objectForKey(LOCATION_ADDRESS_KEY) as? String
                 let nickname = location.objectForKey(LOCATION_NICKNAME_KEY) as? String
                 cell.textLabel?.text = nickname ?? address
@@ -198,7 +191,7 @@ enum LocationSection: Int {
                 return
             }
             
-            let parseLocation = AppDelegate.locations()[indexPath.row - 1] as! PFObject
+            let parseLocation = AppDelegate.user().locations[indexPath.row - 1] as! PFObject
             let parseLongitude = parseLocation.objectForKey(LOCATION_LONGITUDE_KEY) as? Double
             let parseLatitude = parseLocation.objectForKey(LOCATION_LATITUDE_KEY) as? Double
             
@@ -297,7 +290,7 @@ enum LocationSection: Int {
 
     @IBAction func save(sender: UIBarButtonItem)
     {
-        AppDelegate.addToProtoEventLocation(activeLocation)
+        AppDelegate.user().protoEvent.location = activeLocation
         navigationController?.popViewControllerAnimated(true)
     }
 }

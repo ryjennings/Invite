@@ -42,19 +42,4 @@
 + (NSString *)emailFromKey:(NSString *)key;
 + (NSArray *)emailsFromKeys:(NSArray *)keys;
 
-// Weird methods needed because Swift doesn't like @class
-
-+ (void)addToProtoEventStartDate:(NSDate *)startDate endDate:(NSDate *)endDate;
-+ (void)addToProtoEventLocation:(PFObject *)location;
-+ (void)addToProtoEventInvitees:(NSArray *)invitees emails:(NSArray *)emails;
-+ (void)nilProtoEvent;
-+ (NSArray *)locations;
-+ (NSSet *)busyTimes;
-+ (NSArray *)events;
-+ (NSArray *)friends;
-+ (Event *)protoEvent;
-+ (Event *)eventToDisplay;
-+ (BOOL)hasProtoEvent;
-+ (BOOL)hasEventToDisplay;
-
 @end

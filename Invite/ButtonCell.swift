@@ -17,6 +17,7 @@ import UIKit
         self.button.layer.cornerRadius = 6
         self.button.clipsToBounds = true
         self.button.titleLabel?.font = UIFont.proximaNovaRegularFontOfSize(18)
+        self.button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         self.button.backgroundColor = UIColor.inviteButtonBackgroundColor()
     }
 }

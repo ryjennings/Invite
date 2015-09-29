@@ -23,11 +23,6 @@ import UIKit
         // MARK: - UIBarButtonItem
         
         UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: UIFont.inviteNavigationButtonFont(), NSForegroundColorAttributeName: UIColor.whiteColor()], forState: .Normal)
-        
-        // MARK: - UIButton
-        
-        UIButton.appearance().setTitleColor(UIColor.inviteButtonTitleColor(), forState: .Normal)
-        UIButton.appearance().backgroundColor = UIColor.inviteButtonBackgroundColor()
-        
+        UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: UIFont.inviteNavigationButtonFont(), NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.5)], forState: .Disabled)
     }
 }

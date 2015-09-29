@@ -10,18 +10,16 @@ import UIKit
 
 class Reservation: NSObject
 {
-    var userName: String!
-    var userEmail: String!
+    var userPFObject: PFObject!
     var eventTitle: String!
     var eventResponse: EventResponse!
     var eventStartDate: NSDate!
     var eventEndDate: NSDate!
     
-    @objc class func reservationWithUserName(name: String, userEmail email: String, eventTitle title: String, eventResponse response: EventResponse, eventStartDate startDate: NSDate, eventEndDate endDate: NSDate) -> Reservation
+    @objc class func reservationWithUser(pfObject: PFObject, eventTitle title: String, eventResponse response: EventResponse, eventStartDate startDate: NSDate, eventEndDate endDate: NSDate) -> Reservation
     {
         let r = Reservation()
-        r.userName = name
-        r.userEmail = email
+        r.userPFObject = pfObject
         r.eventTitle = title
         r.eventResponse = response
         r.eventStartDate = startDate

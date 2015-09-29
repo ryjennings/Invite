@@ -34,7 +34,7 @@
 
 @property (nonatomic, strong) PFObject *eventToDisplay;
 
-@property (nonatomic, strong) NSSet *busyTimes;
+@property (nonatomic, strong) NSSet *reservations;
 
 @property (nonatomic, strong) Event *protoEvent;
 
@@ -42,6 +42,7 @@
 
 - (void)loadParseUser:(PFObject *)user;
 - (void)createParseUserFromFacebookUser:(NSDictionary *)user;
+- (void)findReservations;
 
 //- (void)checkForEventsWhereUserIsInvited;
 

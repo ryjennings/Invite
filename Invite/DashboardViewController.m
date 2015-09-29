@@ -151,6 +151,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     [AppDelegate user].protoEvent = nil;
     [_collectionView reloadData];
+    [[AppDelegate user] findReservations];
     [self performSelector:@selector(scrollToItemAtIndexPath) withObject:nil afterDelay:0.5];
 }
 

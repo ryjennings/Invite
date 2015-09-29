@@ -143,7 +143,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 {
     _gradientView = [[OBGradientView alloc] init];
     _gradientView.colors = @[[UIColor inviteLightSlateClearColor], [UIColor inviteLightSlate66Color]];
-//    _gradientView.locations = @[@(0), @(1)];
     _gradientView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view insertSubview:_gradientView aboveSubview:_mapView];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[gradientView]|" options:0 metrics:nil views:@{@"gradientView": _gradientView}]];
@@ -315,9 +314,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     
     NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
     style.lineSpacing = 4;
+
+    footerView.contentView.backgroundColor = [UIColor whiteColor];
     
-    NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:@"Tap \"Preview\" above to see how this event will look when finished." attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style, NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithString:@"Tap \"Preview\" above to see how this event will look when finished.\n " attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}];
     
+    footerView.textLabel.textAlignment = NSTextAlignmentCenter;
     footerView.textLabel.attributedText = att;
 }
 
@@ -331,13 +333,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     }
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
-{
-    if (_mode == EventModePreview && section == EventPreviewSectionDetails) {
-        return @"Tap \"Preview\" above to see how this event will look when finished.";
-    }
-    return nil;
-}
+//- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+//{
+//    if (_mode == EventModePreview && section == EventPreviewSectionMessage) {
+//        return @"Tap \"Preview\" above to see how this event will look when finished.\n ";
+//    }
+//    return nil;
+//}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -400,9 +402,17 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     {
         BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.textLabel.text = [self textForRow:EventRowMessage];
-        cell.textLabel.font = [UIFont inviteQuestionFont];
-        cell.textLabel.textColor = [UIColor inviteQuestionColor];
+        
+        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        style.lineSpacing = 2;
+        style.alignment = NSTextAlignmentCenter;
+        
+        NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
+        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"To create a new event, follow the steps below." attributes:@{NSFontAttributeName: [UIFont inviteQuestionFont], NSForegroundColorAttributeName: [UIColor inviteQuestionColor]}]];
+        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:10]}]];
+        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"Tap \"Preview\" above to see how this event will look when finished." attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}]];
+        cell.textLabel.attributedText = att;
+        
         cell.backgroundColor = [UIColor whiteColor];
         return cell;
     }
@@ -438,7 +448,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     if (_mode == EventModePreview && indexPath.section != EventPreviewSectionMessage)
     {
         BOOL isTitle = indexPath.row == EventPreviewRowTitle;
-        NumberedInputCell *cell = (NumberedInputCell *)[tableView dequeueReusableCellWithIdentifier:INPUT_CELL_IDENTIFIER forIndexPath:indexPath];
+        NumberedInputCell *cell = (NumberedInputCell *)[tableView dequeueReusableCellWithIdentifier:NUMBERED_INPUT_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         if (isTitle) {
@@ -712,7 +722,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
                 if (_event.title && (_event.invitees || _event.emails) && _event.timeframe && _event.location) {
                     return @"Alright, we're ready to send this invite off! Please review, and if everything looks good, tap the button below!";
                 } else {
-                    return @"To create a new event, follow the steps below.";
+                    return @"";
                 }
             }
         }

@@ -99,7 +99,6 @@ class Friend
         self.searchController = UISearchController(searchResultsController: nil)
         self.searchController.delegate = self
         self.searchController.dimsBackgroundDuringPresentation = false
-        self.searchController.searchBar.sizeToFit()
         self.searchController.searchBar.delegate = self
         self.searchController.searchBar.scopeButtonTitles = ["Invite Friends", "All Friends"]
         self.searchController.searchBar.selectedScopeButtonIndex = 1
@@ -108,6 +107,11 @@ class Friend
         self.searchController.searchBar.autocapitalizationType = UITextAutocapitalizationType.None
         self.searchController.searchBar.autocorrectionType = UITextAutocorrectionType.No
         self.searchController.searchBar.spellCheckingType = UITextSpellCheckingType.No
+    }
+    
+    override func viewWillLayoutSubviews()
+    {
+        self.searchController.searchBar.sizeToFit()
     }
 
     // MARK: - UITableView
@@ -197,39 +201,8 @@ class Friend
             let cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
             let friend = self.groupedFriends[self.groupedFriendsKeys[indexPath.section - 2]]![indexPath.row]
             let friendSelected = selectedFriendsContainsFriend(friend)
-
-            if friend.fullName == nil {
-                cell.leadingFlexLabelConstraint.constant = -30
-                cell.nameLabel.hidden = true
-                cell.flexLabel.text = friend.email
-                cell.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15, 0, 0)
-            } else if friend.pfObject != nil {
-                cell.leadingFlexLabelConstraint.constant = 10
-                cell.nameLabel.hidden = true
-                cell.flexLabel.text = friend.fullName
-                cell.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 + 40 : 15 + 40, 0, 0)
-            } else {
-                cell.leadingFlexLabelConstraint.constant = 120
-                cell.nameLabel.hidden = false
-                cell.nameLabel.text = friend.fullName
-                cell.flexLabel.text = friend.email
-                cell.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 + 40 : 15 + 40, 0, 0)
-            }
             
-            cell.accessoryView = UIView(frame: CGRectMake(0, 0, 10, 10))
-            cell.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
-            cell.accessoryView?.clipsToBounds = true
-            cell.accessoryView?.layer.cornerRadius = 5
-            
-            cell.profileImageView.layer.borderColor = UIColor.whiteColor().CGColor
-            cell.profileImageView.layer.borderWidth = 0
-
-            if friend.pfObject != nil && friend.pfObject![FACEBOOK_ID_KEY] != nil {
-                cell.profileImageView.sd_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(friend.pfObject![FACEBOOK_ID_KEY])/picture?type=square&width=150&height=150"))
-                cell.profileImageView.hidden = false
-            } else {
-                cell.profileImageView.hidden = true
-            }
+            cell.friend = friend
 
             if friendSelected {
                 selectCell(cell, friend: friend)
@@ -355,9 +328,10 @@ class Friend
     
     @IBAction func save(sender: UIBarButtonItem)
     {
-        AppDelegate.protoEvent().savedEmailInput = self.textViewText
         convertFriendsForSave()
-        AppDelegate.addToProtoEventInvitees(self.eventInvitees, emails: self.eventEmails)
+        AppDelegate.user().protoEvent.savedEmailInput = self.textViewText
+        AppDelegate.user().protoEvent.invitees = self.eventInvitees
+        AppDelegate.user().protoEvent.emails = self.eventEmails
         navigationController?.popViewControllerAnimated(true)
     }
     
@@ -428,10 +402,10 @@ class Friend
     private func buildPreEmails()
     {
         var event: Event?
-        if AppDelegate.hasProtoEvent() {
-            event = AppDelegate.protoEvent()
-        } else if AppDelegate.hasEventToDisplay() {
-            event = AppDelegate.eventToDisplay()
+        if AppDelegate.user().protoEvent != nil {
+            event = AppDelegate.user().protoEvent
+        } else if AppDelegate.user().eventToDisplay != nil {
+            event = Event(fromPFObject: AppDelegate.user().eventToDisplay)
         }
         if event == nil {
             return
@@ -447,13 +421,13 @@ class Friend
                 let e = email
                 self.preEmails.append(e)
             }
-            self.textViewText = AppDelegate.protoEvent().savedEmailInput
+            self.textViewText = AppDelegate.user().protoEvent.savedEmailInput
         }
     }
     
     func addExistingFriends()
     {
-        for friend in AppDelegate.friends() {
+        for friend in AppDelegate.user().friends {
             let f = friend as! PFObject
             if !self.showInviteFriendsOnly || (self.showInviteFriendsOnly && f[FACEBOOK_ID_KEY] != nil) {
                 

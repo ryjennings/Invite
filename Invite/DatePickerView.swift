@@ -53,9 +53,9 @@ import UIKit
     
     func configurePicker()
     {
-        let view = UIView()
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.inviteLightSlateColor()
+        datePicker.setValue(UIColor.whiteColor(), forKey: "textColor")
         self.addSubview(view)
         
         datePicker.translatesAutoresizingMaskIntoConstraints = false

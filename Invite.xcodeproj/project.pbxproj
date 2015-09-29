@@ -71,7 +71,6 @@
 		074437801AE02C9C002A6C4D /* DateFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */; };
 		074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074AA5921A9C353C009DC152 /* LaunchViewController.m */; };
 		074ABE931AE47ACE00C093C7 /* TimeframePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */; };
-		074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */; };
 		075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075249E51ACB397C00D279DA /* InviteTheme.swift */; };
 		0755CE491A8D22E500FF05B7 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 0755CE481A8D22E500FF05B7 /* User.m */; };
 		075D10841ADC859D00C86130 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 075D10641ADC859D00C86130 /* MKAnnotationView+WebCache.m */; };
@@ -203,7 +202,6 @@
 		074AA5911A9C353C009DC152 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
 		074AA5921A9C353C009DC152 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframePickerViewController.swift; sourceTree = "<group>"; };
-		074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframeHourCell.swift; sourceTree = "<group>"; };
 		075249E51ACB397C00D279DA /* InviteTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteTheme.swift; sourceTree = "<group>"; };
 		0755CE471A8D22E500FF05B7 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		0755CE481A8D22E500FF05B7 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
@@ -576,7 +574,6 @@
 		07A313291A96AA410066EE3E /* Timeframe */ = {
 			isa = PBXGroup;
 			children = (
-				074B03051AD5BFFB00B539A9 /* TimeframeHourCell.swift */,
 				074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */,
 			);
 			name = Timeframe;
@@ -840,7 +837,6 @@
 				075D10921ADC859D00C86130 /* UIImageView+WebCache.m in Sources */,
 				0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */,
 				0714087B1AEE13FC0081F304 /* ProfileCell.swift in Sources */,
-				074B03061AD5BFFC00B539A9 /* TimeframeHourCell.swift in Sources */,
 				070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */,
 				070C88B81B068CBA005E7CDD /* AlertViewController.swift in Sources */,
 			);

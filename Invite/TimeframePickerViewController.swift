@@ -23,6 +23,7 @@ enum TimeframeRow: Int {
 @objc(TimeframePickerViewController) class TimeframePickerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, DatePickerViewDelegate
 {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var saveBarButtonItem: UIBarButtonItem!
     
     var conflicts = [Reservation]()
     var startDate: NSDate!
@@ -38,13 +39,23 @@ enum TimeframeRow: Int {
     
     override func viewDidLoad()
     {
-        reservations = AppDelegate.busyTimes()
+        reservations = AppDelegate.user().reservations
         
         tableView.tableHeaderView = tableHeaderView()
         
         self.navigationItem.title = "Event Time"
 
         configureDatePicker()
+        
+        if let startDate = AppDelegate.user().protoEvent.startDate {
+            self.startDate = startDate
+        }
+        if let endDate = AppDelegate.user().protoEvent.endDate {
+            self.endDate = endDate
+        }
+        if self.startDate != nil && self.endDate != nil {
+            determineConflicts()
+        }
     }
     
     override func viewWillAppear(animated: Bool)
@@ -52,31 +63,63 @@ enum TimeframeRow: Int {
         if (startDate == nil) {
             delay(0.5) {
                 self.showDatePicker(true)
-            };
+            }
         }
     }
     
     func determineConflicts()
     {
-        conflicts.removeAll(keepCapacity: true)
+        if AppDelegate.user().protoEvent.invitees != nil {
         
-        if (reservations != nil) {
-            reservations.enumerateObjectsUsingBlock { (object, stop) -> Void in
-                let reservation = object as! Reservation
-                self.conflicts.append(reservation)
+            conflicts.removeAll()
+            
+            var inviteeIds = [String]()
+            
+            for invitee in AppDelegate.user().protoEvent.invitees as! [PFObject] {
+                inviteeIds.append(invitee.objectId!)
             }
-            if tableView.numberOfSections == 0 && conflicts.count > 0 {
-                tableView.insertSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: UITableViewRowAnimation.Fade)
-            } else if tableView.numberOfSections == 0 {
-                tableView.insertSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Fade)
-            } else if tableView.numberOfSections == 2 && conflicts.count == 0 {
-                tableView.deleteSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Fade)
-            } else {
-                tableView.reloadData()
+
+            for reservation in AppDelegate.user().reservations {
+                
+                let r = reservation as! Reservation
+                
+                if !inviteeIds.contains(r.userPFObject.objectId!) {
+                    continue
+                }
+                
+                if (r.eventStartDate.laterDate(startDate).isEqualToDate(r.eventStartDate) &&
+                    r.eventStartDate.earlierDate(endDate).isEqualToDate(r.eventStartDate)) ||
+                    r.eventStartDate.isEqualToDate(startDate) {
+                        // eventStartDate is either equal to startDate or between startDate and endDate
+                        if !conflicts.contains(r) {
+                            self.conflicts.append(r)
+                        }
+                        continue
+                }
+
+                if (r.eventEndDate.laterDate(startDate).isEqualToDate(r.eventEndDate) &&
+                    r.eventEndDate.earlierDate(endDate).isEqualToDate(r.eventEndDate)) ||
+                    r.eventEndDate.isEqualToDate(endDate) {
+                        // eventEndDate is either equal to endDate or between startDate and endDate
+                        if !conflicts.contains(r) {
+                            self.conflicts.append(r)
+                        }
+                        continue
+                }
             }
         }
+        
+        if tableView.numberOfSections == 0 && self.conflicts.count > 0 {
+            tableView.insertSections(NSIndexSet(indexesInRange: NSMakeRange(0, 2)), withRowAnimation: UITableViewRowAnimation.Fade)
+        } else if tableView.numberOfSections == 0 {
+            tableView.insertSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Fade)
+        } else if tableView.numberOfSections == 2 && self.conflicts.count == 0 {
+            tableView.deleteSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Fade)
+        } else {
+            tableView.reloadData()
+        }
     }
-    
+
     func configureDatePicker()
     {
         datePickerView.translatesAutoresizingMaskIntoConstraints = false
@@ -125,12 +168,6 @@ enum TimeframeRow: Int {
         headerView.textLabel!.font = UIFont.inviteTableHeaderFont()
     }
     
-    func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int)
-    {
-        let footerView = view as! UITableViewHeaderFooterView
-        footerView.textLabel!.font = UIFont.inviteTableFooterFont()
-    }
-    
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
         switch (section) {
@@ -177,23 +214,22 @@ enum TimeframeRow: Int {
             
             if (indexPath.row == TimeframeRow.StartDate.rawValue) {
                 cell.textLabel?.text = startDate == nil ? "Select start time" : formattedDate(startDate)
+                cell.textLabel?.textColor = startDate == nil ? UIColor.inviteTableLabelColor() : UIColor.inviteTableHeaderColor()
                 cell.detailTextLabel?.text = "Start time"
             } else {
                 cell.textLabel?.text = endDate == nil ? "Select end time" : formattedDate(endDate)
+                cell.textLabel?.textColor = endDate == nil ? UIColor.inviteTableLabelColor() : UIColor.inviteTableHeaderColor()
                 cell.detailTextLabel?.text = "End time"
             }
             
             return cell
             
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier(CONFLICT_CELL_IDENTIFIER, forIndexPath: indexPath) as! ConflictCell
-            cell.conflictViewLeadingConstraint.constant = cell.separatorInset.left
-            
-            if (conflicts.count == 0) {
-                cell.label.text = "There are no conflicts with this time! You're good to go!"
-            } else {
-                cell.label.text = conflicts[indexPath.row].userName ?? conflicts[indexPath.row].userEmail
-            }
+            let cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
+            let conflict = self.conflicts[indexPath.row]
+            cell.friend = Friend(fullName: conflict.userPFObject[FULL_NAME_KEY] as? String, lastName: conflict.userPFObject[LAST_NAME_KEY] as? String, email: conflict.userPFObject[EMAIL_KEY] as! String, pfObject: conflict.userPFObject)
+            cell.flexLabel.textColor = UIColor.inviteTableHeaderColor()
+            cell.accessoryView = nil
             return cell
         }
     }
@@ -234,8 +270,37 @@ enum TimeframeRow: Int {
         }
     }
     
+    func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int)
+    {
+        let footerView = view as! UITableViewHeaderFooterView
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = 4
+        let att = NSMutableAttributedString(string: NSLocalizedString("timeframe_conflict_footer", comment: ""), attributes: [NSFontAttributeName: UIFont.inviteTableFooterFont(), NSParagraphStyleAttributeName: style])
+        footerView.textLabel!.attributedText = att
+    }
+    
+    func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String?
+    {
+        if section == 1 {
+            return NSLocalizedString("timeframe_conflict_footer", comment: "")
+        }
+        return nil
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
+    {
+        if section == 1 {
+            let style = NSMutableParagraphStyle()
+            style.lineSpacing = 4
+            let text: NSString = NSLocalizedString("timeframe_conflict_footer", comment: "")
+            return text.boundingRectWithSize(CGSizeMake(self.view.frame.size.width - (self.tableView.separatorInset.left * 2), CGFloat.max), options: [.UsesLineFragmentOrigin, .UsesFontLeading], attributes: [NSFontAttributeName: UIFont.inviteTableFooterFont(), NSParagraphStyleAttributeName: style], context: nil).size.height + 20
+        }
+        return 0
+    }
+
     func showDatePicker(show: Bool)
     {
+        self.saveBarButtonItem.enabled = !show
         datePickerViewBottomConstraint.constant = show ? 0 : kDatePickerViewHeight
 
         UIView.beginAnimations(nil, context: nil)
@@ -266,22 +331,15 @@ enum TimeframeRow: Int {
     
     @IBAction func cancel(sender: UIBarButtonItem)
     {
-//        AppDelegate.nilProtoEvent()
         self.navigationController?.popViewControllerAnimated(true)
     }
     
     @IBAction func save(sender: UIBarButtonItem)
     {
         if startDate != nil && endDate != nil {
-            AppDelegate.addToProtoEventStartDate(startDate, endDate: endDate)
+            AppDelegate.user().protoEvent.startDate = startDate
+            AppDelegate.user().protoEvent.endDate = endDate
         }
         self.navigationController?.popViewControllerAnimated(true)
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
-    {
-        if (segue.identifier == SEGUE_TO_LOCATION) {
-            AppDelegate.addToProtoEventStartDate(startDate, endDate: endDate)
-        }
-    }
+    }    
 }

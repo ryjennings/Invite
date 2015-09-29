@@ -30,7 +30,7 @@
 {
     _parse = user;
     [self createUserFromObject:user];
-    [self findBusyTimes];
+    [self findReservations];
     [[NSNotificationCenter defaultCenter] postNotificationName:PARSE_LOADED_NOTIFICATION object:self];
 }
 
@@ -141,62 +141,40 @@
     }];
 }
 
-- (void)findBusyTimes
+- (void)findReservations
 {
     // Only check for busy times if the user has friends
     if (_friends) {
         
-        NSMutableSet *busyTimes = [NSMutableSet set];
+        NSMutableSet *reservations = [NSMutableSet set];
         
         // Create "events" to fetch...
-        NSMutableArray *fetchEvents = [NSMutableArray array];
+        NSMutableArray *eventsToFetch = [NSMutableArray array];
         for (PFObject *friend in _friends) {
-            [fetchEvents addObjectsFromArray:[friend objectForKey:EVENTS_KEY]];
+            [eventsToFetch addObjectsFromArray:[friend objectForKey:EVENTS_KEY]];
         }
 
-        [PFObject fetchAllIfNeededInBackground:fetchEvents block:^(NSArray *events, NSError *error) {
+        [PFObject fetchAllIfNeededInBackground:eventsToFetch block:^(NSArray *events, NSError *error) {
             
-            NSMutableDictionary *eventsThatFriendsAreAttending = [NSMutableDictionary dictionary];
-            // eventsThatFriendsAreAttending = { "eventObjectId" = [friend, friend], etc }
             for (PFObject *friend in _friends) {
-                for (PFObject *event in [friend objectForKey:EVENTS_KEY]) {
-                    if (eventsThatFriendsAreAttending[event.objectId]) {
-                        [eventsThatFriendsAreAttending[event.objectId] addObject:friend];
-                    } else {
-                        eventsThatFriendsAreAttending[event.objectId] = [NSMutableArray arrayWithObject:friend];
-                    }
-                }
-            }
-
-            for (PFObject *event in events) {
                 
-                NSDate *start = [event objectForKey:EVENT_START_DATE_KEY];
-                NSDate *end = [event objectForKey:EVENT_END_DATE_KEY];
-                
-                NSCalendar *calendar = [NSCalendar currentCalendar];
-                NSDateComponents *startComponents = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:start];
-                startComponents.hour = 0;
-                NSDateComponents *endComponents = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:end];
-                endComponents.hour = 0;
-                                
-                [eventsThatFriendsAreAttending[event.objectId] enumerateObjectsUsingBlock:^(PFObject *friend, NSUInteger idx, BOOL *stop) {
+                [friend[EVENTS_KEY] enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
                     
                     NSDictionary *rsvp = [event objectForKey:EVENT_RSVP_KEY];
                     NSString *email = [friend objectForKey:EMAIL_KEY];
                     EventResponse response = [rsvp[[AppDelegate keyFromEmail:email]] integerValue];
 #warning Uncomment conditional
 //                    if (response == EventResponseGoing || response == EventResponseMaybe) {
-                    [busyTimes addObject:[Reservation reservationWithUserName:[friend objectForKey:FULL_NAME_KEY]
-                                                                    userEmail:email
-                                                                   eventTitle:[event objectForKey:EVENT_TITLE_KEY]
-                                                                eventResponse:response
-                                                               eventStartDate:start
-                                                                 eventEndDate:end]];
+                    [reservations addObject:[Reservation reservationWithUser:friend
+                                                                  eventTitle:[event objectForKey:EVENT_TITLE_KEY]
+                                                               eventResponse:response
+                                                              eventStartDate:[event objectForKey:EVENT_START_DATE_KEY]
+                                                                eventEndDate:[event objectForKey:EVENT_END_DATE_KEY]]];
 //                    }
                 }];
             }
             
-            _busyTimes = busyTimes;
+            _reservations = reservations;
             
         }];
     }
