@@ -32,7 +32,7 @@
 - (void)submitEvent;
 + (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event;
 
-- (NSString *)timeframe;
+- (NSAttributedString *)timeframe;
 - (NSString *)host;
 
 - (void)saveToParse;

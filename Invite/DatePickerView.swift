@@ -25,7 +25,11 @@ import UIKit
     var toolbar = UIToolbar()
     var delegate: DatePickerViewDelegate?
     var datePicker = UIDatePicker()
-    var selectedDate = NSDate()
+    var selectedDate = NSDate() {
+        didSet {
+            self.datePicker.setDate(self.selectedDate, animated: true)
+        }
+    }
     
     var isSelectingStartDate = true {
         didSet {
@@ -44,9 +48,10 @@ import UIKit
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         toolbar.barStyle = .BlackTranslucent
         toolbar.items = [
+            UIBarButtonItem(title: "Cancel", style: .Done, target: self, action: "dismiss:"),
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
-            UIBarButtonItem(title: "Select Time", style: .Done, target: self, action: "dismissPicker:"),
-            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)]
+            UIBarButtonItem(title: "Select Time", style: .Done, target: self, action: "selectTime:")
+            ]
         self.addSubview(toolbar)
         self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[toolbar]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["toolbar": toolbar]))
     }
@@ -59,7 +64,6 @@ import UIKit
         self.addSubview(view)
         
         datePicker.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.addTarget(self, action: "pickerChanged:", forControlEvents: .ValueChanged)
         datePicker.minuteInterval = 15
         view.addSubview(datePicker)
         
@@ -77,8 +81,7 @@ import UIKit
         components.minute = minute
         components.second = 0
         selectedDate = calendar.dateFromComponents(components)!
-        datePicker.setDate(selectedDate, animated: false)
-        datePicker.minimumDate = selectedDate
+        datePicker.minimumDate = NSDate()
         
         let views = ["toolbar": toolbar, "view": view, "picker": datePicker]
         
@@ -89,20 +92,20 @@ import UIKit
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[picker]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
     }
     
-    func pickerChanged(picker: UIDatePicker)
+    func dismiss(picker: UIDatePicker)
+    {
+        self.delegate?.dismissDatePickerView(self)
+    }
+
+    func selectTime(picker: UIDatePicker)
     {
         selectedDate = datePicker.date
-    }
-    
-    func dismissPicker(picker: UIDatePicker)
-    {
-        if let delegate = delegate {
-            delegate.datePickerView(self, hasSelectedDate: selectedDate)
-        }
+        self.delegate?.datePickerView(self, hasSelectedDate: selectedDate)
     }
 }
 
 @objc protocol DatePickerViewDelegate
 {
     func datePickerView(datePickerView: DatePickerView, hasSelectedDate date: NSDate)
+    func dismissDatePickerView(datePickerView: DatePickerView)
 }

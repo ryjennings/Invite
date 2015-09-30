@@ -163,14 +163,13 @@
                     NSDictionary *rsvp = [event objectForKey:EVENT_RSVP_KEY];
                     NSString *email = [friend objectForKey:EMAIL_KEY];
                     EventResponse response = [rsvp[[AppDelegate keyFromEmail:email]] integerValue];
-#warning Uncomment conditional
-//                    if (response == EventResponseGoing || response == EventResponseMaybe) {
-                    [reservations addObject:[Reservation reservationWithUser:friend
-                                                                  eventTitle:[event objectForKey:EVENT_TITLE_KEY]
-                                                               eventResponse:response
-                                                              eventStartDate:[event objectForKey:EVENT_START_DATE_KEY]
-                                                                eventEndDate:[event objectForKey:EVENT_END_DATE_KEY]]];
-//                    }
+                    if (response == EventResponseGoing || response == EventResponseMaybe) {
+                        [reservations addObject:[Reservation reservationWithUser:friend
+                                                                      eventTitle:[event objectForKey:EVENT_TITLE_KEY]
+                                                                   eventResponse:response
+                                                                  eventStartDate:[event objectForKey:EVENT_START_DATE_KEY]
+                                                                    eventEndDate:[event objectForKey:EVENT_END_DATE_KEY]]];
+                    }
                 }];
             }
             

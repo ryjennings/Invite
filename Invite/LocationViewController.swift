@@ -15,7 +15,7 @@ enum LocationSection: Int {
     case Count
 }
 
-@objc(LocationViewController) class LocationViewController: UIViewController, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, LocationResultsViewControllerDelegate, InputCellDelegate, MapCellDelegate
+@objc(LocationViewController) class LocationViewController: UIViewController, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, LocationResultsViewControllerDelegate, InputCellDelegate, MapCellDelegate, CLLocationManagerDelegate
 {
     @IBOutlet weak var tableView: UITableView!
     
@@ -28,6 +28,10 @@ enum LocationSection: Int {
     var showCurrentLocation = true
     var savedLocationsIndex = 0
     
+    var locationManager: CLLocationManager!
+    var latitude: CLLocationDegrees!
+    var longitude: CLLocationDegrees!
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -40,16 +44,37 @@ enum LocationSection: Int {
         searchController = UISearchController(searchResultsController: searchResultsController)
         searchController.delegate = self
         searchController.searchBar.sizeToFit()
-        searchController.searchBar.placeholder = "Search for a location"
+        searchController.searchBar.placeholder = "Search Foursquare for a location"
         searchController.searchResultsUpdater = self
         
         tableView.tableHeaderView = tableHeaderView()
         definesPresentationContext = true
+        
+        setupLocationManager()
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     }
     
+    func setupLocationManager()
+    {
+        if (self.locationManager == nil) {
+            self.locationManager = CLLocationManager()
+            self.locationManager.requestWhenInUseAuthorization()
+            self.locationManager.startUpdatingLocation()
+            self.locationManager.delegate = self
+        }
+    }
+
+    // MARK: CLLocationManagerDelegate
+    
+    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation)
+    {
+        self.latitude = newLocation.coordinate.latitude
+        self.longitude = newLocation.coordinate.longitude
+        self.locationManager.delegate = nil
+    }
+
     func tableHeaderView() -> UIView
     {
         let view = UIView(frame: CGRectMake(0, 0, 0, 144))
@@ -208,13 +233,30 @@ enum LocationSection: Int {
 
     // MARK: - UISearchResultsUpdating
     
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(searchController.searchBar.text!) { (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-            if let locations = placemarks {
-                self.searchResultsController.locations = locations
+    func updateSearchResultsForSearchController(searchController: UISearchController)
+    {
+        let session = NSURLSession.sharedSession()
+        
+        let client_id = "W5AXZDIUZ3TFJTALSSNSBZDL2WKY02K0BI2T1KODP2C4JHAT"
+        let client_secret = "AFQJWN44SGDW4QTXDAURBKUQT1DQWVSRNY1I4H5K5Y5Z3O3D"
+        let v = "20151001"
+        let m = "foursquare"
+        let intent = "browse"
+        let radius = "100000"
+        let query = self.searchController.searchBar.text!.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+        
+        session.dataTaskWithURL(NSURL(string: "https://api.foursquare.com/v2/venues/search?client_id=\(client_id)&client_secret=\(client_secret)&v=\(v)&m=\(m)&ll=\(self.latitude),\(self.longitude)&intent=\(intent)&radius=\(radius)&query=\(query)")!) { (data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
+
+            let urlResponse = response as? NSHTTPURLResponse
+            if urlResponse?.statusCode == 200 {
+                
+                if let data = data {
+                    let json = JSON(data: data)
+                    print("")
+                }
             }
-        }
+            
+        }.resume()
     }
     
     // MARK: - LocationResultsViewControllerDelegate

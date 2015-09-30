@@ -57,8 +57,6 @@
 		073274011A892BFB007700B3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 073274001A892BFB007700B3 /* Images.xcassets */; };
 		073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073274021A892BFB007700B3 /* LaunchScreen.xib */; };
 		073274101A892BFB007700B3 /* InviteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0732740F1A892BFB007700B3 /* InviteTests.m */; };
-		07380CF91AFA972C00A6E19D /* ConflictCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07380CF81AFA972C00A6E19D /* ConflictCell.swift */; };
-		07380CFB1AFA980800A6E19D /* ConflictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07380CFA1AFA980800A6E19D /* ConflictView.swift */; };
 		0741BD921BA897EC0099282F /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD911BA897EC0099282F /* FBSDKCoreKit.framework */; settings = {ASSET_TAGS = (); }; };
 		0741BD941BA898D00099282F /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD931BA898D00099282F /* FBSDKLoginKit.framework */; settings = {ASSET_TAGS = (); }; };
 		0741BD991BA8A6B40099282F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD951BA8A6B40099282F /* Bolts.framework */; settings = {ASSET_TAGS = (); }; };
@@ -111,6 +109,7 @@
 		07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */; };
 		07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */; };
 		07E1FD901ACE4EDD00F619D0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1FD8F1ACE4EDD00F619D0 /* AppDelegate.swift */; };
+		07F584AD1BBBB7DA00A529FA /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F584AC1BBBB7DA00A529FA /* SwiftyJSON.swift */; settings = {ASSET_TAGS = (); }; };
 		07F9AAD51BB49A76003299C3 /* InviteesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F9AAD41BB49A76003299C3 /* InviteesViewController.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
@@ -185,8 +184,6 @@
 		073274091A892BFB007700B3 /* InviteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InviteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0732740E1A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0732740F1A892BFB007700B3 /* InviteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InviteTests.m; sourceTree = "<group>"; };
-		07380CF81AFA972C00A6E19D /* ConflictCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConflictCell.swift; sourceTree = "<group>"; };
-		07380CFA1AFA980800A6E19D /* ConflictView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConflictView.swift; sourceTree = "<group>"; };
 		0741BD911BA897EC0099282F /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../Downloads/FacebookSDKs-iOS-20150910/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		0741BD931BA898D00099282F /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../Downloads/FacebookSDKs-iOS-20150910/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		0741BD951BA8A6B40099282F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "../../Documents/parse-library/Bolts.framework"; sourceTree = "<group>"; };
@@ -266,6 +263,7 @@
 		07DDBF271AC7D12A0058E1CA /* LocationResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationResultsViewController.swift; sourceTree = "<group>"; };
 		07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Invite.swift"; sourceTree = "<group>"; };
 		07E1FD8F1ACE4EDD00F619D0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		07F584AC1BBBB7DA00A529FA /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		07F9AAD41BB49A76003299C3 /* InviteesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -430,6 +428,7 @@
 				0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */,
 				070C88B91B069C01005E7CDD /* Reachability.h */,
 				070C88BA1B069C01005E7CDD /* Reachability.m */,
+				07F584AC1BBBB7DA00A529FA /* SwiftyJSON.swift */,
 				070DAA4A1AE8489C00E111F6 /* SDiPhoneVersion */,
 				07D2D9C61AE616E2008E1733 /* OBGradientView */,
 				075D10621ADC859D00C86130 /* SDWebImage */,
@@ -494,7 +493,6 @@
 				07719E3F1BAFC11200A99E20 /* NumberedInputCell.swift */,
 				07D9DD381AD83E42008FF016 /* RadioCell.swift */,
 				0714087A1AEE13FC0081F304 /* ProfileCell.swift */,
-				07380CF81AFA972C00A6E19D /* ConflictCell.swift */,
 				077811661AFF216F00D5DC4D /* ToggleCell.swift */,
 				0778116A1B01382600D5DC4D /* TitleDateCell.swift */,
 				070C88B51B05227E005E7CDD /* LabelCell.swift */,
@@ -594,7 +592,6 @@
 				07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */,
 				071408731AEC9D660081F304 /* DatePickerView.swift */,
 				070C88BF1B081E42005E7CDD /* PickerView.swift */,
-				07380CFA1AFA980800A6E19D /* ConflictView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -804,13 +801,11 @@
 				075D108E1ADC859D00C86130 /* UIImage+GIF.m in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
 				075D10861ADC859D00C86130 /* SDImageCache.m in Sources */,
-				07380CF91AFA972C00A6E19D /* ConflictCell.swift in Sources */,
 				077811691AFF237800D5DC4D /* UserDefaults.swift in Sources */,
 				075D10841ADC859D00C86130 /* MKAnnotationView+WebCache.m in Sources */,
 				075D108A1ADC859D00C86130 /* SDWebImageDownloaderOperation.m in Sources */,
 				07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */,
 				07D9DD3B1AD868B5008FF016 /* MapCell.swift in Sources */,
-				07380CFB1AFA980800A6E19D /* ConflictView.swift in Sources */,
 				070C88C01B081E42005E7CDD /* PickerView.swift in Sources */,
 				075D108D1ADC859D00C86130 /* UIButton+WebCache.m in Sources */,
 				075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */,
@@ -827,6 +822,7 @@
 				072836761AD315BF00B158AC /* UIView+Invite.m in Sources */,
 				07719E421BB0834800A99E20 /* PaddingCell.swift in Sources */,
 				070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */,
+				07F584AD1BBBB7DA00A529FA /* SwiftyJSON.swift in Sources */,
 				07719E401BAFC11200A99E20 /* NumberedInputCell.swift in Sources */,
 				07719E441BB2165800A99E20 /* ButtonCell.swift in Sources */,
 				070C88BB1B069C01005E7CDD /* Reachability.m in Sources */,

@@ -155,12 +155,12 @@
 
 #pragma mark -
 
-- (NSString *)timeframe
+- (NSAttributedString *)timeframe
 {
     if (self.startDate && self.endDate) {
         return [AppDelegate presentationTimeframeForStartDate:self.startDate endDate:self.endDate];
     }
-    return @"Set a time for the event";
+    return [[NSAttributedString alloc] initWithString:@"Set a time" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSForegroundColorAttributeName: [UIColor inviteTableHeaderColor]}];
 }
 
 - (NSString *)host

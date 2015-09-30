@@ -498,12 +498,11 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
             case EventPreviewRowTimeframe:
             {
                 cell.guidance.hidden = NO;
+                cell.guidance.attributedText = [_event timeframe];
                 if (_event.startDate && _event.endDate) {
-                    cell.guidance.text = [self textForRow:EventRowTimeframe];
                     cell.guidance.textColor = [self valueColor];
                     [cell showCheckmark];
                 } else {
-                    cell.guidance.text = @"Set a time";
                     cell.guidance.textColor = [self defaultColor];
                     [cell hideCheckmark];
                 }
@@ -733,10 +732,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         case EventRowHost:
         {
             return [_event host];
-        }
-        case EventRowTimeframe:
-        {
-            return [_event timeframe];
         }
         default:
             return nil;

@@ -37,6 +37,12 @@ enum TimeframeRow: Int {
     var datePickerView = DatePickerView()
     var datePickerViewBottomConstraint: NSLayoutConstraint!
     
+    var startCell: BasicCell!
+    var endCell: BasicCell!
+    
+    var selectingStartDate = AppDelegate.user().protoEvent.startDate == nil
+    var selectingEndDate = false
+    
     override func viewDidLoad()
     {
         reservations = AppDelegate.user().reservations
@@ -213,13 +219,25 @@ enum TimeframeRow: Int {
             cell.selectionStyle = UITableViewCellSelectionStyle.None
             
             if (indexPath.row == TimeframeRow.StartDate.rawValue) {
+                self.startCell = cell
                 cell.textLabel?.text = startDate == nil ? "Select start time" : formattedDate(startDate)
                 cell.textLabel?.textColor = startDate == nil ? UIColor.inviteTableLabelColor() : UIColor.inviteTableHeaderColor()
                 cell.detailTextLabel?.text = "Start time"
+                if self.selectingStartDate {
+                    selectCell(cell)
+                } else {
+                    unselectRow(TimeframeRow.StartDate)
+                }
             } else {
+                self.endCell = cell
                 cell.textLabel?.text = endDate == nil ? "Select end time" : formattedDate(endDate)
                 cell.textLabel?.textColor = endDate == nil ? UIColor.inviteTableLabelColor() : UIColor.inviteTableHeaderColor()
                 cell.detailTextLabel?.text = "End time"
+                if self.selectingEndDate {
+                    selectCell(cell)
+                } else {
+                    unselectRow(TimeframeRow.EndDate)
+                }
             }
             
             return cell
@@ -255,12 +273,50 @@ enum TimeframeRow: Int {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        if (indexPath.section == TimeframeSection.Timeframe.rawValue) {
+        if indexPath.section == TimeframeSection.Timeframe.rawValue {
+            if indexPath.row == TimeframeRow.StartDate.rawValue {
+                self.selectingStartDate = true
+                unselectRow(TimeframeRow.EndDate)
+                datePickerView.isSelectingStartDate = true
+                if startDate != nil {
+                    self.datePickerView.selectedDate = startDate
+                }
+            } else if indexPath.row == TimeframeRow.EndDate.rawValue {
+                self.selectingEndDate = true
+                unselectRow(TimeframeRow.StartDate)
+                datePickerView.isSelectingStartDate = false
+                if endDate != nil {
+                    self.datePickerView.selectedDate = endDate
+                }
+            }
+            if let cell = self.tableView.cellForRowAtIndexPath(indexPath) as? BasicCell {
+                selectCell(cell)
+            }
             showDatePicker(true)
-            datePickerView.isSelectingStartDate = indexPath.row == TimeframeRow.StartDate.rawValue ? true : false
         }
     }
     
+    func selectCell(cell: BasicCell)
+    {
+        cell.backgroundColor = UIColor.inviteLightSlateColor()
+        cell.textLabel?.textColor = UIColor.whiteColor()
+        cell.detailTextLabel?.textColor = UIColor.whiteColor()
+    }
+    
+    func unselectRow(row: TimeframeRow)
+    {
+        let cell = row == TimeframeRow.StartDate ? self.startCell : self.endCell
+        if row == TimeframeRow.StartDate {
+            self.selectingStartDate = false
+            cell.textLabel?.textColor = self.startDate == nil ? UIColor.inviteTableLabelColor() : UIColor.inviteTableHeaderColor()
+        } else {
+            self.selectingEndDate = false
+            cell.textLabel?.textColor = self.endDate == nil ? UIColor.inviteTableLabelColor() : UIColor.inviteTableHeaderColor()
+        }
+        cell.backgroundColor = UIColor.whiteColor()
+        cell.detailTextLabel?.textColor = UIColor.inviteGrayColor()
+    }
+
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
         if (indexPath.section == TimeframeSection.Timeframe.rawValue) {
@@ -317,6 +373,8 @@ enum TimeframeRow: Int {
     
     func datePickerView(datePickerView: DatePickerView, hasSelectedDate date: NSDate)
     {
+        unselectRow(TimeframeRow.StartDate)
+        unselectRow(TimeframeRow.EndDate)
         showDatePicker(false)
         if (datePickerView.isSelectingStartDate) {
             startDate = date
@@ -327,6 +385,13 @@ enum TimeframeRow: Int {
             endDate = date
         }
         determineConflicts()
+    }
+    
+    func dismissDatePickerView(datePickerView: DatePickerView)
+    {
+        unselectRow(TimeframeRow.StartDate)
+        unselectRow(TimeframeRow.EndDate)
+        showDatePicker(false)
     }
     
     @IBAction func cancel(sender: UIBarButtonItem)
