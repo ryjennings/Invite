@@ -16,23 +16,12 @@ class Friend
     let email: String
     let pfObject: PFObject?
     
-    init(fullName: String?, lastName: String?, email: String, pfObject: PFObject?) {
-        if let fullName = fullName {
-            self.fullName = fullName
-        } else {
-            self.fullName = nil
-        }
-        if let lastName = lastName {
-            self.lastName = lastName
-        } else {
-            self.lastName = nil
-        }
+    init(fullName: String?, lastName: String?, email: String, pfObject: PFObject?)
+    {
+        self.fullName = fullName
+        self.lastName = lastName
         self.email = email
-        if let pfObject = pfObject {
-            self.pfObject = pfObject
-        } else {
-            self.pfObject = nil
-        }
+        self.pfObject = pfObject
     }
 }
 
@@ -195,7 +184,7 @@ class Friend
             cell.textView.text = self.textViewText
             cell.textView.textColor = UIColor.inviteTableHeaderColor()
             cell.textView.font = UIFont.inviteTableSmallFont()
-            addAccessoryViewToKeyboardForTextField(cell.textView)
+            addAccessoryViewToKeyboardForTextView(cell.textView)
             return cell
         } else {
             let cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
@@ -301,7 +290,7 @@ class Friend
     
     // MARK: - UITextView
     
-    func addAccessoryViewToKeyboardForTextField(textField: UITextView)
+    func addAccessoryViewToKeyboardForTextView(textView: UITextView)
     {
         let doneToolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 50))
         doneToolbar.barStyle = .BlackTranslucent
@@ -311,7 +300,7 @@ class Friend
             UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         ]
         doneToolbar.sizeToFit()
-        textField.inputAccessoryView = doneToolbar
+        textView.inputAccessoryView = doneToolbar
     }
     
     func dismissKeyboard()

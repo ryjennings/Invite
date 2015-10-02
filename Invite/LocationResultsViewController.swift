@@ -12,17 +12,13 @@ import AddressBookUI
 @objc class LocationResultsViewController: UITableViewController
 {
     var delegate: LocationResultsViewControllerDelegate?
-    var locations = [AnyObject]()
-    {
-        didSet {
-            tableView.reloadData()
-        }
-    }
+    var locations = [Location]()
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: BASIC_CELL_IDENTIFIER)
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 44
     }
 
     // MARK: - UITableView
@@ -34,41 +30,42 @@ import AddressBookUI
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return locations.count
+        return self.locations.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-//        let placemark = locations[indexPath.row] as! CLPlacemark
-        let cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath)
-//        var att = NSMutableAttributedString()
-//        
-//        if let name = placemark.name {
-//            att.appendAttributedString(NSAttributedString(string: name, attributes: [NSForegroundColorAttributeName: UIColor.inviteDarkBlueColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(15)]))
-//        }
-//        att.appendAttributedString(NSAttributedString(string: "\n"))
-//        let formattedAddressLines = placemark.addressDictionary[kABPersonAddressProperty]!.componentsJoinedByString(", ")
-//        att.appendAttributedString(NSAttributedString(string: , attributes: [NSForegroundColorAttributeName: UIColor.inviteTableLabelColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12)]))
-//            
-//        var style = NSMutableParagraphStyle()
-//        style.lineSpacing = 4
-//        attributedText.addAttribute(NSParagraphStyleAttributeName, value: style, range: NSMakeRange(0, attributedText.string.characters.count))
-//        
-//        cell.textLabel?.numberOfLines = 0
-//        cell.textLabel?.attributedText = attributedText
+        let cell = tableView.dequeueReusableCellWithIdentifier(LOCATION_CELL_IDENTIFIER, forIndexPath: indexPath) as! LocationCell
+        let location = self.locations[indexPath.row]
+        
+        cell.nameLabel.text = indexPath.row == 0 ? location.formattedAddress! : location.name!
+        cell.nameLabel.textColor = UIColor.inviteTableHeaderColor()
+        
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = 1
+        let att = NSMutableAttributedString(string: indexPath.row == 0 ? "Use exactly what I've typed as the location" : location.formattedAddress!, attributes: [NSForegroundColorAttributeName: UIColor.inviteGrayColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(14), NSParagraphStyleAttributeName: style])
+        cell.addressLabel.attributedText = att
+        
+        if indexPath.row == 0 {
+            cell.backgroundColor = UIColor.inviteLighterBackgroundSlateColor()
+        } else {
+            cell.backgroundColor = UIColor.whiteColor()
+        }
 
         return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        if let d = delegate {
-            d.didSelectPlacemark(locations[indexPath.row] as! CLPlacemark)
-        }
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! LocationCell
+        cell.backgroundColor = UIColor.inviteLightSlateColor()
+        cell.nameLabel.textColor = UIColor.whiteColor()
+        cell.addressLabel.textColor = UIColor.whiteColor()
+        self.delegate?.didSelectLocation(self.locations[indexPath.row])
     }
 }
 
 protocol LocationResultsViewControllerDelegate
 {
-    func didSelectPlacemark(placemark: CLPlacemark)
+    func didSelectLocation(location: Location)
 }

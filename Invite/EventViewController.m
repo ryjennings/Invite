@@ -197,10 +197,17 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         }
     }];
 
-    if (_event.location && !_alreadyMappedLocationPlacemark) {
+    if ((_event.location || _event.protoLocation) && !_alreadyMappedLocationPlacemark) {
+        CLLocationDegrees latitude;
+        CLLocationDegrees longitude;
         _alreadyMappedLocationPlacemark = YES;
-        CLLocationDegrees latitude = ((NSString *)[_event.location objectForKey:LOCATION_LATITUDE_KEY]).doubleValue;
-        CLLocationDegrees longitude = ((NSString *)[_event.location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
+        if (_event.location) {
+            latitude = ((NSString *)[_event.location objectForKey:LOCATION_LATITUDE_KEY]).doubleValue;
+            longitude = ((NSString *)[_event.location objectForKey:LOCATION_LONGITUDE_KEY]).doubleValue;
+        } else {
+            latitude = _event.protoLocation.latitude.doubleValue;
+            longitude = _event.protoLocation.longitude.doubleValue;
+        }
         CLGeocoder *geocoder = [[CLGeocoder alloc] init];
         CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
         [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
@@ -511,7 +518,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
             case EventPreviewRowLocation:
             {
                 cell.guidance.hidden = NO;
-                if (_event.location) {
+                if (_event.location || _event.protoLocation) {
                     cell.guidance.attributedText = [self attributedTextForLocation];
                     cell.guidance.textColor = [self valueColor];
                     [cell showCheckmark];
@@ -743,10 +750,16 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
     style.lineSpacing = 4;
 
-    PFObject *location = _event.location;
-    
-    NSString *locationNickname = [location objectForKey:LOCATION_NICKNAME_KEY];
-    NSString *locationAddress = [location objectForKey:LOCATION_ADDRESS_KEY];
+    NSString *locationNickname;
+    NSString *locationAddress;
+
+    if (_event.location) {
+        locationNickname = [_event.location objectForKey:LOCATION_NAME_KEY];
+        locationAddress = [_event.location objectForKey:LOCATION_ADDRESS_KEY];
+    } else {
+        locationNickname = _event.protoLocation.name;
+        locationAddress = _event.protoLocation.formattedAddress;
+    }
     
     NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
     
@@ -759,7 +772,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         [att appendAttributedString:[[NSAttributedString alloc] initWithString:locationAddress attributes:@{NSForegroundColorAttributeName: [UIColor inviteTableHeaderColor], NSFontAttributeName: [UIFont inviteTableSmallFont], NSParagraphStyleAttributeName: style}]];
     }
     
-    if (!location) {
+    if (!locationNickname && !locationAddress) {
         [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"Choose a location for the event" attributes:@{NSForegroundColorAttributeName: [UIColor inviteTableHeaderColor], NSFontAttributeName: [UIFont inviteTableSmallFont], NSParagraphStyleAttributeName: style}]];
     }
     

@@ -33,9 +33,10 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 
 // Location keys
 #define LOCATION_ADDRESS_KEY @"address"
-#define LOCATION_NICKNAME_KEY @"nickname"
+#define LOCATION_NAME_KEY @"nickname"
 #define LOCATION_LONGITUDE_KEY @"longitude"
 #define LOCATION_LATITUDE_KEY @"latitude"
+#define LOCATION_ID_KEY @"id"
 
 // Event keys
 #define EVENT_TITLE_KEY @"title"
@@ -80,6 +81,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define EVENT_NAVIGATION_CONTROLLER @"EventNavigationController"
 #define SETTINGS_VIEW_CONTROLLER @"SettingsViewController"
 #define INVITEES_SECTION_VIEW_CONTROLLER @"InviteesSectionViewController"
+#define LOCATION_RESULTS_VIEW_CONTROLLER @"LocationResultsViewController"
 
 // Segues
 #define SEGUE_TO_LOGIN @"SegueToLogin"
@@ -114,6 +116,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define PADDING_CELL_IDENTIFIER @"PaddingCellIdentifier"
 #define NO_CELL_IDENTIFIER @"NoCellIdentifier"
 #define BUTTON_CELL_IDENTIFIER @"ButtonCellIdentifier"
+#define LOCATION_CELL_IDENTIFIER @"LocationCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

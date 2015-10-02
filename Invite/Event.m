@@ -30,6 +30,7 @@
 @synthesize startDate = _startDate;
 @synthesize endDate = _endDate;
 @synthesize location = _location;
+@synthesize protoLocation = _protoLocation;
 
 + (Event *)createEvent
 {
@@ -146,6 +147,16 @@
         _parseEvent[EVENT_LOCATION_KEY] = location;
     }
     _location = location;
+}
+
+- (Location *)protoLocation
+{
+    return _protoLocation;
+}
+
+- (void)setProtoLocation:(Location *)protoLocation
+{
+    _protoLocation = protoLocation;
 }
 
 - (void)saveToParse

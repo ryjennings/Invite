@@ -9,114 +9,81 @@
 import UIKit
 import MapKit
 
-@objc(MapCell) class MapCell: UITableViewCell, CLLocationManagerDelegate, UITextFieldDelegate
+@objc(MapCell) class MapCell: UITableViewCell, UITextViewDelegate, MKMapViewDelegate
 {
     var delegate: MapCellDelegate?
     
-    @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var mapViewLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var label: UILabel!
-    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var guidance: UILabel!
+    @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var addressLabel: UILabel!
     
-    var locationManager: CLLocationManager!
+    private var currentPlacemark: MKPlacemark?
     
-    var location = PFObject(className: CLASS_LOCATION_KEY)
-
-    var placemark: CLPlacemark!
-    {
+    var location: Location! {
         didSet {
-            locationManager.stopUpdatingLocation()
-            locationManager.delegate = nil
-            showPlacemark(MKPlacemark(placemark: placemark))
+            configureForLocation()
         }
-    }
-    
-    var parseLocation: PFObject!
-    {
-        didSet {
-            if let nickname = parseLocation.objectForKey(LOCATION_NICKNAME_KEY) as? String {
-                textField.text = nickname
-            }
-        }
-    }
-    
-    func configureCell()
-    {
-        mapView.zoomEnabled = false
-        mapView.scrollEnabled = false
-        mapView.userInteractionEnabled = false
-        mapView.layer.cornerRadius = 50
-        
-        label.textColor = UIColor.inviteTableLabelColor()
-        label.font = UIFont.inviteTableSmallFont()
-        label.text = "Retrieving location..."
-        
-        textField.placeholder = "Give this location a nickname"
-        textField.font = UIFont.inviteTableSmallFont()
-        textField.textColor = UIColor.inviteTableLabelColor()
-        textField.delegate = self
-    }
-    
-    func showPlacemark(placemark: MKPlacemark)
-    {
-        mapView.addAnnotation(placemark)
-        mapView.showAnnotations([placemark], animated: true)
-//        label.text = placemark.addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", ")
     }
     
     override func awakeFromNib()
     {
-        configureCell()
+        self.leadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
+
+        self.textView.textContainerInset = UIEdgeInsetsMake(3, 0, 0, 0)
+        self.textView.textContainer.lineFragmentPadding = 0
+        self.textView.font = UIFont.proximaNovaRegularFontOfSize(20)
+        
+        self.guidance.font = UIFont.proximaNovaRegularFontOfSize(20)
+        
+        self.selectionStyle = UITableViewCellSelectionStyle.None
+
+        self.accessoryView = UIView(frame: CGRectMake(0, 0, 10, 10))
+        self.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
+        self.accessoryView?.clipsToBounds = true
+        self.accessoryView?.layer.cornerRadius = 5
     }
     
-    func showCurrentLocation()
+    private func configureForLocation()
     {
-        setupLocationManager()
-        locationManager.startUpdatingLocation()
-        locationManager.delegate = self
-        mapView.setUserTrackingMode(.Follow, animated: true)
-    }
-    
-    func setupLocationManager()
-    {
-        if (locationManager == nil) {
-            locationManager = CLLocationManager()
-            locationManager.requestWhenInUseAuthorization()
+        self.guidance.backgroundColor = UIColor.clearColor()
+        if let name = self.location.name {
+            self.guidance.text = name
+            self.guidance.hidden = false
+            self.textView.hidden = true
+        } else if let _ = self.location.pfObject {
+            self.guidance.hidden = true
+            self.textView.hidden = true
+        } else {
+            self.guidance.text = "Add a nickname"
+            self.guidance.hidden = false
+            self.textView.hidden = false
+        }
+        
+        if let address = self.location.formattedAddress {
+            let style = NSMutableParagraphStyle()
+            style.lineSpacing = 1
+            let att = NSMutableAttributedString(string: address, attributes: [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(14), NSParagraphStyleAttributeName: style])
+            self.addressLabel.attributedText = att
         }
     }
 
-    // MARK: CLLocationManager
-    
-    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation)
+    func textViewDidChange(textView: UITextView)
     {
-        let geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(newLocation) { (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-//            let address = (placemarks[0] as! CLPlacemark).addressDictionary["FormattedAddressLines"]!.componentsJoinedByString(", ")
-//            self.label.text = address
-            if let d = self.delegate {
-                self.location.setObject(newLocation.coordinate.latitude, forKey: LOCATION_LATITUDE_KEY)
-                self.location.setObject(newLocation.coordinate.longitude, forKey: LOCATION_LONGITUDE_KEY)
-//                self.location.setObject(address, forKey: LOCATION_ADDRESS_KEY)
-                d.didSetCurrentLocationToLocation(self.location)
-            }
-        }
+        guidance.hidden = Bool(textView.text.characters.count)
+        self.delegate?.textViewDidChange(textView, cell: self)
     }
     
-    deinit
+    func textViewShouldBeginEditing(textView: UITextView) -> Bool
     {
-        locationManager.delegate = nil
-    }
-    
-    // MARK: UITextFieldDelegate
-    
-    func textFieldDidEndEditing(textField: UITextField)
-    {
-        self.location.setObject(textField.text!, forKey: LOCATION_NICKNAME_KEY)
+        self.delegate?.textViewShouldBeginEditing(textView, cell: self)
+        return true
     }
 }
 
 protocol MapCellDelegate
 {
-    func didSetCurrentLocationToLocation(location: PFObject)
+    func textViewDidChange(textView: UITextView, cell: MapCell)
+    func textViewShouldBeginEditing(textView: UITextView, cell: MapCell)
 }
 

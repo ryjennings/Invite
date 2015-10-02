@@ -10,27 +10,50 @@ import UIKit
 import MapKit
 
 enum LocationSection: Int {
-    case ActiveLocation = 0
+    case SelectedLocation = 0
     case SavedLocations
     case Count
 }
 
-@objc(LocationViewController) class LocationViewController: UIViewController, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, LocationResultsViewControllerDelegate, InputCellDelegate, MapCellDelegate, CLLocationManagerDelegate
+@objc class Location: NSObject
+{
+    let foursquareId: String?
+    var name: String?
+    let latitude: String?
+    let longitude: String?
+    let formattedAddress: String?
+    let pfObject: PFObject?
+    
+    init(foursquareId: String?, name: String?, latitude: String?, longitude: String?, formattedAddress: String?, pfObject: PFObject?)
+    {
+        self.foursquareId = foursquareId
+        self.name = name
+        self.latitude = latitude
+        self.longitude = longitude
+        self.formattedAddress = formattedAddress
+        self.pfObject = pfObject
+    }
+}
+
+@objc(LocationViewController) class LocationViewController: UIViewController, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, LocationResultsViewControllerDelegate, MapCellDelegate, CLLocationManagerDelegate
 {
     @IBOutlet weak var tableView: UITableView!
     
     var searchController: UISearchController!
     var searchResultsController: LocationResultsViewController!
     
-    var activePlacemark: CLPlacemark!
-    var activeLocation: PFObject!
-    
-    var showCurrentLocation = true
-    var savedLocationsIndex = 0
-    
+    // DO NOT DELETE: CLLocationManager gets lat/long for Foursquare API
     var locationManager: CLLocationManager!
     var latitude: CLLocationDegrees!
     var longitude: CLLocationDegrees!
+    
+    var displayLocation = false
+    var displayedLocation: Location? {
+        didSet {
+            self.displayLocation = self.displayedLocation != nil
+        }
+    }
+    var selectedLocation: Location?
 
     override func viewDidLoad()
     {
@@ -38,17 +61,28 @@ enum LocationSection: Int {
         
         self.navigationItem.title = "Event Location"
         
-        searchResultsController = LocationResultsViewController()
-        searchResultsController.delegate = self
-
-        searchController = UISearchController(searchResultsController: searchResultsController)
-        searchController.delegate = self
-        searchController.searchBar.sizeToFit()
-        searchController.searchBar.placeholder = "Search Foursquare for a location"
-        searchController.searchResultsUpdater = self
+        self.searchResultsController = self.storyboard?.instantiateViewControllerWithIdentifier(LOCATION_RESULTS_VIEW_CONTROLLER) as? LocationResultsViewController
+        self.searchResultsController.delegate = self
         
-        tableView.tableHeaderView = tableHeaderView()
-        definesPresentationContext = true
+        self.searchController = UISearchController(searchResultsController: searchResultsController)
+        self.searchController.delegate = self
+        self.searchController.searchBar.sizeToFit()
+        self.searchController.searchBar.placeholder = "Search Foursquare for a location"
+        self.searchController.searchResultsUpdater = self
+        
+        self.tableView.tableHeaderView = tableHeaderView()
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 44
+
+        self.definesPresentationContext = true
+        
+        let location = AppDelegate.user().protoEvent.protoLocation;
+        if location != nil {
+            if location.pfObject == nil {
+                self.displayedLocation = location
+            }
+            self.selectedLocation = location
+        }
         
         setupLocationManager()
 
@@ -121,9 +155,12 @@ enum LocationSection: Int {
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
+        if !self.displayLocation {
+            return "Saved Locations"
+        }
         switch (section) {
-        case LocationSection.ActiveLocation.rawValue:
-            return "Active Location"
+        case LocationSection.SelectedLocation.rawValue:
+            return "New Location"
         case LocationSection.SavedLocations.rawValue:
             return "Saved Locations"
         default:
@@ -133,101 +170,152 @@ enum LocationSection: Int {
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
-        return LocationSection.Count.rawValue
+        return self.displayLocation ? LocationSection.Count.rawValue : 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        switch (section) {
-        case LocationSection.ActiveLocation.rawValue:
-            return 1
-        case LocationSection.SavedLocations.rawValue:
-            if (AppDelegate.user().locations == nil) {
+        if self.displayLocation {
+            switch (section) {
+            case LocationSection.SelectedLocation.rawValue:
                 return 1
-            } else {
-                return AppDelegate.user().locations.count + 1 // for current location
+            case LocationSection.SavedLocations.rawValue:
+                if (AppDelegate.user().locations == nil) {
+                    return 1
+                } else {
+                    return AppDelegate.user().locations.count
+                }
+            default:
+                return 0
             }
-        default:
-            return 0
+        } else {
+            return AppDelegate.user().locations.count
         }
-    }
-    
-    override func viewDidDisappear(animated: Bool)
-    {
-        let mapCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! MapCell
-        mapCell.delegate = nil
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        if (indexPath.section == LocationSection.ActiveLocation.rawValue) {
+        if (self.displayLocation && indexPath.section == LocationSection.SelectedLocation.rawValue) {
             
             let cell = tableView.dequeueReusableCellWithIdentifier(MAP_CELL_IDENTIFIER, forIndexPath: indexPath) as! MapCell
+            let location = self.displayedLocation
+            let selected = self.displayedLocation?.foursquareId == self.selectedLocation?.foursquareId
             cell.delegate = self
-            cell.mapViewLeadingConstraint.constant = cell.separatorInset.left
-            if (showCurrentLocation) {
-                cell.showCurrentLocation()
+            cell.location = location
+            addAccessoryViewToKeyboardForTextView(cell.textView)
+            
+            if let name = location?.name {
+                cell.guidance.text = name
+                cell.textView.hidden = true
             } else {
-                cell.placemark = activePlacemark
-                cell.parseLocation = activeLocation
+                cell.guidance.text = "Add a nickname"
+                cell.textView.hidden = false
             }
-            addDoneToolBarToKeyboard(cell.textField)
+            
+            if selected {
+                selectMapCell(cell)
+            } else {
+                unselectMapCell(cell)
+            }
+            
             return cell
             
         } else {
             
-            let cell = tableView.dequeueReusableCellWithIdentifier(BASIC_CELL_IDENTIFIER, forIndexPath: indexPath) 
-            cell.accessoryView = indexPath.row == savedLocationsIndex ? UIImageView(image: UIImage(named: "list_selected")) : UIImageView(image: UIImage(named: "list_select"))
-            if (indexPath.row == 0) {
-                cell.textLabel?.text = "Use current location"
-            } else {
-                let location = AppDelegate.user().locations[indexPath.row - 1] as! PFObject
-                let address = location.objectForKey(LOCATION_ADDRESS_KEY) as? String
-                let nickname = location.objectForKey(LOCATION_NICKNAME_KEY) as? String
-                cell.textLabel?.text = nickname ?? address
-            }
-            return cell
+            let cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
+            let location = savedLocationForRow(indexPath.row)
+            cell.location = location
             
+            if let selectedLocation = self.selectedLocation {
+                if selectedLocation.pfObject == location.pfObject {
+                    selectProfileCell(cell)
+                } else {
+                    unselectProfileCell(cell)
+                }
+            } else {
+                unselectProfileCell(cell)
+            }
+            
+            return cell
+
         }
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+    func savedLocationForRow(row: Int) -> Location
     {
-        if (indexPath.section == LocationSection.ActiveLocation.rawValue) {
-            
-            return 130
-            
-        } else {
-            
-            return 44
-            
+        let savedLocation = AppDelegate.user().locations[row] as! PFObject
+        return Location(foursquareId: nil,
+            name: savedLocation.objectForKey(LOCATION_NAME_KEY) as? String,
+            latitude: savedLocation.objectForKey(LOCATION_LATITUDE_KEY) as? String,
+            longitude: savedLocation.objectForKey(LOCATION_LONGITUDE_KEY) as? String,
+            formattedAddress: savedLocation.objectForKey(LOCATION_ADDRESS_KEY) as? String,
+            pfObject: savedLocation)
+    }
+    
+    func selectProfileCell(cell: ProfileCell)
+    {
+        unselectAllVisibleCells()
+        self.view.endEditing(true)
+        cell.backgroundColor = UIColor.inviteLightSlateColor()
+        cell.accessoryView?.backgroundColor = UIColor.whiteColor()
+        cell.nameLabel.textColor = UIColor.whiteColor()
+        cell.flexLabel.textColor = UIColor.whiteColor()
+        cell.profileImageView.layer.borderWidth = 1
+    }
+    
+    func unselectProfileCell(cell: ProfileCell)
+    {
+        cell.backgroundColor = UIColor.whiteColor()
+        cell.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
+        cell.nameLabel.textColor = UIColor.inviteTableLabelColor()
+        cell.flexLabel.textColor = UIColor.inviteGrayColor()
+        cell.profileImageView.layer.borderWidth = 0
+    }
+    
+    private func selectMapCell(cell: MapCell)
+    {
+        unselectAllVisibleCells()
+        cell.accessoryView?.backgroundColor = UIColor.whiteColor()
+        cell.backgroundColor = UIColor.inviteLightSlateColor()
+        cell.guidance.textColor = UIColor.whiteColor()
+        cell.textView.textColor = UIColor.whiteColor()
+        cell.addressLabel.textColor = UIColor.whiteColor()
+        cell.guidance.backgroundColor = self.displayedLocation?.name == nil ? UIColor.whiteColor().colorWithAlphaComponent(0.1) : UIColor.clearColor()
+    }
+    
+    private func unselectMapCell(cell: MapCell)
+    {
+        cell.backgroundColor = UIColor.whiteColor()
+        cell.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
+        cell.guidance.textColor = self.displayedLocation?.name == nil ? UIColor.inviteBlueColor() : UIColor.inviteTableHeaderColor()
+        cell.textView.textColor = UIColor.inviteTableHeaderColor()
+        cell.addressLabel.textColor = UIColor.inviteGrayColor()
+        cell.guidance.backgroundColor = self.displayedLocation?.name == nil ? UIColor.blackColor().colorWithAlphaComponent(0.025) : UIColor.clearColor()
+    }
+    
+    func unselectAllVisibleCells()
+    {
+        for visibleCell in tableView.visibleCells {
+            if visibleCell is ProfileCell {
+                unselectProfileCell(visibleCell as! ProfileCell)
+            } else {
+                unselectMapCell(visibleCell as! MapCell)
+            }
         }
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        if (indexPath.section == LocationSection.SavedLocations.rawValue) {
-            
-            savedLocationsIndex = indexPath.row
-            
-            if (indexPath.row == 0) {
-                showCurrentLocation = true
-                tableView.reloadData()
-                return
-            }
-            
-            let parseLocation = AppDelegate.user().locations[indexPath.row - 1] as! PFObject
-            let parseLongitude = parseLocation.objectForKey(LOCATION_LONGITUDE_KEY) as? Double
-            let parseLatitude = parseLocation.objectForKey(LOCATION_LATITUDE_KEY) as? Double
-            
-            let geocoder = CLGeocoder()
-            let location = CLLocation(latitude: parseLatitude!, longitude: parseLongitude!)
-            geocoder.reverseGeocodeLocation(location, completionHandler: { (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-                self.activePlacemark = placemarks![0]
-                self.showCurrentLocation = false
-                self.activeLocation = parseLocation
-                tableView.reloadData()
-            })
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        if self.displayLocation && indexPath.section == LocationSection.SelectedLocation.rawValue
+        {
+            selectMapCell(cell as! MapCell)
+            self.selectedLocation = self.displayedLocation
+        }
+        else if (!self.displayLocation || (self.displayLocation && indexPath.section == LocationSection.SavedLocations.rawValue))
+        {
+            selectProfileCell(cell as! ProfileCell)
+            self.selectedLocation = savedLocationForRow(indexPath.row)
         }
     }
 
@@ -235,6 +323,10 @@ enum LocationSection: Int {
     
     func updateSearchResultsForSearchController(searchController: UISearchController)
     {
+        if self.searchController.searchBar.text! == "" {
+            return
+        }
+        self.tableView.scrollsToTop = false
         let session = NSURLSession.sharedSession()
         
         let client_id = "W5AXZDIUZ3TFJTALSSNSBZDL2WKY02K0BI2T1KODP2C4JHAT"
@@ -252,37 +344,68 @@ enum LocationSection: Int {
                 
                 if let data = data {
                     let json = JSON(data: data)
-                    print("")
+                    var locations = [Location]()
+                    
+                    locations.append(Location(
+                        foursquareId: nil,
+                        name: nil,
+                        latitude: nil,
+                        longitude: nil,
+                        formattedAddress: self.searchController.searchBar.text!,
+                        pfObject: nil))
+
+                    for var i = 0; i < json["response"]["venues"].count; i++ {
+                        let addressArray: [JSON] = json["response"]["venues"][i]["location"]["formattedAddress"].arrayValue
+                        var formattedAddress = ""
+                        for var j = 0; j < addressArray.count; j++ {
+                            formattedAddress += "\(addressArray[j].stringValue)"+(j != addressArray.count - 1 ? "\n" : "")
+                        }
+                        locations.append(Location(
+                            foursquareId: json["response"]["venues"][i]["id"].string,
+                            name: json["response"]["venues"][i]["name"].string,
+                            latitude: json["response"]["venues"][i]["location"]["lat"].string,
+                            longitude: json["response"]["venues"][i]["location"]["lng"].string,
+                            formattedAddress: formattedAddress,
+                            pfObject: nil))
+                    }
+                    
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.searchResultsController.locations = locations
+                        self.searchResultsController.tableView.reloadData()
+                    })
                 }
             }
             
         }.resume()
     }
     
+    // MARK: UISearchControllerDelegate
+    
+    func didDismissSearchController(searchController: UISearchController)
+    {
+        self.tableView.scrollsToTop = true
+    }
+
     // MARK: - LocationResultsViewControllerDelegate
     
-    func didSelectPlacemark(placemark: CLPlacemark)
+    func didSelectLocation(location: Location)
     {
-        activePlacemark = placemark
-        
-        tableView.reloadData()
-        
-        // Dismiss the search controller
+        self.selectedLocation = location
+        self.displayedLocation = location
         self.searchController.active = false
-    }
-    
-    // MARK: - InputCellDelegate
-    
-    func textViewDidChange(textView: UITextView)
-    {
-
+        self.tableView.reloadData()
     }
     
     // MARK: - MapCellDelegate
     
-    func didSetCurrentLocationToLocation(location: PFObject)
+    func textViewDidChange(textView: UITextView, cell: MapCell)
     {
-        activeLocation = location
+        self.displayedLocation?.name = textView.text == "" ? nil : textView.text
+    }
+    
+    func textViewShouldBeginEditing(textView: UITextView, cell: MapCell)
+    {
+        selectMapCell(cell)
     }
 
     // MARK: - Notifications
@@ -305,25 +428,7 @@ enum LocationSection: Int {
         })
     }
 
-    // MARK: - UITextView Dismiss Toolbar
-    
-    func addDoneToolBarToKeyboard(textField: UITextField)
-    {
-        let doneToolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 50))
-        doneToolbar.barStyle = .BlackTranslucent
-        doneToolbar.items = [
-            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
-            UIBarButtonItem(title: "Dismiss Keyboard", style: .Done, target: self, action: "doneButtonClickedDismissKeyboard"),
-            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-        ]
-        doneToolbar.sizeToFit()
-        textField.inputAccessoryView = doneToolbar
-    }
-    
-    func doneButtonClickedDismissKeyboard()
-    {
-        self.view.endEditing(true)
-    }
+    // MARK: - Actions
     
     @IBAction func cancel(sender: UIBarButtonItem)
     {
@@ -332,7 +437,29 @@ enum LocationSection: Int {
 
     @IBAction func save(sender: UIBarButtonItem)
     {
-        AppDelegate.user().protoEvent.location = activeLocation
+        if let location = self.selectedLocation {
+            AppDelegate.user().protoEvent.protoLocation = location
+        }
         navigationController?.popViewControllerAnimated(true)
+    }
+
+    // MARK: - UITextView
+    
+    func addAccessoryViewToKeyboardForTextView(textView: UITextView)
+    {
+        let doneToolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 50))
+        doneToolbar.barStyle = .BlackTranslucent
+        doneToolbar.items = [
+            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(title: "Dismiss Keyboard", style: .Done, target: self, action: "dismissKeyboard"),
+            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        ]
+        doneToolbar.sizeToFit()
+        textView.inputAccessoryView = doneToolbar
+    }
+    
+    func dismissKeyboard()
+    {
+        self.view.endEditing(true)
     }
 }

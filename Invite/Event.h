@@ -13,6 +13,8 @@
 
 #import "User.h"
 
+@class Location;
+
 @interface Event : NSObject
 
 @property (nonatomic, strong) PFObject *creator;
@@ -21,6 +23,7 @@
 @property (nonatomic, strong) NSArray *emails;
 @property (nonatomic, strong) NSDate *startDate;
 @property (nonatomic, strong) NSDate *endDate;
+@property (nonatomic, strong) Location *protoLocation;
 @property (nonatomic, strong) PFObject *location;
 @property (nonatomic, strong) NSDictionary *rsvp;
 
