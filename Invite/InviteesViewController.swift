@@ -88,6 +88,7 @@ class Friend
         self.searchController = UISearchController(searchResultsController: nil)
         self.searchController.delegate = self
         self.searchController.dimsBackgroundDuringPresentation = false
+        self.searchController.searchBar.sizeToFit()
         self.searchController.searchBar.delegate = self
         self.searchController.searchBar.scopeButtonTitles = ["Invite Friends", "All Friends"]
         self.searchController.searchBar.selectedScopeButtonIndex = 1
@@ -98,11 +99,6 @@ class Friend
         self.searchController.searchBar.spellCheckingType = UITextSpellCheckingType.No
     }
     
-    override func viewWillLayoutSubviews()
-    {
-        self.searchController.searchBar.sizeToFit()
-    }
-
     // MARK: - UITableView
     
     func tableHeaderView() -> UIView

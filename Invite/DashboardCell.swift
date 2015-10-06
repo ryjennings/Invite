@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 @objc(DashboardCell) class DashboardCell: UITableViewCell
 {
@@ -15,6 +16,9 @@ import UIKit
     @IBOutlet weak var endHourLabel: UILabel!
     @IBOutlet weak var endDayLabel: UILabel!
     @IBOutlet weak var invitedLabel: UILabel!
+    @IBOutlet weak var yourLabel: UILabel!
+    @IBOutlet weak var colorView: UIView!
+    @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var profileImageView1: ProfileImageView!
     @IBOutlet weak var profileImageView2: ProfileImageView!
     @IBOutlet weak var profileImageView3: ProfileImageView!
@@ -49,6 +53,15 @@ import UIKit
         self.invitedLabel.textColor = UIColor.grayColor()
         self.invitedLabel.font = UIFont.proximaNovaRegularFontOfSize(12)
         self.invitedLabel.numberOfLines = 1
+        
+        self.yourLabel.textColor = UIColor.grayColor()
+        self.yourLabel.font = UIFont.proximaNovaSemiboldFontOfSize(12)
+        self.yourLabel.numberOfLines = 1
+        
+        self.mapView.layer.cornerRadius = 35
+        self.mapView.clipsToBounds = true
+        self.mapView.scrollEnabled = false
+        self.mapView.zoomEnabled = false
     }
     
     private func configureForEvent()
@@ -59,27 +72,32 @@ import UIKit
         
         self.invitedLabel.text = "\(self.event[EVENT_INVITEES_KEY].count) invited"
         
-//        switch EventMyResponse(rawValue: AppDelegate.user().myResponses[self.event.objectId!] as! UInt)! {
-//        case EventMyResponse.Going:
-//            self.rsvpLabel.textColor = UIColor.inviteGreenColor()
-//            self.rsvpLabel.text = "Going"
-//        case EventMyResponse.Maybe:
-//            self.rsvpLabel.textColor = UIColor.inviteGrayColor()
-//            self.rsvpLabel.text = "Maybe"
-//        case EventMyResponse.Sorry:
-//            self.rsvpLabel.textColor = UIColor.inviteRedColor()
-//            self.rsvpLabel.text = "Sorry"
-//        case EventMyResponse.Host:
-//            self.rsvpLabel.textColor = UIColor.inviteBlueColor()
-//            self.rsvpLabel.text = "My event"
-//        default:
-//            break
-//        }
+        let myResponse = EventMyResponse(rawValue: AppDelegate.user().myResponses[self.event.objectId!] as! UInt)!
+        
+        switch myResponse {
+        case EventMyResponse.Going:
+            self.colorView.backgroundColor = UIColor.inviteGreenColor()
+        case EventMyResponse.Maybe:
+            self.colorView.backgroundColor = UIColor.inviteGrayColor()
+        case EventMyResponse.Sorry:
+            self.colorView.backgroundColor = UIColor.inviteRedColor()
+        case EventMyResponse.Host:
+            self.colorView.backgroundColor = UIColor.inviteBackgroundSlateColor()
+        default:
+            break
+        }
 
         self.profileImageView1.layer.cornerRadius = 12
         self.profileImageView2.layer.cornerRadius = 12
         self.profileImageView3.layer.cornerRadius = 12
         self.profileImageView4.layer.cornerRadius = 12
+        
+        if myResponse == EventMyResponse.Host {
+            self.yourLabel.hidden = false
+            self.yourLabel.text = "Your event"
+        } else {
+            self.yourLabel.hidden = true
+        }
     }
     
     private func configureDate()
@@ -139,10 +157,14 @@ import UIKit
         }
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
+//    override func setHighlighted(highlighted: Bool, animated: Bool)
+//    {
+//        super.setHighlighted(highlighted, animated: animated)
+//
+//        if highlighted {
+//            self.backgroundColor = UIColor.inviteLightSlateColor()
+//        } else {
+//            self.backgroundColor = UIColor.whiteColor()
+//        }
+//    }
 }

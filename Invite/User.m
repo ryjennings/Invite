@@ -60,22 +60,22 @@
         
         // Delete old events
         NSMutableArray *mEvents = [[object objectForKey:EVENTS_KEY] mutableCopy];
-        NSMutableArray *eventsToRemove = [NSMutableArray array];
-        NSDate *date = [NSDate date];
-        BOOL save = NO;
-        for (PFObject *event in mEvents) {
-            NSDate *endDate = [event objectForKey:EVENT_END_DATE_KEY];
-            if ([[endDate earlierDate:date] isEqualToDate:endDate]) {
-                [_parse removeObject:event forKey:EVENTS_KEY];
-//                [mEvents removeObject:event];
-                [eventsToRemove addObject:event];
-                save = YES;
-            }
-        }
-        [mEvents removeObjectsInArray:eventsToRemove];
-        if (save) {
-            [_parse saveInBackground];
-        }
+//        NSMutableArray *eventsToRemove = [NSMutableArray array];
+//        NSDate *date = [NSDate date];
+//        BOOL save = NO;
+//        for (PFObject *event in mEvents) {
+//            NSDate *endDate = [event objectForKey:EVENT_END_DATE_KEY];
+//            if ([[endDate earlierDate:date] isEqualToDate:endDate]) {
+//                [_parse removeObject:event forKey:EVENTS_KEY];
+////                [mEvents removeObject:event];
+//                [eventsToRemove addObject:event];
+//                save = YES;
+//            }
+//        }
+//        [mEvents removeObjectsInArray:eventsToRemove];
+//        if (save) {
+//            [_parse saveInBackground];
+//        }
         _events = [mEvents sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             NSDate *e1start = [((PFObject *)obj1) objectForKey:EVENT_START_DATE_KEY];
             NSDate *e2start = [((PFObject *)obj2) objectForKey:EVENT_START_DATE_KEY];
