@@ -19,12 +19,12 @@ enum LocationSection: Int {
 {
     let foursquareId: String?
     var name: String?
-    let latitude: String?
-    let longitude: String?
+    var latitude: CLLocationDegrees
+    var longitude: CLLocationDegrees
     let formattedAddress: String?
     let pfObject: PFObject?
     
-    init(foursquareId: String?, name: String?, latitude: String?, longitude: String?, formattedAddress: String?, pfObject: PFObject?)
+    init(foursquareId: String?, name: String?, latitude: CLLocationDegrees, longitude: CLLocationDegrees, formattedAddress: String?, pfObject: PFObject?)
     {
         self.foursquareId = foursquareId
         self.name = name
@@ -156,7 +156,11 @@ enum LocationSection: Int {
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
         if !self.displayLocation {
-            return "Saved Locations"
+            if AppDelegate.user().locations.count > 0 {
+                return "Saved Locations"
+            } else {
+                return nil
+            }
         }
         switch (section) {
         case LocationSection.SelectedLocation.rawValue:
@@ -245,10 +249,10 @@ enum LocationSection: Int {
     {
         let savedLocation = AppDelegate.user().locations[row] as! PFObject
         return Location(foursquareId: nil,
-            name: savedLocation.objectForKey(LOCATION_NAME_KEY) as? String,
-            latitude: savedLocation.objectForKey(LOCATION_LATITUDE_KEY) as? String,
-            longitude: savedLocation.objectForKey(LOCATION_LONGITUDE_KEY) as? String,
-            formattedAddress: savedLocation.objectForKey(LOCATION_ADDRESS_KEY) as? String,
+            name: savedLocation[LOCATION_NAME_KEY] as? String,
+            latitude: (savedLocation[LOCATION_LATITUDE_KEY] as! NSNumber).doubleValue,
+            longitude: (savedLocation[LOCATION_LONGITUDE_KEY] as! NSNumber).doubleValue,
+            formattedAddress: savedLocation[LOCATION_ADDRESS_KEY] as? String,
             pfObject: savedLocation)
     }
     
@@ -349,8 +353,8 @@ enum LocationSection: Int {
                     locations.append(Location(
                         foursquareId: nil,
                         name: nil,
-                        latitude: nil,
-                        longitude: nil,
+                        latitude: 0,
+                        longitude: 0,
                         formattedAddress: self.searchController.searchBar.text!,
                         pfObject: nil))
 
@@ -363,8 +367,8 @@ enum LocationSection: Int {
                         locations.append(Location(
                             foursquareId: json["response"]["venues"][i]["id"].string,
                             name: json["response"]["venues"][i]["name"].string,
-                            latitude: json["response"]["venues"][i]["location"]["lat"].string,
-                            longitude: json["response"]["venues"][i]["location"]["lng"].string,
+                            latitude: json["response"]["venues"][i]["location"]["lat"].doubleValue,
+                            longitude: json["response"]["venues"][i]["location"]["lng"].doubleValue,
                             formattedAddress: formattedAddress,
                             pfObject: nil))
                     }
@@ -394,6 +398,14 @@ enum LocationSection: Int {
         self.displayedLocation = location
         self.searchController.active = false
         self.tableView.reloadData()
+        let geocoder = CLGeocoder()
+        let addressString = (location.formattedAddress! as NSString).stringByReplacingOccurrencesOfString("\n", withString: ",")
+        geocoder.geocodeAddressString(addressString) { (placemarks: [CLPlacemark]?, error: NSError?) -> Void in
+            if (placemarks?.count > 0) {
+                location.latitude = (placemarks?[0].location?.coordinate.latitude)!
+                location.longitude = (placemarks?[0].location?.coordinate.longitude)!
+            }
+        }
     }
     
     // MARK: - MapCellDelegate

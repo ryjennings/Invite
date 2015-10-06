@@ -61,7 +61,7 @@ import UIKit
                 self.nameLabel.hidden = true
                 self.flexLabel.text = self.location.formattedAddress
                 self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15, 0, 0)
-            } else if self.friend.pfObject != nil {
+            } else if self.location.pfObject != nil {
                 self.leadingFlexLabelConstraint.constant = 10
                 self.nameLabel.hidden = true
                 self.flexLabel.text = self.location.name

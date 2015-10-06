@@ -13,7 +13,6 @@
 #import <Parse/Parse.h>
 
 #import "AppDelegate.h"
-#import "DashboardViewController.h"
 #import "StringConstants.h"
 #import "Invite-Swift.h"
 #import "User.h"
@@ -32,6 +31,7 @@
 @property (nonatomic, weak) IBOutlet UILabel *inviteLabel;
 @property (nonatomic, weak) IBOutlet UILabel *messageLabel;
 @property (nonatomic, weak) IBOutlet UIView *lineView;
+@property (nonatomic, assign) BOOL applicationDidResignActive;
 
 @end
 
@@ -45,6 +45,8 @@
     _lineView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
     _messageLabel.font = [UIFont proximaNovaRegularFontOfSize:16];
     _facebookView.backgroundColor = [UIColor inviteSlateButtonColor];
+    
+    _applicationDidResignActive = NO;
 
     [self showFacebookLogin];
         
@@ -52,39 +54,44 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userCreated:) name:USER_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteUser:) name:DELETE_USER_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:APPLICATION_WILL_RESIGN_ACTIVE_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoggedOut:) name:USER_LOGGED_OUT_NOTIFICATION object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
-    _messageView.alpha = 0;
-    _messageViewCenterYConstraint.constant = kMessageStartingCenterY + 35;
-    _facebookViewBottomConstraint.constant = -120;
-    _logoCenterYConstraint.constant = 0;
+    if (!_applicationDidResignActive) {
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+        _messageView.alpha = 0;
+        _messageViewCenterYConstraint.constant = kMessageStartingCenterY + 35;
+        _facebookViewBottomConstraint.constant = -120;
+        _logoCenterYConstraint.constant = 0;
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    _logoCenterYConstraint.constant = kAmountToMoveUp;
-    [UIView animateWithDuration:1 animations:^{
-        [self.view layoutIfNeeded];
-    }];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _messageViewCenterYConstraint.constant = kMessageStartingCenterY + kAmountToMoveUp;
+    if (!_applicationDidResignActive) {
+        _logoCenterYConstraint.constant = kAmountToMoveUp;
         [UIView animateWithDuration:1 animations:^{
-            _messageView.alpha = 1;
             [self.view layoutIfNeeded];
-        } completion:^(BOOL finished) {
-            _facebookViewBottomConstraint.constant = 0;
-            [UIView animateWithDuration:1 delay:0.25 options:0 animations:^{
-                [self.view layoutIfNeeded];
-            } completion:nil];
         }];
-    });
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            _messageViewCenterYConstraint.constant = kMessageStartingCenterY + kAmountToMoveUp;
+            [UIView animateWithDuration:1 animations:^{
+                _messageView.alpha = 1;
+                [self.view layoutIfNeeded];
+            } completion:^(BOOL finished) {
+                _facebookViewBottomConstraint.constant = 0;
+                [UIView animateWithDuration:1 delay:0.25 options:0 animations:^{
+                    [self.view layoutIfNeeded];
+                } completion:nil];
+            }];
+        });
+    }
 }
 
 - (void)dealloc
@@ -208,10 +215,16 @@
 
 - (void)applicationWillResignActive:(NSNotification *)notification
 {
+    _applicationDidResignActive = YES;
     _messageView.alpha = 0;
     _messageViewCenterYConstraint.constant = kMessageStartingCenterY;
     _facebookViewBottomConstraint.constant = -120;
     _logoCenterYConstraint.constant = 0;
+}
+
+- (void)userLoggedOut:(NSNotification *)notification
+{
+    _applicationDidResignActive = NO;
 }
 
 @end

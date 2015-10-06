@@ -24,7 +24,7 @@ class ProfileImageView: UIImageView
     {
         layer.cornerRadius = 15
         clipsToBounds = true
-        backgroundColor = UIColor.inviteLightSlateColor()
+        backgroundColor = UIColor.inviteBackgroundSlateColor()
     }
     
     func prepareLabelForEmail(email: String)

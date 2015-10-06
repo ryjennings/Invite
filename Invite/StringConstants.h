@@ -6,6 +6,14 @@
 //  Copyright (c) 2015 Appuous. All rights reserved.
 //
 
+typedef NS_ENUM(NSUInteger, EventMyResponse) {
+    EventMyResponseNoResponse,
+    EventMyResponseGoing,
+    EventMyResponseMaybe,
+    EventMyResponseSorry,
+    EventMyResponseHost
+};
+
 typedef NS_ENUM(NSUInteger, EventResponse) {
     EventResponseNoResponse,
     EventResponseGoing,
@@ -33,10 +41,10 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 
 // Location keys
 #define LOCATION_ADDRESS_KEY @"address"
-#define LOCATION_NAME_KEY @"nickname"
+#define LOCATION_NAME_KEY @"name"
 #define LOCATION_LONGITUDE_KEY @"longitude"
 #define LOCATION_LATITUDE_KEY @"latitude"
-#define LOCATION_ID_KEY @"id"
+#define LOCATION_FOURSQUARE_ID_KEY @"foursquare_id"
 
 // Event keys
 #define EVENT_TITLE_KEY @"title"
@@ -47,7 +55,6 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define EVENT_INVITEES_KEY @"invitees"
 #define EVENT_RSVP_KEY @"rsvp"
 #define EVENT_CREATOR_KEY @"creator"
-#define EVENT_LOCATIONS_KEY @"locations"
 
 // Keys
 #define EMAIL_KEY @"email"
@@ -124,3 +131,4 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define EVENT_CREATED_NOTIFICATION @"EventCreatedNotification"
 #define PARSE_LOADED_NOTIFICATION @"ParseLoadedNotification"
 #define APPLICATION_WILL_RESIGN_ACTIVE_NOTIFICATION @"ApplicationWillResignActiveNotification"
+#define USER_LOGGED_OUT_NOTIFICATION @"UserLoggedOutNotifcation"

@@ -2,180 +2,147 @@
 //  DashboardCell.swift
 //  Invite
 //
-//  Created by Ryan Jennings on 3/31/15.
-//  Copyright (c) 2015 Appuous. All rights reserved.
+//  Created by Ryan Jennings on 10/5/15.
+//  Copyright © 2015 Appuous. All rights reserved.
 //
 
 import UIKit
-import MapKit
-import ParseUI
 
-@objc(DashboardCell) class DashboardCell: UICollectionViewCell, MKMapViewDelegate
+@objc(DashboardCell) class DashboardCell: UITableViewCell
 {
-    let titleFont = UIFont.proximaNovaLightFontOfSize(28)
-    let timeframeFont = UIFont.proximaNovaSemiboldFontOfSize(14)
-    let descriptionFont = UIFont.proximaNovaRegularFontOfSize(14)
-    let newlineFont = UIFont.proximaNovaRegularFontOfSize(12)
-    
-    let kDashboardPadding: CGFloat = 35
+    @IBOutlet weak var titleLable: UILabel!
+    @IBOutlet weak var startHourLabel: UILabel!
+    @IBOutlet weak var endHourLabel: UILabel!
+    @IBOutlet weak var endDayLabel: UILabel!
+    @IBOutlet weak var invitedLabel: UILabel!
+    @IBOutlet weak var profileImageView1: ProfileImageView!
+    @IBOutlet weak var profileImageView2: ProfileImageView!
+    @IBOutlet weak var profileImageView3: ProfileImageView!
+    @IBOutlet weak var profileImageView4: ProfileImageView!
     
     var event: PFObject! {
         didSet {
-            configureEvent()
+            configureForEvent()
         }
     }
     
-    var cardView = UIView()
-    var mapView = MKMapView()
-    var mapGradient = OBGradientView()
-    var dateLabel = UILabel()
-    var detailsLabel = UILabel()
-    var detailsGradient = OBGradientView()
-    
-    var annotation: MKPlacemark?
-    
-    override init(frame: CGRect)
+    override func awakeFromNib()
     {
-        super.init(frame: frame)
-        mapView.delegate = self
-        prepareConstraints()
+        super.awakeFromNib()
+        
+        self.titleLable.textColor = UIColor.inviteTableHeaderColor()
+        self.titleLable.font = UIFont.proximaNovaRegularFontOfSize(20)
+        self.titleLable.numberOfLines = 1
+        
+        self.startHourLabel.textColor = UIColor.inviteTableHeaderColor()
+        self.startHourLabel.font = UIFont.proximaNovaRegularFontOfSize(20)
+        self.startHourLabel.numberOfLines = 1
+        
+        self.endHourLabel.textColor = UIColor.grayColor()
+        self.endHourLabel.font = UIFont.proximaNovaRegularFontOfSize(12)
+        self.endHourLabel.numberOfLines = 1
+        
+        self.endDayLabel.textColor = UIColor.grayColor()
+        self.endDayLabel.font = UIFont.proximaNovaRegularFontOfSize(12)
+        self.endDayLabel.numberOfLines = 1
+        
+        self.invitedLabel.textColor = UIColor.grayColor()
+        self.invitedLabel.font = UIFont.proximaNovaRegularFontOfSize(12)
+        self.invitedLabel.numberOfLines = 1
     }
     
-    required init?(coder aDecoder: NSCoder)
+    private func configureForEvent()
     {
-        super.init(coder: aDecoder)
-        mapView.delegate = self
-        prepareConstraints()
-    }
-    
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
-    {
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier("PinIdentifier") as? MKPinAnnotationView
-        if (pinView == nil) {
-            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "PinIdentifier")
-            pinView?.animatesDrop = true
-        }
-        return pinView
-    }
-    
-    func configureEvent()
-    {
-        // Setup label
-        let eventDetails = NSMutableAttributedString()
+        configureDate()
         
-        var eventTitle = ""
-        if let title = event.objectForKey(EVENT_TITLE_KEY) as? String {
-            eventTitle = title.characters.count > 0 ? title : "No title"
-        } else {
-            eventTitle = "No title"
-        }
+        self.titleLable.text = self.event[EVENT_TITLE_KEY] as? String
         
-        eventDetails.appendAttributedString(NSAttributedString(string: eventTitle, attributes: [NSFontAttributeName: titleFont, NSForegroundColorAttributeName: UIColor.inviteBlueColor()]))
-        eventDetails.appendAttributedString(NSAttributedString(string: "\n\n", attributes: [NSFontAttributeName: newlineFont]))
-//        eventDetails.appendAttributedString(NSAttributedString(string: AppDelegate.presentationTimeframeForStartDate(event.objectForKey(EVENT_START_DATE_KEY) as! NSDate, endDate: event.objectForKey(EVENT_END_DATE_KEY) as! NSDate) as String, attributes: [NSFontAttributeName: timeframeFont, NSForegroundColorAttributeName: UIColor.inviteSlateButtonColor()]))
-        eventDetails.appendAttributedString(NSAttributedString(string: "\n\n", attributes: [NSFontAttributeName: newlineFont]))
+        self.invitedLabel.text = "\(self.event[EVENT_INVITEES_KEY].count) invited"
         
-        let style = NSMutableParagraphStyle()
-        style.lineSpacing = 4
-        
-        detailsLabel.attributedText = eventDetails
-        
-        let startDate = event.objectForKey(EVENT_START_DATE_KEY) as! NSDate
-        let formatter = NSDateFormatter()
-        formatter.dateFormat = "MMMM"
-        let month = (formatter.stringFromDate(startDate) as NSString).uppercaseString
-        formatter.dateFormat = "dd"
-        let day = formatter.stringFromDate(startDate)
-        
-        let att = NSMutableAttributedString()
-        att.appendAttributedString(NSAttributedString(string: month, attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(9), NSForegroundColorAttributeName: UIColor.whiteColor()]))
-        att.appendAttributedString(NSAttributedString(string: "\n", attributes: [NSFontAttributeName: UIFont.proximaNovaLightFontOfSize(0)]))
-        att.appendAttributedString(NSAttributedString(string: day, attributes: [NSFontAttributeName: UIFont.proximaNovaLightFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]))
-        dateLabel.attributedText = att
-        dateLabel.textAlignment = .Center
-        dateLabel.numberOfLines = 0
-        
-        // Map View
-        
-        if ((event.objectForKey(EVENT_LOCATION_KEY)) != nil) {
-            if ((annotation) != nil) {
-                mapView.removeAnnotation(annotation!)
-                annotation = nil
-            }
-            let location = event.objectForKey(EVENT_LOCATION_KEY) as! PFObject
-            let longitude = location.objectForKey(LOCATION_LONGITUDE_KEY) as? Double
-            let latitude = location.objectForKey(LOCATION_LATITUDE_KEY) as? Double
-            let coordinate = CLLocationCoordinate2D(latitude: latitude!, longitude: longitude!)
-            annotation = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
-            mapView.addAnnotation(annotation!)
-            mapView.showAnnotations([annotation!], animated: false)
-        } else {
-            mapView.removeAnnotation(annotation!)
-        }
-    }
-    
-    func prepareConstraints()
-    {
-        let views = ["cardView": cardView, "mapView": mapView, "detailsLabel": detailsLabel]
-        
-        // Card view
-        cardView.translatesAutoresizingMaskIntoConstraints = false
-        cardView.layer.cornerRadius = CGFloat(kCornerRadius)
-        cardView.clipsToBounds = true
-        cardView.backgroundColor = UIColor.whiteColor()
-        addSubview(cardView)
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-padding-[cardView]-padding-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: ["padding": kDashboardPadding], views: views))
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-padding-[cardView]-padding-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: ["padding": kDashboardPadding], views: views))
-        
-        // Map view
-        mapView.translatesAutoresizingMaskIntoConstraints = false
-        mapView.zoomEnabled = false
-        mapView.scrollEnabled = false
-        mapView.userInteractionEnabled = false
-        cardView.addSubview(mapView)
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[mapView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["mapView": mapView]))
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[mapView]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["mapView": mapView]))
-        cardView.addConstraint(NSLayoutConstraint(item: mapView, attribute: .Height, relatedBy: .Equal, toItem: cardView, attribute: .Height, multiplier: 0.5, constant: 0))
-        
-        // Map gradient
-        mapGradient.translatesAutoresizingMaskIntoConstraints = false
-        mapGradient.colors = [UIColor.clearColor(), UIColor(white: 0, alpha: 0.1)]
-        cardView.addSubview(mapGradient)
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[mapGradient]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["mapGradient": mapGradient]))
-        cardView.addConstraint(NSLayoutConstraint(item: mapGradient, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 30))
-        cardView.addConstraint(NSLayoutConstraint(item: mapGradient, attribute: .Bottom, relatedBy: .Equal, toItem: mapView, attribute: .Bottom, multiplier: 1, constant: 0))
-        
-        // Details label
-        detailsLabel.translatesAutoresizingMaskIntoConstraints = false
-        detailsLabel.numberOfLines = 0
-        cardView.addSubview(detailsLabel)
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[detailsLabel]-30-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[mapView]-15-[detailsLabel]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        
-        // Details gradient
-        detailsGradient.translatesAutoresizingMaskIntoConstraints = false
-        detailsGradient.colors = [UIColor(white: 1, alpha: 0),  UIColor.whiteColor(), UIColor.whiteColor()]
-        detailsGradient.locations = [0, 0.75, 1]
-        cardView.addSubview(detailsGradient)
-        cardView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[detailsGradient]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["detailsGradient": detailsGradient]))
-        cardView.addConstraint(NSLayoutConstraint(item: detailsGradient, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 50))
-        cardView.addConstraint(NSLayoutConstraint(item: detailsGradient, attribute: .Bottom, relatedBy: .Equal, toItem: cardView, attribute: .Bottom, multiplier: 1, constant: 0))
+//        switch EventMyResponse(rawValue: AppDelegate.user().myResponses[self.event.objectId!] as! UInt)! {
+//        case EventMyResponse.Going:
+//            self.rsvpLabel.textColor = UIColor.inviteGreenColor()
+//            self.rsvpLabel.text = "Going"
+//        case EventMyResponse.Maybe:
+//            self.rsvpLabel.textColor = UIColor.inviteGrayColor()
+//            self.rsvpLabel.text = "Maybe"
+//        case EventMyResponse.Sorry:
+//            self.rsvpLabel.textColor = UIColor.inviteRedColor()
+//            self.rsvpLabel.text = "Sorry"
+//        case EventMyResponse.Host:
+//            self.rsvpLabel.textColor = UIColor.inviteBlueColor()
+//            self.rsvpLabel.text = "My event"
+//        default:
+//            break
+//        }
 
-        // Date label
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.backgroundColor = UIColor.inviteBlueColor()
-        dateLabel.layer.cornerRadius = 40
-        dateLabel.clipsToBounds = true
-        self.addSubview(dateLabel)
-        self.addConstraint(NSLayoutConstraint(item: dateLabel, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 80))
-        self.addConstraint(NSLayoutConstraint(item: dateLabel, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 80))
-        self.addConstraint(NSLayoutConstraint(item: dateLabel, attribute: .Bottom, relatedBy: .Equal, toItem: mapView, attribute: .Bottom, multiplier: 1, constant: -15))
-        self.addConstraint(NSLayoutConstraint(item: dateLabel, attribute: .Trailing, relatedBy: .Equal, toItem: mapView, attribute: .Trailing, multiplier: 1, constant: -15))
-        
-}
-    
-    override func layoutSubviews()
-    {
-        detailsLabel.preferredMaxLayoutWidth = bounds.size.width - 66
+        self.profileImageView1.layer.cornerRadius = 12
+        self.profileImageView2.layer.cornerRadius = 12
+        self.profileImageView3.layer.cornerRadius = 12
+        self.profileImageView4.layer.cornerRadius = 12
     }
+    
+    private func configureDate()
+    {
+        let startDate = self.event[EVENT_START_DATE_KEY] as! NSDate
+        let endDate = self.event[EVENT_END_DATE_KEY] as! NSDate
+        let dateFormatter = NSDateFormatter()
+        
+        // Start hour
+        dateFormatter.dateStyle = .NoStyle
+        dateFormatter.timeStyle = .ShortStyle
+        dateFormatter.AMSymbol = "am"
+        dateFormatter.PMSymbol = "pm"
+        let startHourText: NSString = dateFormatter.stringFromDate(startDate) as NSString
+        self.startHourLabel.text = startHourText.stringByReplacingOccurrencesOfString(" ", withString: "")
+        
+        // Date label
+        let calendar = NSCalendar.currentCalendar()
+        let components: NSCalendarUnit = [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
+        let s = calendar.components(components, fromDate: startDate)
+        let e = calendar.components(components, fromDate: endDate)
+        
+        dateFormatter.dateStyle = .MediumStyle
+        dateFormatter.timeStyle = .NoStyle
+        
+        var endDayText: String?
+        var endHourText: String?
+        
+        if (!(s.day  == e.day &&
+            s.month  == e.month &&
+            s.year   == e.year))
+        {
+            endDayText = dateFormatter.stringFromDate(endDate)
+        }
+        
+        dateFormatter.dateStyle = .NoStyle
+        dateFormatter.timeStyle = .ShortStyle
+        
+        if (!(s.day  == e.day &&
+            s.month  == e.month &&
+            s.year   == e.year &&
+            s.hour   == e.hour &&
+            s.minute == e.minute))
+        {
+            endHourText = dateFormatter.stringFromDate(endDate)
+        }
+        
+        if let endHourText = endHourText {
+            self.endHourLabel.text = "until \(endHourText)"
+        } else {
+            self.endHourLabel.text = ""
+        }
+        if let endDayText = endDayText {
+            self.endDayLabel.text = "on \(endDayText)"
+        } else {
+            self.endDayLabel.text = ""
+        }
+    }
+
+    override func setSelected(selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        // Configure the view for the selected state
+    }
+
 }

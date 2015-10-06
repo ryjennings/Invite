@@ -35,7 +35,8 @@
 - (void)submitEvent;
 + (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event;
 
-- (NSAttributedString *)timeframe;
+- (NSAttributedString *)editTimeframe;
+- (NSString *)viewTimeframe;
 - (NSString *)host;
 
 - (void)saveToParse;

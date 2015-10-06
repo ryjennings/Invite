@@ -10,7 +10,7 @@ import UIKit
 
 extension AppDelegate
 {
-    class func presentationTimeframeForStartDate(startDate: NSDate!, endDate: NSDate!) -> NSAttributedString
+    class func editTimeframeForStartDate(startDate: NSDate!, endDate: NSDate!) -> NSAttributedString
     {
         let att = NSMutableAttributedString()
         let calendar = NSCalendar.currentCalendar()
@@ -66,6 +66,60 @@ extension AppDelegate
         }
         
         return att
+    }
+
+    class func viewTimeframeForStartDate(startDate: NSDate!, endDate: NSDate!) -> NSString
+    {
+        var string = ""
+        let calendar = NSCalendar.currentCalendar()
+        let dateFormatter = NSDateFormatter()
+        let components: NSCalendarUnit = [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
+        let s = calendar.components(components, fromDate: startDate)
+        let e = calendar.components(components, fromDate: endDate)
+        
+        dateFormatter.dateStyle = .MediumStyle
+        dateFormatter.timeStyle = .NoStyle
+        
+        let startDayText = dateFormatter.stringFromDate(startDate)
+        
+        var endDayText: String?
+        var endHourText: String?
+        
+        if (!(s.day  == e.day &&
+            s.month  == e.month &&
+            s.year   == e.year))
+        {
+            endDayText = dateFormatter.stringFromDate(endDate)
+        }
+        
+        dateFormatter.dateStyle = .NoStyle
+        dateFormatter.timeStyle = .ShortStyle
+        
+        let startHourText = dateFormatter.stringFromDate(startDate)
+        
+        if (!(s.day  == e.day &&
+            s.month  == e.month &&
+            s.year   == e.year &&
+            s.hour   == e.hour &&
+            s.minute == e.minute))
+        {
+            endHourText = dateFormatter.stringFromDate(endDate)
+        }
+        
+        if let endDayText = endDayText, endHourText = endHourText
+        {
+            string = "Starting \(startDayText) at \(startHourText)\nuntil \(endHourText) on \(endDayText)"
+        }
+        else if let endHourText = endHourText
+        {
+            string = "\(startHourText) until \(endHourText)\non \(startDayText)"
+        }
+        else
+        {
+            string = "\(startHourText) on \(startDayText)"
+        }
+        
+        return string
     }
 }
 

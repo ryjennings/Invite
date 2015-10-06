@@ -19,6 +19,7 @@
 
 @property (nonatomic, strong) PFObject *parseEvent;
 @property (nonatomic, assign) BOOL isParseEvent;
+@property (nonatomic, strong) PFObject *locationToSave;
 
 @end
 
@@ -166,12 +167,20 @@
 
 #pragma mark -
 
-- (NSAttributedString *)timeframe
+- (NSAttributedString *)editTimeframe
 {
     if (self.startDate && self.endDate) {
-        return [AppDelegate presentationTimeframeForStartDate:self.startDate endDate:self.endDate];
+        return [AppDelegate editTimeframeForStartDate:self.startDate endDate:self.endDate];
     }
     return [[NSAttributedString alloc] initWithString:@"Set a time" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:20], NSForegroundColorAttributeName: [UIColor inviteTableHeaderColor]}];
+}
+
+- (NSString *)viewTimeframe
+{
+    if (self.startDate && self.endDate) {
+        return [AppDelegate viewTimeframeForStartDate:self.startDate endDate:self.endDate];
+    }
+    return @"";
 }
 
 - (NSString *)host
@@ -230,7 +239,7 @@
 
 - (void)submitToParse
 {
-    NSMutableArray *save = [NSMutableArray array];
+    __block NSMutableArray *save = [NSMutableArray array];
     
     // Create a new Person for all emails left
     for (NSString *email in _actualEmailsToInvite)
@@ -238,7 +247,6 @@
         PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
         person[EMAIL_KEY] = email;
         // Now that person has been created remove from actualEmailsToInvite and add to actualInviteesToInvite
-        [_actualEmailsToInvite removeObject:email];
         [_actualInviteesToInvite addObject:person];
         [save addObject:person];
     }
@@ -248,10 +256,40 @@
     _parseEvent[EVENT_START_DATE_KEY] = _startDate;
     _parseEvent[EVENT_END_DATE_KEY] = _endDate;
     _parseEvent[EVENT_TITLE_KEY] = _title;
-    _parseEvent[EVENT_LOCATION_KEY] = _location;
+
+    // First, check if user is using saved location
     
+    for (PFObject *location in [AppDelegate user].locations) {
+        if (location == self.protoLocation.pfObject) {
+            _parseEvent[EVENT_LOCATION_KEY] = location;
+        }
+    }
+    
+    // Next, if it's a foursquare location, check if it already exists on parse
+
+    if (!_parseEvent[EVENT_LOCATION_KEY]) {
+        
+        // If location does not exist in user's saved locations, and does not exist on parse, create
+        PFObject *location = [PFObject objectWithClassName:CLASS_LOCATION_KEY];
+        if (self.protoLocation.foursquareId) {
+            location[LOCATION_FOURSQUARE_ID_KEY] = self.protoLocation.foursquareId;
+        }
+        if (self.protoLocation.name) {
+            location[LOCATION_NAME_KEY] = self.protoLocation.name;
+        }
+        if (self.protoLocation.latitude) {
+            location[LOCATION_LATITUDE_KEY] = @(self.protoLocation.latitude);
+        }
+        if (self.protoLocation.longitude) {
+            location[LOCATION_LONGITUDE_KEY] = @(self.protoLocation.longitude);
+        }
+        location[LOCATION_ADDRESS_KEY] = self.protoLocation.formattedAddress;
+        [save addObject:location];
+        _parseEvent[EVENT_LOCATION_KEY] = location;
+        _locationToSave = location;
+    }
+
     [save addObject:_parseEvent];
-    
     [PFObject saveAllInBackground:save target:self selector:@selector(eventCreatedWithResult:error:)];
 }
 
@@ -276,6 +314,9 @@
         _parseEvent[EVENT_RSVP_KEY] = rsvp;
         
         [[AppDelegate parseUser] addUniqueObject:_parseEvent forKey:EVENTS_KEY];
+        if (_locationToSave) {
+            [[AppDelegate parseUser] addUniqueObject:_locationToSave forKey:LOCATIONS_KEY];
+        }
         
         [save addObject:_parseEvent];
         [save addObject:[AppDelegate parseUser]];
@@ -310,9 +351,6 @@
     
     // Add invitee to creator's (user's) friends
     [[AppDelegate parseUser] addUniqueObject:person forKey:FRIENDS_KEY];
-    
-    // Add location
-//    [[AppDelegate parseUser] addUniqueObject:_location forKey:EVENT_LOCATIONS_KEY];
     
     // Add person to local friends
     [self addPersonToFriends:person];

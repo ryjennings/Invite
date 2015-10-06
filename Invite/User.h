@@ -23,7 +23,6 @@
 @property (nonatomic, strong) NSString *facebookID;
 @property (nonatomic, strong) NSString *lastName;
 @property (nonatomic, strong) NSString *email;
-@property (nonatomic, strong) NSString *facebookLink;
 @property (nonatomic, strong) NSString *fullName;
 @property (nonatomic, strong) NSString *firstName;
 
@@ -33,10 +32,10 @@
 @property (nonatomic, strong) NSArray *locations;
 
 @property (nonatomic, strong) PFObject *eventToDisplay;
+@property (nonatomic, strong) Event *protoEvent;
 
 @property (nonatomic, strong) NSSet *reservations;
-
-@property (nonatomic, strong) Event *protoEvent;
+@property (nonatomic, strong) NSDictionary *myResponses;
 
 + (instancetype)shared;
 
