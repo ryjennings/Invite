@@ -205,7 +205,6 @@ class Friend
         cell.accessoryView?.backgroundColor = UIColor.whiteColor()
         cell.nameLabel.textColor = UIColor.whiteColor()
         cell.flexLabel.textColor = UIColor.whiteColor()
-        cell.profileImageView.layer.borderWidth = 1
     }
     
     func unselectCell(cell: ProfileCell, friend: Friend)
@@ -214,7 +213,6 @@ class Friend
         cell.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
         cell.nameLabel.textColor = UIColor.inviteTableLabelColor()
         cell.flexLabel.textColor = friend.fullName != nil && friend.pfObject == nil ? UIColor.inviteGrayColor() : UIColor.inviteTableLabelColor()
-        cell.profileImageView.layer.borderWidth = 0
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)

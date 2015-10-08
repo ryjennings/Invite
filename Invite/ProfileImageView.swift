@@ -10,60 +10,116 @@ import UIKit
 
 class ProfileImageView: UIImageView
 {
-    var person: AnyObject! {
-        didSet {
-            if person is PFObject {
-                prepareLabelForPerson(person as! PFObject)
-            } else {
-                prepareLabelForEmail(person as! String)
-            }
-        }
-    }
-    
+    let label = UILabel()
+    let responseCircle = UIView()
+    let imageView = UIImageView()
+
     override func awakeFromNib()
     {
-        layer.cornerRadius = 15
-        clipsToBounds = true
-        backgroundColor = UIColor.inviteBackgroundSlateColor()
-    }
-    
-    func prepareLabelForEmail(email: String)
-    {
-        let displayText = "\(email[email.startIndex])"
-        prepareLabelWithText(displayText)
-    }
-    
-    func prepareLabelForPerson(person: PFObject)
-    {
-        var displayText = ""
-        if let firstName = person.objectForKey(FIRST_NAME_KEY) as? String {
-            displayText += "\(firstName[firstName.startIndex])"
-        }
-        if let lastName = person.objectForKey(LAST_NAME_KEY) as? String {
-            displayText += "\(lastName[lastName.startIndex])"
-        }
-        if (displayText.isEmpty) {
-            let email = person.objectForKey(EMAIL_KEY) as! String
-            displayText = "\(email[email.startIndex])"
-        }
-        prepareLabelWithText(displayText)
-    }
-    
-    func prepareLabelWithText(displayText: String)
-    {
-        let initialsLabel = UILabel()
-        initialsLabel.translatesAutoresizingMaskIntoConstraints = false
-        initialsLabel.textColor = UIColor.whiteColor()
-        initialsLabel.text = displayText.uppercaseString
-        initialsLabel.backgroundColor = UIColor.clearColor()
-        initialsLabel.textAlignment = .Center
-        initialsLabel.font = UIFont.proximaNovaRegularFontOfSize(22)
-        initialsLabel.minimumScaleFactor = 10/22 // minimum/maximum
-        initialsLabel.adjustsFontSizeToFitWidth = true
-        addSubview(initialsLabel)
+        self.clipsToBounds = true
+        self.layer.borderColor = UIColor.whiteColor().CGColor
         
-        let views = ["label": initialsLabel]
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.imageView.translatesAutoresizingMaskIntoConstraints = false
+        self.imageView.clipsToBounds = true
+        addSubview(self.imageView)
+
+        self.label.translatesAutoresizingMaskIntoConstraints = false
+        self.label.textColor = UIColor.inviteBackgroundSlateColor()
+        self.label.backgroundColor = UIColor.clearColor()
+        self.label.textAlignment = .Center
+        self.label.font = UIFont.proximaNovaRegularFontOfSize(14)
+        self.label.layer.borderWidth = 2
+        self.label.layer.borderColor = UIColor.whiteColor().CGColor
+        self.label.clipsToBounds = true
+        addSubview(self.label)
+        
+        self.responseCircle.translatesAutoresizingMaskIntoConstraints = false
+        self.responseCircle.backgroundColor = UIColor.clearColor()
+        self.responseCircle.layer.borderWidth = 2
+        self.responseCircle.clipsToBounds = true
+        addSubview(self.responseCircle)
+        
+        let views = ["imageView": self.imageView, "label": self.label, "response": self.responseCircle]
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-1-[imageView]-1-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-1-[imageView]-1-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-1-[label]-1-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-1-[label]-1-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[response]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[response]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+    }
+    
+    func configureForPerson(person: AnyObject, event: PFObject?, width: CGFloat, showResponse: Bool)
+    {
+        self.imageView.layer.cornerRadius = event == nil ? 0 : (width / 2) - 1
+        self.label.layer.cornerRadius = (width / 2) - 1
+        self.responseCircle.layer.cornerRadius = width / 2
+        
+        let allResponses = event?[EVENT_RSVP_KEY] as? [String: UInt]
+
+        var response = EventResponse.NoResponse
+        var facebookId: String?
+        var text: String
+        
+        if person is String {
+            let email = person as! String
+            text = "\(email[email.startIndex])"
+            self.responseCircle.hidden = false
+            self.label.hidden = false
+            self.layer.cornerRadius = 0
+            self.layer.borderWidth = 0
+        } else if person is PFObject {
+            let parse = person as! PFObject
+            facebookId = parse[FACEBOOK_ID_KEY] as? String
+            if let r = allResponses?[AppDelegate.keyFromEmail(parse[EMAIL_KEY] as? String)] {
+                response = EventResponse(rawValue: r)!
+            }
+            let fullText = parse[FIRST_NAME_KEY] as? String ?? parse[EMAIL_KEY] as! String
+            text = "\(fullText[fullText.startIndex])"
+            self.responseCircle.hidden = false
+            self.label.hidden = false
+            self.layer.cornerRadius = 0
+            self.layer.borderWidth = 0
+        } else {
+            let friend = person as! Friend
+            facebookId = friend.pfObject?[FACEBOOK_ID_KEY] as? String
+            let fullText = friend.fullName ?? friend.email
+            text = "\(fullText[fullText.startIndex])"
+            self.responseCircle.hidden = true
+            self.label.hidden = true
+            self.layer.cornerRadius = width / 2
+            self.layer.borderWidth = 1
+        }
+        
+        if let facebookId = facebookId {
+            self.imageView.sd_setImageWithURL(NSURL(string: "https://graph.facebook.com/\(facebookId)/picture?type=large&scrape=true"), placeholderImage: nil, completed: {
+                (image: UIImage!, error: NSError!, cacheType: SDImageCacheType, url: NSURL!) -> Void in
+                if showResponse && response == EventResponse.NoResponse {
+                    self.imageView.image = self.imageView.image?.tintedImageWithColor(UIColor.inviteLightSlateColor(), blendMode: CGBlendMode.SoftLight) // SoftLight, Overlay, Screen work best
+                }
+            })
+            self.label.text = ""
+        } else {
+            self.imageView.image = nil
+            self.label.text = text.uppercaseString
+        }
+        
+        if showResponse {
+            switch response {
+            case EventResponse.NoResponse:
+                self.responseCircle.layer.borderColor = UIColor.inviteBackgroundSlateColor().CGColor
+                self.imageView.alpha = 0.25
+            case EventResponse.Going:
+                self.responseCircle.layer.borderColor = UIColor.inviteGreenColor().CGColor
+                self.imageView.alpha = 1
+            case EventResponse.Sorry:
+                self.responseCircle.layer.borderColor = UIColor.inviteRedColor().CGColor
+                self.imageView.alpha = 1
+            case EventResponse.Maybe:
+                self.responseCircle.layer.borderColor = UIColor.inviteBlueColor().CGColor
+                self.imageView.alpha = 1
+            }
+        } else {
+            self.responseCircle.layer.borderColor = UIColor.inviteBackgroundSlateColor().CGColor
+        }
     }
 }

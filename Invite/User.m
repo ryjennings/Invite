@@ -59,7 +59,6 @@
     } else {
         
         // Delete old events
-        NSMutableArray *mEvents = [[object objectForKey:EVENTS_KEY] mutableCopy];
 //        NSMutableArray *eventsToRemove = [NSMutableArray array];
 //        NSDate *date = [NSDate date];
 //        BOOL save = NO;
@@ -76,16 +75,7 @@
 //        if (save) {
 //            [_parse saveInBackground];
 //        }
-        _events = [mEvents sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            NSDate *e1start = [((PFObject *)obj1) objectForKey:EVENT_START_DATE_KEY];
-            NSDate *e2start = [((PFObject *)obj2) objectForKey:EVENT_START_DATE_KEY];
-            if ([[e1start earlierDate:e2start] isEqualToDate:e1start]) {
-                return NSOrderedAscending;
-            } else if ([[e1start earlierDate:e2start] isEqualToDate:e2start]) {
-                return NSOrderedDescending;
-            }
-            return NSOrderedSame;
-        }];
+        _events = [User sortEvents:[object objectForKey:EVENTS_KEY]];
         
         if ([object objectForKey:FRIENDS_KEY]) {
             _friends = [object objectForKey:FRIENDS_KEY];
@@ -104,7 +94,22 @@
         } else {
             _locations = [[NSArray alloc] init];
         }
+        _reservations = [[NSSet alloc] init];
     }
+}
+
++ (NSArray *)sortEvents:(NSArray *)events
+{
+    return [events sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        NSDate *e1start = [((PFObject *)obj1) objectForKey:EVENT_START_DATE_KEY];
+        NSDate *e2start = [((PFObject *)obj2) objectForKey:EVENT_START_DATE_KEY];
+        if ([[e1start earlierDate:e2start] isEqualToDate:e1start]) {
+            return NSOrderedAscending;
+        } else if ([[e1start earlierDate:e2start] isEqualToDate:e2start]) {
+            return NSOrderedDescending;
+        }
+        return NSOrderedSame;
+    }];
 }
 
 - (void)createParseUser
@@ -157,6 +162,17 @@
             }
         }];
     }];
+}
+
+- (void)addFacebookDetails:(NSDictionary *)details toParseUser:(PFObject *)parse
+{
+    parse[GENDER_KEY] = details[GENDER_KEY];
+    parse[LOCALE_KEY] = details[LOCALE_KEY];
+    parse[FACEBOOK_ID_KEY] = details[FACEBOOK_ID_KEY];
+    parse[LAST_NAME_KEY] = details[LAST_NAME_KEY];
+    parse[FULL_NAME_KEY] = details[FULL_NAME_KEY];
+    parse[FIRST_NAME_KEY] = details[FIRST_NAME_KEY];
+    [parse saveInBackground];
 }
 
 - (void)findReservations

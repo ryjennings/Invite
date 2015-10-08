@@ -11,10 +11,15 @@ import UIKit
 extension UIColor
 {
     // MARK: - Invite Colors
-    
+
     class func inviteSlateColor() -> UIColor
     {
         return UIColor(red: 56/255, green: 68/255, blue: 79/255, alpha: 1)
+    }
+    
+    class func inviteYellowColor() -> UIColor
+    {
+        return UIColor(red: 1, green: 0.8, blue: 0.18, alpha: 1)
     }
     
     class func inviteSlateClearColor() -> UIColor

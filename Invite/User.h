@@ -38,10 +38,13 @@
 @property (nonatomic, strong) NSDictionary *myResponses;
 
 + (instancetype)shared;
++ (NSArray *)sortEvents:(NSArray *)events;
 
 - (void)loadParseUser:(PFObject *)user;
 - (void)createParseUserFromFacebookUser:(NSDictionary *)user;
 - (void)findReservations;
+- (void)createMyReponses;
+- (void)addFacebookDetails:(NSDictionary *)details toParseUser:(PFObject *)parseUser;
 
 //- (void)checkForEventsWhereUserIsInvited;
 

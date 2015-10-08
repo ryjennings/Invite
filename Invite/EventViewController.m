@@ -160,7 +160,11 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         // Response
         if (!_isCreator) {
             _showResponseHasBeenSaved = NO;
-            _response = [[_event.rsvp objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
+            
+            PFObject *event = [[AppDelegate user] eventToDisplay];
+            NSDictionary *rsvp = event[EVENT_RSVP_KEY];
+            
+            _response = [rsvp[[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
             [self configureResponsePicker];
         }
         
@@ -177,6 +181,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         [_inviteesSectionViewController buildInviteesDictionary];
 
         _inviteesSectionViewController.view.alpha = 1;
+        if ([[AppDelegate user] eventToDisplay]) {
+            _inviteesSectionViewController.event = [[AppDelegate user] eventToDisplay];
+        }
     }
     else
     {
@@ -343,14 +350,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     }
 }
 
-//- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
-//{
-//    if (_mode == EventModePreview && section == EventPreviewSectionMessage) {
-//        return @"Tap \"Preview\" above to see how this event will look when finished.\n ";
-//    }
-//    return nil;
-//}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return _mode == EventModePreview ? EventPreviewSectionCount : EventViewSectionCount;
@@ -404,7 +403,22 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         BasicCell *cell = (BasicCell *)[tableView dequeueReusableCellWithIdentifier:BASIC_CELL_IDENTIFIER];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.textLabel.attributedText = [self attributedTextForReponse];
-        cell.backgroundColor = [UIColor inviteBlueColor];
+        
+        switch (_response) {
+            case EventResponseGoing:
+                cell.backgroundColor = [UIColor inviteGreenColor];
+                break;
+            case EventResponseMaybe:
+                cell.backgroundColor = [UIColor inviteGrayColor];
+                break;
+            case EventResponseSorry:
+                cell.backgroundColor = [UIColor inviteRedColor];
+                break;
+            default:
+                cell.backgroundColor = [UIColor inviteBlueColor];
+                break;
+        }
+
         return cell;
     }
     
@@ -596,27 +610,25 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if (_mode == EventModeView) {
-        return;
-    }
-
     if (_mode == EventModeView && indexPath.section == EventViewSectionResponse) {
         
         [self showPickerView:YES];
         
     }
     
+    if (_mode == EventModeView) {
+        return;
+    }
+
     if (_mode == EventModePreview && indexPath.section == EventPreviewSectionMessage) {
         
         return;
         
-    } else if ((_mode == EventModeView && indexPath.row == EventViewRowTimeframe) ||
-               (_mode == EventModePreview && indexPath.row == EventPreviewRowTimeframe)) {
+    } else if (_mode == EventModePreview && indexPath.row == EventPreviewRowTimeframe) {
         
         [self performSegueWithIdentifier:SEGUE_TO_TIMEFRAME sender:self];
                 
-    } else if ((_mode == EventModeView && indexPath.row == EventViewRowLocation) ||
-               (_mode == EventModePreview && indexPath.row == EventPreviewRowLocation)) {
+    } else if (_mode == EventModePreview && indexPath.row == EventPreviewRowLocation) {
         
         [self performSegueWithIdentifier:SEGUE_TO_LOCATION sender:self];
         
@@ -657,6 +669,21 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 
     cell.textLabel.attributedText = [self attributedTextForReponse];
 
+    switch (_response) {
+        case EventResponseGoing:
+            cell.backgroundColor = [UIColor inviteGreenColor];
+            break;
+        case EventResponseMaybe:
+            cell.backgroundColor = [UIColor inviteGrayColor];
+            break;
+        case EventResponseSorry:
+            cell.backgroundColor = [UIColor inviteRedColor];
+            break;
+        default:
+            cell.backgroundColor = [UIColor inviteBlueColor];
+            break;
+    }
+
     [self showPickerView:NO];
 }
 
@@ -684,9 +711,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 
 - (IBAction)close:(id)sender
 {
-    if ([AppDelegate user].eventToDisplay) {
-        [AppDelegate user].eventToDisplay = nil;
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CLOSED_NOTIFICATION object:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -721,7 +746,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 - (void)responseChanged:(EventResponse)response
 {
     [_rsvpDictionary setValue:@(response) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
-    _event.rsvp = _rsvpDictionary;
+    [AppDelegate user].eventToDisplay[EVENT_RSVP_KEY] = _rsvpDictionary;
     [_event saveToParse];
 }
 
@@ -810,6 +835,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
     [att appendAttributedString:[[NSAttributedString alloc] initWithString:[self textForResponse:_response] attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor], NSFontAttributeName: [UIFont inviteQuestionFont]}]];
     [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:4]}]];
     [att appendAttributedString:[[NSAttributedString alloc] initWithString:lastLine attributes:@{NSForegroundColorAttributeName: [UIColor colorWithWhite:1 alpha:0.85], NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:11]}]];
+    [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:4]}]];
     
     return att;
 }

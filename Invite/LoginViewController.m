@@ -199,7 +199,13 @@
         
         if (objects.count) {
             
-            [[AppDelegate user] loadParseUser:objects[0]];
+            PFObject *person = objects[0];
+            
+            if (!person[FACEBOOK_ID_KEY]) {
+                [[AppDelegate user] addFacebookDetails:user toParseUser:person];
+            }
+            
+            [[AppDelegate user] loadParseUser:person];
             [self performSelector:@selector(showDashboard) withObject:nil afterDelay:0.5];
             
         } else {

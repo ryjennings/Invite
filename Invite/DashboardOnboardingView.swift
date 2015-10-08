@@ -40,7 +40,7 @@ import UIKit
         titleLabel.backgroundColor = UIColor.clearColor()
         titleLabel.textAlignment = .Center
         titleLabel.font = UIFont.inviteQuestionFont()
-        titleLabel.textColor = UIColor.whiteColor()
+        titleLabel.textColor = UIColor.inviteTableHeaderColor()
         titleLabel.text = "Let's get started"
         self.addSubview(titleLabel)
         
@@ -55,7 +55,7 @@ import UIKit
         subtitleLabel.backgroundColor = UIColor.clearColor()
         subtitleLabel.textAlignment = .Center
         subtitleLabel.font = UIFont.proximaNovaRegularFontOfSize(16)
-        subtitleLabel.textColor = UIColor.whiteColor()
+        subtitleLabel.textColor = UIColor.inviteTableHeaderColor()
         subtitleLabel.text = "To create an event, follow these steps:"
         self.addSubview(subtitleLabel)
         
@@ -68,7 +68,7 @@ import UIKit
     func configureLine()
     {
         lineView.translatesAutoresizingMaskIntoConstraints = false
-        lineView.backgroundColor = UIColor(white: 1, alpha: 0.1)
+        lineView.backgroundColor = UIColor(white: 0, alpha: 0.1)
         self.addSubview(lineView)
         
         let views = ["line": lineView, "subtitle": subtitleLabel]
@@ -153,10 +153,11 @@ class DashboardStepView: UIView
         number.textAlignment = .Center
         number.layer.cornerRadius = 20
         number.layer.borderWidth = 2
-        number.layer.borderColor = UIColor.whiteColor().CGColor
+        number.layer.borderColor = UIColor.inviteBlueColor().CGColor
+        number.clipsToBounds = true
         number.font = UIFont.proximaNovaRegularFontOfSize(16)
-        number.backgroundColor = UIColor.clearColor()
-        number.textColor = UIColor.whiteColor()
+        number.backgroundColor = UIColor.whiteColor()
+        number.textColor = UIColor.inviteBlueColor()
         number.text = "\(step)"
         self.addSubview(number)
         
@@ -164,7 +165,7 @@ class DashboardStepView: UIView
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.font = UIFont.proximaNovaSemiboldFontOfSize(14)
         titleLabel.backgroundColor = UIColor.clearColor()
-        titleLabel.textColor = UIColor.whiteColor()
+        titleLabel.textColor = UIColor.inviteBlueColor()
         titleLabel.text = title
         titleLabel.numberOfLines = 0
         self.addSubview(titleLabel)
@@ -176,7 +177,7 @@ class DashboardStepView: UIView
         
         let style = NSMutableParagraphStyle()
         style.lineSpacing = 4
-        let att = NSMutableAttributedString(string: text, attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12), NSForegroundColorAttributeName: UIColor.whiteColor(), NSParagraphStyleAttributeName: style])
+        let att = NSMutableAttributedString(string: text, attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12), NSForegroundColorAttributeName: UIColor.grayColor(), NSParagraphStyleAttributeName: style])
         
         textLabel.attributedText = att
         textLabel.numberOfLines = 0

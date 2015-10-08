@@ -156,14 +156,7 @@ NSString *const kNoResponse = @"No Response";
     
     id person = ((NSArray *)_invitees[_usedIndexes[indexPath.section]])[indexPath.row];
     
-    cell.profileImageView.layer.cornerRadius = 20;
-
-    if ([person isKindOfClass:[PFObject class]] && [((PFObject *)person) objectForKey:FACEBOOK_ID_KEY]) {
-        [cell.profileImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square&width=150&height=150", [person objectForKey:FACEBOOK_ID_KEY]]] placeholderImage:nil];
-    } else {
-        cell.profileImageView.person = person;
-    }
-    
+    [cell.profileImageView configureForPerson:person event:_event ? _event : nil width:40 showResponse:NO];
     if ([person isKindOfClass:[PFObject class]]) {
         PFObject *thisPerson = (PFObject *)person;
         if ([thisPerson objectForKey:FIRST_NAME_KEY]) {

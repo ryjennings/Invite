@@ -14,6 +14,7 @@
 @property (nonatomic, strong) NSArray *userInvitees;
 @property (nonatomic, strong) NSArray *emailInvitees;
 @property (nonatomic, strong) NSDictionary *rsvpDictionary;
+@property (nonatomic, strong) PFObject *event;
 
 - (void)buildInviteesDictionary;
 

@@ -100,6 +100,7 @@
 		07C19AD61BBCC604000FACB4 /* LocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19AD51BBCC604000FACB4 /* LocationCell.swift */; settings = {ASSET_TAGS = (); }; };
 		07C19AD81BC2EA97000FACB4 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19AD71BC2EA97000FACB4 /* DashboardViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		07C19ADA1BC2F3C6000FACB4 /* DashboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19AD91BC2F3C6000FACB4 /* DashboardCell.swift */; settings = {ASSET_TAGS = (); }; };
+		07C19ADC1BC6DE6A000FACB4 /* UIImage+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19ADB1BC6DE6A000FACB4 /* UIImage+Invite.swift */; settings = {ASSET_TAGS = (); }; };
 		07D2D9C51AE5A6D4008E1733 /* DashboardOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */; };
 		07D2D9C91AE616E2008E1733 /* OBGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D2D9C81AE616E2008E1733 /* OBGradientView.m */; };
 		07D9DD351AD83789008FF016 /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD341AD83789008FF016 /* BasicCell.swift */; };
@@ -251,6 +252,7 @@
 		07C19AD51BBCC604000FACB4 /* LocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationCell.swift; sourceTree = "<group>"; };
 		07C19AD71BC2EA97000FACB4 /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		07C19AD91BC2F3C6000FACB4 /* DashboardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardCell.swift; sourceTree = "<group>"; };
+		07C19ADB1BC6DE6A000FACB4 /* UIImage+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Invite.swift"; sourceTree = "<group>"; };
 		07C2098C1A8C2159002B3961 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardOnboardingView.swift; sourceTree = "<group>"; };
 		07D2D9C71AE616E2008E1733 /* OBGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBGradientView.h; sourceTree = "<group>"; };
@@ -392,6 +394,7 @@
 				072836751AD315BF00B158AC /* UIView+Invite.m */,
 				07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */,
 				0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */,
+				07C19ADB1BC6DE6A000FACB4 /* UIImage+Invite.swift */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -784,6 +787,7 @@
 				07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */,
 				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
 				0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */,
+				07C19ADC1BC6DE6A000FACB4 /* UIImage+Invite.swift in Sources */,
 				07E1FD901ACE4EDD00F619D0 /* AppDelegate.swift in Sources */,
 				075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */,
 				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,

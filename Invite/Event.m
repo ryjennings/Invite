@@ -329,11 +329,12 @@
                 }
                 NSMutableArray *events = [[AppDelegate user].events mutableCopy];
                 [events addObject:_parseEvent];
-                [AppDelegate user].events = events;
+                [AppDelegate user].events = [User sortEvents:events];
                 
                 [self sendPushNotification];
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:self];
+                NSDictionary *userInfo = @{@"createdEvent": _parseEvent};
+                [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:nil userInfo:userInfo];
                 
             } else {
                 NSLog(@"ERRRRRRRROR!!!");
