@@ -46,8 +46,6 @@ NSString *const kNoResponse = @"No Response";
     _headerLabel.textColor = [UIColor inviteTableHeaderColor];
     _headerLabel.font = [UIFont inviteTableHeaderFont];
     _headerLabel.text = @"WHO'S INVITED";
-
-    [self buildInviteesDictionary];
 }
 
 - (void)buildInviteesDictionary
@@ -65,7 +63,7 @@ NSString *const kNoResponse = @"No Response";
         for (PFObject *invitee in _userInvitees) {
             [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
         }
-        [noresponse addObjectsFromArray:inviteeEmails];
+//        [noresponse addObjectsFromArray:inviteeEmails];
     }
     
     if (_emailInvitees.count) {
@@ -100,7 +98,7 @@ NSString *const kNoResponse = @"No Response";
         [_usedIndexes addObject:@(EventResponseMaybe)];
     }
     if (sorry.count) {
-        [_invitees setObject:sorry forKey:@(EventResponseMaybe)];
+        [_invitees setObject:sorry forKey:@(EventResponseSorry)];
         [_usedIndexes addObject:@(EventResponseSorry)];
     }
     if (noresponse) {
@@ -110,20 +108,20 @@ NSString *const kNoResponse = @"No Response";
     
     _collectionView.hidden = !_rsvpDictionary.count;
     
-    if (_rsvpDictionary.count) {
-        self.collectionView.collectionViewLayout = DateFlowLayout.new;
-        self.flowLayout = ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout);
-        self.flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        self.flowLayout.headerReferenceSize = CGSizeMake(80, 80);
-        self.flowLayout.minimumInteritemSpacing = 0;
-        self.flowLayout.minimumLineSpacing = 0;
-        self.flowLayout.sectionInset = UIEdgeInsetsMake(0, [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15, 0, 0);
-        self.flowLayout.itemSize = CGSizeMake(60, 80);
-        self.collectionView.alwaysBounceVertical = NO;
-    } else {
-        self.collectionView.collectionViewLayout = [[UICollectionViewFlowLayout alloc] init];
-        self.flowLayout = nil;
-    }
+//    if (_rsvpDictionary.count) {
+//        self.collectionView.collectionViewLayout = DateFlowLayout.new;
+//        self.flowLayout = ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout);
+//        self.flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+//        self.flowLayout.headerReferenceSize = CGSizeMake(80, 80);
+//        self.flowLayout.minimumInteritemSpacing = 0;
+//        self.flowLayout.minimumLineSpacing = 0;
+//        self.flowLayout.sectionInset = UIEdgeInsetsMake(0, [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15, 0, 0);
+//        self.flowLayout.itemSize = CGSizeMake(60, 80);
+//        self.collectionView.alwaysBounceVertical = NO;
+//    } else {
+//        self.collectionView.collectionViewLayout = [[UICollectionViewFlowLayout alloc] init];
+//        self.flowLayout = nil;
+//    }
 }
 
 - (PFObject *)personForKey:(NSString *)key
@@ -177,7 +175,7 @@ NSString *const kNoResponse = @"No Response";
     
     if (kind == UICollectionElementKindSectionHeader) {
         InviteesCollectionHeaderView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER forIndexPath:indexPath];
-        headerView.label.text = @[kGoing, kMaybe, kSorry, kNoResponse][((NSNumber *)_usedIndexes[indexPath.section]).intValue];
+        headerView.label.text = @[kNoResponse, kGoing, kMaybe, kSorry][((NSNumber *)_usedIndexes[indexPath.section]).intValue];
         headerView.label.font = [UIFont proximaNovaRegularFontOfSize:10];
         headerView.label.textColor = [UIColor inviteTableLabelColor];
         reusableview = headerView;

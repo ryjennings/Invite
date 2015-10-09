@@ -25,9 +25,7 @@ import MapKit
     
     @IBOutlet weak var colorViewWidthConstraint: NSLayoutConstraint!
     
-    var response = EventMyResponse.NoResponse
-    
-    private var profiles = [ProfileImageView]()
+    var myResponse = EventMyResponse.NoResponse
     
     var event: PFObject! {
         didSet {
@@ -38,8 +36,6 @@ import MapKit
     override func awakeFromNib()
     {
         super.awakeFromNib()
-        
-        self.profiles = [self.profileImageView1, self.profileImageView2, self.profileImageView3, self.profileImageView4]
         
         self.titleLable.font = UIFont.proximaNovaRegularFontOfSize(20)
         self.titleLable.numberOfLines = 1
@@ -69,7 +65,7 @@ import MapKit
         self.invitedLabel.textColor = UIColor.grayColor()
         self.yourLabel.textColor = UIColor.grayColor()
 
-        switch self.response {
+        switch self.myResponse {
         case EventMyResponse.Going:
             self.colorView.backgroundColor = UIColor.inviteGreenColor()
             self.startHourLabel.textColor = UIColor.inviteGreenColor()
@@ -107,45 +103,103 @@ import MapKit
     
     private func configureForEvent()
     {
+        let invitees = inviteesByEmail()
+
         configureDate()
-        
-        var going = 0
-        for response in self.event[EVENT_RSVP_KEY] as! [String: UInt] {
-            if EventResponse(rawValue: response.1) == EventResponse.Going {
-                going++
-            }
-        }
         
         self.colorViewWidthConstraint.constant = 2
         self.titleLable.text = self.event[EVENT_TITLE_KEY] as? String
-        
-        self.invitedLabel.text = "\(going) going, \(self.event[EVENT_INVITEES_KEY].count) invited"
-        
-        self.response = EventMyResponse(rawValue: AppDelegate.user().myResponses[self.event.objectId!] as! UInt)!
-        
-        configureProfiles()
-        
-        if self.response == EventMyResponse.Host {
-            self.yourLabel.hidden = false
+
+        // Build responseGroups
+        var responseGroups = [EventResponse: [PFObject]]()
+        responseGroups[EventResponse.Going] = [PFObject]()
+        responseGroups[EventResponse.Maybe] = [PFObject]()
+        responseGroups[EventResponse.Sorry] = [PFObject]()
+        responseGroups[EventResponse.NoResponse] = [PFObject]()
+        var going = 0
+        for response in self.event[EVENT_RSVP_KEY] as! [String: UInt] {
+            switch EventResponse(rawValue: response.1)! {
+            case EventResponse.Going:
+                going++
+                responseGroups[EventResponse.Going]!.append(invitees[response.0]!)
+            case EventResponse.Maybe:
+                responseGroups[EventResponse.Maybe]!.append(invitees[response.0]!)
+            case EventResponse.Sorry:
+                responseGroups[EventResponse.Sorry]!.append(invitees[response.0]!)
+            case EventResponse.NoResponse:
+                responseGroups[EventResponse.NoResponse]!.append(invitees[response.0]!)
+            }
+        }
+
+        self.invitedLabel.text = "\(going) going, \(invitees.count) invited"
+
+        configureProfiles(responseGroups)
+
+        // My response
+        self.myResponse = EventMyResponse(rawValue: AppDelegate.user().myResponses[self.event.objectId!] as! UInt)!
+        switch self.myResponse {
+        case EventMyResponse.Going:
+            self.yourLabel.text = "Going"
+        case EventMyResponse.Maybe:
+            self.yourLabel.text = "Maybe"
+        case EventMyResponse.Sorry:
+            self.yourLabel.text = "Sorry"
+        case EventMyResponse.NoResponse:
+            self.yourLabel.text = "Respond now!"
+        case EventMyResponse.Host:
             self.yourLabel.text = "Your event"
-        } else {
-            self.yourLabel.hidden = true
         }
         
         unselectCell()
     }
     
-    private func configureProfiles()
+    private func inviteesByEmail() -> [String: PFObject]
+    {
+        var invitees = [String: PFObject]()
+        for invitee in self.event[EVENT_INVITEES_KEY] as! [PFObject] {
+            invitees[AppDelegate.keyFromEmail(invitee[EMAIL_KEY] as! String)] = invitee
+        }
+        return invitees
+    }
+    
+    private func configureProfiles(groups: [EventResponse: [PFObject]])
     {
         self.profileImageView1.hidden = true
         self.profileImageView2.hidden = true
         self.profileImageView3.hidden = true
         self.profileImageView4.hidden = true
 
-        for var i = 0; i < self.event[EVENT_INVITEES_KEY].count; i++ {
-            let invitee = (self.event[EVENT_INVITEES_KEY] as! NSArray)[i] as! PFObject
-            self.profiles[i].hidden = false
-            self.profiles[i].configureForPerson(invitee, event: self.event, width: 24, showResponse: true)
+        var profiles = [self.profileImageView1, self.profileImageView2, self.profileImageView3, self.profileImageView4]
+        
+        var profileIndex = 0
+        
+        for invitee in groups[EventResponse.Going]! {
+            if profileIndex < profiles.count {
+                profiles[profileIndex].hidden = false
+                profiles[profileIndex].configureForPerson(invitee, event: self.event, width: 24, showResponse: true)
+                profileIndex++
+            }
+        }
+        for invitee in groups[EventResponse.Maybe]! {
+            if profileIndex < profiles.count {
+                profiles[profileIndex].hidden = false
+                profiles[profileIndex].configureForPerson(invitee, event: self.event, width: 24, showResponse: true)
+                profileIndex++
+            }
+        }
+        for invitee in groups[EventResponse.Sorry]! {
+            if profileIndex < profiles.count {
+                profiles[profileIndex].hidden = false
+                profiles[profileIndex].configureForPerson(invitee, event: self.event, width: 24, showResponse: true)
+                profileIndex++
+            }
+        }
+        for invitee in groups[EventResponse.NoResponse]! {
+            if profileIndex < profiles.count {
+                profiles[profileIndex].hidden = false
+                profiles[profileIndex].configureForPerson(invitee, event: self.event, width: 24, showResponse: true)
+                profileIndex++
+            }
         }
     }
     

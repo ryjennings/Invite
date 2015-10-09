@@ -188,7 +188,7 @@ class Friend
             let friendSelected = selectedFriendsContainsFriend(friend)
             
             cell.friend = friend
-
+            
             if friendSelected {
                 selectCell(cell, friend: friend)
             } else {

@@ -87,7 +87,7 @@ class ProfileImageView: UIImageView
             self.responseCircle.hidden = true
             self.label.hidden = true
             self.layer.cornerRadius = width / 2
-            self.layer.borderWidth = 1
+            self.layer.borderWidth = friend.pfObject == nil ? 0 : 1
         }
         
         if let facebookId = facebookId {

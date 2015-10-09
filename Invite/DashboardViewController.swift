@@ -59,6 +59,7 @@ import UIKit
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventCreated:", name: EVENT_CREATED_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventClosed:", name: EVENT_CLOSED_NOTIFICATION, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "userLoggedOut:", name: USER_LOGGED_OUT_NOTIFICATION, object: nil)
     }
     
     override func viewWillAppear(animated: Bool)
@@ -80,7 +81,7 @@ import UIKit
         self.searchController.dimsBackgroundDuringPresentation = false
         self.searchController.searchBar.sizeToFit()
         self.searchController.searchBar.delegate = self
-        self.searchController.searchBar.scopeButtonTitles = ["All", "My", "Going", "Sorry", "Maybe"]
+        self.searchController.searchBar.scopeButtonTitles = ["All", "My", "Going/Maybe", "Sorry", "Needs Response"]
         self.searchController.searchBar.selectedScopeButtonIndex = 0
         self.searchController.searchBar.placeholder = "Search for an event"
         self.searchController.searchBar.keyboardAppearance = UIKeyboardAppearance.Dark
@@ -111,9 +112,37 @@ import UIKit
         var section = -1
         var row = -1
         
-        for event in AppDelegate.user().events {
-            let e = event as! PFObject
-            let startDate = e[EVENT_START_DATE_KEY] as! NSDate
+        var eventsToDisplay = [PFObject]()
+        if self.searchController.searchBar.selectedScopeButtonIndex == 0 {
+            eventsToDisplay = AppDelegate.user().events as! [PFObject]
+        } else {
+            for event in AppDelegate.user().events {
+                switch self.searchController.searchBar.selectedScopeButtonIndex {
+                case 1:
+                    if (event[EVENT_CREATOR_KEY] as! PFObject)[FACEBOOK_ID_KEY] as! String == AppDelegate.parseUser()[FACEBOOK_ID_KEY] as! String {
+                        eventsToDisplay.append(event as! PFObject)
+                    }
+                case 2:
+                    let response = EventMyResponse(rawValue: AppDelegate.user().myResponses[event.objectId!!] as! UInt)!
+                    if response == EventMyResponse.Going || response == EventMyResponse.Maybe {
+                        eventsToDisplay.append(event as! PFObject)
+                    }
+                case 3:
+                    if EventMyResponse(rawValue: AppDelegate.user().myResponses[event.objectId!!] as! UInt)! == EventMyResponse.Sorry {
+                        eventsToDisplay.append(event as! PFObject)
+                    }
+                case 4:
+                    if EventMyResponse(rawValue: AppDelegate.user().myResponses[event.objectId!!] as! UInt)! == EventMyResponse.NoResponse {
+                        eventsToDisplay.append(event as! PFObject)
+                    }
+                default:
+                    break
+                }
+            }
+        }
+        
+        for event in eventsToDisplay {
+            let startDate = event[EVENT_START_DATE_KEY] as! NSDate
             let s = calendar.components(components, fromDate: startDate)
             let l = calendar.components(components, fromDate: lastEventStartDate)
             let n = calendar.components(components, fromDate: now)
@@ -126,7 +155,7 @@ import UIKit
                     oldEvents = [PFObject]()
                 }
                 
-                oldEvents!.append(e)
+                oldEvents!.append(event)
                 // Old event!
                 continue
             }
@@ -152,10 +181,10 @@ import UIKit
                     self.groupIndexTitleSections.append(self.groups.count - 1)
                 }
                 row++
-                if self.createdEvent === e {
+                if self.createdEvent === event {
                     self.createdEventIndexPath = NSIndexPath(forRow: row, inSection: section)
                 }
-                self.groups[today]?.append(e)
+                self.groups[today]?.append(event)
                 lastEventStartDate = startDate
                 continue
             }
@@ -183,10 +212,10 @@ import UIKit
             }
             
             row++
-            if self.createdEvent === e {
+            if self.createdEvent === event {
                 self.createdEventIndexPath = NSIndexPath(forRow: row, inSection: section)
             }
-            self.groups[startDateString]?.append(e)
+            self.groups[startDateString]?.append(event)
             
             lastEventStartDate = startDate
         }
@@ -403,11 +432,31 @@ import UIKit
         NSNotificationCenter.defaultCenter().postNotificationName(USER_LOGGED_OUT_NOTIFICATION, object: nil)
         self.navigationController?.popViewControllerAnimated(true)
     }
-
+    
+    func userLoggedOut(note: NSNotification)
+    {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    // MARK: - UISearchBarDelegate
+    
+    func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int)
+    {
+        separateEventsIntoGroups()
+        self.tableView.reloadData()
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String)
+    {
+        separateEventsIntoGroups()
+        self.tableView.reloadData()
+    }
+    
     // MARK: - UISearchControllerDelegate
     
     func didDismissSearchController(searchController: UISearchController)
     {
-//        reloadFriends()
+        separateEventsIntoGroups()
+        self.tableView.reloadData()
     }
 }

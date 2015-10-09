@@ -10,8 +10,6 @@ import UIKit
 
 enum SettingsSection: Int {
     case SendMeEmail = 0
-    case ShowAvailability
-    case RemoveEventsAfterExpire
     case Count
 }
 
@@ -87,10 +85,10 @@ enum SettingsSection: Int {
         switch section {
         case SettingsSection.SendMeEmail.rawValue:
             return "Turn this on if you want to receive the event email that's created when you send a new event."
-        case SettingsSection.ShowAvailability.rawValue:
-            return "If someone tries to invite you to an event that conflicts with an event you're already scheduled to attend, your name will show up as a conflict. Turn this on to also list the event name and event time within the conflict."
-        case SettingsSection.RemoveEventsAfterExpire.rawValue:
-            return "Old events will automatically be deleted 30 days after an event ends. Turn this on to delete them the day after the event ends."
+//        case SettingsSection.ShowAvailability.rawValue:
+//            return "If someone tries to invite you to an event that conflicts with an event you're already scheduled to attend, your name will show up as a conflict. Turn this on to also list the event name and event time within the conflict."
+//        case SettingsSection.RemoveEventsAfterExpire.rawValue:
+//            return "Old events will automatically be deleted 30 days after an event ends. Turn this on to delete them the day after the event ends."
         default:
             return ""
         }
@@ -115,17 +113,23 @@ enum SettingsSection: Int {
             case .SendMeEmail:
                 cell.key = kSendMeEmail
                 cell.label.text = "Send me email for events I create"
-            case .ShowAvailability:
-                cell.key = kShowAvailability
-                cell.label.text = "Show other people my availability"
-            case .RemoveEventsAfterExpire:
-                cell.key = kRemoveEventsAfterExpire
-                cell.label.text = "Remove events after they expire"
+//            case .ShowAvailability:
+//                cell.key = kShowAvailability
+//                cell.label.text = "Show other people my availability"
+//            case .RemoveEventsAfterExpire:
+//                cell.key = kRemoveEventsAfterExpire
+//                cell.label.text = "Remove events after they expire"
             default:
                 cell.key = ""
             }
         }
         
         return cell
+    }
+    
+    @IBAction func logout(button: UIBarButtonItem)
+    {
+        NSNotificationCenter.defaultCenter().postNotificationName(USER_LOGGED_OUT_NOTIFICATION, object: nil)
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

@@ -174,7 +174,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
         if (_rsvpDictionary) {
             _inviteesSectionViewController.rsvpDictionary = _rsvpDictionary;
         }
-        if (_event.emails) {
+        if (_event.emails && [[AppDelegate user] protoEvent]) {
             _inviteesSectionViewController.emailInvitees = _event.emails;
         }
 
@@ -232,6 +232,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
 
 - (void)createRSVPDictionary
 {
+    if ([AppDelegate user].eventToDisplay) {
+        _rsvpDictionary = [AppDelegate user].eventToDisplay[EVENT_RSVP_KEY];
+        return;
+    }
     NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
     for (PFObject *invitee in _event.invitees) {
         NSString *email = [invitee objectForKey:EMAIL_KEY];
@@ -684,6 +688,11 @@ typedef NS_ENUM(NSUInteger, EventViewSection) {
             break;
     }
 
+    [self showPickerView:NO];
+}
+
+- (void)dismissPickerView:(PickerView *)pickerView
+{
     [self showPickerView:NO];
 }
 

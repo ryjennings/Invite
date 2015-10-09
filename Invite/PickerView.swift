@@ -43,18 +43,17 @@ import UIKit
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         toolbar.barStyle = .BlackTranslucent
         toolbar.items = [
-            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil),
-            UIBarButtonItem(title: "Select Response", style: .Done, target: self, action: "dismissPicker:"),
-            UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)]
+            UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Done, target: self, action: "dismiss:"),
+            UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(title: "Select Response", style: UIBarButtonItemStyle.Done, target: self, action: "selectResponse:")]
         self.addSubview(toolbar)
         self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[toolbar]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["toolbar": toolbar]))
     }
     
     func configurePicker()
     {
-        let view = UIView()
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.inviteLightSlateColor()
         self.addSubview(view)
         
         pickerView.translatesAutoresizingMaskIntoConstraints = false
@@ -80,16 +79,7 @@ import UIKit
         return pickerOptions.count
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
-    {
-        return pickerOptions[row]
-    }
-    
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
-    {
-    }
-    
-    func dismissPicker(picker: UIPickerView)
+    func selectResponse(picker: UIPickerView)
     {
         let row = pickerView.selectedRowInComponent(0)
         if let delegate = delegate {
@@ -103,9 +93,21 @@ import UIKit
             }
         }
     }
+
+    func dismiss(picker: UIDatePicker)
+    {
+        self.delegate?.dismissPickerView(self)
+    }
+
+    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString?
+    {
+        let string = pickerOptions[row]
+        return NSAttributedString(string: string, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+    }
 }
 
 @objc(PickerViewDelegate) protocol PickerViewDelegate
 {
     func pickerView(pickerView: PickerView, hasSelectedResponse response: EventResponse, text: String)
+    func dismissPickerView(pickerView: PickerView)
 }

@@ -1246,6 +1246,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="nP6-78-D6n">
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="uFz-m3-tlO">
+                            <connections>
+                                <action selector="logout:" destination="sW5-JF-rN3" id="cck-dy-CJ9"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Close" id="czn-Tk-SBX">
                             <connections>
                                 <action selector="close:" destination="sW5-JF-rN3" id="v3d-QI-sxx"/>
