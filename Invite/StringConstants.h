@@ -18,7 +18,8 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
     EventResponseNoResponse,
     EventResponseGoing,
     EventResponseMaybe,
-    EventResponseSorry
+    EventResponseSorry,
+    EventResponseHost
 };
 
 // NSUserDefault Keys
@@ -29,7 +30,8 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define kGoingText @"I'll be there!"
 #define kMaybeText @"Maybe"
 #define kSorryText @"Sorry, I can't make it"
-#define kNoResponseText @"You have not yet responded"
+#define kNoResponseText @"Respond to this event!"
+#define kHostText @"You are the host"
 
 #define kCornerRadius 6.f
 #define kFooterPadding 20.f

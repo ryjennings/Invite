@@ -39,9 +39,7 @@
     [application registerForRemoteNotifications];
     
     [InviteTheme customizeAppAppearance];
-    
-//    [self performSelector:@selector(crash) withObject:nil afterDelay:5.0];
-    
+        
     _reachability = [Reachability reachabilityForInternetConnection];
     [_reachability startNotifier];
 
@@ -222,13 +220,6 @@
         [emails addObject:[key stringByReplacingOccurrencesOfString:@":" withString:@"."]];
     }
     return emails;
-}
-
-#pragma mark - Crash
-
-- (void)crash
-{
-    [NSException raise:NSGenericException format:@"Everything is ok. This is just a test crash."];
 }
 
 @end

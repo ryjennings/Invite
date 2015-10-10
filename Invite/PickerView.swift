@@ -93,6 +93,20 @@ import UIKit
             }
         }
     }
+    
+    func showResponse(response: EventResponse)
+    {
+        switch response {
+        case EventResponse.Going:
+            self.pickerView.selectRow(EventResponse.Going.hashValue - 1, inComponent: 0, animated: false)
+        case EventResponse.Maybe:
+            self.pickerView.selectRow(EventResponse.Maybe.hashValue - 1, inComponent: 0, animated: false)
+        case EventResponse.Sorry:
+            self.pickerView.selectRow(EventResponse.Sorry.hashValue - 1, inComponent: 0, animated: false)
+        default:
+            self.pickerView.selectRow(0, inComponent: 0, animated: false)
+        }
+    }
 
     func dismiss(picker: UIDatePicker)
     {

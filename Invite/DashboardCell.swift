@@ -128,6 +128,8 @@ import MapKit
                 responseGroups[EventResponse.Sorry]!.append(invitees[response.0]!)
             case EventResponse.NoResponse:
                 responseGroups[EventResponse.NoResponse]!.append(invitees[response.0]!)
+            default:
+                break
             }
         }
 

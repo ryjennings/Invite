@@ -115,8 +115,10 @@ class ProfileImageView: UIImageView
                 self.responseCircle.layer.borderColor = UIColor.inviteRedColor().CGColor
                 self.imageView.alpha = 1
             case EventResponse.Maybe:
-                self.responseCircle.layer.borderColor = UIColor.inviteBlueColor().CGColor
+                self.responseCircle.layer.borderColor = UIColor.inviteYellowColor().CGColor
                 self.imageView.alpha = 1
+            default:
+                break
             }
         } else {
             self.responseCircle.layer.borderColor = UIColor.inviteBackgroundSlateColor().CGColor

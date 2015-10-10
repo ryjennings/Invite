@@ -12,18 +12,22 @@ import UIKit
 {
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var dateInsideCircle: UIView!
     @IBOutlet weak var dateLabelLeadingConstraint: NSLayoutConstraint!
     
     override func awakeFromNib()
     {
         super.awakeFromNib()
 
-        dateLabel.backgroundColor = UIColor.inviteBlueColor()
         dateLabel.numberOfLines = 2
         dateLabel.layer.cornerRadius = 40
         dateLabel.clipsToBounds = true
         
-        label.textColor = UIColor.inviteBlueColor()
+        self.dateInsideCircle.backgroundColor = UIColor.inviteBackgroundSlateColor()
+        self.dateInsideCircle.layer.cornerRadius = 34
+        self.dateInsideCircle.clipsToBounds = true
+        
+        label.textColor = UIColor.inviteTableHeaderColor()
         label.font = UIFont.inviteTitleFont()
         label.numberOfLines = 0
 
@@ -34,6 +38,6 @@ import UIKit
     override func setHighlighted(highlighted: Bool, animated: Bool)
     {
         super.setHighlighted(highlighted, animated: animated)
-        dateLabel.backgroundColor = UIColor.inviteBlueColor()
+//        dateLabel.backgroundColor = UIColor.inviteBlueColor()
     }
 }
