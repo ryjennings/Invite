@@ -10,7 +10,6 @@
 		070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070C88B51B05227E005E7CDD /* LabelCell.swift */; };
 		070C88B81B068CBA005E7CDD /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070C88B71B068CBA005E7CDD /* AlertViewController.swift */; };
 		070C88BB1B069C01005E7CDD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 070C88BA1B069C01005E7CDD /* Reachability.m */; };
-		070C88C01B081E42005E7CDD /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070C88BF1B081E42005E7CDD /* PickerView.swift */; };
 		070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */; };
 		070DAA4F1AE85D6900E111F6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */; };
 		071338C31AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */; };
@@ -65,7 +64,6 @@
 		074437791AE025D0002A6C4D /* InviteesSectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074437781AE025D0002A6C4D /* InviteesSectionViewController.m */; };
 		0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */; };
 		0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377C1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift */; };
-		074437801AE02C9C002A6C4D /* DateFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */; };
 		074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074AA5921A9C353C009DC152 /* LaunchViewController.m */; };
 		074ABE931AE47ACE00C093C7 /* TimeframePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */; };
 		075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075249E51ACB397C00D279DA /* InviteTheme.swift */; };
@@ -101,6 +99,8 @@
 		07C19AD81BC2EA97000FACB4 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19AD71BC2EA97000FACB4 /* DashboardViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		07C19ADA1BC2F3C6000FACB4 /* DashboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19AD91BC2F3C6000FACB4 /* DashboardCell.swift */; settings = {ASSET_TAGS = (); }; };
 		07C19ADC1BC6DE6A000FACB4 /* UIImage+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19ADB1BC6DE6A000FACB4 /* UIImage+Invite.swift */; settings = {ASSET_TAGS = (); }; };
+		07C19AE01BC9DFD2000FACB4 /* UIView+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19ADF1BC9DFD2000FACB4 /* UIView+Invite.swift */; settings = {ASSET_TAGS = (); }; };
+		07C19AE21BC9F552000FACB4 /* ResponseButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19AE11BC9F552000FACB4 /* ResponseButtonView.swift */; settings = {ASSET_TAGS = (); }; };
 		07D2D9C51AE5A6D4008E1733 /* DashboardOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */; };
 		07D2D9C91AE616E2008E1733 /* OBGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D2D9C81AE616E2008E1733 /* OBGradientView.m */; };
 		07D9DD351AD83789008FF016 /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D9DD341AD83789008FF016 /* BasicCell.swift */; };
@@ -130,7 +130,6 @@
 		070C88B71B068CBA005E7CDD /* AlertViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		070C88B91B069C01005E7CDD /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		070C88BA1B069C01005E7CDD /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
-		070C88BF1B081E42005E7CDD /* PickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
 		070DAA4B1AE8489C00E111F6 /* SDiPhoneVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDiPhoneVersion.h; sourceTree = "<group>"; };
 		070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDiPhoneVersion.m; sourceTree = "<group>"; };
 		070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -194,8 +193,6 @@
 		074437781AE025D0002A6C4D /* InviteesSectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesSectionViewController.m; sourceTree = "<group>"; };
 		0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteesCollectionCell.swift; sourceTree = "<group>"; };
 		0744377C1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteesCollectionHeaderView.swift; sourceTree = "<group>"; };
-		0744377E1AE02C9C002A6C4D /* DateFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateFlowLayout.h; sourceTree = "<group>"; };
-		0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateFlowLayout.m; sourceTree = "<group>"; };
 		074AA5911A9C353C009DC152 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
 		074AA5921A9C353C009DC152 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframePickerViewController.swift; sourceTree = "<group>"; };
@@ -253,6 +250,8 @@
 		07C19AD71BC2EA97000FACB4 /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		07C19AD91BC2F3C6000FACB4 /* DashboardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardCell.swift; sourceTree = "<group>"; };
 		07C19ADB1BC6DE6A000FACB4 /* UIImage+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Invite.swift"; sourceTree = "<group>"; };
+		07C19ADF1BC9DFD2000FACB4 /* UIView+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Invite.swift"; sourceTree = "<group>"; };
+		07C19AE11BC9F552000FACB4 /* ResponseButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponseButtonView.swift; sourceTree = "<group>"; };
 		07C2098C1A8C2159002B3961 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardOnboardingView.swift; sourceTree = "<group>"; };
 		07D2D9C71AE616E2008E1733 /* OBGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBGradientView.h; sourceTree = "<group>"; };
@@ -392,6 +391,7 @@
 			children = (
 				072836741AD315BF00B158AC /* UIView+Invite.h */,
 				072836751AD315BF00B158AC /* UIView+Invite.m */,
+				07C19ADF1BC9DFD2000FACB4 /* UIView+Invite.swift */,
 				07E1FD8D1ACDA90200F619D0 /* UIColor+Invite.swift */,
 				0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */,
 				07C19ADB1BC6DE6A000FACB4 /* UIImage+Invite.swift */,
@@ -428,8 +428,6 @@
 				0775B0731A93E6B000C15303 /* StringConstants.h */,
 				07DDBF201AC7ACC50058E1CA /* Invite-Bridging-Header.h */,
 				075249E51ACB397C00D279DA /* InviteTheme.swift */,
-				0744377E1AE02C9C002A6C4D /* DateFlowLayout.h */,
-				0744377F1AE02C9C002A6C4D /* DateFlowLayout.m */,
 				070C88B91B069C01005E7CDD /* Reachability.h */,
 				070C88BA1B069C01005E7CDD /* Reachability.m */,
 				07F584AC1BBBB7DA00A529FA /* SwiftyJSON.swift */,
@@ -595,7 +593,7 @@
 			children = (
 				07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */,
 				071408731AEC9D660081F304 /* DatePickerView.swift */,
-				070C88BF1B081E42005E7CDD /* PickerView.swift */,
+				07C19AE11BC9F552000FACB4 /* ResponseButtonView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -792,7 +790,6 @@
 				075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */,
 				07DDBF281AC7D12A0058E1CA /* LocationResultsViewController.swift in Sources */,
 				073029ED1BB3954B00E2266E /* Reservation.swift in Sources */,
-				074437801AE02C9C002A6C4D /* DateFlowLayout.m in Sources */,
 				074ABE931AE47ACE00C093C7 /* TimeframePickerViewController.swift in Sources */,
 				075D10881ADC859D00C86130 /* SDWebImageDecoder.m in Sources */,
 				0778116B1B01382600D5DC4D /* TitleDateCell.swift in Sources */,
@@ -803,15 +800,16 @@
 				074437791AE025D0002A6C4D /* InviteesSectionViewController.m in Sources */,
 				075D10911ADC859D00C86130 /* UIImageView+HighlightedWebCache.m in Sources */,
 				075D108E1ADC859D00C86130 /* UIImage+GIF.m in Sources */,
+				07C19AE21BC9F552000FACB4 /* ResponseButtonView.swift in Sources */,
 				073273F61A892BFB007700B3 /* AppDelegate.m in Sources */,
 				075D10861ADC859D00C86130 /* SDImageCache.m in Sources */,
 				077811691AFF237800D5DC4D /* UserDefaults.swift in Sources */,
 				07C19ADA1BC2F3C6000FACB4 /* DashboardCell.swift in Sources */,
 				075D10841ADC859D00C86130 /* MKAnnotationView+WebCache.m in Sources */,
 				075D108A1ADC859D00C86130 /* SDWebImageDownloaderOperation.m in Sources */,
+				07C19AE01BC9DFD2000FACB4 /* UIView+Invite.swift in Sources */,
 				07E1FD8E1ACDA90200F619D0 /* UIColor+Invite.swift in Sources */,
 				07D9DD3B1AD868B5008FF016 /* MapCell.swift in Sources */,
-				070C88C01B081E42005E7CDD /* PickerView.swift in Sources */,
 				075D108D1ADC859D00C86130 /* UIButton+WebCache.m in Sources */,
 				075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */,
 				075D10891ADC859D00C86130 /* SDWebImageDownloader.m in Sources */,

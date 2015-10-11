@@ -73,7 +73,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 #define kPickerViewHeight 314.0
 
-@interface EventViewController () <UITableViewDataSource, UITableViewDelegate, PickerViewDelegate, MKMapViewDelegate, NumberedInputCellDelegate>
+@interface EventViewController () <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, NumberedInputCellDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;
@@ -90,10 +90,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 @property (nonatomic, strong) InviteesSectionViewController *inviteesSectionViewController;
 
 // Response
-@property (nonatomic, strong) PickerView *pickerView;
-@property (nonatomic, strong) NSLayoutConstraint *pickerViewBottomConstraint;
 @property (nonatomic, assign) NSInteger response;
-@property (nonatomic, assign) BOOL showResponseHasBeenSaved;
+@property (nonatomic, strong) TitleDateCell *titleCell;
+@property (nonatomic, strong) LabelCell *responseCell;
+@property (nonatomic, assign) BOOL showingResponseSelection;
 
 // Title
 @property (nonatomic, strong) NSString *textViewText;
@@ -140,6 +140,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     _tableView.sectionHeaderHeight = 38;
     
     _mapView.delegate = self;
+    _showingResponseSelection = NO;
     
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
         [self configureGradientView];
@@ -181,15 +182,15 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             [self createRSVPDictionary];
         }
         // Response
-        if (!_isCreator) {
-            _showResponseHasBeenSaved = NO;
-            
+        if (!_isCreator)
+        {
             PFObject *event = [[AppDelegate user] eventToDisplay];
             NSDictionary *rsvp = event[EVENT_RSVP_KEY];
             
             _response = [rsvp[[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
-            [self configureResponsePicker];
-        } else {
+        }
+        else
+        {
             _response = EventResponseHost;
         }
         
@@ -292,20 +293,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         self.navigationItem.rightBarButtonItem = _rightBarButtonItem;
         self.navigationItem.title = @"New Event";
     }
-}
-
-- (void)configureResponsePicker
-{
-    EventResponse response = [[_rsvpDictionary objectForKey:[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
-    _pickerView = [[PickerView alloc] init];
-    _pickerView.translatesAutoresizingMaskIntoConstraints = NO;
-    _pickerView.delegate = self;
-    _pickerView.initialOption = response == EventResponseNoResponse ? 0 : response;
-    [self.view addSubview:_pickerView];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[picker]|" options:0 metrics:nil views:@{@"picker": _pickerView}]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[picker(height)]" options:0 metrics:@{@"height": @(kPickerViewHeight)} views:@{@"picker": _pickerView}]];
-    _pickerViewBottomConstraint = [NSLayoutConstraint constraintWithItem:_pickerView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:kPickerViewHeight];
-    [self.view addConstraint:_pickerViewBottomConstraint];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -415,6 +402,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.label.text = [self textForRow:EventRowTitle];
         cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+        self.titleCell = cell;
 
         if (startDate)
         {
@@ -429,6 +417,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             [dateAtt appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:@{NSFontAttributeName: [UIFont proximaNovaLightFontOfSize:0]}]];
             [dateAtt appendAttributedString:[[NSAttributedString alloc] initWithString:day attributes:@{NSFontAttributeName: [UIFont proximaNovaLightFontOfSize:22], NSForegroundColorAttributeName: [UIColor inviteTableHeaderColor]}]];
             cell.dateLabel.attributedText = dateAtt;
+            cell.attributedDate = dateAtt;
             cell.dateLabel.layer.borderWidth = 4;
             cell.dateLabel.layer.borderColor = [self colorForResponse:_response].CGColor;
         }
@@ -529,6 +518,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         cell.cellLabel.text = @"Response";
         cell.cellText.attributedText = [self attributedTextForReponse];
         cell.accessoryType = UITableViewCellAccessoryNone;
+        self.responseCell = cell;
         return cell;
     }
 
@@ -588,10 +578,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowResponse && indexPath.section == EventViewSectionDetails) {
-        
-        [self showPickerView:YES];
-        
+    if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowResponse && indexPath.section == EventViewSectionDetails)
+    {
+        if (_showingResponseSelection) {
+            [self cancelResponseView];
+        } else {
+            [self showResponseView];
+        }
     }
     
     if (_mode == EventModeView) {
@@ -617,47 +610,24 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     }
 }
 
-#pragma mark - PickerView
+#pragma mark - ResponseView
 
-- (void)showPickerView:(BOOL)show
+- (void)showResponseView
 {
-    _pickerViewBottomConstraint.constant = show ? 0 : kPickerViewHeight;
-    [_pickerView showResponse:_response];
+    _showingResponseSelection = YES;
+    [self.titleCell showResponseButtons:_response];
     
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.25];
-    [UIView setAnimationCurve:7];
-    [UIView setAnimationBeginsFromCurrentState:YES];
+    NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
+    [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"Cancel" attributes:@{NSForegroundColorAttributeName: [UIColor inviteGrayColor], NSFontAttributeName: [UIFont inviteTableSmallFont]}]];
     
-    [self.view layoutIfNeeded];
-    
-    [UIView commitAnimations];
+    self.responseCell.cellText.attributedText = att;
 }
 
-- (void)pickerView:(PickerView *)pickerView hasSelectedResponse:(EventResponse)response text:(NSString *)text
+- (void)cancelResponseView
 {
-    if (response != _response) {
-        _showResponseHasBeenSaved = YES;
-    }
-
-    _response = response;
-    
-    // Send new response to parse
-    [_rsvpDictionary setValue:@(response) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
-    [AppDelegate user].eventToDisplay[EVENT_RSVP_KEY] = _rsvpDictionary;
-    [_event saveToParse];
-    
-    // Update the cell
-    LabelCell *cell = (LabelCell *)[_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EventViewRowResponse inSection:EventViewSectionDetails]];
-    cell.cellText.attributedText = [self attributedTextForReponse];
-    
-    // Dismiss the picker
-    [self showPickerView:NO];
-}
-
-- (void)dismissPickerView:(PickerView *)pickerView
-{
-    [self showPickerView:NO];
+    _showingResponseSelection = NO;
+    [self.titleCell cancelResponseButtons:_response];
+    self.responseCell.cellText.attributedText = [self attributedTextForReponse];
 }
 
 #pragma mark - Notifications

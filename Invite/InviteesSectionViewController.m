@@ -9,7 +9,6 @@
 #import "InviteesSectionViewController.h"
 
 #import "AppDelegate.h"
-#import "DateFlowLayout.h"
 #import "Invite-Swift.h"
 #import "StringConstants.h"
 
@@ -108,20 +107,6 @@ NSString *const kNoResponse = @"No Response";
     
     _collectionView.hidden = !_rsvpDictionary.count;
     
-//    if (_rsvpDictionary.count) {
-//        self.collectionView.collectionViewLayout = DateFlowLayout.new;
-//        self.flowLayout = ((UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout);
-//        self.flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-//        self.flowLayout.headerReferenceSize = CGSizeMake(80, 80);
-//        self.flowLayout.minimumInteritemSpacing = 0;
-//        self.flowLayout.minimumLineSpacing = 0;
-//        self.flowLayout.sectionInset = UIEdgeInsetsMake(0, [SDiPhoneVersion deviceSize] == iPhone55inch ? 20 : 15, 0, 0);
-//        self.flowLayout.itemSize = CGSizeMake(60, 80);
-//        self.collectionView.alwaysBounceVertical = NO;
-//    } else {
-//        self.collectionView.collectionViewLayout = [[UICollectionViewFlowLayout alloc] init];
-//        self.flowLayout = nil;
-//    }
 }
 
 - (PFObject *)personForKey:(NSString *)key
@@ -154,7 +139,7 @@ NSString *const kNoResponse = @"No Response";
     
     id person = ((NSArray *)_invitees[_usedIndexes[indexPath.section]])[indexPath.row];
     
-    [cell.profileImageView configureForPerson:person event:_event ? _event : nil width:40 showResponse:NO];
+    [cell.profileImageView configureForPerson:person event:_event ? _event : nil width:40 showResponse:YES];
     if ([person isKindOfClass:[PFObject class]]) {
         PFObject *thisPerson = (PFObject *)person;
         if ([thisPerson objectForKey:FIRST_NAME_KEY]) {
@@ -167,21 +152,6 @@ NSString *const kNoResponse = @"No Response";
     }
     
     return cell;
-}
-
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-    UICollectionReusableView *reusableview = nil;
-    
-    if (kind == UICollectionElementKindSectionHeader) {
-        InviteesCollectionHeaderView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER forIndexPath:indexPath];
-        headerView.label.text = @[kNoResponse, kGoing, kMaybe, kSorry][((NSNumber *)_usedIndexes[indexPath.section]).intValue];
-        headerView.label.font = [UIFont proximaNovaRegularFontOfSize:10];
-        headerView.label.textColor = [UIColor inviteTableLabelColor];
-        reusableview = headerView;
-    }
-    
-    return reusableview;
 }
 
 @end
