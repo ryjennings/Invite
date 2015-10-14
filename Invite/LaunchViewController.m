@@ -41,6 +41,10 @@
             
             if (objects.count) {
                 [[AppDelegate user] loadParseUser:objects[0]];
+            } else {
+                LoginViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:LOGIN_VIEW_CONTROLLER];
+                controller.prepareForSegueFromLaunchViewController = YES;
+                [self performSelector:@selector(gotoLoginViewController:) withObject:controller afterDelay:0.5];
             }
         }];
 

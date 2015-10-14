@@ -58,36 +58,47 @@ class ProfileImageView: UIImageView
 
         var response = EventResponse.NoResponse
         var facebookId: String?
-        var text: String
+        var text: String?
         
         if person is String {
-            let email = person as! String
-            text = "\(email[email.startIndex])"
+            if let email = person as? String where (person as? String)?.characters.count > 0 {
+                text = "\(email[email.startIndex])"
+            }
             self.responseCircle.hidden = false
             self.label.hidden = false
             self.layer.cornerRadius = 0
             self.layer.borderWidth = 0
         } else if person is PFObject {
-            let parse = person as! PFObject
-            facebookId = parse[FACEBOOK_ID_KEY] as? String
-            if let r = allResponses?[AppDelegate.keyFromEmail(parse[EMAIL_KEY] as? String)] {
-                response = EventResponse(rawValue: r)!
+            if let parse = person as? PFObject {
+                facebookId = parse[FACEBOOK_ID_KEY] as? String
+                if let r = allResponses?[AppDelegate.keyFromEmail(parse[EMAIL_KEY] as? String)], rr = EventResponse(rawValue: r) {
+                    response = rr
+                }
+                let fullText = parse[FIRST_NAME_KEY] as? String ?? parse[EMAIL_KEY] as? String
+                if let fullText = fullText where fullText.characters.count > 0 {
+                    text = "\(fullText[fullText.startIndex])"
+                }
             }
-            let fullText = parse[FIRST_NAME_KEY] as? String ?? parse[EMAIL_KEY] as! String
-            text = "\(fullText[fullText.startIndex])"
             self.responseCircle.hidden = false
             self.label.hidden = false
             self.layer.cornerRadius = 0
             self.layer.borderWidth = 0
         } else {
-            let friend = person as! Friend
-            facebookId = friend.pfObject?[FACEBOOK_ID_KEY] as? String
-            let fullText = friend.fullName ?? friend.email
-            text = "\(fullText[fullText.startIndex])"
+            if let friend = person as? Friend {
+                facebookId = friend.pfObject?[FACEBOOK_ID_KEY] as? String
+                let fullText = friend.fullName ?? friend.email
+                if fullText.characters.count > 0 {
+                    text = "\(fullText[fullText.startIndex])"
+                }
+                if let pfObject = friend.pfObject {
+                    self.layer.borderWidth = pfObject[FACEBOOK_ID_KEY] == nil ? 0 : 1
+                } else {
+                    self.layer.borderWidth = 0
+                }
+            }
             self.responseCircle.hidden = true
             self.label.hidden = true
             self.layer.cornerRadius = width / 2
-            self.layer.borderWidth = friend.pfObject == nil ? 0 : 1
         }
         
         if let facebookId = facebookId {
@@ -100,7 +111,11 @@ class ProfileImageView: UIImageView
             self.label.text = ""
         } else {
             self.imageView.image = nil
-            self.label.text = text.uppercaseString
+            if let text = text {
+                self.label.text = text.uppercaseString
+            } else {
+                self.label.text = ""
+            }
         }
         
         if showResponse {

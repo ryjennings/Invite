@@ -28,7 +28,21 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>117</string>
+	<string>121</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>69e405bd07d73937600dcbd2da3d50d7bf01ce05</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>FacebookAppID</key>
 	<string>825836284140500</string>
 	<key>FacebookDisplayName</key>
@@ -70,7 +84,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Invite app</string>
+	<string>Used to find venues by you.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>ProximaNova-Black.otf</string>

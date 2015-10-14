@@ -271,7 +271,7 @@ enum LocationSection: Int {
     {
         cell.backgroundColor = UIColor.whiteColor()
         cell.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
-        cell.nameLabel.textColor = UIColor.inviteTableLabelColor()
+        cell.nameLabel.textColor = UIColor.inviteTableHeaderColor()
         cell.flexLabel.textColor = UIColor.inviteGrayColor()
         cell.profileImageView.layer.borderWidth = 0
     }

@@ -30,7 +30,8 @@ typedef NS_ENUM(NSUInteger, EventRow)
     EventRowHost,
     EventRowResponse,
     EventRowTimeframe,
-    EventRowLocation
+    EventRowLocation,
+    EventRowButton
 };
 
 typedef NS_ENUM(NSUInteger, EventPreviewRow)
@@ -42,6 +43,7 @@ typedef NS_ENUM(NSUInteger, EventPreviewRow)
     EventPreviewRowTimeframe,
     EventPreviewRowLocation,
     EventPreviewRowBottomPadding,
+    EventPreviewRowButton,
     EventPreviewRowCount
 };
 
@@ -61,7 +63,6 @@ typedef NS_ENUM(NSUInteger, EventPreviewSection)
 {
     EventPreviewSectionMessage,
     EventPreviewSectionDetails,
-    EventPreviewSectionButton,
     EventPreviewSectionCount
 };
 
@@ -73,10 +74,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 #define kPickerViewHeight 314.0
 
-@interface EventViewController () <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, NumberedInputCellDelegate>
+@interface EventViewController () <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, NumberedInputCellDelegate, TitleDateCellDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;
+@property (nonatomic, strong) IBOutlet UIView *inviteesContainerView;
+
 @property (nonatomic, strong) OBGradientView *gradientView;
 
 @property (nonatomic, strong) UIBarButtonItem *leftBarButtonItem;
@@ -102,6 +105,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 @property (nonatomic, assign) BOOL isCreator;
 
 @property (nonatomic, strong) MKPlacemark *lastPlacemark;
+
+@property (nonatomic, assign) EventResponse startingResponse;
+
+@property (nonatomic, strong) UIAlertController *alert;
 
 @end
 
@@ -130,7 +137,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     [super viewDidLoad];
     
     _isCreator = [_event.creator.objectId isEqualToString:[AppDelegate parseUser].objectId];
-
+    
     self.view.backgroundColor = [UIColor inviteLightSlateColor];
 
     _tableView.tableHeaderView = [self tableHeaderView];
@@ -149,7 +156,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (UIView *)tableHeaderView
 {
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 130)];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, [AppDelegate user].protoEvent ? 194 : 130)];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
@@ -188,6 +195,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             NSDictionary *rsvp = event[EVENT_RSVP_KEY];
             
             _response = [rsvp[[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
+            _startingResponse = _response;
         }
         else
         {
@@ -206,14 +214,14 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
         [_inviteesSectionViewController buildInviteesDictionary];
 
-        _inviteesSectionViewController.view.alpha = 1;
+        _inviteesContainerView.hidden = NO;
         if ([[AppDelegate user] eventToDisplay]) {
             _inviteesSectionViewController.event = [[AppDelegate user] eventToDisplay];
         }
     }
     else
     {
-        _inviteesSectionViewController.view.alpha = 0;
+        _inviteesContainerView.hidden = YES;
     }
     
     [UIView animateWithDuration:0.33 animations:^{
@@ -249,7 +257,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             [_mapView addAnnotation:placemark];
             [_mapView showAnnotations:@[placemark] animated:NO];
             CLLocationCoordinate2D center = self.mapView.region.center;
-            center.latitude -= self.mapView.region.span.latitudeDelta * 0.485;
+            center.latitude -= self.mapView.region.span.latitudeDelta * ([AppDelegate user].protoEvent ? 0.385 : 0.485);
             [self.mapView setCenterCoordinate:center animated:NO];
             _lastPlacemark = placemark;
         }];
@@ -281,9 +289,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     {
         if ([AppDelegate user].protoEvent) {
             _rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(preview:)];
+            _rightBarButtonItem.enabled = [self readyToSend];
         } else {
             _rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(close:)];
-            _rightBarButtonItem.tintColor = [UIColor blackColor];
+            _rightBarButtonItem.tintColor = [UIColor inviteTableHeaderColor];
         }
         self.navigationItem.rightBarButtonItem = _rightBarButtonItem;
     } else {
@@ -310,6 +319,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -345,22 +355,26 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ((_mode == EventModePreview && section == EventPreviewSectionMessage) ||
-        (_mode == EventModePreview && section == EventPreviewSectionButton)) {
+    if (_mode == EventModePreview && section == EventPreviewSectionMessage) {
         return 1;
     }
     return _mode == EventModePreview ? EventPreviewRowCount : EventViewRowCount;
 }
 
+- (BOOL)readyToSend
+{
+    return _event.title && (_event.invitees || _event.emails) && _event.editTimeframe && (_event.location || _event.protoLocation);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (_mode == EventModePreview && indexPath.section == EventPreviewSectionButton)
+    if (_mode == EventModePreview && indexPath.section == EventPreviewSectionDetails && indexPath.row == EventPreviewRowButton)
     {
         ButtonCell *cell = (ButtonCell *)[tableView dequeueReusableCellWithIdentifier:BUTTON_CELL_IDENTIFIER forIndexPath:indexPath];
-        BOOL readyToSend = _event.title && (_event.invitees || _event.emails) && _event.editTimeframe && (_event.location || _event.protoLocation);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.button.enabled = readyToSend;
-        cell.button.alpha = readyToSend ? 1 : 0.5;
+        _rightBarButtonItem.enabled = [self readyToSend];
+        cell.button.enabled = [self readyToSend];
+        cell.button.alpha = [self readyToSend] ? 1 : 0.5;
         cell.backgroundColor = [UIColor clearColor];
         cell.contentView.backgroundColor = [UIColor clearColor];
         return cell;
@@ -387,7 +401,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
         [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"To create a new event, follow the steps below." attributes:@{NSFontAttributeName: [UIFont inviteQuestionFont], NSForegroundColorAttributeName: [UIColor inviteQuestionColor]}]];
         [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:10]}]];
-        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"Tap \"Preview\" above to see how this event will look when finished." attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}]];
+        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"After setting all of the event details, tap \"Preview\" above to see how this event will look to others." attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}]];
         cell.textLabel.attributedText = att;
         
         cell.backgroundColor = [UIColor whiteColor];
@@ -403,6 +417,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         cell.label.text = [self textForRow:EventRowTitle];
         cell.accessoryType = _mode == EventModePreview ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
         self.titleCell = cell;
+        cell.delegate = self;
 
         if (startDate)
         {
@@ -578,6 +593,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
+    if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowTitle && indexPath.section == EventViewSectionDetails)
+    {
+        if (!_showingResponseSelection) {
+            [self showResponseView];
+        }
+    }
+    
     if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowResponse && indexPath.section == EventViewSectionDetails)
     {
         if (_showingResponseSelection) {
@@ -626,7 +648,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (void)cancelResponseView
 {
     _showingResponseSelection = NO;
-    [self.titleCell cancelResponseButtons:_response];
+    [self.titleCell hideResponseButtons:_response];
     self.responseCell.cellText.attributedText = [self attributedTextForReponse];
 }
 
@@ -654,6 +676,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (IBAction)close:(id)sender
 {
+    if (_startingResponse != _response) {
+        // Send new response to parse
+        [_event saveToParse];
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CLOSED_NOTIFICATION object:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -671,8 +697,17 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     [_tableView reloadData];
 }
 
+- (void)eventCreated:(NSNotification *)note
+{
+    [_alert dismissViewControllerAnimated:YES completion:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DISMISS_EVENT_CONTROLLER_NOTIFICATION object:nil];
+}
+
 - (IBAction)createEvent:(id)sender
 {
+    _alert = [UIAlertController alertControllerWithTitle:@"Creating your new event!" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:_alert animated:YES completion:nil];
+
     [[AppDelegate user].protoEvent submitEvent];
 }
 
@@ -772,7 +807,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         case EventResponseSorry:
             return [UIColor inviteRedColor];
         case EventResponseNoResponse:
-            return [UIColor inviteLightSlateColor];
+            return [UIColor inviteBlueColor];
         case EventResponseHost:
             return [UIColor inviteBlueColor];
     }
@@ -849,6 +884,24 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (void)dismissKeyboard
 {
     [self.view endEditing:YES];
+    [_tableView reloadData];
+}
+
+#pragma mark - TitleDateCellDelegate
+
+- (void)titleDateCell:(TitleDateCell *)cell selectedResponse:(EventResponse)response
+{
+    _showingResponseSelection = NO;
+
+    _response = response;
+    [cell hideResponseButtons:_response];
+
+    [_rsvpDictionary setValue:@(_response) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
+    [AppDelegate user].eventToDisplay[EVENT_RSVP_KEY] = _rsvpDictionary;
+
+    // Update the cell
+    _responseCell.cellText.attributedText = [self attributedTextForReponse];
+    [_inviteesSectionViewController.collectionView reloadData];
 }
 
 @end

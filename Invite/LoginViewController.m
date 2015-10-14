@@ -31,7 +31,7 @@
 @property (nonatomic, weak) IBOutlet UILabel *inviteLabel;
 @property (nonatomic, weak) IBOutlet UILabel *messageLabel;
 @property (nonatomic, weak) IBOutlet UIView *lineView;
-@property (nonatomic, assign) BOOL applicationDidResignActive;
+@property (nonatomic, assign) BOOL sentToFacebookLogin;
 
 @end
 
@@ -46,34 +46,31 @@
     _messageLabel.font = [UIFont proximaNovaRegularFontOfSize:16];
     _facebookView.backgroundColor = [UIColor inviteSlateButtonColor];
     
-    _applicationDidResignActive = NO;
+    _sentToFacebookLogin = NO;
 
     [self showFacebookLogin];
         
     // Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userCreated:) name:USER_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteUser:) name:DELETE_USER_NOTIFICATION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:APPLICATION_WILL_RESIGN_ACTIVE_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoggedOut:) name:USER_LOGGED_OUT_NOTIFICATION object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (!_applicationDidResignActive) {
-        [self.navigationController setNavigationBarHidden:YES animated:YES];
-        _messageView.alpha = 0;
-        _messageViewCenterYConstraint.constant = kMessageStartingCenterY + 35;
-        _facebookViewBottomConstraint.constant = -120;
-        _logoCenterYConstraint.constant = 0;
-    }
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    _messageView.alpha = 0;
+    _messageViewCenterYConstraint.constant = kMessageStartingCenterY + 35;
+    _facebookViewBottomConstraint.constant = -120;
+    _logoCenterYConstraint.constant = 0;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    if (!_applicationDidResignActive) {
+    if (!_sentToFacebookLogin) {
         _logoCenterYConstraint.constant = kAmountToMoveUp;
         [UIView animateWithDuration:1 animations:^{
             [self.view layoutIfNeeded];
@@ -153,11 +150,13 @@
         default:
         {
             FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+            _sentToFacebookLogin = YES;
             [login logInWithReadPermissions:@[EMAIL_KEY] fromViewController:self handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
                 if (error) {
                     // Error
                 } else if (result.isCancelled) {
                     // Cancelled
+                    _sentToFacebookLogin = NO;
                 } else {
                     // Logged in
                     if ([result.grantedPermissions containsObject:EMAIL_KEY]) {
@@ -219,18 +218,10 @@
     }];
 }
 
-- (void)applicationWillResignActive:(NSNotification *)notification
-{
-    _applicationDidResignActive = YES;
-    _messageView.alpha = 0;
-    _messageViewCenterYConstraint.constant = kMessageStartingCenterY;
-    _facebookViewBottomConstraint.constant = -120;
-    _logoCenterYConstraint.constant = 0;
-}
-
 - (void)userLoggedOut:(NSNotification *)notification
 {
-    _applicationDidResignActive = NO;
+    _sentToFacebookLogin = NO;
+    [UserDefaults removeObjectForKey:EMAIL_KEY];
 }
 
 @end

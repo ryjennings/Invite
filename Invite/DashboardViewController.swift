@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Crashlytics
 
 @objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate
 {
@@ -58,11 +59,21 @@ import UIKit
         self.navigationItem.title = "Invite"
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventCreated:", name: EVENT_CREATED_NOTIFICATION, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dismissEventController:", name: DISMISS_EVENT_CONTROLLER_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventClosed:", name: EVENT_CLOSED_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userLoggedOut:", name: USER_LOGGED_OUT_NOTIFICATION, object: nil)
         
-//        delay(30) {
-//            NSException(name: NSGenericException, reason: "Everything is ok. This is just a test crash.", userInfo: nil).raise()
+//        delay(10) {
+//            Crashlytics.sharedInstance().crash()
+//        }
+        
+//        let to = [["email": "ryjennings@gmail.com", "name": "Ryan Jennings"], ["email": "rjennings@ancestry.com", "name": "Ryan Jennings"]]
+//        PFCloud.callFunctionInBackground("emailTemplate", withParameters: ["template": "new-event-creator", "to": to, "fromEmail": "ryjennings@gmail.com", "fromName": "Ryan Jennings", "subject": "New event!"]) { (result: AnyObject?, error: NSError?) -> Void in
+//            if let error = error {
+//                print(error.localizedDescription)
+//            } else {
+//                print(result)
+//            }
 //        }
     }
     
@@ -388,6 +399,11 @@ import UIKit
         super.didReceiveMemoryWarning()
     }
     
+    func dismissEventController(note: NSNotification)
+    {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
     func eventCreated(note: NSNotification)
     {
         if self.tableView.tableHeaderView == nil {
@@ -399,7 +415,6 @@ import UIKit
         }
         
         dismissOnboarding()
-        self.dismissViewControllerAnimated(true, completion: nil)
         separateEventsIntoGroups()
         self.tableView.reloadData()
         delay(0) {
@@ -430,12 +445,6 @@ import UIKit
         self.onboardingScrollView = nil
         self.onboarding = nil
         self.gradientView = nil
-    }
-    
-    @IBAction func logout(button: UIBarButtonItem)
-    {
-        NSNotificationCenter.defaultCenter().postNotificationName(USER_LOGGED_OUT_NOTIFICATION, object: nil)
-        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func userLoggedOut(note: NSNotification)

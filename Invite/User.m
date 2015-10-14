@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 Appuous. All rights reserved.
 //
 
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 #import "User.h"
 
 #import "Event.h"
@@ -51,30 +54,17 @@
     _firstName = [object objectForKey:FIRST_NAME_KEY];
     _facebookID = [object objectForKey:FACEBOOK_ID_KEY];
     _fullName = [object objectForKey:FULL_NAME_KEY];
-
+    
+    [CrashlyticsKit setUserIdentifier:_facebookID];
+    [CrashlyticsKit setUserEmail:_email];
+    [CrashlyticsKit setUserName:_fullName];
+    
     if (!parseObject) {
         
         [self createParseUser];
         
     } else {
         
-        // Delete old events
-//        NSMutableArray *eventsToRemove = [NSMutableArray array];
-//        NSDate *date = [NSDate date];
-//        BOOL save = NO;
-//        for (PFObject *event in mEvents) {
-//            NSDate *endDate = [event objectForKey:EVENT_END_DATE_KEY];
-//            if ([[endDate earlierDate:date] isEqualToDate:endDate]) {
-//                [_parse removeObject:event forKey:EVENTS_KEY];
-////                [mEvents removeObject:event];
-//                [eventsToRemove addObject:event];
-//                save = YES;
-//            }
-//        }
-//        [mEvents removeObjectsInArray:eventsToRemove];
-//        if (save) {
-//            [_parse saveInBackground];
-//        }
         _events = [User sortEvents:[object objectForKey:EVENTS_KEY]];
         
         if ([object objectForKey:FRIENDS_KEY]) {

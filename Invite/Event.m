@@ -162,6 +162,7 @@
 
 - (void)saveToParse
 {
+    NSLog(@"saving");
     [_parseEvent saveInBackground];
 }
 

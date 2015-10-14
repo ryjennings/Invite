@@ -11,6 +11,7 @@ import UIKit
 @objc(TitleDateCell) class TitleDateCell: UITableViewCell
 {
     var attributedDate: NSAttributedString!
+    var delegate: TitleDateCellDelegate?
     
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -24,6 +25,8 @@ import UIKit
     @IBOutlet weak var goingButtonViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var maybeButtonViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var sorryButtonViewLeadingConstraint: NSLayoutConstraint!
+    
+    var safe = true
     
     let leadingConstraintConstant: CGFloat = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
     let spacingBetweenButtons: CGFloat = 20
@@ -72,6 +75,11 @@ import UIKit
     
     func showResponseButtons(response: EventResponse)
     {
+        if !safe {
+            return
+        }
+        self.safe = false
+        
         self.dateLabel.hidden = true
         self.dateInsideCircle.hidden = true
         
@@ -106,7 +114,7 @@ import UIKit
             self.goingButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Going)
             self.goingButtonView.label.alpha = 0
             self.label.alpha = 0
-            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
                 self.layoutIfNeeded()
                 }, completion: nil)
             self.maybeButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Maybe)
@@ -121,29 +129,121 @@ import UIKit
                 self.goingButtonView.button.alpha = 1
                 self.maybeButtonView.button.alpha = 1
                 self.sorryButtonView.button.alpha = 1
+                self.safe = true
                 }, completion: nil)
-
         case EventResponse.Maybe:
-            break
+            self.maybeButtonView.label.attributedText = self.dateLabel.attributedText
+            self.maybeButtonViewLeadingConstraint.constant = leadingConstraintConstant
+            self.goingButtonViewLeadingConstraint.constant = -(self.buttonWidth);
+            self.sorryButtonViewLeadingConstraint.constant = self.frame.size.width + self.buttonWidth;
+            self.layoutIfNeeded()
+            
+            self.goingButtonView.alpha = 1
+            self.maybeButtonView.alpha = 1
+            self.sorryButtonView.alpha = 1
+            
+            self.maybeButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Maybe)
+            self.maybeButtonView.label.alpha = 0
+            self.label.alpha = 0
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            self.goingButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Going)
+            UIView.animateWithDuration(0.5, delay: 0.2, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            self.sorryButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Sorry)
+            UIView.animateWithDuration(0.5, delay: 0.4, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            UIView.animateWithDuration(0.5, delay: 0.3, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.goingButtonView.button.alpha = 1
+                self.maybeButtonView.button.alpha = 1
+                self.sorryButtonView.button.alpha = 1
+                self.safe = true
+                }, completion: nil)
+        case EventResponse.Sorry:
+            self.sorryButtonView.label.attributedText = self.dateLabel.attributedText
+            self.sorryButtonViewLeadingConstraint.constant = leadingConstraintConstant
+            self.goingButtonViewLeadingConstraint.constant = -(self.buttonWidth);
+            self.maybeButtonViewLeadingConstraint.constant = -(self.buttonWidth);
+            self.layoutIfNeeded()
+            
+            self.goingButtonView.alpha = 1
+            self.maybeButtonView.alpha = 1
+            self.sorryButtonView.alpha = 1
+            
+            self.sorryButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Sorry)
+            self.sorryButtonView.label.alpha = 0
+            self.label.alpha = 0
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            self.maybeButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Maybe)
+            UIView.animateWithDuration(0.5, delay: 0.2, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            self.goingButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Going)
+            UIView.animateWithDuration(0.5, delay: 0.4, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            UIView.animateWithDuration(0.5, delay: 0.3, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.goingButtonView.button.alpha = 1
+                self.maybeButtonView.button.alpha = 1
+                self.sorryButtonView.button.alpha = 1
+                self.safe = true
+                }, completion: nil)
         default:
-            break
+            self.goingButtonViewLeadingConstraint.constant = -(self.buttonWidth);
+            self.maybeButtonViewLeadingConstraint.constant = -(self.buttonWidth);
+            self.sorryButtonViewLeadingConstraint.constant = -(self.buttonWidth);
+            self.layoutIfNeeded()
+            
+            self.goingButtonView.alpha = 1
+            self.maybeButtonView.alpha = 1
+            self.sorryButtonView.alpha = 1
+            self.dateLabel.alpha = 0
+            self.dateInsideCircle.alpha = 0
+            self.label.alpha = 0
+            
+            self.sorryButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Sorry)
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            self.maybeButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Maybe)
+            UIView.animateWithDuration(0.5, delay: 0.2, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            self.goingButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Going)
+            UIView.animateWithDuration(0.5, delay: 0.4, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            UIView.animateWithDuration(0.5, delay: 0.3, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.goingButtonView.button.alpha = 1
+                self.maybeButtonView.button.alpha = 1
+                self.sorryButtonView.button.alpha = 1
+                self.safe = true
+                }, completion: nil)
         }
     }
     
-    func cancelResponseButtons(response: EventResponse)
+    func hideResponseButtons(response: EventResponse)
     {
+        if !safe {
+            return
+        }
+        self.safe = false
+        
         switch response {
         case EventResponse.Going:
             self.goingButtonViewLeadingConstraint.constant = leadingConstraintConstant
             self.goingButtonView.label.attributedText = self.attributedDate
             UIView.animateWithDuration(0.1) { () -> Void in
                 self.goingButtonView.button.alpha = 0
-            }
-            UIView.animateWithDuration(0.5) { () -> Void in
                 self.maybeButtonView.alpha = 0
                 self.sorryButtonView.alpha = 0
             }
-            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
                 self.layoutIfNeeded()
                 }, completion: nil)
             UIView.animateWithDuration(0.4, delay: 0.1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
@@ -151,13 +251,73 @@ import UIKit
                 self.goingButtonView.label.alpha = 1
                 }, completion: { (finished: Bool) -> Void in
                     self.goingButtonView.alpha = 0
+                    self.dateLabel.layer.borderColor = UIColor.inviteGreenColor().CGColor
                     self.dateLabel.hidden = false
                     self.dateInsideCircle.hidden = false
+                    self.safe = true
             })
         case EventResponse.Maybe:
-            break
+            self.maybeButtonViewLeadingConstraint.constant = leadingConstraintConstant
+            self.maybeButtonView.label.attributedText = self.attributedDate
+            UIView.animateWithDuration(0.1) { () -> Void in
+                self.maybeButtonView.button.alpha = 0
+                self.goingButtonView.alpha = 0
+                self.sorryButtonView.alpha = 0
+            }
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            UIView.animateWithDuration(0.4, delay: 0.1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.label.alpha = 1
+                self.maybeButtonView.label.alpha = 1
+                }, completion: { (finished: Bool) -> Void in
+                    self.maybeButtonView.alpha = 0
+                    self.dateLabel.layer.borderColor = UIColor.inviteYellowColor().CGColor
+                    self.dateLabel.hidden = false
+                    self.dateInsideCircle.hidden = false
+                    self.safe = true
+            })
         default:
-            break
+            self.sorryButtonViewLeadingConstraint.constant = leadingConstraintConstant
+            self.sorryButtonView.label.attributedText = self.attributedDate
+            UIView.animateWithDuration(0.1) { () -> Void in
+                self.sorryButtonView.button.alpha = 0
+                self.goingButtonView.alpha = 0
+                self.maybeButtonView.alpha = 0
+            }
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            UIView.animateWithDuration(0.4, delay: 0.1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.label.alpha = 1
+                self.sorryButtonView.label.alpha = 1
+                }, completion: { (finished: Bool) -> Void in
+                    self.sorryButtonView.alpha = 0
+                    self.dateLabel.layer.borderColor = UIColor.inviteRedColor().CGColor
+                    self.dateLabel.hidden = false
+                    self.dateInsideCircle.hidden = false
+                    self.safe = true
+            })
         }
     }
+    
+    @IBAction func going()
+    {
+        self.delegate?.titleDateCell(self, selectedResponse: EventResponse.Going)
+    }
+    
+    @IBAction func maybe()
+    {
+        self.delegate?.titleDateCell(self, selectedResponse: EventResponse.Maybe)
+    }
+    
+    @IBAction func sorry()
+    {
+        self.delegate?.titleDateCell(self, selectedResponse: EventResponse.Sorry)
+    }
+}
+
+@objc protocol TitleDateCellDelegate
+{
+    func titleDateCell(cell: TitleDateCell, selectedResponse response: EventResponse)
 }

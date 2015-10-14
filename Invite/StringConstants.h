@@ -131,6 +131,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"
 #define DELETE_USER_NOTIFICATION @"DeleteUserNotifcation"
 #define EVENT_CREATED_NOTIFICATION @"EventCreatedNotification"
+#define DISMISS_EVENT_CONTROLLER_NOTIFICATION @"DismissEventControllerNotification"
 #define EVENT_CLOSED_NOTIFICATION @"EventClosedNotification"
 #define PARSE_LOADED_NOTIFICATION @"ParseLoadedNotification"
 #define APPLICATION_WILL_RESIGN_ACTIVE_NOTIFICATION @"ApplicationWillResignActiveNotification"

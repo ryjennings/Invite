@@ -22,18 +22,18 @@ import UIKit
             if self.friend.fullName == nil {
                 self.leadingFlexLabelConstraint.constant = -30
                 self.nameLabel.hidden = true
-                self.flexLabel.text = friend.email
+                self.flexLabel.text = self.friend.email
                 self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15, 0, 0)
             } else if self.friend.pfObject != nil {
                 self.leadingFlexLabelConstraint.constant = 10
                 self.nameLabel.hidden = true
-                self.flexLabel.text = friend.fullName
+                self.flexLabel.text = self.friend.fullName
                 self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 + 40 : 15 + 40, 0, 0)
             } else {
                 self.leadingFlexLabelConstraint.constant = 120
                 self.nameLabel.hidden = false
-                self.nameLabel.text = friend.fullName
-                self.flexLabel.text = friend.email
+                self.nameLabel.text = self.friend.fullName
+                self.flexLabel.text = self.friend.email
                 self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 + 40 : 15 + 40, 0, 0)
             }
             
@@ -42,7 +42,12 @@ import UIKit
             self.accessoryView?.clipsToBounds = true
             self.accessoryView?.layer.cornerRadius = 5
             
-            self.profileImageView.configureForPerson(self.friend, event: nil, width: 30, showResponse: false)
+            if friend.pfObject?[FACEBOOK_ID_KEY] != nil {
+                self.profileImageView.configureForPerson(self.friend, event: nil, width: 30, showResponse: false)
+                self.profileImageView.hidden = false
+            } else {
+                self.profileImageView.hidden = true
+            }
         }
     }
     
@@ -54,10 +59,12 @@ import UIKit
                 self.flexLabel.text = self.location.formattedAddress
                 self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15, 0, 0)
             } else if self.location.pfObject != nil {
-                self.leadingFlexLabelConstraint.constant = 10
-                self.nameLabel.hidden = true
-                self.flexLabel.text = self.location.name
-                self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 + 40 : 15 + 40, 0, 0)
+                self.leadingFlexLabelConstraint.constant = 120
+                self.nameLabel.text = self.location.name
+                self.nameLabel.textColor = UIColor.inviteTableHeaderColor()
+                self.flexLabel.text = self.location.formattedAddress
+                self.flexLabel.textColor = UIColor.inviteGrayColor()
+                self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15, 0, 0)
             } else {
                 self.leadingFlexLabelConstraint.constant = 120
                 self.nameLabel.hidden = false

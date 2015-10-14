@@ -21,7 +21,6 @@ NSString *const kNoResponse = @"No Response";
 
 @interface InviteesSectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
-@property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
 @property (nonatomic, weak) IBOutlet UILabel *headerLabel;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *leadingConstraint;
 

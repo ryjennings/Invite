@@ -28,8 +28,8 @@ class Friend
 @objc(InviteesViewController) class InviteesViewController: UIViewController, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, InputCellDelegate, UISearchBarDelegate
 {
     @IBOutlet weak var tableView: UITableView!
-    
     var searchController: UISearchController!
+    var adbk: ABAddressBook!
     
     private var recentFriends = [Friend]()
     private var allFriends = [Friend]()
@@ -45,8 +45,6 @@ class Friend
     private var eventInvitees = [PFObject]()
     private var eventEmails = [String]()
     private var preEmails = [String]()
-
-    var adbk: ABAddressBook!
 
     // MARK: - Lifecycle
     
@@ -211,8 +209,8 @@ class Friend
     {
         cell.backgroundColor = UIColor.whiteColor()
         cell.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
-        cell.nameLabel.textColor = UIColor.inviteTableLabelColor()
-        cell.flexLabel.textColor = friend.fullName != nil && friend.pfObject == nil ? UIColor.inviteGrayColor() : UIColor.inviteTableLabelColor()
+        cell.nameLabel.textColor = UIColor.inviteTableHeaderColor()
+        cell.flexLabel.textColor = friend.fullName != nil && friend.pfObject == nil ? UIColor.inviteGrayColor() : UIColor.inviteTableHeaderColor()
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
@@ -455,15 +453,14 @@ class Friend
                     self.groupedFriendsKeys.append(currentTitle)
                     self.groupedFriends[currentTitle] = [Friend]()
                 }
-                self.groupedFriends[currentTitle]?.append(friend)
             } else {
                 if currentTitle != "@" {
                     currentTitle = "@"
                     self.groupedFriendsKeys.append(currentTitle)
                     self.groupedFriends[currentTitle] = [Friend]()
                 }
-                self.groupedFriends[currentTitle]?.append(friend)
             }
+            self.groupedFriends[currentTitle]?.append(friend)
         }
     }
     
@@ -539,7 +536,7 @@ class Friend
                         let nameContainsText = fullName.uppercaseString.containsString(searchText!.uppercaseString)
                         let emailContainsText = email.uppercaseString.containsString(searchText!.uppercaseString)
                         
-                        let friend = Friend(fullName: fullName, lastName: lastName, email: email as! String, pfObject: nil)
+                        let friend = Friend(fullName: fullName, lastName: lastName ?? " ", email: email as! String, pfObject: nil)
 
                         if searchText == "" || (searchText != "" && (nameContainsText || emailContainsText)) {
                             self.allFriends.append(friend)

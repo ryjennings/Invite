@@ -59,7 +59,6 @@
 		0741BD941BA898D00099282F /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD931BA898D00099282F /* FBSDKLoginKit.framework */; settings = {ASSET_TAGS = (); }; };
 		0741BD991BA8A6B40099282F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD951BA8A6B40099282F /* Bolts.framework */; settings = {ASSET_TAGS = (); }; };
 		0741BD9A1BA8A6B40099282F /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD961BA8A6B40099282F /* Parse.framework */; settings = {ASSET_TAGS = (); }; };
-		0741BD9B1BA8A6B40099282F /* ParseCrashReporting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD971BA8A6B40099282F /* ParseCrashReporting.framework */; settings = {ASSET_TAGS = (); }; };
 		0741BD9C1BA8A6B40099282F /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD981BA8A6B40099282F /* ParseUI.framework */; settings = {ASSET_TAGS = (); }; };
 		074437791AE025D0002A6C4D /* InviteesSectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074437781AE025D0002A6C4D /* InviteesSectionViewController.m */; };
 		0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */; };
@@ -93,6 +92,8 @@
 		0778116B1B01382600D5DC4D /* TitleDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0778116A1B01382600D5DC4D /* TitleDateCell.swift */; };
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
 		078924741AB36DCE005EE7FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078924731AB36DCE005EE7FB /* MapKit.framework */; };
+		078C0E111BCC262E00DA8915 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078C0E0F1BCC262E00DA8915 /* Fabric.framework */; settings = {ASSET_TAGS = (); }; };
+		078C0E121BCC262E00DA8915 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078C0E101BCC262E00DA8915 /* Crashlytics.framework */; settings = {ASSET_TAGS = (); }; };
 		07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07B8EE501AAA2F17002B9962 /* EventViewController.m */; };
 		07BC8E391ACB13EB0050C4E9 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */; };
 		07C19AD61BBCC604000FACB4 /* LocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C19AD51BBCC604000FACB4 /* LocationCell.swift */; settings = {ASSET_TAGS = (); }; };
@@ -187,7 +188,6 @@
 		0741BD931BA898D00099282F /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../Downloads/FacebookSDKs-iOS-20150910/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		0741BD951BA8A6B40099282F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "../../Documents/parse-library/Bolts.framework"; sourceTree = "<group>"; };
 		0741BD961BA8A6B40099282F /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = "../../Documents/parse-library/Parse.framework"; sourceTree = "<group>"; };
-		0741BD971BA8A6B40099282F /* ParseCrashReporting.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseCrashReporting.framework; path = "../../Documents/parse-library/ParseCrashReporting.framework"; sourceTree = "<group>"; };
 		0741BD981BA8A6B40099282F /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = "../../Documents/parse-library/ParseUI.framework"; sourceTree = "<group>"; };
 		074437771AE025D0002A6C4D /* InviteesSectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesSectionViewController.h; sourceTree = "<group>"; };
 		074437781AE025D0002A6C4D /* InviteesSectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesSectionViewController.m; sourceTree = "<group>"; };
@@ -243,6 +243,8 @@
 		0786EB7B1A8E70ED006FDCA6 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		0786EB7C1A8E70ED006FDCA6 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		078924731AB36DCE005EE7FB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		078C0E0F1BCC262E00DA8915 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		078C0E101BCC262E00DA8915 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		07B8EE4F1AAA2F17002B9962 /* EventViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventViewController.h; sourceTree = "<group>"; };
 		07B8EE501AAA2F17002B9962 /* EventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventViewController.m; sourceTree = "<group>"; };
 		07BC8E381ACB13EB0050C4E9 /* ProfileImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
@@ -285,8 +287,9 @@
 				072463291A8BD40D00820834 /* SystemConfiguration.framework in Frameworks */,
 				072463271A8BD40300820834 /* StoreKit.framework in Frameworks */,
 				072463251A8BD3FA00820834 /* Security.framework in Frameworks */,
-				0741BD9B1BA8A6B40099282F /* ParseCrashReporting.framework in Frameworks */,
+				078C0E111BCC262E00DA8915 /* Fabric.framework in Frameworks */,
 				0741BD9A1BA8A6B40099282F /* Parse.framework in Frameworks */,
+				078C0E121BCC262E00DA8915 /* Crashlytics.framework in Frameworks */,
 				072463231A8BD3F300820834 /* QuartzCore.framework in Frameworks */,
 				072463211A8BD3EB00820834 /* MobileCoreServices.framework in Frameworks */,
 				0741BD991BA8A6B40099282F /* Bolts.framework in Frameworks */,
@@ -340,7 +343,6 @@
 			children = (
 				0741BD951BA8A6B40099282F /* Bolts.framework */,
 				0741BD961BA8A6B40099282F /* Parse.framework */,
-				0741BD971BA8A6B40099282F /* ParseCrashReporting.framework */,
 				0741BD981BA8A6B40099282F /* ParseUI.framework */,
 				0741BD911BA897EC0099282F /* FBSDKCoreKit.framework */,
 				0741BD931BA898D00099282F /* FBSDKLoginKit.framework */,
@@ -402,6 +404,8 @@
 		073273E41A892BFB007700B3 = {
 			isa = PBXGroup;
 			children = (
+				078C0E0F1BCC262E00DA8915 /* Fabric.framework */,
+				078C0E101BCC262E00DA8915 /* Crashlytics.framework */,
 				073273EF1A892BFB007700B3 /* Invite */,
 				0732740C1A892BFB007700B3 /* InviteTests */,
 				073273EE1A892BFB007700B3 /* Products */,
@@ -766,7 +770,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#echo \"Parse Crash Reporting\"\n#export PATH=/usr/local/bin:$PATH\n#CLOUD_CODE_DIR=${PROJECT_DIR}/parse\n\n#if [ -d ${CLOUD_CODE_DIR} ]; then\n#cd ${CLOUD_CODE_DIR}\n#parse symbols Invite --path=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\n#echo \"Finished uploading symbol\"\n#else\n#echo \"Unable to upload symbols\"\n#fi";
+			shellScript = "./Fabric.framework/run 69e405bd07d73937600dcbd2da3d50d7bf01ce05 cfb6fa402d2a1d4f266671745aff45fdd06653aedc4eaab19642a6574a11f4f2";
 		};
 /* End PBXShellScriptBuildPhase section */
 

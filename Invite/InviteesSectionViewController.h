@@ -11,6 +11,8 @@
 
 @interface InviteesSectionViewController : UIViewController
 
+@property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
+
 @property (nonatomic, strong) NSArray *userInvitees;
 @property (nonatomic, strong) NSArray *emailInvitees;
 @property (nonatomic, strong) NSDictionary *rsvpDictionary;
