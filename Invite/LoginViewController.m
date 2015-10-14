@@ -145,8 +145,16 @@
 {
     switch ([[AppDelegate app].reachability currentReachabilityStatus]) {
         case NotReachable:
-            [AlertViewController alert:@"The Internet connection appears to be offline." vc:self];
+        {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"The Internet connection appears to be offline. Please check your settings and try again." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                [alert dismissViewControllerAnimated:YES completion:nil];
+                [self loginToFacebook:nil];
+            }];
+            [alert addAction:ok];
+            [self presentViewController:alert animated:YES completion:nil];
             return;
+        }
         default:
         {
             FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];

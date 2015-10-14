@@ -636,20 +636,21 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (void)showResponseView
 {
-    _showingResponseSelection = YES;
-    [self.titleCell showResponseButtons:_response];
-    
-    NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
-    [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"Cancel" attributes:@{NSForegroundColorAttributeName: [UIColor inviteGrayColor], NSFontAttributeName: [UIFont inviteTableSmallFont]}]];
-    
-    self.responseCell.cellText.attributedText = att;
+    if (!_showingResponseSelection) {
+        _showingResponseSelection = YES;
+        [self.titleCell showResponseButtons:_response];
+        
+        NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
+        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"Cancel" attributes:@{NSForegroundColorAttributeName: [UIColor inviteGrayColor], NSFontAttributeName: [UIFont inviteTableSmallFont]}]];
+        
+        self.responseCell.cellText.attributedText = att;
+    }
 }
 
 - (void)cancelResponseView
 {
-    _showingResponseSelection = NO;
-    [self.titleCell hideResponseButtons:_response];
-    self.responseCell.cellText.attributedText = [self attributedTextForReponse];
+    [_titleCell hideResponseButtons:_response];
+    _responseCell.cellText.attributedText = [self attributedTextForReponse];
 }
 
 #pragma mark - Notifications
@@ -891,17 +892,18 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (void)titleDateCell:(TitleDateCell *)cell selectedResponse:(EventResponse)response
 {
-    _showingResponseSelection = NO;
-
     _response = response;
-    [cell hideResponseButtons:_response];
 
     [_rsvpDictionary setValue:@(_response) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
     [AppDelegate user].eventToDisplay[EVENT_RSVP_KEY] = _rsvpDictionary;
 
-    // Update the cell
+    [cell hideResponseButtons:_response];
     _responseCell.cellText.attributedText = [self attributedTextForReponse];
-    [_inviteesSectionViewController.collectionView reloadData];
+}
+
+- (void)titleDateCellFinishedHideAnimation:(TitleDateCell *)cell
+{
+    _showingResponseSelection = NO;
 }
 
 @end

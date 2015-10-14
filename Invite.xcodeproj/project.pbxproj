@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070C88B51B05227E005E7CDD /* LabelCell.swift */; };
-		070C88B81B068CBA005E7CDD /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070C88B71B068CBA005E7CDD /* AlertViewController.swift */; };
 		070C88BB1B069C01005E7CDD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 070C88BA1B069C01005E7CDD /* Reachability.m */; };
 		070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4C1AE8489C00E111F6 /* SDiPhoneVersion.m */; };
 		070DAA4F1AE85D6900E111F6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070DAA4E1AE85D6900E111F6 /* SettingsViewController.swift */; };
@@ -128,7 +127,6 @@
 
 /* Begin PBXFileReference section */
 		070C88B51B05227E005E7CDD /* LabelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelCell.swift; sourceTree = "<group>"; };
-		070C88B71B068CBA005E7CDD /* AlertViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		070C88B91B069C01005E7CDD /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		070C88BA1B069C01005E7CDD /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		070DAA4B1AE8489C00E111F6 /* SDiPhoneVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDiPhoneVersion.h; sourceTree = "<group>"; };
@@ -341,6 +339,8 @@
 		0724632E1A8BD44200820834 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				078C0E0F1BCC262E00DA8915 /* Fabric.framework */,
+				078C0E101BCC262E00DA8915 /* Crashlytics.framework */,
 				0741BD951BA8A6B40099282F /* Bolts.framework */,
 				0741BD961BA8A6B40099282F /* Parse.framework */,
 				0741BD981BA8A6B40099282F /* ParseUI.framework */,
@@ -404,8 +404,6 @@
 		073273E41A892BFB007700B3 = {
 			isa = PBXGroup;
 			children = (
-				078C0E0F1BCC262E00DA8915 /* Fabric.framework */,
-				078C0E101BCC262E00DA8915 /* Crashlytics.framework */,
 				073273EF1A892BFB007700B3 /* Invite */,
 				0732740C1A892BFB007700B3 /* InviteTests */,
 				073273EE1A892BFB007700B3 /* Products */,
@@ -447,7 +445,6 @@
 				078924721AB369DC005EE7FB /* Location */,
 				07B8EE521AAA2F22002B9962 /* Event */,
 				070DAA501AE85D7300E111F6 /* Settings */,
-				070C88B71B068CBA005E7CDD /* AlertViewController.swift */,
 				074B03091AD638C600B539A9 /* Cells */,
 				07BC8E3A1ACB13EF0050C4E9 /* Views */,
 				070C88BE1B0712A2005E7CDD /* Invitees Section */,
@@ -841,7 +838,6 @@
 				0714087B1AEE13FC0081F304 /* ProfileCell.swift in Sources */,
 				07C19AD61BBCC604000FACB4 /* LocationCell.swift in Sources */,
 				070DAA4D1AE8489C00E111F6 /* SDiPhoneVersion.m in Sources */,
-				070C88B81B068CBA005E7CDD /* AlertViewController.swift in Sources */,
 				07C19AD81BC2EA97000FACB4 /* DashboardViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

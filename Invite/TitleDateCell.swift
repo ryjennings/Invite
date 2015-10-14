@@ -202,8 +202,6 @@ import UIKit
             self.goingButtonView.alpha = 1
             self.maybeButtonView.alpha = 1
             self.sorryButtonView.alpha = 1
-            self.dateLabel.alpha = 0
-            self.dateInsideCircle.alpha = 0
             self.label.alpha = 0
             
             self.sorryButtonViewLeadingConstraint.constant = self.finalPositionForResponse(EventResponse.Sorry)
@@ -255,6 +253,7 @@ import UIKit
                     self.dateLabel.hidden = false
                     self.dateInsideCircle.hidden = false
                     self.safe = true
+                    self.delegate?.titleDateCellFinishedHideAnimation(self)
             })
         case EventResponse.Maybe:
             self.maybeButtonViewLeadingConstraint.constant = leadingConstraintConstant
@@ -276,6 +275,7 @@ import UIKit
                     self.dateLabel.hidden = false
                     self.dateInsideCircle.hidden = false
                     self.safe = true
+                    self.delegate?.titleDateCellFinishedHideAnimation(self)
             })
         default:
             self.sorryButtonViewLeadingConstraint.constant = leadingConstraintConstant
@@ -297,6 +297,7 @@ import UIKit
                     self.dateLabel.hidden = false
                     self.dateInsideCircle.hidden = false
                     self.safe = true
+                    self.delegate?.titleDateCellFinishedHideAnimation(self)
             })
         }
     }
@@ -320,4 +321,5 @@ import UIKit
 @objc protocol TitleDateCellDelegate
 {
     func titleDateCell(cell: TitleDateCell, selectedResponse response: EventResponse)
+    func titleDateCellFinishedHideAnimation(cell: TitleDateCell)
 }
