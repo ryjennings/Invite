@@ -43,7 +43,7 @@ import UIKit
             self.accessoryView?.layer.cornerRadius = 5
             
             if friend.pfObject?[FACEBOOK_ID_KEY] != nil {
-                self.profileImageView.configureForPerson(self.friend, event: nil, width: 30, showResponse: false)
+                self.profileImageView.configureForPerson(self.friend, responseValue: 0, width: 30, showResponse: false)
                 self.profileImageView.hidden = false
             } else {
                 self.profileImageView.hidden = true

@@ -110,6 +110,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 @property (nonatomic, strong) UIAlertController *alert;
 
+@property (nonatomic, assign) BOOL eventIsOld;
+
 @end
 
 @implementation EventViewController
@@ -152,6 +154,14 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
         [self configureGradientView];
     }
+    
+    if ([AppDelegate user].eventToDisplay) {
+        NSDate *now = [NSDate date];
+        NSDate *end = [AppDelegate user].eventToDisplay[EVENT_END_DATE_KEY];
+        _eventIsOld = [[now earlierDate:end] isEqualToDate:end];
+    } else {
+        _eventIsOld = NO;
+    }
 }
 
 - (UIView *)tableHeaderView
@@ -185,38 +195,35 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
         }
         
-        if (_event.invitees || _event.emails) {
-            [self createRSVPDictionary];
-        }
         // Response
         if (!_isCreator)
         {
-            PFObject *event = [[AppDelegate user] eventToDisplay];
-            NSDictionary *rsvp = event[EVENT_RSVP_KEY];
+            PFObject *event = [AppDelegate user].eventToDisplay;
             
-            _response = [rsvp[[AppDelegate keyFromEmail:[AppDelegate user].email]] integerValue];
+            EventResponse eventResponse = 0;
+            
+            for (NSString *response in event[EVENT_RESPONSES_KEY]) {
+                NSArray *com = [response componentsSeparatedByString:@":"];
+                if ([com[0] isEqualToString:[AppDelegate user].email]) {
+                    eventResponse = ((NSString *)com[1]).integerValue;
+                    break;
+                }
+            }
+
+            _response = eventResponse;
             _startingResponse = _response;
         }
         else
         {
             _response = EventResponseHost;
+            _startingResponse = _response;
         }
         
-        if (_event.invitees) {
-            _inviteesSectionViewController.userInvitees = _event.invitees;
-        }
-        if (_rsvpDictionary) {
-            _inviteesSectionViewController.rsvpDictionary = _rsvpDictionary;
-        }
-        if (_event.emails && [[AppDelegate user] protoEvent]) {
-            _inviteesSectionViewController.emailInvitees = _event.emails;
-        }
-
-        [_inviteesSectionViewController buildInviteesDictionary];
-
-        _inviteesContainerView.hidden = NO;
-        if ([[AppDelegate user] eventToDisplay]) {
-            _inviteesSectionViewController.event = [[AppDelegate user] eventToDisplay];
+        if ([AppDelegate user].eventToDisplay) {
+            _inviteesSectionViewController.responses = [[AppDelegate user].eventToDisplay[EVENT_RESPONSES_KEY] mutableCopy];
+            _inviteesSectionViewController.event = [AppDelegate user].eventToDisplay;
+            [_inviteesSectionViewController buildInviteesDictionary];
+            _inviteesContainerView.hidden = NO;
         }
     }
     else
@@ -262,25 +269,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             _lastPlacemark = placemark;
         }];
     }
-}
-
-- (void)createRSVPDictionary
-{
-    if ([AppDelegate user].eventToDisplay) {
-        _rsvpDictionary = [AppDelegate user].eventToDisplay[EVENT_RSVP_KEY];
-        return;
-    }
-    NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
-    for (PFObject *invitee in _event.invitees) {
-        NSString *email = [invitee objectForKey:EMAIL_KEY];
-        if (email && email.length > 0) {
-            [rsvp setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:email]];
-        }
-    }
-    for (NSString *email in _event.emails) {
-        [rsvp setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:email]];
-    }
-    _rsvpDictionary = rsvp;
 }
 
 - (void)configureNavigationBar
@@ -595,18 +583,25 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     
     if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowTitle && indexPath.section == EventViewSectionDetails)
     {
-        if (!_showingResponseSelection) {
+        if (!_showingResponseSelection && !_eventIsOld) {
             [self showResponseView];
         }
     }
     
     if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowResponse && indexPath.section == EventViewSectionDetails)
     {
-        if (_showingResponseSelection) {
-            [self cancelResponseView];
-        } else {
-            [self showResponseView];
+        if (!_eventIsOld) {
+            if (_showingResponseSelection) {
+                [self cancelResponseView];
+            } else {
+                [self showResponseView];
+            }
         }
+    }
+    
+    if (_mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowLocation)
+    {
+        [self launchMapsWithAddress:_event.location[LOCATION_ADDRESS_KEY]];
     }
     
     if (_mode == EventModeView) {
@@ -679,10 +674,18 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     if (_startingResponse != _response) {
         // Send new response to parse
-        [_event saveToParse];
+        [[AppDelegate user].eventToDisplay removeObject:[NSString stringWithFormat:@"%@:%ld", [AppDelegate user].email, (long)_startingResponse] forKey:EVENT_RESPONSES_KEY];
+        [[AppDelegate user].eventToDisplay saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            [[AppDelegate user].eventToDisplay addUniqueObject:[NSString stringWithFormat:@"%@:%ld", [AppDelegate user].email, (long)_response] forKey:EVENT_RESPONSES_KEY];
+            [[AppDelegate user].eventToDisplay saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CLOSED_NOTIFICATION object:nil];
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+        }];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CLOSED_NOTIFICATION object:nil];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CLOSED_NOTIFICATION object:nil];
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)cancel:(id)sender
@@ -700,8 +703,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (void)eventCreated:(NSNotification *)note
 {
-    [_alert dismissViewControllerAnimated:YES completion:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:DISMISS_EVENT_CONTROLLER_NOTIFICATION object:nil];
+    [_alert dismissViewControllerAnimated:YES completion:^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:DISMISS_EVENT_CONTROLLER_NOTIFICATION object:nil];
+    }];
 }
 
 - (IBAction)createEvent:(id)sender
@@ -833,8 +837,14 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (NSAttributedString *)attributedTextForReponse
 {
     NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
-    [att appendAttributedString:[[NSAttributedString alloc] initWithString:[self textForResponse:_response] attributes:@{NSForegroundColorAttributeName: [self colorForResponse:_response], NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:16]}]];
-    [att appendAttributedString:[[NSAttributedString alloc] initWithString:@" Change" attributes:@{NSForegroundColorAttributeName: [UIColor inviteGrayColor], NSFontAttributeName: [UIFont inviteTableSmallFont]}]];
+    if (_eventIsOld) {
+        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"This event is over" attributes:@{NSForegroundColorAttributeName: [UIColor lightGrayColor], NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:16]}]];
+    } else {
+        [att appendAttributedString:[[NSAttributedString alloc] initWithString:[self textForResponse:_response] attributes:@{NSForegroundColorAttributeName: [self colorForResponse:_response], NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:16]}]];
+        if (_response != EventResponseNoResponse && _response != EventResponseHost) {
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@" Change" attributes:@{NSForegroundColorAttributeName: [UIColor inviteGrayColor], NSFontAttributeName: [UIFont inviteTableSmallFont]}]];
+        }
+    }
     return att;
 }
 
@@ -848,6 +858,41 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         pinView.animatesDrop = YES;
     }
     return pinView;
+}
+
+- (void)launchMapsWithAddress:(NSString *)address
+{
+    Class mapItemClass = [MKMapItem class];
+    if (mapItemClass && [mapItemClass respondsToSelector:@selector(openMapsWithItems:launchOptions:)])
+    {
+        CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+        [geocoder geocodeAddressString:address
+                     completionHandler:^(NSArray *placemarks, NSError *error) {
+                         
+                         // Convert the CLPlacemark to an MKPlacemark
+                         // Note: There's no error checking for a failed geocode
+                         CLPlacemark *geocodedPlacemark = [placemarks objectAtIndex:0];
+                         MKPlacemark *placemark = [[MKPlacemark alloc]
+                                                   initWithCoordinate:geocodedPlacemark.location.coordinate
+                                                   addressDictionary:geocodedPlacemark.addressDictionary];
+                         
+                         // Create a map item for the geocoded address to pass to Maps app
+                         MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
+                         [mapItem setName:geocodedPlacemark.name];
+                         
+                         // Set the directions mode to "Driving"
+                         // Can use MKLaunchOptionsDirectionsModeWalking instead
+                         NSDictionary *launchOptions = @{MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving};
+                         
+                         // Get the "Current User Location" MKMapItem
+                         MKMapItem *currentLocationMapItem = [MKMapItem mapItemForCurrentLocation];
+                         
+                         // Pass the current location and destination map items to the Maps app
+                         // Set the direction mode in the launchOptions dictionary
+                         [MKMapItem openMapsWithItems:@[currentLocationMapItem, mapItem] launchOptions:launchOptions];
+                         
+                     }];
+    }
 }
 
 #pragma mark - InputCellDelegate
@@ -892,11 +937,26 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (void)titleDateCell:(TitleDateCell *)cell selectedResponse:(EventResponse)response
 {
+    NSMutableArray *responses = [[AppDelegate user].eventToDisplay[EVENT_RESPONSES_KEY] mutableCopy];
+    NSString *objectToRemove;
+    for (NSString *response in responses) {
+        if ([response containsString:[AppDelegate user].email]) {
+            objectToRemove = response;
+        }
+    }
+    if (objectToRemove) {
+        [responses removeObject:objectToRemove];
+    }
+    
     _response = response;
 
-    [_rsvpDictionary setValue:@(_response) forKey:[AppDelegate keyFromEmail:[AppDelegate user].email]];
-    [AppDelegate user].eventToDisplay[EVENT_RSVP_KEY] = _rsvpDictionary;
-
+    [responses addObject:[NSString stringWithFormat:@"%@:%@", [AppDelegate user].email, @(_response)]];
+//    [AppDelegate user].eventToDisplay[EVENT_RESPONSES_KEY] = responses;
+    
+    _inviteesSectionViewController.responses = responses;
+    [_inviteesSectionViewController buildInviteesDictionary];
+    [_inviteesSectionViewController.collectionView reloadData];
+    
     [cell hideResponseButtons:_response];
     _responseCell.cellText.attributedText = [self attributedTextForReponse];
 }

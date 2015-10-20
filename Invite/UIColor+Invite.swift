@@ -11,15 +11,35 @@ import UIKit
 extension UIColor
 {
     // MARK: - Invite Colors
+    
+    class func inviteOrangeColor() -> UIColor
+    {
+        return UIColor(red: 0.99, green: 0.51, blue: 0.18, alpha: 1.0)
+    }
+    
+    class func inviteBeigeColor() -> UIColor
+    {
+        return UIColor(red: 0.98, green: 0.97, blue: 0.91, alpha: 1)
+    }
 
     class func inviteSlateColor() -> UIColor
     {
         return UIColor(red: 56/255, green: 68/255, blue: 79/255, alpha: 1)
     }
     
+    class func inviteLightYellowGradientColor() -> UIColor
+    {
+        return UIColor(red: 0.98, green: 0.86, blue: 0.67, alpha: 1.0)
+    }
+    
+    class func inviteLightYellowColor() -> UIColor
+    {
+        return UIColor(red: 0.98, green: 0.95, blue: 0.86, alpha: 1.0)
+    }
+    
     class func inviteYellowColor() -> UIColor
     {
-        return UIColor(red: 1, green: 0.8, blue: 0.18, alpha: 1)
+        return UIColor(red: 0.99, green: 0.60, blue: 0.17, alpha: 1)
     }
     
     class func inviteSlateClearColor() -> UIColor
@@ -30,6 +50,11 @@ extension UIColor
     class func inviteOverlayColor() -> UIColor
     {
         return UIColor(red: 56/255, green: 68/255, blue: 79/255, alpha: 0.75)
+    }
+    
+    class func inviteLightDarkBlueColor() -> UIColor
+    {
+        return UIColor(red: 0.58, green: 0.67, blue: 0.73, alpha: 1)
     }
     
     class func inviteLightSlateColor() -> UIColor
@@ -72,6 +97,11 @@ extension UIColor
         return UIColor(red: 0, green: 217/255, blue: 116/255, alpha: 1)
     }
     
+    class func inviteDarkGreenColor() -> UIColor
+    {
+        return UIColor(red: 0.09, green: 0.64, blue: 0.35, alpha: 1)
+    }
+    
     class func inviteRedColor() -> UIColor
     {
         return UIColor(red: 255/255, green: 54/255, blue: 51/255, alpha: 1)
@@ -85,6 +115,11 @@ extension UIColor
     class func inviteBlueAlphaColor() -> UIColor
     {
         return UIColor(red: 44/255, green: 152/255, blue: 222/255, alpha: 0.25)
+    }
+    
+    class func inviteDarkBlueAlphaColor() -> UIColor
+    {
+        return UIColor(red: 64/255, green: 102/255, blue: 128/255, alpha: 0)
     }
     
     class func inviteDarkBlueColor() -> UIColor

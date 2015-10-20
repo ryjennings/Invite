@@ -154,17 +154,6 @@
     }];
 }
 
-- (void)addFacebookDetails:(NSDictionary *)details toParseUser:(PFObject *)parse
-{
-    parse[GENDER_KEY] = details[GENDER_KEY];
-    parse[LOCALE_KEY] = details[LOCALE_KEY];
-    parse[FACEBOOK_ID_KEY] = details[FACEBOOK_ID_KEY];
-    parse[LAST_NAME_KEY] = details[LAST_NAME_KEY];
-    parse[FULL_NAME_KEY] = details[FULL_NAME_KEY];
-    parse[FIRST_NAME_KEY] = details[FIRST_NAME_KEY];
-    [parse saveInBackground];
-}
-
 - (void)findReservations
 {
     // Create "events" to fetch...
@@ -182,9 +171,14 @@
                 
                 [friend[EVENTS_KEY] enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
                     
-                    NSDictionary *rsvp = event[EVENT_RSVP_KEY];
-                    NSString *email = friend[EMAIL_KEY];
-                    EventResponse response = [rsvp[[AppDelegate keyFromEmail:email]] integerValue];
+                    EventResponse response = 0;
+                    for (NSString *eventResponse in event[EVENT_RESPONSES_KEY]) {
+                        NSArray *com = [eventResponse componentsSeparatedByString:@":"];
+                        if ([com[0] isEqualToString:friend[EMAIL_KEY]]) {
+                            response = ((NSString *)com[1]).integerValue;
+                        }
+                    }
+                    
                     if (response == EventResponseGoing || response == EventResponseMaybe) {
                         [reservations addObject:[Reservation reservationWithUser:friend
                                                                       eventTitle:event[EVENT_TITLE_KEY]
@@ -203,22 +197,66 @@
 
 - (void)createMyReponses
 {
+    _needsResponse = nil;
     if (_events) {
         NSMutableDictionary *myResponses = [NSMutableDictionary dictionary];
         for (PFObject *event in _events) {
             if ([((PFObject *)event[EVENT_CREATOR_KEY])[EMAIL_KEY] isEqualToString:[AppDelegate user].email]) {
                 myResponses[event.objectId] = @(EventMyResponseHost);
+                continue;
             }
-            NSDictionary *rsvp = event[EVENT_RSVP_KEY];
-            for (NSString *key in rsvp) {
-                NSString *email = [AppDelegate emailFromKey:key];
-                if ([email isEqualToString:[AppDelegate user].email]) {
-                    myResponses[event.objectId] = rsvp[key];
+            for (NSString *eventResponse in event[EVENT_RESPONSES_KEY]) {
+                NSArray *com = [eventResponse componentsSeparatedByString:@":"];
+                if ([com[0] isEqualToString:[AppDelegate user].email]) {
+                    NSDate *now = [NSDate date];
+                    NSDate *end = event[EVENT_END_DATE_KEY];
+                    if (!_needsResponse &&
+                        ((NSString *)com[1]).integerValue == EventResponseNoResponse &&
+                        ![[now earlierDate:end] isEqualToDate:end]) {
+                        _needsResponse = event;
+                    }
+                    myResponses[event.objectId] = @(((NSString *)com[1]).integerValue);
+                    break;
                 }
             }
         }
         _myResponses = myResponses;
     }
+}
+
+- (void)refreshEvents
+{
+    PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
+    [query whereKey:EMAIL_KEY equalTo:self.email];
+    [query includeKey:EVENTS_KEY];
+    [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_LOCATION_KEY]];
+    [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_CREATOR_KEY]];
+    [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_INVITEES_KEY]];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (objects.count) {
+            _events = [User sortEvents:[objects[0] objectForKey:EVENTS_KEY]];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:FINISHED_REFRESHING_EVENTS_NOTIFICATION object:nil];
+    }];
+}
+
+- (void)removeEvent:(PFObject *)event
+{
+    [self.parse removeObject:event forKey:EVENTS_KEY];
+    [self.parse saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
+        [query whereKey:EMAIL_KEY equalTo:self.email];
+        [query includeKey:EVENTS_KEY];
+        [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_LOCATION_KEY]];
+        [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_CREATOR_KEY]];
+        [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_INVITEES_KEY]];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if (objects.count) {
+                _events = [User sortEvents:[objects[0] objectForKey:EVENTS_KEY]];
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:FINISHED_REMOVING_EVENT_NOTIFICATION object:nil];
+        }];
+    }];
 }
 
 @end

@@ -48,7 +48,6 @@
 		073029ED1BB3954B00E2266E /* Reservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073029EC1BB3954B00E2266E /* Reservation.swift */; settings = {ASSET_TAGS = (); }; };
 		073273F31A892BFB007700B3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F21A892BFB007700B3 /* main.m */; };
 		073273F61A892BFB007700B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F51A892BFB007700B3 /* AppDelegate.m */; };
-		073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 073273F71A892BFB007700B3 /* Invite.xcdatamodeld */; };
 		073273FC1A892BFB007700B3 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273FB1A892BFB007700B3 /* LoginViewController.m */; };
 		073273FF1A892BFB007700B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 073273FD1A892BFB007700B3 /* Main.storyboard */; };
 		073274011A892BFB007700B3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 073274001A892BFB007700B3 /* Images.xcassets */; };
@@ -173,7 +172,6 @@
 		073273F21A892BFB007700B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		073273F41A892BFB007700B3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		073273F51A892BFB007700B3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		073273F81A892BFB007700B3 /* Invite.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Invite.xcdatamodel; sourceTree = "<group>"; };
 		073273FA1A892BFB007700B3 /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		073273FB1A892BFB007700B3 /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		073273FE1A892BFB007700B3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -454,7 +452,6 @@
 				0728364A1AD2F02000B158AC /* Proxima Nova Collection */,
 				073274001A892BFB007700B3 /* Images.xcassets */,
 				073274021A892BFB007700B3 /* LaunchScreen.xib */,
-				073273F71A892BFB007700B3 /* Invite.xcdatamodeld */,
 				073273F01A892BFB007700B3 /* Supporting Files */,
 			);
 			path = Invite;
@@ -832,7 +829,6 @@
 				070C88BB1B069C01005E7CDD /* Reachability.m in Sources */,
 				07DDBF261AC7BEDA0058E1CA /* LocationViewController.swift in Sources */,
 				077811671AFF216F00D5DC4D /* ToggleCell.swift in Sources */,
-				073273F91A892BFB007700B3 /* Invite.xcdatamodeld in Sources */,
 				075D10921ADC859D00C86130 /* UIImageView+WebCache.m in Sources */,
 				0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */,
 				0714087B1AEE13FC0081F304 /* ProfileCell.swift in Sources */,
@@ -1079,19 +1075,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		073273F71A892BFB007700B3 /* Invite.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				073273F81A892BFB007700B3 /* Invite.xcdatamodel */,
-			);
-			currentVersion = 073273F81A892BFB007700B3 /* Invite.xcdatamodel */;
-			path = Invite.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 073273E51A892BFB007700B3 /* Project object */;
 }

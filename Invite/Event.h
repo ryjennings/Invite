@@ -39,6 +39,4 @@
 - (NSString *)viewTimeframe;
 - (NSString *)host;
 
-- (void)saveToParse;
-
 @end

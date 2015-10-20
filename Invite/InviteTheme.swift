@@ -17,8 +17,12 @@ import UIKit
         // MARK: - UINavigationBar
         
         UINavigationBar.appearance().tintColor = UIColor.whiteColor()
-        UINavigationBar.appearance().barTintColor = UIColor.inviteGreenColor()
+        UINavigationBar.appearance().setBackgroundImage(UIImage(named: "navbar_gradient"), forBarMetrics: UIBarMetrics.Default)
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.inviteNavigationTitleFont()]
+        UINavigationBar.appearance().translucent = true
+        
+        UISearchBar.appearance().barTintColor = UIColor.inviteDarkBlueColor()
+        UISearchBar.appearance().tintColor = UIColor.whiteColor()
         
         // MARK: - UIBarButtonItem
         

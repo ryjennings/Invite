@@ -21,19 +21,13 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-
 @property (nonatomic, strong) User *user;
 @property (nonatomic, strong) Reachability *reachability;
+@property (nonatomic, strong) NSString *deeplinkObjectId;
 
 + (AppDelegate *)app;
 + (User *)user;
 + (PFObject *)parseUser;
-
-- (void)saveContext;
-- (NSURL *)applicationDocumentsDirectory;
 
 + (void)clearUser;
 

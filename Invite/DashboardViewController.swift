@@ -11,9 +11,7 @@ import Crashlytics
 
 @objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate
 {
-//    @IBOutlet weak var newButton: UIButton!
     @IBOutlet weak var rightButton: UIBarButtonItem!
-    @IBOutlet weak var leftButton: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
     
     var searchController: UISearchController!
@@ -35,6 +33,10 @@ import Crashlytics
     var selectedKey: String?
     var selectedRow: Int?
     
+    var removedIndexPath: NSIndexPath?
+    
+    var refreshControl: UIRefreshControl!
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -53,28 +55,59 @@ import Crashlytics
         self.tableView.sectionIndexBackgroundColor = UIColor.clearColor()
         self.tableView.reloadSectionIndexTitles()
         self.tableView.rowHeight = UITableViewAutomaticDimension
-        self.tableView.estimatedRowHeight = 89
+        self.tableView.estimatedRowHeight = 100
         self.definesPresentationContext = true
 
+        self.refreshControl = UIRefreshControl()
+        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        self.refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
+        self.tableView.insertSubview(refreshControl, atIndex: 0)
+        
         self.navigationItem.title = "Invite"
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventCreated:", name: EVENT_CREATED_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "dismissEventController:", name: DISMISS_EVENT_CONTROLLER_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventClosed:", name: EVENT_CLOSED_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userLoggedOut:", name: USER_LOGGED_OUT_NOTIFICATION, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "finishedRefreshingEvents:", name: FINISHED_REFRESHING_EVENTS_NOTIFICATION, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "removedEvent:", name: FINISHED_REMOVING_EVENT_NOTIFICATION, object: nil)
+        
+        if (AppDelegate.app().deeplinkObjectId != nil) {
+            deeplink(nil)
+        }
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "deeplink:", name: DEEPLINK_NOTIFICATION, object: nil)
         
 //        delay(10) {
 //            Crashlytics.sharedInstance().crash()
 //        }
         
-//        let to = [["email": "ryjennings@gmail.com", "name": "Ryan Jennings"], ["email": "rjennings@ancestry.com", "name": "Ryan Jennings"]]
-//        PFCloud.callFunctionInBackground("emailTemplate", withParameters: ["template": "new-event-creator", "to": to, "fromEmail": "ryjennings@gmail.com", "fromName": "Ryan Jennings", "subject": "New event!"]) { (result: AnyObject?, error: NSError?) -> Void in
-//            if let error = error {
-//                print(error.localizedDescription)
-//            } else {
-//                print(result)
-//            }
-//        }
+    }
+    
+    func refresh(sender: AnyObject)
+    {
+        AppDelegate.user().refreshEvents()
+    }
+    
+    func finishedRefreshingEvents(note: NSNotification)
+    {
+        self.refreshControl.endRefreshing()
+        AppDelegate.user().createMyReponses()
+        separateEventsIntoGroups()
+        self.tableView.tableHeaderView = tableHeaderView()
+        self.tableView.reloadData()
+    }
+    
+    func removedEvent(note: NSNotification)
+    {
+        separateEventsIntoGroups()
+//        self.tableView.beginUpdates()
+        if (self.tableView.numberOfRowsInSection(self.removedIndexPath!.section) > 1) {
+            self.tableView.deleteRowsAtIndexPaths([self.removedIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
+        } else {
+            self.tableView.deleteSections(NSIndexSet(index: self.removedIndexPath!.section), withRowAnimation: UITableViewRowAnimation.Fade)
+        }
+//        self.tableView.endUpdates()
     }
     
     override func viewWillAppear(animated: Bool)
@@ -97,7 +130,7 @@ import Crashlytics
         self.searchController.dimsBackgroundDuringPresentation = false
         self.searchController.searchBar.sizeToFit()
         self.searchController.searchBar.delegate = self
-        self.searchController.searchBar.scopeButtonTitles = ["All", "My", "Going/Maybe", "Sorry", "Needs Response"]
+        self.searchController.searchBar.scopeButtonTitles = ["All", "My", "Going", "Sorry", "Respond"]
         self.searchController.searchBar.selectedScopeButtonIndex = 0
         self.searchController.searchBar.placeholder = "Search for an event"
         self.searchController.searchBar.keyboardAppearance = UIKeyboardAppearance.Dark
@@ -113,6 +146,8 @@ import Crashlytics
         self.groupKeys.removeAll()
         self.groupIndexTitles.removeAll()
         self.groupIndexTitleSections.removeAll()
+        
+        self.nextEvent = nil
         
         var oldEvents: [PFObject]?
         let now = NSDate()
@@ -157,16 +192,32 @@ import Crashlytics
             }
         }
         
+        if AppDelegate.user().needsResponse != nil {
+            // New event
+            let new = "New"
+            self.groupKeys.append(new)
+            self.groupIndexTitles.append("N")
+            
+            section++
+            
+            self.groups[new] = [PFObject]()
+            self.groupIndexTitleSections.append(self.groups.count - 1)
+            self.nextEvent = AppDelegate.user().needsResponse[EVENT_TITLE_KEY] as? String
+            self.groups[new]?.append(AppDelegate.user().needsResponse)
+        }
+        
         for event in eventsToDisplay {
             let startDate = event[EVENT_START_DATE_KEY] as! NSDate
+            let endDate = event[EVENT_END_DATE_KEY] as! NSDate
             let s = calendar.components(components, fromDate: startDate)
             let l = calendar.components(components, fromDate: lastEventStartDate)
             let n = calendar.components(components, fromDate: now)
 
             dateFormatter.dateStyle = NSDateFormatterStyle.FullStyle
+            dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle
             let startDateString = dateFormatter.stringFromDate(startDate)
 
-            if now.earlierDate(startDate).isEqualToDate(startDate) {
+            if now.earlierDate(endDate).isEqualToDate(endDate) {
                 if oldEvents == nil {
                     oldEvents = [PFObject]()
                 }
@@ -217,7 +268,8 @@ import Crashlytics
                 }
                 
                 if self.nextEvent == nil {
-                    self.nextEvent = startDateString
+                    dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
+                    self.nextEvent = dateFormatter.stringFromDate(startDate)
                 }
                 self.groupKeys.append(startDateString)
                 
@@ -237,7 +289,7 @@ import Crashlytics
         }
         
         if let oldEvents = oldEvents {
-            let old = "Old"
+            let old = "Old Events"
             if self.groups[old] == nil {
 
                 self.groupKeys.append(old)
@@ -299,8 +351,13 @@ import Crashlytics
     
     func tableHeaderView() -> UIView
     {
-        let view = UIView(frame: CGRectMake(0, 0, 0, 160))
+        let view = OBGradientView(frame: CGRectMake(0, 0, 0, AppDelegate.user().needsResponse != nil ? 115 : 150))
         view.backgroundColor = UIColor.clearColor()
+        if AppDelegate.user().needsResponse == nil {
+            view.colors = [UIColor.inviteGrayColor(), UIColor.whiteColor()]
+        } else {
+            view.colors = [UIColor.inviteLightYellowGradientColor(), UIColor.inviteLightYellowColor()]
+        }
         
         let searchBarView = UIView()
         searchBarView.translatesAutoresizingMaskIntoConstraints = false
@@ -315,23 +372,58 @@ import Crashlytics
         label.preferredMaxLayoutWidth = 300
         label.numberOfLines = 0
         label.font = UIFont.inviteQuestionFont()
+        view.addSubview(label)
+        
+        let profile = ProfileImageView()
+        profile.translatesAutoresizingMaskIntoConstraints = false
+        profile.setup()
+        profile.configureForPerson(AppDelegate.parseUser(), responseValue: 0, width: 80, showResponse: false)
+        profile.layer.borderColor = UIColor.whiteColor().CGColor
+        profile.layer.borderWidth = 2
+        profile.layer.cornerRadius = 40
+        profile.clipsToBounds = true
+        view.addSubview(profile)
+        
+        let shadow = OBGradientView()
+        shadow.translatesAutoresizingMaskIntoConstraints = false
+        shadow.backgroundColor = UIColor.clearColor()
+        shadow.colors = [UIColor.inviteYellowColor(), UIColor.inviteYellowColor(), UIColor.darkGrayColor().colorWithAlphaComponent(0.15), UIColor.darkGrayColor().colorWithAlphaComponent(0)]
+        shadow.locations = [0, 0.05, 0.05, 1]
+        if AppDelegate.user().needsResponse != nil {
+            view.addSubview(shadow)
+        }
         
         let style = NSMutableParagraphStyle()
         style.lineSpacing = 4
-        style.alignment = NSTextAlignment.Center
         
         let att = NSMutableAttributedString()
-        att.appendAttributedString(NSAttributedString(string: "Your next event is on\n", attributes: [NSFontAttributeName: UIFont.proximaNovaLightFontOfSize(26), NSForegroundColorAttributeName: UIColor.inviteQuestionColor(), NSParagraphStyleAttributeName: style]))
-        att.appendAttributedString(NSAttributedString(string: self.nextEvent!, attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(26), NSForegroundColorAttributeName: UIColor.inviteQuestionColor(), NSParagraphStyleAttributeName: style]))
+        
+        if AppDelegate.user().needsResponse != nil {
+            att.appendAttributedString(NSAttributedString(string: "You've been invited to", attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(18), NSForegroundColorAttributeName: UIColor.inviteOrangeColor(), NSParagraphStyleAttributeName: style]))
+            att.appendAttributedString(NSAttributedString(string: "\n\(self.nextEvent!)", attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(24), NSForegroundColorAttributeName: UIColor.darkGrayColor(), NSParagraphStyleAttributeName: style]))
+        } else {
+            att.appendAttributedString(NSAttributedString(string: "Your next event\n", attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(20), NSForegroundColorAttributeName: UIColor.inviteQuestionColor(), NSParagraphStyleAttributeName: style]))
+            att.appendAttributedString(NSAttributedString(string: self.nextEvent!, attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(24), NSForegroundColorAttributeName: UIColor.inviteQuestionColor(), NSParagraphStyleAttributeName: style]))
+        }
+
         label.attributedText = att
+        label.shadowColor = UIColor.whiteColor()
+        label.shadowOffset = CGSizeMake(0, 1)
         
-        view.addSubview(label)
-        
-        let views = ["bar": searchBarView, "label": label]
+        let views = ["bar": searchBarView, "label": label, "profile": profile, "shadow": shadow]
         
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bar]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]-36-[label]-10-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[profile(80)]-20-[label]-20-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[profile(80)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        if AppDelegate.user().needsResponse != nil {
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]-34-[label]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[shadow]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-215-[shadow(15)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        } else {
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]-26-[label]-10-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        }
+        view.addConstraint(NSLayoutConstraint(item: profile, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: label, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: AppDelegate.user().needsResponse != nil ? 10 : 0))
+        
         
         return view
     }
@@ -340,7 +432,30 @@ import Crashlytics
     {
         return self.groupIndexTitles
     }
-
+    
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool
+    {
+        let event = self.groups[self.groupKeys[indexPath.section]]![indexPath.row]
+        return self.groupKeys[indexPath.section] == "Old Events" || EventResponse(rawValue: AppDelegate.user().myResponses[event.objectId!] as! UInt)! == EventResponse.Sorry
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath)
+    {
+        
+    }
+    
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]?
+    {
+        let deleteButton = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "Delete") { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
+            
+            self.removedIndexPath = indexPath
+            AppDelegate.user().removeEvent(self.groups[self.groupKeys[indexPath.section]]![indexPath.row])
+            
+        }
+        deleteButton.backgroundColor = UIColor.inviteRedColor()
+        return [deleteButton]
+    }
+    
     func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int
     {
         return self.groupIndexTitleSections[index]
@@ -355,15 +470,18 @@ import Crashlytics
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
+        if section == 0 {
+            return nil
+        }
         return self.groupKeys[section]
     }
     
-    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
-    {
-        cell.separatorInset = UIEdgeInsetsZero
-        cell.preservesSuperviewLayoutMargins = false
-        cell.layoutMargins = UIEdgeInsetsZero
-    }
+//    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
+//    {
+//        cell.separatorInset = UIEdgeInsetsZero
+//        cell.preservesSuperviewLayoutMargins = false
+//        cell.layoutMargins = UIEdgeInsetsZero
+//    }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
@@ -377,8 +495,15 @@ import Crashlytics
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
+        let event = self.groups[self.groupKeys[indexPath.section]]![indexPath.row]
+        let now = NSDate()
+        let end = event[EVENT_END_DATE_KEY] as! NSDate
         let cell = tableView.dequeueReusableCellWithIdentifier(DASHBOARD_CELL_IDENTIFIER, forIndexPath: indexPath) as! DashboardCell
-        cell.event = self.groups[self.groupKeys[indexPath.section]]![indexPath.row]
+        cell.indexPath = indexPath
+        cell.needsResponse = AppDelegate.user().needsResponse != nil && indexPath.section == 0
+        cell.isOld = now.earlierDate(end).isEqualToDate(end)
+        cell.isLast = indexPath.row == self.groups[self.groupKeys[indexPath.section]]!.count - 1
+        cell.event = event
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         return cell
     }
@@ -406,16 +531,18 @@ import Crashlytics
     
     func eventCreated(note: NSNotification)
     {
-        if self.tableView.tableHeaderView == nil {
-            configureToDisplayEvents()
-        }
-
         if let createdEvent = note.userInfo?["createdEvent"] as? PFObject {
             self.createdEvent = createdEvent
         }
+
+        if self.tableView.tableHeaderView == nil {
+            configureToDisplayEvents()
+        } else {
+            dismissOnboarding()
+            separateEventsIntoGroups()
+            self.tableView.tableHeaderView = tableHeaderView()
+        }
         
-        dismissOnboarding()
-        separateEventsIntoGroups()
         self.tableView.reloadData()
         delay(0) {
             self.tableView.scrollToRowAtIndexPath(self.createdEventIndexPath!, atScrollPosition: UITableViewScrollPosition.Middle, animated: true)
@@ -431,9 +558,10 @@ import Crashlytics
     
     func eventClosed(note: NSNotification)
     {
-//        self.groups[self.selectedKey!]![self.selectedRow!] = AppDelegate.user().eventToDisplay
         AppDelegate.user().eventToDisplay = nil
         AppDelegate.user().createMyReponses()
+        separateEventsIntoGroups()
+        self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.reloadData()
     }
     
@@ -450,6 +578,22 @@ import Crashlytics
     func userLoggedOut(note: NSNotification)
     {
         self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    func deeplink(note: NSNotification?)
+    {
+        if let deeplinkObjectId = AppDelegate.app().deeplinkObjectId {
+            for event in AppDelegate.user().events as! [PFObject] {
+                if event.objectId == deeplinkObjectId {
+                    AppDelegate.user().eventToDisplay = event
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.performSegueWithIdentifier(SEGUE_TO_EVENT, sender: self)
+                        AppDelegate.app().deeplinkObjectId = nil
+                    })
+                    break
+                }
+            }
+        }
     }
     
     // MARK: - UISearchBarDelegate

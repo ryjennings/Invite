@@ -36,6 +36,7 @@
 
 @property (nonatomic, strong) NSSet *reservations;
 @property (nonatomic, strong) NSDictionary *myResponses;
+@property (nonatomic, strong) PFObject *needsResponse;
 
 + (instancetype)shared;
 + (NSArray *)sortEvents:(NSArray *)events;
@@ -44,8 +45,7 @@
 - (void)createParseUserFromFacebookUser:(NSDictionary *)user;
 - (void)findReservations;
 - (void)createMyReponses;
-- (void)addFacebookDetails:(NSDictionary *)details toParseUser:(PFObject *)parseUser;
-
-//- (void)checkForEventsWhereUserIsInvited;
+- (void)refreshEvents;
+- (void)removeEvent:(PFObject *)event;
 
 @end

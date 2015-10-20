@@ -8,7 +8,6 @@
 
 #import "InviteesSectionViewController.h"
 
-#import "AppDelegate.h"
 #import "Invite-Swift.h"
 #import "StringConstants.h"
 
@@ -28,6 +27,7 @@ NSString *const kNoResponse = @"No Response";
 @property (nonatomic, strong) NSMutableArray *usedIndexes;
 
 @property (nonatomic, strong) UICollectionViewFlowLayout *flowLayout;
+@property (nonatomic, strong) NSMutableDictionary *responsesDictionary;
 
 @end
 
@@ -53,35 +53,29 @@ NSString *const kNoResponse = @"No Response";
     NSMutableArray *sorry = [NSMutableArray array];
     NSMutableArray *noresponse = [NSMutableArray array];
     
+    _responsesDictionary = [NSMutableDictionary dictionary];
+    
     _invitees = [NSMutableDictionary dictionary];
     _usedIndexes = [NSMutableArray array];
     
-    if (_userInvitees) {
-        NSMutableArray *inviteeEmails = [NSMutableArray array];
-        for (PFObject *invitee in _userInvitees) {
-            [inviteeEmails addObject:[invitee objectForKey:EMAIL_KEY]];
-        }
-//        [noresponse addObjectsFromArray:inviteeEmails];
-    }
-    
-    if (_emailInvitees.count) {
-        [noresponse addObjectsFromArray:_emailInvitees];
-    }
-    
-    [_rsvpDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        if ([self personForKey:key]) {
-            switch (((NSNumber *)obj).integerValue) {
+    [_responses enumerateObjectsUsingBlock:^(NSString *response, NSUInteger idx, BOOL *stop) {
+        NSArray *com = [response componentsSeparatedByString:@":"];
+        NSString *email = com[0];
+        PFObject *person = [self personForEmail:email];
+        _responsesDictionary[com[0]] = @(((NSString *)com[1]).integerValue);
+        if (person) {
+            switch (((NSString *)com[1]).integerValue) {
                 case EventResponseGoing:
-                    [going addObject:[self personForKey:key]];
+                    [going addObject:person];
                     break;
                 case EventResponseMaybe:
-                    [maybe addObject:[self personForKey:key]];
+                    [maybe addObject:person];
                     break;
                 case EventResponseSorry:
-                    [sorry addObject:[self personForKey:key]];
+                    [sorry addObject:person];
                     break;
                 default:
-                    [noresponse addObject:[self personForKey:key]];
+                    [noresponse addObject:person];
                     break;
             }
         }
@@ -103,17 +97,14 @@ NSString *const kNoResponse = @"No Response";
         [_invitees setObject:noresponse forKey:@(EventResponseNoResponse)];
         [_usedIndexes addObject:@(EventResponseNoResponse)];
     }
-    
-    _collectionView.hidden = !_rsvpDictionary.count;
-    
 }
 
-- (PFObject *)personForKey:(NSString *)key
+- (PFObject *)personForEmail:(NSString *)email
 {
     __block PFObject *person;
-    [_userInvitees enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if ([[((PFObject *)obj) objectForKey:EMAIL_KEY] isEqualToString:[AppDelegate emailFromKey:key]]) {
-            person = obj;
+    [_event[EVENT_INVITEES_KEY] enumerateObjectsUsingBlock:^(PFObject *invitee, NSUInteger idx, BOOL *stop) {
+        if ([invitee[EMAIL_KEY] isEqualToString:email]) {
+            person = invitee;
             *stop = YES;
         }
     }];
@@ -138,11 +129,11 @@ NSString *const kNoResponse = @"No Response";
     
     id person = ((NSArray *)_invitees[_usedIndexes[indexPath.section]])[indexPath.row];
     
-    [cell.profileImageView configureForPerson:person event:_event ? _event : nil width:40 showResponse:YES];
     if ([person isKindOfClass:[PFObject class]]) {
         PFObject *thisPerson = (PFObject *)person;
+        [cell.profileImageView configureForPerson:person responseValue:((NSNumber *)_responsesDictionary[thisPerson[EMAIL_KEY]]).integerValue width:40 showResponse:YES];
         if ([thisPerson objectForKey:FIRST_NAME_KEY]) {
-            cell.label.text = [thisPerson objectForKey:FIRST_NAME_KEY];
+            cell.label.text = [thisPerson objectForKey:FULL_NAME_KEY];
         } else {
             cell.label.text = [thisPerson objectForKey:EMAIL_KEY];
         }

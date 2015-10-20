@@ -55,7 +55,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define EVENT_DESCRIPTION_KEY @"description"
 #define EVENT_LOCATION_KEY @"location"
 #define EVENT_INVITEES_KEY @"invitees"
-#define EVENT_RSVP_KEY @"rsvp"
+#define EVENT_RESPONSES_KEY @"responses"
 #define EVENT_CREATOR_KEY @"creator"
 
 // Keys
@@ -136,3 +136,6 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define PARSE_LOADED_NOTIFICATION @"ParseLoadedNotification"
 #define APPLICATION_WILL_RESIGN_ACTIVE_NOTIFICATION @"ApplicationWillResignActiveNotification"
 #define USER_LOGGED_OUT_NOTIFICATION @"UserLoggedOutNotifcation"
+#define DEEPLINK_NOTIFICATION @"DeeplinkNotifcation"
+#define FINISHED_REFRESHING_EVENTS_NOTIFICATION @"FinishedRefreshingEventsNotifcation"
+#define FINISHED_REMOVING_EVENT_NOTIFICATION @"RemovedEventNotifcation"

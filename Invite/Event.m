@@ -51,9 +51,6 @@
 
 #pragma mark - Properties
 
-//@property (nonatomic, strong) NSDate *endDate;
-//@property (nonatomic, strong) PFObject *location;
-
 - (PFObject *)creator
 {
     if (_parseEvent && _parseEvent[EVENT_CREATOR_KEY]) {
@@ -158,12 +155,6 @@
 - (void)setProtoLocation:(Location *)protoLocation
 {
     _protoLocation = protoLocation;
-}
-
-- (void)saveToParse
-{
-    NSLog(@"saving");
-    [_parseEvent saveInBackground];
 }
 
 #pragma mark -
@@ -298,21 +289,21 @@
 {
     if ([result boolValue]) { // success
         
-        NSMutableArray *save = _actualInviteesToInvite;
+        NSMutableArray *save = [_actualInviteesToInvite mutableCopy];
 
         // By now the new event and all people who had to be created for this event have been created...
         [_parseEvent addUniqueObjectsFromArray:_actualInviteesToInvite forKey:EVENT_INVITEES_KEY];
         
         // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
-        NSMutableDictionary *rsvp = [NSMutableDictionary dictionary];
+        NSMutableArray *responses = [NSMutableArray array];
         for (PFObject *invitee in _actualInviteesToInvite) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
-                [rsvp setValue:@(EventResponseNoResponse) forKey:[AppDelegate keyFromEmail:email]];
+                [responses addObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)]];
             }
             [Event makeAdjustmentsToPerson:invitee event:_parseEvent];
         }
-        _parseEvent[EVENT_RSVP_KEY] = rsvp;
+        _parseEvent[EVENT_RESPONSES_KEY] = responses;
         
         [[AppDelegate parseUser] addUniqueObject:_parseEvent forKey:EVENTS_KEY];
         if (_locationToSave) {
@@ -333,6 +324,7 @@
                 [AppDelegate user].events = [User sortEvents:events];
                 
                 [self sendPushNotification];
+                [self sendNewEventEmailToCreator];
                 
                 NSDictionary *userInfo = @{@"createdEvent": _parseEvent};
                 [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:nil userInfo:userInfo];
@@ -399,8 +391,71 @@
         
         // Send push notification to query
         [PFPush sendPushMessageToQueryInBackground:query
-                                       withMessage:@"You've received a new event!"];
+                                       withMessage:[NSString stringWithFormat:@"%@ sent you a new event: %@", self.host, self.title]];
     }
+}
+
+- (NSString *)locationText
+{
+        NSString *locationName;
+        NSString *locationAddress;
+        
+        if (_isParseEvent) {
+            locationName = [self.location objectForKey:LOCATION_NAME_KEY];
+            locationAddress = [self.location objectForKey:LOCATION_ADDRESS_KEY];
+        } else {
+            locationName = self.protoLocation.name;
+            locationAddress = self.protoLocation.formattedAddress;
+        }
+        
+        NSMutableString *att = [[NSMutableString alloc] init];
+        
+        if (locationName) {
+            [att appendString:locationName];
+            [att appendString:@"\n"];
+        }
+        
+        if (locationAddress) {
+            [att appendString:locationAddress];
+        }
+        
+        return att;
+}
+
+- (void)sendNewEventEmailToCreator
+{
+    NSMutableArray *mergeVars = [NSMutableArray array];
+    NSMutableArray *vars = [NSMutableArray array];
+    NSMutableArray *inviteesContent = [NSMutableArray array];
+    
+    for (PFObject *invitee in _actualInviteesToInvite) {
+        NSString *display = invitee[FULL_NAME_KEY] ? invitee[FULL_NAME_KEY] : invitee[EMAIL_KEY];
+        [inviteesContent addObject:@{@"display": display, @"facebook_id": invitee[FACEBOOK_ID_KEY] ? invitee[FACEBOOK_ID_KEY] : @"" , @"response": @(EventResponseNoResponse)}];
+    }
+    
+    [vars addObject:@{@"name": @"event_title", @"content": self.title}];
+    [vars addObject:@{@"name": @"host", @"content": self.host}];
+    [vars addObject:@{@"name": @"my_response", @"content": @(EventResponseHost)}];
+    [vars addObject:@{@"name": @"time", @"content": [AppDelegate viewTimeframeForStartDate:self.startDate endDate:self.endDate]}];
+    [vars addObject:@{@"name": @"location", @"content": [self locationText]}];
+    [vars addObject:@{@"name": @"invitees", @"content": inviteesContent}];
+    [vars addObject:@{@"name": @"deeplink", @"content": [NSString stringWithFormat:@"invite://%@", self.parseEvent.objectId]}];
+    
+    [mergeVars addObject:@{@"rcpt": self.creator[EMAIL_KEY], @"vars": vars}];
+    
+    NSArray *to = @[@{@"email": self.creator[EMAIL_KEY], @"name": self.creator[FULL_NAME_KEY]}];
+    [PFCloud callFunctionInBackground:@"email_template"
+                       withParameters:@{@"template": @"new-event-creator",
+                                        @"to": to,
+                                        @"merge_vars": mergeVars,
+                                        @"subject": [NSString stringWithFormat:@"New Invite Event: %@", self.title],
+                                        @"from_email": @"invite@appuous.com",
+                                        @"from_name": @"Invite App"
+                                        } block:^(id object, NSError *error) {
+                                            if (error) {
+                                                NSLog(@"%@", error.localizedDescription);
+                                            }
+                                        }];
 }
 
 @end

@@ -26,6 +26,12 @@ import MapKit
     @IBOutlet weak var colorViewWidthConstraint: NSLayoutConstraint!
     
     var myResponse = EventMyResponse.NoResponse
+    var responses = [String: UInt]()
+    
+    var indexPath: NSIndexPath!
+    var needsResponse = false
+    var isOld = false
+    var isLast = false
     
     var event: PFObject! {
         didSet {
@@ -37,7 +43,6 @@ import MapKit
     {
         super.awakeFromNib()
         
-        self.titleLable.font = UIFont.proximaNovaRegularFontOfSize(20)
         self.titleLable.numberOfLines = 1
         
         self.startHourLabel.font = UIFont.proximaNovaRegularFontOfSize(20)
@@ -58,12 +63,15 @@ import MapKit
     
     private func unselectCell()
     {
-        self.backgroundColor = UIColor.whiteColor()
-        self.titleLable.textColor = UIColor.inviteTableHeaderColor()
-        self.endHourLabel.textColor = UIColor.grayColor()
-        self.endDayLabel.textColor = UIColor.grayColor()
-        self.invitedLabel.textColor = UIColor.grayColor()
-        self.yourLabel.textColor = UIColor.grayColor()
+        let patternImageName = self.isOld ? self.isLast ? "topbottomold" : "topold" : self.isLast ? "topbottom" : "top"
+        self.backgroundColor = self.needsResponse ? UIColor.inviteLightYellowColor() : UIColor(patternImage: UIImage(named: patternImageName)!)
+        if indexPath.section == 0 && indexPath.row == 0 && !self.needsResponse {
+            self.backgroundColor = UIColor.whiteColor()
+        }
+        self.titleLable.textColor = self.needsResponse ? UIColor.inviteOrangeColor() : UIColor.inviteTableHeaderColor()
+        self.endHourLabel.textColor = self.needsResponse ? UIColor.darkGrayColor() : UIColor.grayColor()
+        self.endDayLabel.textColor = self.needsResponse ? UIColor.darkGrayColor() : UIColor.grayColor()
+        self.invitedLabel.textColor = self.needsResponse ? UIColor.inviteTableHeaderColor() : UIColor.grayColor()
 
         switch self.myResponse {
         case EventMyResponse.Going:
@@ -75,9 +83,9 @@ import MapKit
             self.startHourLabel.textColor = UIColor.inviteYellowColor()
             self.yourLabel.textColor = UIColor.inviteYellowColor()
         case EventMyResponse.NoResponse:
-            self.colorView.backgroundColor = UIColor.grayColor()
-            self.startHourLabel.textColor = UIColor.grayColor()
-            self.yourLabel.textColor = UIColor.grayColor()
+            self.colorView.backgroundColor = self.needsResponse ? UIColor.darkGrayColor() : UIColor.grayColor()
+            self.startHourLabel.textColor = self.needsResponse ? UIColor.darkGrayColor() : UIColor.grayColor()
+            self.yourLabel.textColor = self.needsResponse ? UIColor.inviteTableHeaderColor() : UIColor.grayColor()
         case EventMyResponse.Sorry:
             self.colorView.backgroundColor = UIColor.inviteRedColor()
             self.startHourLabel.textColor = UIColor.inviteRedColor()
@@ -103,12 +111,34 @@ import MapKit
     
     private func configureForEvent()
     {
+        if self.needsResponse {
+            self.colorView.hidden = true
+            self.startHourLabel.hidden = true
+            self.endDayLabel.hidden = true
+            self.endHourLabel.hidden = true
+        } else {
+            self.colorView.hidden = false
+            self.startHourLabel.hidden = false
+            self.endDayLabel.hidden = false
+            self.endHourLabel.hidden = false
+        }
+        
         let invitees = inviteesByEmail()
 
         configureDate()
         
         self.colorViewWidthConstraint.constant = 2
-        self.titleLable.text = self.event[EVENT_TITLE_KEY] as? String
+        
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
+        
+        self.titleLable.text = self.needsResponse ? "Starts on \(dateFormatter.stringFromDate(self.event[EVENT_START_DATE_KEY] as! NSDate))" : self.event[EVENT_TITLE_KEY] as? String
+        if self.needsResponse {
+            self.titleLable.font = UIFont.proximaNovaRegularFontOfSize(18)
+        } else {
+            self.titleLable.font = UIFont.proximaNovaRegularFontOfSize(20)
+        }
 
         // Build responseGroups
         var responseGroups = [EventResponse: [PFObject]]()
@@ -116,24 +146,20 @@ import MapKit
         responseGroups[EventResponse.Maybe] = [PFObject]()
         responseGroups[EventResponse.Sorry] = [PFObject]()
         responseGroups[EventResponse.NoResponse] = [PFObject]()
+        
         var going = 0
-        for response in self.event[EVENT_RSVP_KEY] as! [String: UInt] {
-            switch EventResponse(rawValue: response.1)! {
-            case EventResponse.Going:
+        
+        for response in self.event[EVENT_RESPONSES_KEY] as! [String] {
+            let com = response.componentsSeparatedByString(":")
+            let eventResponse = EventResponse(rawValue: UInt(com[1])!)
+            if eventResponse == EventResponse.Going {
                 going++
-                responseGroups[EventResponse.Going]!.append(invitees[response.0]!)
-            case EventResponse.Maybe:
-                responseGroups[EventResponse.Maybe]!.append(invitees[response.0]!)
-            case EventResponse.Sorry:
-                responseGroups[EventResponse.Sorry]!.append(invitees[response.0]!)
-            case EventResponse.NoResponse:
-                responseGroups[EventResponse.NoResponse]!.append(invitees[response.0]!)
-            default:
-                break
             }
+            responseGroups[eventResponse!]!.append(invitees[com[0]]!)
+            self.responses[com[0]] = UInt(com[1])
         }
 
-        self.invitedLabel.text = "\(going) going, \(invitees.count) invited"
+        self.invitedLabel.text = "\(going) going, \(self.event[EVENT_INVITEES_KEY].count) invited"
 
         configureProfiles(responseGroups)
 
@@ -159,7 +185,7 @@ import MapKit
     {
         var invitees = [String: PFObject]()
         for invitee in self.event[EVENT_INVITEES_KEY] as! [PFObject] {
-            invitees[AppDelegate.keyFromEmail(invitee[EMAIL_KEY] as! String)] = invitee
+            invitees[invitee[EMAIL_KEY] as! String] = invitee
         }
         return invitees
     }
@@ -178,28 +204,28 @@ import MapKit
         for invitee in groups[EventResponse.Going]! {
             if profileIndex < profiles.count {
                 profiles[profileIndex].hidden = false
-                profiles[profileIndex].configureForPerson(invitee, event: self.event, width: 24, showResponse: true)
+                profiles[profileIndex].configureForPerson(invitee, responseValue: self.responses[invitee[EMAIL_KEY] as! String]!, width: 24, showResponse: true)
                 profileIndex++
             }
         }
         for invitee in groups[EventResponse.Maybe]! {
             if profileIndex < profiles.count {
                 profiles[profileIndex].hidden = false
-                profiles[profileIndex].configureForPerson(invitee, event: self.event, width: 24, showResponse: true)
+                profiles[profileIndex].configureForPerson(invitee, responseValue: self.responses[invitee[EMAIL_KEY] as! String]!, width: 24, showResponse: true)
                 profileIndex++
             }
         }
         for invitee in groups[EventResponse.Sorry]! {
             if profileIndex < profiles.count {
                 profiles[profileIndex].hidden = false
-                profiles[profileIndex].configureForPerson(invitee, event: self.event, width: 24, showResponse: true)
+                profiles[profileIndex].configureForPerson(invitee, responseValue: self.responses[invitee[EMAIL_KEY] as! String]!, width: 24, showResponse: true)
                 profileIndex++
             }
         }
         for invitee in groups[EventResponse.NoResponse]! {
             if profileIndex < profiles.count {
                 profiles[profileIndex].hidden = false
-                profiles[profileIndex].configureForPerson(invitee, event: self.event, width: 24, showResponse: true)
+                profiles[profileIndex].configureForPerson(invitee, responseValue: self.responses[invitee[EMAIL_KEY] as! String]!, width: 24, showResponse: true)
                 profileIndex++
             }
         }
@@ -212,53 +238,69 @@ import MapKit
         let dateFormatter = NSDateFormatter()
         
         // Start hour
-        dateFormatter.dateStyle = .NoStyle
-        dateFormatter.timeStyle = .ShortStyle
-        dateFormatter.AMSymbol = "am"
-        dateFormatter.PMSymbol = "pm"
-        let startHourText: NSString = dateFormatter.stringFromDate(startDate) as NSString
-        self.startHourLabel.text = startHourText.stringByReplacingOccurrencesOfString(" ", withString: "")
-        
-        // Date label
-        let calendar = NSCalendar.currentCalendar()
-        let components: NSCalendarUnit = [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
-        let s = calendar.components(components, fromDate: startDate)
-        let e = calendar.components(components, fromDate: endDate)
-        
-        dateFormatter.dateStyle = .MediumStyle
-        dateFormatter.timeStyle = .NoStyle
-        
-        var endDayText: String?
-        var endHourText: String?
-        
-        if (!(s.day  == e.day &&
-            s.month  == e.month &&
-            s.year   == e.year))
-        {
-            endDayText = dateFormatter.stringFromDate(endDate)
-        }
-        
-        dateFormatter.dateStyle = .NoStyle
-        dateFormatter.timeStyle = .ShortStyle
-        
-        if (!(s.day  == e.day &&
-            s.month  == e.month &&
-            s.year   == e.year &&
-            s.hour   == e.hour &&
-            s.minute == e.minute))
-        {
-            endHourText = dateFormatter.stringFromDate(endDate)
-        }
-        
-        if let endHourText = endHourText {
-            self.endHourLabel.text = "until \(endHourText)"
+        if self.isOld {
+            dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
+            dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle
+            let startDayText: NSString = dateFormatter.stringFromDate(startDate) as NSString
+            self.startHourLabel.text = startDayText.componentsSeparatedByString(",")[0]
+
+            dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle
+            dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+            dateFormatter.AMSymbol = "am"
+            dateFormatter.PMSymbol = "pm"
+            let startHourText: NSString = dateFormatter.stringFromDate(startDate) as NSString
+            let s = startHourText.stringByReplacingOccurrencesOfString(" ", withString: "")
+            self.endHourLabel.text = "started \(s)"
         } else {
-            self.endHourLabel.text = ""
-        }
-        if let endDayText = endDayText {
-            self.endDayLabel.text = "on \(endDayText)"
-        } else {
-            self.endDayLabel.text = ""
+            dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle
+            dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+            dateFormatter.AMSymbol = "am"
+            dateFormatter.PMSymbol = "pm"
+            let startHourText: NSString = dateFormatter.stringFromDate(startDate) as NSString
+            self.startHourLabel.text = startHourText.stringByReplacingOccurrencesOfString(" ", withString: "")
+            
+            // Date label
+            let calendar = NSCalendar.currentCalendar()
+            let components: NSCalendarUnit = [NSCalendarUnit.Year, NSCalendarUnit.Month, NSCalendarUnit.Day, NSCalendarUnit.Hour, NSCalendarUnit.Minute, NSCalendarUnit.Second]
+            let s = calendar.components(components, fromDate: startDate)
+            let e = calendar.components(components, fromDate: endDate)
+            
+            dateFormatter.dateStyle = .MediumStyle
+            dateFormatter.timeStyle = .NoStyle
+            
+            var endDayText: String?
+            var endHourText: String?
+            
+            if (!(s.day  == e.day &&
+                s.month  == e.month &&
+                s.year   == e.year))
+            {
+                endDayText = dateFormatter.stringFromDate(endDate)
+            }
+            
+            dateFormatter.dateStyle = .NoStyle
+            dateFormatter.timeStyle = .ShortStyle
+            
+            if (!(s.day  == e.day &&
+                s.month  == e.month &&
+                s.year   == e.year &&
+                s.hour   == e.hour &&
+                s.minute == e.minute))
+            {
+                endHourText = dateFormatter.stringFromDate(endDate)
+            }
+            
+            if let endHourText = endHourText {
+                let e = endHourText.stringByReplacingOccurrencesOfString(" ", withString: "")
+                self.endHourLabel.text = "until \(e)"
+            } else {
+                self.endHourLabel.text = ""
+            }
+            if let endDayText = endDayText {
+                self.endDayLabel.text = "on \(endDayText)"
+            } else {
+                self.endDayLabel.text = ""
+            }
         }
     }
 
@@ -266,7 +308,7 @@ import MapKit
     {
         super.setHighlighted(highlighted, animated: animated)
 
-        if highlighted {
+        if highlighted && !self.needsResponse {
             selectCell()
         } else {
             unselectCell()

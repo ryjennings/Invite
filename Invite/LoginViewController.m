@@ -209,7 +209,18 @@
             PFObject *person = objects[0];
             
             if (!person[FACEBOOK_ID_KEY]) {
-                [[AppDelegate user] addFacebookDetails:user toParseUser:person];
+                
+                person[GENDER_KEY] = user[GENDER_KEY];
+                person[LOCALE_KEY] = user[LOCALE_KEY];
+                person[FACEBOOK_ID_KEY] = user[FACEBOOK_ID_KEY];
+                person[LAST_NAME_KEY] = user[LAST_NAME_KEY];
+                person[FULL_NAME_KEY] = user[FULL_NAME_KEY];
+                person[FIRST_NAME_KEY] = user[FIRST_NAME_KEY];
+                [person saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    [self loginUser:user]; // Recall this method after setting the facebook details so that they are reflected in event invitees
+                }];
+
+                return;
             }
             
             [[AppDelegate user] loadParseUser:person];
