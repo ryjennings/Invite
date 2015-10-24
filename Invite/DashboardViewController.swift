@@ -59,6 +59,7 @@ import Crashlytics
         self.definesPresentationContext = true
 
         self.refreshControl = UIRefreshControl()
+        self.refreshControl.tintColor = UIColor.whiteColor()
         self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         self.refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
         self.tableView.insertSubview(refreshControl, atIndex: 0)
@@ -129,6 +130,7 @@ import Crashlytics
         self.searchController.delegate = self
         self.searchController.dimsBackgroundDuringPresentation = false
         self.searchController.searchBar.sizeToFit()
+        self.searchController.searchBar.backgroundColor = UIColor.inviteDarkBlueColor()
         self.searchController.searchBar.delegate = self
         self.searchController.searchBar.scopeButtonTitles = ["All", "My", "Going", "Sorry", "Respond"]
         self.searchController.searchBar.selectedScopeButtonIndex = 0
@@ -559,6 +561,7 @@ import Crashlytics
     func eventClosed(note: NSNotification)
     {
         AppDelegate.user().eventToDisplay = nil
+        AppDelegate.user().protoEvent = nil
         AppDelegate.user().createMyReponses()
         separateEventsIntoGroups()
         self.tableView.tableHeaderView = tableHeaderView()

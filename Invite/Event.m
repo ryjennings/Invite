@@ -17,8 +17,6 @@
 @property (nonatomic, strong) NSMutableArray *actualEmailsToInvite;
 @property (nonatomic, strong) NSMutableArray *inviteeEmails;
 
-@property (nonatomic, strong) PFObject *parseEvent;
-@property (nonatomic, assign) BOOL isParseEvent;
 @property (nonatomic, strong) PFObject *locationToSave;
 
 @end
@@ -41,11 +39,19 @@
     return event;
 }
 
-+ (Event *)eventFromPFObject:(PFObject *)object
++ (Event *)eventFromPFObject:(PFObject *)pfObject
 {
     Event *event = [[Event alloc] init];
     event.isParseEvent = YES;
-    event.parseEvent = object;
+    event.parseEvent = pfObject;
+    
+    if ([((PFObject *)event.parseEvent[EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId]) {
+        event.existingTitle = pfObject[EVENT_TITLE_KEY];
+        event.existingInvitees = pfObject[EVENT_INVITEES_KEY];
+        event.existingStartDate = pfObject[EVENT_START_DATE_KEY];
+        event.existingEndDate = pfObject[EVENT_END_DATE_KEY];
+        event.existingLocation = pfObject[EVENT_LOCATION_KEY];
+    }
     return event;
 }
 

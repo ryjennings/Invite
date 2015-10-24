@@ -21,6 +21,7 @@ import UIKit
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.inviteNavigationTitleFont()]
         UINavigationBar.appearance().translucent = true
         
+        UISearchBar.appearance().backgroundImage = UIImage()
         UISearchBar.appearance().barTintColor = UIColor.inviteDarkBlueColor()
         UISearchBar.appearance().tintColor = UIColor.whiteColor()
         

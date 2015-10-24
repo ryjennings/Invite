@@ -27,6 +27,15 @@
 @property (nonatomic, strong) PFObject *location;
 @property (nonatomic, strong) NSDictionary *rsvp;
 
+@property (nonatomic, strong) PFObject *parseEvent;
+@property (nonatomic, assign) BOOL isParseEvent;
+
+@property (nonatomic, strong) NSString *existingTitle;
+@property (nonatomic, strong) NSArray *existingInvitees;
+@property (nonatomic, strong) NSDate *existingStartDate;
+@property (nonatomic, strong) NSDate *existingEndDate;
+@property (nonatomic, strong) PFObject *existingLocation;
+
 @property (nonatomic, strong) NSString *savedEmailInput;
 
 + (Event *)createEvent;

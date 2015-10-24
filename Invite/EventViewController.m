@@ -82,11 +82,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 @property (nonatomic, strong) OBGradientView *gradientView;
 
-@property (nonatomic, strong) UIBarButtonItem *leftBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *rightBarButtonItem;
-
 @property (nonatomic) EventMode mode;
 @property (nonatomic, strong) Event *event;
+
+@property (nonatomic, strong) UIButton *modeButton;
 
 // Invitees section
 @property (nonatomic, strong) NSMutableDictionary *rsvpDictionary;
@@ -96,6 +95,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 @property (nonatomic, assign) NSInteger response;
 @property (nonatomic, strong) TitleDateCell *titleCell;
 @property (nonatomic, strong) LabelCell *responseCell;
+@property (nonatomic, assign) EventResponse startingResponse;
 @property (nonatomic, assign) BOOL showingResponseSelection;
 
 // Title
@@ -103,14 +103,11 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 @property (nonatomic, strong) NumberedInputCell *titleInputCell;
 
 @property (nonatomic, assign) BOOL isCreator;
+@property (nonatomic, assign) BOOL isOld;
+@property (nonatomic, assign) BOOL isUpdating;
 
 @property (nonatomic, strong) MKPlacemark *lastPlacemark;
-
-@property (nonatomic, assign) EventResponse startingResponse;
-
 @property (nonatomic, strong) UIAlertController *alert;
-
-@property (nonatomic, assign) BOOL eventIsOld;
 
 @end
 
@@ -120,15 +117,28 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     self = [super initWithCoder:coder];
     if (self) {
+        
         if ([AppDelegate user].eventToDisplay) {
+            _isCreator = [((PFObject *)[AppDelegate user].eventToDisplay[EVENT_CREATOR_KEY]).objectId isEqualToString:[AppDelegate parseUser].objectId];
+        }
+
+        if (_isCreator) {
+            [AppDelegate user].protoEvent = [Event eventFromPFObject:[AppDelegate user].eventToDisplay];
+            [AppDelegate user].eventToDisplay = nil;
+            _event = [AppDelegate user].protoEvent;
+            _mode = EventModeView;
+            _isUpdating = YES;
+        } else if ([AppDelegate user].eventToDisplay) {
             _event = [Event eventFromPFObject:[AppDelegate user].eventToDisplay];
             _mode = EventModeView;
+            _isUpdating = NO;
         } else {
             if (![AppDelegate user].protoEvent) {
                 [AppDelegate user].protoEvent = [Event createEvent];
             }
             _event = [AppDelegate user].protoEvent;
             _mode = EventModePreview;
+            _isUpdating = NO;
         }
     }
     return self;
@@ -138,11 +148,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     [super viewDidLoad];
     
-    _isCreator = [_event.creator.objectId isEqualToString:[AppDelegate parseUser].objectId];
-    
     self.view.backgroundColor = [UIColor inviteLightSlateColor];
 
-    _tableView.tableHeaderView = [self tableHeaderView];
     _tableView.rowHeight = UITableViewAutomaticDimension;
     _tableView.estimatedRowHeight = 44;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -155,18 +162,20 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         [self configureGradientView];
     }
     
-    if ([AppDelegate user].eventToDisplay) {
+    if ([AppDelegate user].protoEvent.isParseEvent) {
         NSDate *now = [NSDate date];
-        NSDate *end = [AppDelegate user].eventToDisplay[EVENT_END_DATE_KEY];
-        _eventIsOld = [[now earlierDate:end] isEqualToDate:end];
+        NSDate *end = [AppDelegate user].protoEvent.parseEvent[EVENT_END_DATE_KEY];
+        _isOld = [[now earlierDate:end] isEqualToDate:end];
     } else {
-        _eventIsOld = NO;
+        _isOld = NO;
     }
 }
 
 - (UIView *)tableHeaderView
 {
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, [AppDelegate user].protoEvent ? 194 : 130)];
+    _tableView.tableHeaderView = nil;
+    CGFloat deviceHeight = [[UIScreen mainScreen] bounds].size.height;
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, deviceHeight - [_tableView contentSize].height - (_mode == EventModeView ? 102 : 0))];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
@@ -187,14 +196,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     
     if (_mode == EventModeView)
     {
-        if (![AppDelegate user].protoEvent) {
-            // Clear navigation bar
-            [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-            self.navigationController.navigationBar.shadowImage = [UIImage new];
-            self.navigationController.navigationBar.translucent = YES;
-            [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-        }
-        
         // Response
         if (!_isCreator)
         {
@@ -223,27 +224,14 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             _inviteesSectionViewController.responses = [[AppDelegate user].eventToDisplay[EVENT_RESPONSES_KEY] mutableCopy];
             _inviteesSectionViewController.event = [AppDelegate user].eventToDisplay;
             [_inviteesSectionViewController buildInviteesDictionary];
-            _inviteesContainerView.hidden = NO;
         }
+        _inviteesContainerView.hidden = NO;
     }
     else
     {
         _inviteesContainerView.hidden = YES;
     }
     
-    [UIView animateWithDuration:0.33 animations:^{
-        if (_mode == EventModeView)
-        {
-            if (_event.location) {
-                _mapView.alpha = 1;
-            }
-        }
-        else
-        {
-            _mapView.alpha = 1;
-        }
-    }];
-
     if (_event.location || _event.protoLocation) {
         CLLocationDegrees latitude;
         CLLocationDegrees longitude;
@@ -264,31 +252,72 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             [_mapView addAnnotation:placemark];
             [_mapView showAnnotations:@[placemark] animated:NO];
             CLLocationCoordinate2D center = self.mapView.region.center;
-            center.latitude -= self.mapView.region.span.latitudeDelta * ([AppDelegate user].protoEvent ? 0.385 : 0.485);
+            center.latitude -= self.mapView.region.span.latitudeDelta * 0.485;
             [self.mapView setCenterCoordinate:center animated:NO];
             _lastPlacemark = placemark;
         }];
     }
+
+    [_tableView reloadData];
+    [_tableView layoutIfNeeded]; // http://stackoverflow.com/questions/16071503/how-to-tell-when-uitableview-has-completed-reloaddata
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _tableView.tableHeaderView = [self tableHeaderView];
+    });
 }
 
 - (void)configureNavigationBar
 {
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+
+    _modeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _modeButton.frame = CGRectMake(0, 0, 60, 26);
+    _modeButton.titleLabel.font = [UIFont inviteTableFooterFont];
+    _modeButton.layer.cornerRadius = 5;
+    _modeButton.clipsToBounds = YES;
+    _modeButton.backgroundColor = [UIColor inviteBlueColor];
+    [_modeButton addTarget:self action:@selector(preview:) forControlEvents:UIControlEventTouchUpInside];
+    [_modeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_modeButton setTitleColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateDisabled];
+
     if (_mode == EventModeView)
     {
-        if ([AppDelegate user].protoEvent) {
-            _rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:self action:@selector(preview:)];
-            _rightBarButtonItem.enabled = [self readyToSend];
-        } else {
-            _rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(close:)];
-            _rightBarButtonItem.tintColor = [UIColor inviteTableHeaderColor];
+        UIBarButtonItem *right;
+
+        [_modeButton setTitle:@"Edit" forState:UIControlStateNormal];
+
+        if ([AppDelegate user].protoEvent && !_isUpdating)
+        {
+            right = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
         }
-        self.navigationItem.rightBarButtonItem = _rightBarButtonItem;
-    } else {
-        _leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancel:)];
-        self.navigationItem.leftBarButtonItem = _leftBarButtonItem;
-        _rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Preview" style:UIBarButtonItemStylePlain target:self action:@selector(preview:)];
-        self.navigationItem.rightBarButtonItem = _rightBarButtonItem;
-        self.navigationItem.title = @"New Event";
+        else
+        {
+            if (_isUpdating && !_isOld) {
+                self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
+            }
+            right = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(close:)];
+            right.tintColor = [UIColor inviteTableHeaderColor];
+        }
+        self.navigationItem.rightBarButtonItem = right;
+    }
+    else
+    {
+        UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancel:)];
+        cancel.tintColor = [UIColor inviteTableHeaderColor];
+
+        [_modeButton setTitle:@"Preview" forState:UIControlStateNormal];
+        _modeButton.enabled = _isUpdating || (!_isUpdating && [self readyToSend]);
+        _modeButton.backgroundColor = [[UIColor inviteBlueColor] colorWithAlphaComponent:_modeButton.enabled ? 1 : 0.5];
+
+        if (_isCreator) {
+            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
+            self.navigationItem.rightBarButtonItem = cancel;
+        } else {
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
+            self.navigationItem.leftBarButtonItem = cancel;
+        }
     }
 }
 
@@ -298,9 +327,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     if (_event.title) {
         _textViewText = _event.title;
     }
-    [self configureForMode];
     [self addNotifications];
-    [_tableView reloadData];
+    [self configureForMode];
 }
 
 - (void)addNotifications
@@ -351,7 +379,15 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (BOOL)readyToSend
 {
-    return _event.title && (_event.invitees || _event.emails) && _event.editTimeframe && (_event.location || _event.protoLocation);
+    return (!_isUpdating && _event.title && (_event.invitees || _event.emails) && _event.editTimeframe && (_event.location || _event.protoLocation)) ||
+    (_isUpdating &&
+     ((_event.title && ![_event.title isEqualToString:_event.existingTitle]) ||
+      (_event.invitees && ![_event.invitees isEqualToArray:_event.existingInvitees]) ||
+      (_event.startDate && ![_event.startDate isEqualToDate:_event.existingStartDate]) ||
+      (_event.endDate && ![_event.endDate isEqualToDate:_event.existingEndDate]) ||
+      (_event.location && ![_event.location isEqual:_event.existingLocation])
+      )
+     );
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -360,10 +396,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     {
         ButtonCell *cell = (ButtonCell *)[tableView dequeueReusableCellWithIdentifier:BUTTON_CELL_IDENTIFIER forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        _rightBarButtonItem.enabled = [self readyToSend];
+        _modeButton.enabled = _isUpdating || (!_isUpdating && [self readyToSend]);
+        _modeButton.backgroundColor = [[UIColor inviteBlueColor] colorWithAlphaComponent:_modeButton.enabled ? 1 : 0.5];
         cell.button.enabled = [self readyToSend];
         cell.button.alpha = [self readyToSend] ? 1 : 0.5;
         cell.backgroundColor = [UIColor clearColor];
+        [cell.button setTitle:_isUpdating ? @"Update this event!" : @"Create this event!" forState:UIControlStateNormal];
+        [cell.button addTarget:self action:_isUpdating ? @selector(updateEvent:) : @selector(createEvent:) forControlEvents:UIControlEventTouchUpInside];
         cell.contentView.backgroundColor = [UIColor clearColor];
         return cell;
     }
@@ -452,9 +491,11 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
                     cell.textView.text = _textViewText;
                     cell.guidance.text = @"";
                     cell.guidance.textColor = [self valueColor];
+                    [cell showCheckmark];
                 } else {
                     cell.guidance.text = @"Give this event a title";
                     cell.guidance.textColor = [self defaultColor];
+                    [cell hideCheckmark];
                 }
                 break;
             }
@@ -583,14 +624,14 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     
     if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowTitle && indexPath.section == EventViewSectionDetails)
     {
-        if (!_showingResponseSelection && !_eventIsOld) {
+        if (!_showingResponseSelection && !_isOld) {
             [self showResponseView];
         }
     }
     
     if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowResponse && indexPath.section == EventViewSectionDetails)
     {
-        if (!_eventIsOld) {
+        if (!_isOld) {
             if (_showingResponseSelection) {
                 [self cancelResponseView];
             } else {
@@ -698,7 +739,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     _mode = _mode == EventModePreview ? EventModeView : EventModePreview;
     [self configureForMode];
-    [_tableView reloadData];
 }
 
 - (void)eventCreated:(NSNotification *)note
@@ -712,8 +752,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     _alert = [UIAlertController alertControllerWithTitle:@"Creating your new event!" message:nil preferredStyle:UIAlertControllerStyleAlert];
     [self presentViewController:_alert animated:YES completion:nil];
-
+    
     [[AppDelegate user].protoEvent submitEvent];
+}
+
+- (IBAction)updateEvent:(id)sender
+{
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -837,7 +881,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (NSAttributedString *)attributedTextForReponse
 {
     NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
-    if (_eventIsOld) {
+    if (_isOld) {
         [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"This event is over" attributes:@{NSForegroundColorAttributeName: [UIColor lightGrayColor], NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:16]}]];
     } else {
         [att appendAttributedString:[[NSAttributedString alloc] initWithString:[self textForResponse:_response] attributes:@{NSForegroundColorAttributeName: [self colorForResponse:_response], NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:16]}]];

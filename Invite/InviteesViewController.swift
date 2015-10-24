@@ -29,7 +29,7 @@ class Friend
 {
     @IBOutlet weak var tableView: UITableView!
     var searchController: UISearchController!
-    var adbk: ABAddressBook!
+    private var adbk: ABAddressBook?
     
     private var recentFriends = [Friend]()
     private var allFriends = [Friend]()
@@ -45,7 +45,11 @@ class Friend
     private var eventInvitees = [PFObject]()
     private var eventEmails = [String]()
     private var preEmails = [String]()
-
+    
+    private var existingEvent: Event?
+    
+    private var emailsAlreadyAdded = [String]()
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad()
@@ -53,11 +57,16 @@ class Friend
         super.viewDidLoad()
 
         self.navigationItem.title = "Event Invitees"
-
+        
+        if AppDelegate.user().protoEvent.isParseEvent {
+            self.existingEvent = AppDelegate.user().protoEvent
+        }
+        
         configureSearchController()
         
         buildPreEmails()
         reloadFriends()
+        configureNavigationBar()
         
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.sectionIndexColor = UIColor.inviteBlueColor()
@@ -66,6 +75,15 @@ class Friend
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 44
         self.definesPresentationContext = true
+    }
+    
+    private func configureNavigationBar()
+    {
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
+        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(named: "navbar_gradient"), forBarMetrics: UIBarMetrics.Default)
+        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.inviteNavigationTitleFont()]
+        self.navigationController?.navigationBar.translucent = true
     }
     
     override func viewWillAppear(animated: Bool)
@@ -87,6 +105,7 @@ class Friend
         self.searchController.delegate = self
         self.searchController.dimsBackgroundDuringPresentation = false
         self.searchController.searchBar.sizeToFit()
+        self.searchController.searchBar.backgroundColor = UIColor.inviteDarkBlueColor()
         self.searchController.searchBar.delegate = self
         self.searchController.searchBar.scopeButtonTitles = ["Invite Friends", "All Friends"]
         self.searchController.searchBar.selectedScopeButtonIndex = 1
@@ -119,11 +138,19 @@ class Friend
         label.text = "Who would you like to invite to this event?"
         view.addSubview(label)
         
-        let views = ["bar": searchBarView, "label": label]
+        let darkness = UIView()
+        darkness.translatesAutoresizingMaskIntoConstraints = false
+        darkness.backgroundColor = UIColor.inviteDarkBlueColor()
+        view.addSubview(darkness)
         
+        let views = ["bar": searchBarView, "label": label, "darkness": darkness]
+        
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[darkness]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[darkness(1024)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bar]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-50-[label]-50-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]-34-[label]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
+        view.addConstraint(NSLayoutConstraint(item: darkness, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: searchBarView, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
         
         return view
     }
@@ -220,6 +247,16 @@ class Friend
         } else {
             let cell = tableView.cellForRowAtIndexPath(indexPath) as! ProfileCell
             let friend = self.groupedFriends[self.groupedFriendsKeys[indexPath.section - 2]]![indexPath.row]
+            
+            // Before selecting or unselecting row, first check if friend is in existingInvitees
+            if let existingEvent = self.existingEvent {
+                let results = existingEvent.existingInvitees.filter {
+                    $0.objectId == friend.pfObject?.objectId
+                }
+                if results.count > 0 {
+                    return;
+                }
+            }
             if selectedFriendsContainsFriend(friend) {
                 removeFriend(friend)
                 unselectCell(cell, friend: friend)
@@ -422,6 +459,7 @@ class Friend
                 if let fullName = fullName {
                     let nameContainsText = fullName.containsString(searchText!)
                     if searchText == "" || (searchText != "" && (nameContainsText || emailContainsText)) {
+                        
                         self.allFriends.append(friend)
                     }
                 } else {
