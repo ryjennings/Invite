@@ -11,6 +11,11 @@
 #import "AppDelegate.h"
 #import "StringConstants.h"
 
+typedef NS_ENUM(NSUInteger, WeedOutReason) {
+    WeedOutReasonInitialSubmit,
+    WeedOutReasonUpdate
+};
+
 @interface Event ()
 
 @property (nonatomic, strong) NSMutableArray *actualInviteesToInvite;
@@ -50,7 +55,16 @@
         event.existingInvitees = pfObject[EVENT_INVITEES_KEY];
         event.existingStartDate = pfObject[EVENT_START_DATE_KEY];
         event.existingEndDate = pfObject[EVENT_END_DATE_KEY];
-        event.existingLocation = pfObject[EVENT_LOCATION_KEY];
+
+        PFObject *location = pfObject[EVENT_LOCATION_KEY];
+        event.existingProtoLocation = [[Location alloc] initWithFoursquareId:location[LOCATION_FOURSQUARE_ID_KEY] name:location[LOCATION_NAME_KEY] latitude:[location[LOCATION_LATITUDE_KEY] doubleValue] longitude:[location[LOCATION_LONGITUDE_KEY] doubleValue] formattedAddress:location[LOCATION_ADDRESS_KEY] pfObject:location];
+        event.protoLocation = event.existingProtoLocation;
+        
+        event.updatedTitle = NO;
+        event.updatedTimeframe = NO;
+        event.updatedInvitees = NO;
+        event.updatedEmails = NO;
+        event.updatedLocation = NO;
     }
     return event;
 }
@@ -200,9 +214,24 @@
     [self prepareToSubmit];
     
     if (_emails.count) {
-        [self weedOutParseUsersFromEmails];
+        [self weedOutParseUsersFromEmails:_emails reason:WeedOutReasonInitialSubmit];
     } else {
         [self submitToParse];
+    }
+}
+
+- (void)updateEvent
+{
+    _actualEmailsToInvite = [_emails mutableCopy];
+    _actualInviteesToInvite = [_invitees mutableCopy];
+    _inviteeEmails = [NSMutableArray array];
+
+    [self prepareToSubmit];
+
+    if (_emails.count) {
+        [self weedOutParseUsersFromEmails:_emails reason:WeedOutReasonUpdate];
+    } else {
+        [self updateOnParse];
     }
 }
 
@@ -213,26 +242,62 @@
     }];
 }
 
-- (void)weedOutParseUsersFromEmails
+- (void)weedOutParseUsersFromEmails:(NSArray *)emails reason:(WeedOutReason)reason
 {
     PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
-    [query whereKey:EMAIL_KEY containedIn:_emails];
+    [query whereKey:EMAIL_KEY containedIn:emails];
     [query findObjectsInBackgroundWithBlock:^(NSArray *persons, NSError *error) {
         
         // If email address exists for any database user, move user from emails to invitees
-        
         for (PFObject *person in persons) {
-            
             if (![_inviteeEmails containsObject:person[EMAIL_KEY]]) {
-                
                 [_actualInviteesToInvite addObject:person];
                 [_inviteeEmails addObject:[person objectForKey:EMAIL_KEY]];
-                
             }
             [_actualEmailsToInvite removeObject:person[EMAIL_KEY]];
         }
-        [self submitToParse];
+        
+        if (reason == WeedOutReasonInitialSubmit) {
+            [self submitToParse];
+        } else {
+            [self updateOnParse];
+        }
+        
     }];
+}
+
+- (void)updateOnParse
+{
+    __block NSMutableArray *save = [NSMutableArray array];
+    
+    // Create a new Person for all emails left
+    for (NSString *email in _actualEmailsToInvite)
+    {
+        _updatedEmails = YES;
+        PFObject *person = [PFObject objectWithClassName:CLASS_PERSON_KEY];
+        person[EMAIL_KEY] = email;
+        // Now that person has been created remove from actualEmailsToInvite and add to actualInviteesToInvite
+        [_actualInviteesToInvite addObject:person];
+        [save addObject:person];
+    }
+
+    if (_updatedTitle) {
+        _parseEvent[EVENT_TITLE_KEY] = _title;
+    }
+
+    if (_updatedTimeframe) {
+        _parseEvent[EVENT_START_DATE_KEY] = _startDate;
+        _parseEvent[EVENT_END_DATE_KEY] = _endDate;
+    }
+    
+    if (_updatedLocation) {
+        PFObject *location = [self convertLocation];
+        if (location) {
+            [save addObject:location];
+        }
+    }
+    
+    [PFObject saveAllInBackground:save target:self selector:@selector(eventUpdatedWithResult:error:)];
 }
 
 - (void)submitToParse
@@ -255,40 +320,114 @@
     _parseEvent[EVENT_END_DATE_KEY] = _endDate;
     _parseEvent[EVENT_TITLE_KEY] = _title;
 
-    // First, check if user is using saved location
-    
-    for (PFObject *location in [AppDelegate user].locations) {
-        if (location == self.protoLocation.pfObject) {
-            _parseEvent[EVENT_LOCATION_KEY] = location;
-        }
-    }
-    
-    // Next, if it's a foursquare location, check if it already exists on parse
-
-    if (!_parseEvent[EVENT_LOCATION_KEY]) {
-        
-        // If location does not exist in user's saved locations, and does not exist on parse, create
-        PFObject *location = [PFObject objectWithClassName:CLASS_LOCATION_KEY];
-        if (self.protoLocation.foursquareId) {
-            location[LOCATION_FOURSQUARE_ID_KEY] = self.protoLocation.foursquareId;
-        }
-        if (self.protoLocation.name) {
-            location[LOCATION_NAME_KEY] = self.protoLocation.name;
-        }
-        if (self.protoLocation.latitude) {
-            location[LOCATION_LATITUDE_KEY] = @(self.protoLocation.latitude);
-        }
-        if (self.protoLocation.longitude) {
-            location[LOCATION_LONGITUDE_KEY] = @(self.protoLocation.longitude);
-        }
-        location[LOCATION_ADDRESS_KEY] = self.protoLocation.formattedAddress;
+    PFObject *location = [self convertLocation];
+    if (location) {
         [save addObject:location];
-        _parseEvent[EVENT_LOCATION_KEY] = location;
-        _locationToSave = location;
     }
-
     [save addObject:_parseEvent];
     [PFObject saveAllInBackground:save target:self selector:@selector(eventCreatedWithResult:error:)];
+}
+
+- (PFObject *)convertLocation
+{
+    if (_protoLocation) {
+        // First, check if user is using saved location
+        
+        for (PFObject *location in [AppDelegate user].locations) {
+            if (location.objectId == self.protoLocation.pfObject.objectId) {
+                _parseEvent[EVENT_LOCATION_KEY] = location;
+                break;
+            }
+        }
+        
+        // Next, if it's a foursquare location, check if it already exists on parse
+        
+        if (!_parseEvent[EVENT_LOCATION_KEY]) {
+            
+            // If location does not exist in user's saved locations, and does not exist on parse, create
+            PFObject *location = [PFObject objectWithClassName:CLASS_LOCATION_KEY];
+            if (self.protoLocation.foursquareId) {
+                location[LOCATION_FOURSQUARE_ID_KEY] = self.protoLocation.foursquareId;
+            }
+            if (self.protoLocation.name) {
+                location[LOCATION_NAME_KEY] = self.protoLocation.name;
+            }
+            if (self.protoLocation.latitude) {
+                location[LOCATION_LATITUDE_KEY] = @(self.protoLocation.latitude);
+            }
+            if (self.protoLocation.longitude) {
+                location[LOCATION_LONGITUDE_KEY] = @(self.protoLocation.longitude);
+            }
+            location[LOCATION_ADDRESS_KEY] = self.protoLocation.formattedAddress;
+            _parseEvent[EVENT_LOCATION_KEY] = location;
+            _locationToSave = location;
+            return location;
+        }
+    }
+    return nil;
+}
+
+- (void)eventUpdatedWithResult:(NSNumber *)result error:(NSError *)error
+{
+    if ([result boolValue]) { // success
+
+        NSMutableArray *save = [_actualInviteesToInvite mutableCopy];
+
+        // For some reason addUniqueObject is not adding to an existing array, but wiping the array first...
+        _parseEvent[EVENT_INVITEES_KEY] = [_actualInviteesToInvite arrayByAddingObjectsFromArray:[AppDelegate user].protoEvent.existingInvitees];
+        
+        // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
+        for (PFObject *invitee in _actualInviteesToInvite) {
+            NSString *email = [invitee objectForKey:EMAIL_KEY];
+            if (email && email.length > 0) {
+//                [responses addObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)]];
+                [_parseEvent addUniqueObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)] forKey:EVENT_RESPONSES_KEY];
+            }
+            [Event makeAdjustmentsToPerson:invitee event:_parseEvent];
+        }
+        
+        if (_locationToSave) {
+            [[AppDelegate parseUser] addUniqueObject:_locationToSave forKey:LOCATIONS_KEY];
+        }
+        
+        [save addObject:_parseEvent];
+        [save addObject:[AppDelegate parseUser]];
+        
+        [PFObject saveAllInBackground:save block:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                
+                if (_updatedLocation || _updatedTimeframe) {
+                    NSLog(@"Update all");
+                    [self sendPushNotification];
+                } else if (_updatedInvitees || _updatedEmails) {
+                    NSMutableString *inviteeString = [[NSMutableString alloc] initWithString:@"Update Invite users: "];
+                    NSMutableString *emailString = [[NSMutableString alloc] initWithString:@"Update new users: "];
+                    for (PFObject *invitee in _actualInviteesToInvite) {
+                        if (invitee[FULL_NAME_KEY]) {
+                            [inviteeString appendFormat:@"%@, ", invitee[EMAIL_KEY]];
+                        } else {
+                            [emailString appendFormat:@"%@, ", invitee[EMAIL_KEY]];
+                        }
+                    }
+                    NSLog(@"%@", inviteeString);
+                    NSLog(@"%@", emailString);
+                }
+                
+                // Do not email if only title was updated
+                
+                NSLog(@"Update creator: %@", [AppDelegate user].email);
+                
+                [self sendNewEventEmailToCreator];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_UPDATED_NOTIFICATION object:nil userInfo:nil];
+                
+            } else {
+                NSLog(@"ERRRRRRRROR!!!");
+            }
+        }];
+    } else {
+        NSLog(@"ERRRRRRRROR!!!");
+    }
 }
 
 - (void)eventCreatedWithResult:(NSNumber *)result error:(NSError *)error
@@ -328,6 +467,21 @@
                 NSMutableArray *events = [[AppDelegate user].events mutableCopy];
                 [events addObject:_parseEvent];
                 [AppDelegate user].events = [User sortEvents:events];
+                
+                // DEBUG ONLY
+                NSMutableString *inviteeString = [[NSMutableString alloc] initWithString:@"Emailing Invite users: "];
+                NSMutableString *emailString = [[NSMutableString alloc] initWithString:@"Emailing new users: "];
+                for (PFObject *invitee in _actualInviteesToInvite) {
+                    if (invitee[FULL_NAME_KEY]) {
+                        [inviteeString appendFormat:@"%@, ", invitee[EMAIL_KEY]];
+                    } else {
+                        [emailString appendFormat:@"%@, ", invitee[EMAIL_KEY]];
+                    }
+                }
+                NSLog(@"%@", inviteeString);
+                NSLog(@"%@", emailString);
+                NSLog(@"Emailing creator: %@", [AppDelegate user].email);
+                // DEBUG ONLY
                 
                 [self sendPushNotification];
                 [self sendNewEventEmailToCreator];

@@ -44,6 +44,8 @@
     _reachability = [Reachability reachabilityForInternetConnection];
     [_reachability startNotifier];
 
+    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor inviteSlateColor];
+    
     return YES;
 }
 

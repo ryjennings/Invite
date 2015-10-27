@@ -24,6 +24,7 @@ import UIKit
         UISearchBar.appearance().backgroundImage = UIImage()
         UISearchBar.appearance().barTintColor = UIColor.inviteDarkBlueColor()
         UISearchBar.appearance().tintColor = UIColor.whiteColor()
+        UISearchBar.appearance().backgroundColor = UIColor.inviteDarkBlueColor()
         
         // MARK: - UIBarButtonItem
         

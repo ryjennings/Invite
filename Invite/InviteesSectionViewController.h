@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 
+#import "Event.h"
+
 @interface InviteesSectionViewController : UIViewController
 
 @property (nonatomic, weak) IBOutlet UICollectionView *collectionView;
-@property (nonatomic, strong) PFObject *event;
+@property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) NSArray *responses;
 
 - (void)buildInviteesDictionary;

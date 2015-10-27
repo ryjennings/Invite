@@ -48,6 +48,22 @@ NSString *const kNoResponse = @"No Response";
 
 - (void)buildInviteesDictionary
 {
+    if (!_responses) {
+        NSMutableArray *responses = [NSMutableArray array];
+        for (PFObject *invitee in _event.invitees) {
+            NSString *email = invitee[EMAIL_KEY];
+            if (email && email.length > 0) {
+                [responses addObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)]];
+            }
+        }
+        for (NSString *email in _event.emails) {
+            if (email && email.length > 0) {
+                [responses addObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)]];
+            }
+        }
+        _responses = responses;
+    }
+    
     NSMutableArray *going = [NSMutableArray array];
     NSMutableArray *maybe = [NSMutableArray array];
     NSMutableArray *sorry = [NSMutableArray array];
@@ -63,22 +79,22 @@ NSString *const kNoResponse = @"No Response";
         NSString *email = com[0];
         PFObject *person = [self personForEmail:email];
         _responsesDictionary[com[0]] = @(((NSString *)com[1]).integerValue);
-        if (person) {
+//        if (person) {
             switch (((NSString *)com[1]).integerValue) {
                 case EventResponseGoing:
-                    [going addObject:person];
+                    [going addObject:person ? person : email];
                     break;
                 case EventResponseMaybe:
-                    [maybe addObject:person];
+                    [maybe addObject:person ? person : email];
                     break;
                 case EventResponseSorry:
-                    [sorry addObject:person];
+                    [sorry addObject:person ? person : email];
                     break;
                 default:
-                    [noresponse addObject:person];
+                    [noresponse addObject:person ? person : email];
                     break;
             }
-        }
+//        }
     }];
     
     if (going.count) {
@@ -97,12 +113,13 @@ NSString *const kNoResponse = @"No Response";
         [_invitees setObject:noresponse forKey:@(EventResponseNoResponse)];
         [_usedIndexes addObject:@(EventResponseNoResponse)];
     }
+    [_collectionView reloadData];
 }
 
 - (PFObject *)personForEmail:(NSString *)email
 {
     __block PFObject *person;
-    [_event[EVENT_INVITEES_KEY] enumerateObjectsUsingBlock:^(PFObject *invitee, NSUInteger idx, BOOL *stop) {
+    [(_event.parseEvent ? _event.parseEvent[EVENT_INVITEES_KEY] : _event.invitees) enumerateObjectsUsingBlock:^(PFObject *invitee, NSUInteger idx, BOOL *stop) {
         if ([invitee[EMAIL_KEY] isEqualToString:email]) {
             person = invitee;
             *stop = YES;
@@ -138,6 +155,7 @@ NSString *const kNoResponse = @"No Response";
             cell.label.text = [thisPerson objectForKey:EMAIL_KEY];
         }
     } else {
+        [cell.profileImageView configureForPerson:person responseValue:((NSNumber *)_responsesDictionary[person]).integerValue width:40 showResponse:YES];
         cell.label.text = (NSString *)person;
     }
     

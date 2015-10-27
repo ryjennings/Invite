@@ -34,7 +34,13 @@
 @property (nonatomic, strong) NSArray *existingInvitees;
 @property (nonatomic, strong) NSDate *existingStartDate;
 @property (nonatomic, strong) NSDate *existingEndDate;
-@property (nonatomic, strong) PFObject *existingLocation;
+@property (nonatomic, strong) Location *existingProtoLocation;
+
+@property (nonatomic, assign) BOOL updatedTitle;
+@property (nonatomic, assign) BOOL updatedTimeframe;
+@property (nonatomic, assign) BOOL updatedInvitees;
+@property (nonatomic, assign) BOOL updatedEmails;
+@property (nonatomic, assign) BOOL updatedLocation;
 
 @property (nonatomic, strong) NSString *savedEmailInput;
 
@@ -42,6 +48,7 @@
 + (Event *)eventFromPFObject:(PFObject *)object;
 
 - (void)submitEvent;
+- (void)updateEvent;
 + (void)makeAdjustmentsToPerson:(PFObject *)person event:(PFObject *)event;
 
 - (NSAttributedString *)editTimeframe;

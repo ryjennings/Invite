@@ -9,10 +9,12 @@
 import UIKit
 import Crashlytics
 
-@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate
+@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate
 {
     @IBOutlet weak var rightButton: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var pullView: UIView!
+    @IBOutlet weak var pullViewHeightConstraint: NSLayoutConstraint!
     
     var searchController: UISearchController!
 
@@ -47,6 +49,8 @@ import Crashlytics
             configureOnboarding()
         }
         
+        configurePullView()
+        
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         
         self.view.backgroundColor = UIColor.inviteSlateColor()
@@ -56,17 +60,22 @@ import Crashlytics
         self.tableView.reloadSectionIndexTitles()
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 100
+        self.tableView.backgroundColor = UIColor.clearColor()
+        
+        self.view.backgroundColor = UIColor.inviteBackgroundSlateColor()
+        
         self.definesPresentationContext = true
 
         self.refreshControl = UIRefreshControl()
         self.refreshControl.tintColor = UIColor.whiteColor()
-        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        self.refreshControl.attributedTitle = nil
         self.refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
         self.tableView.insertSubview(refreshControl, atIndex: 0)
         
         self.navigationItem.title = "Invite"
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventCreated:", name: EVENT_CREATED_NOTIFICATION, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventUpdated:", name: EVENT_UPDATED_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "dismissEventController:", name: DISMISS_EVENT_CONTROLLER_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventClosed:", name: EVENT_CLOSED_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userLoggedOut:", name: USER_LOGGED_OUT_NOTIFICATION, object: nil)
@@ -102,13 +111,11 @@ import Crashlytics
     func removedEvent(note: NSNotification)
     {
         separateEventsIntoGroups()
-//        self.tableView.beginUpdates()
         if (self.tableView.numberOfRowsInSection(self.removedIndexPath!.section) > 1) {
             self.tableView.deleteRowsAtIndexPaths([self.removedIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
         } else {
             self.tableView.deleteSections(NSIndexSet(index: self.removedIndexPath!.section), withRowAnimation: UITableViewRowAnimation.Fade)
         }
-//        self.tableView.endUpdates()
     }
     
     override func viewWillAppear(animated: Bool)
@@ -308,6 +315,12 @@ import Crashlytics
     deinit
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    private func configurePullView()
+    {
+        self.pullView.backgroundColor = UIColor(red: 0.17, green: 0.85, blue: 0.51, alpha: 1)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
     }
     
     private func configureOnboarding()
@@ -558,6 +571,14 @@ import Crashlytics
         AppDelegate.user().createMyReponses()
     }
     
+    func eventUpdated(note: NSNotification)
+    {
+        AppDelegate.user().refreshEvents()
+        AppDelegate.user().protoEvent = nil
+        AppDelegate.user().findReservations()
+        AppDelegate.user().createMyReponses()
+    }
+    
     func eventClosed(note: NSNotification)
     {
         AppDelegate.user().eventToDisplay = nil
@@ -619,5 +640,16 @@ import Crashlytics
     {
         separateEventsIntoGroups()
         self.tableView.reloadData()
+    }
+    
+    // MARK: - UIScrollViewDelegate
+    
+    func scrollViewDidScroll(scrollView: UIScrollView)
+    {
+        if scrollView.contentOffset.y < 0 {
+            self.pullViewHeightConstraint.constant = abs(scrollView.contentOffset.y)
+        } else {
+            self.pullViewHeightConstraint.constant = 0
+        }
     }
 }

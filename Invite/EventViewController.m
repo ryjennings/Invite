@@ -105,6 +105,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 @property (nonatomic, assign) BOOL isCreator;
 @property (nonatomic, assign) BOOL isOld;
 @property (nonatomic, assign) BOOL isUpdating;
+@property (nonatomic, assign) BOOL isCreating;
 
 @property (nonatomic, strong) MKPlacemark *lastPlacemark;
 @property (nonatomic, strong) UIAlertController *alert;
@@ -128,10 +129,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             _event = [AppDelegate user].protoEvent;
             _mode = EventModeView;
             _isUpdating = YES;
+            _isCreating = NO;
         } else if ([AppDelegate user].eventToDisplay) {
             _event = [Event eventFromPFObject:[AppDelegate user].eventToDisplay];
             _mode = EventModeView;
             _isUpdating = NO;
+            _isCreating = NO;
         } else {
             if (![AppDelegate user].protoEvent) {
                 [AppDelegate user].protoEvent = [Event createEvent];
@@ -139,6 +142,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             _event = [AppDelegate user].protoEvent;
             _mode = EventModePreview;
             _isUpdating = NO;
+            _isCreating = YES;
         }
     }
     return self;
@@ -220,11 +224,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             _startingResponse = _response;
         }
         
-        if ([AppDelegate user].eventToDisplay) {
+        if ([AppDelegate user].protoEvent.parseEvent) {
+            _inviteesSectionViewController.responses = [[AppDelegate user].protoEvent.parseEvent[EVENT_RESPONSES_KEY] mutableCopy];
+        } else {
             _inviteesSectionViewController.responses = [[AppDelegate user].eventToDisplay[EVENT_RESPONSES_KEY] mutableCopy];
-            _inviteesSectionViewController.event = [AppDelegate user].eventToDisplay;
-            [_inviteesSectionViewController buildInviteesDictionary];
         }
+        _inviteesSectionViewController.event = _event;
+        [_inviteesSectionViewController buildInviteesDictionary];
         _inviteesContainerView.hidden = NO;
     }
     else
@@ -260,9 +266,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
     [_tableView reloadData];
     [_tableView layoutIfNeeded]; // http://stackoverflow.com/questions/16071503/how-to-tell-when-uitableview-has-completed-reloaddata
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         _tableView.tableHeaderView = [self tableHeaderView];
-    });
+//    });
 }
 
 - (void)configureNavigationBar
@@ -295,7 +301,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         else
         {
             if (_isUpdating && !_isOld) {
-                self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
+//                self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
+                self.navigationItem.leftBarButtonItem = nil;
             }
             right = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(close:)];
             right.tintColor = [UIColor inviteTableHeaderColor];
@@ -307,14 +314,15 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(cancel:)];
         cancel.tintColor = [UIColor inviteTableHeaderColor];
 
-        [_modeButton setTitle:@"Preview" forState:UIControlStateNormal];
         _modeButton.enabled = _isUpdating || (!_isUpdating && [self readyToSend]);
         _modeButton.backgroundColor = [[UIColor inviteBlueColor] colorWithAlphaComponent:_modeButton.enabled ? 1 : 0.5];
 
         if (_isCreator) {
+            [_modeButton setTitle:@"Cancel" forState:UIControlStateNormal];
             self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
             self.navigationItem.rightBarButtonItem = cancel;
         } else {
+            [_modeButton setTitle:@"Preview" forState:UIControlStateNormal];
             self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
             self.navigationItem.leftBarButtonItem = cancel;
         }
@@ -336,6 +344,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_UPDATED_NOTIFICATION object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -364,6 +373,11 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 38;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return _mode == EventModePreview ? EventPreviewSectionCount : EventViewSectionCount;
@@ -380,14 +394,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (BOOL)readyToSend
 {
     return (!_isUpdating && _event.title && (_event.invitees || _event.emails) && _event.editTimeframe && (_event.location || _event.protoLocation)) ||
-    (_isUpdating &&
-     ((_event.title && ![_event.title isEqualToString:_event.existingTitle]) ||
-      (_event.invitees && ![_event.invitees isEqualToArray:_event.existingInvitees]) ||
-      (_event.startDate && ![_event.startDate isEqualToDate:_event.existingStartDate]) ||
-      (_event.endDate && ![_event.endDate isEqualToDate:_event.existingEndDate]) ||
-      (_event.location && ![_event.location isEqual:_event.existingLocation])
-      )
-     );
+    (_isUpdating && (_event.updatedTitle || _event.updatedInvitees || _event.updatedEmails || _event.updatedTimeframe || _event.updatedLocation));
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -426,9 +433,13 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         style.alignment = NSTextAlignmentCenter;
         
         NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
-        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"To create a new event, follow the steps below." attributes:@{NSFontAttributeName: [UIFont inviteQuestionFont], NSForegroundColorAttributeName: [UIColor inviteQuestionColor]}]];
-        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:10]}]];
-        [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"After setting all of the event details, tap \"Preview\" above to see how this event will look to others." attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}]];
+        if (!_isUpdating) {
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"To create a new event, follow the steps below." attributes:@{NSFontAttributeName: [UIFont inviteQuestionFont], NSForegroundColorAttributeName: [UIColor inviteQuestionColor]}]];
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n \n" attributes:@{NSFontAttributeName: [UIFont proximaNovaRegularFontOfSize:10]}]];
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"After setting all of the event details, tap \"Preview\" above to see how this event will look to others." attributes:@{NSFontAttributeName: [UIFont inviteTableFooterFont], NSParagraphStyleAttributeName: style}]];
+        } else {
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@"You may edit any of the event details." attributes:@{NSFontAttributeName: [UIFont inviteQuestionFont], NSForegroundColorAttributeName: [UIColor inviteQuestionColor]}]];
+        }
         cell.textLabel.attributedText = att;
         
         cell.backgroundColor = [UIColor whiteColor];
@@ -624,14 +635,24 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     
     if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowTitle && indexPath.section == EventViewSectionDetails)
     {
-        if (!_showingResponseSelection && !_isOld) {
+        if ([AppDelegate user].eventToDisplay && !_showingResponseSelection && !_isOld) {
             [self showResponseView];
         }
     }
     
-    if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowResponse && indexPath.section == EventViewSectionDetails)
+    if (_mode == EventModeView && indexPath.row == EventViewRowResponse && indexPath.section == EventViewSectionDetails)
     {
+        if (_isCreating) {
+            // Creating the event
+            return;
+        }
         if (!_isOld) {
+            if (_isCreator) {
+                // Updating the event
+                [self preview:nil];
+                return;
+            }
+            // Responding to the event
             if (_showingResponseSelection) {
                 [self cancelResponseView];
             } else {
@@ -739,6 +760,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     _mode = _mode == EventModePreview ? EventModeView : EventModePreview;
     [self configureForMode];
+    [UIView transitionWithView:self.navigationController.view duration:0.5 options:_mode == EventModePreview ? UIViewAnimationOptionTransitionFlipFromRight : UIViewAnimationOptionTransitionFlipFromLeft animations:^{
+    } completion:nil];
 }
 
 - (void)eventCreated:(NSNotification *)note
@@ -758,6 +781,36 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (IBAction)updateEvent:(id)sender
 {
+    _alert = [UIAlertController alertControllerWithTitle:@"Updating your event!" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:_alert animated:YES completion:nil];
+    
+    BOOL breakAllLoops = NO;
+    int count = 0;
+    
+    NSMutableArray *remove = [NSMutableArray array];
+    for (PFObject *old in [AppDelegate user].protoEvent.invitees) {
+        for (PFObject *new in [AppDelegate user].protoEvent.existingInvitees) {
+            if ([old.objectId isEqualToString:new.objectId]) {
+                [remove addObject:old];
+                count++;
+                if (count == [AppDelegate user].protoEvent.existingInvitees.count) {
+                    breakAllLoops = YES;
+                }
+                break;
+            }
+        }
+        if (breakAllLoops) {
+            break;
+        }
+    }
+    
+    if (remove.count) {
+        NSMutableArray *mut = [[AppDelegate user].protoEvent.invitees mutableCopy];
+        [mut removeObjectsInArray:remove];
+        [AppDelegate user].protoEvent.invitees = mut;
+    }
+    
+    [[AppDelegate user].protoEvent updateEvent];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -804,12 +857,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     NSString *locationName;
     NSString *locationAddress;
 
-    if (_event.location) {
-        locationName = [_event.location objectForKey:LOCATION_NAME_KEY];
-        locationAddress = [_event.location objectForKey:LOCATION_ADDRESS_KEY];
-    } else {
+    if (_event.protoLocation) {
         locationName = _event.protoLocation.name;
         locationAddress = _event.protoLocation.formattedAddress;
+    } else {
+        locationName = [_event.location objectForKey:LOCATION_NAME_KEY];
+        locationAddress = [_event.location objectForKey:LOCATION_ADDRESS_KEY];
     }
     
     NSMutableAttributedString *att = [[NSMutableAttributedString alloc] init];
@@ -832,17 +885,20 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (NSString *)textForResponse:(EventResponse)response
 {
+    if (_isCreating) {
+        return @"Respond to this event!";
+    }
     switch (response) {
         case EventResponseGoing:
-            return kGoingText;
+            return @"Going";
         case EventResponseMaybe:
-            return kMaybeText;
+            return @"Maybe";
         case EventResponseSorry:
-            return kSorryText;
+            return @"Sorry";
         case EventResponseNoResponse:
-            return kNoResponseText;
+            return @"Respond to this event!";
         case EventResponseHost:
-            return kHostText;
+            return @"You are the host";
     }
 }
 
@@ -886,7 +942,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     } else {
         [att appendAttributedString:[[NSAttributedString alloc] initWithString:[self textForResponse:_response] attributes:@{NSForegroundColorAttributeName: [self colorForResponse:_response], NSFontAttributeName: [UIFont proximaNovaSemiboldFontOfSize:16]}]];
         if (_response != EventResponseNoResponse && _response != EventResponseHost) {
-            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@" Change" attributes:@{NSForegroundColorAttributeName: [UIColor inviteGrayColor], NSFontAttributeName: [UIFont inviteTableSmallFont]}]];
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@" / Change" attributes:@{NSForegroundColorAttributeName: [UIColor inviteGrayColor], NSFontAttributeName: [UIFont inviteTableSmallFont]}]];
+        } else if (_response == EventResponseHost && _isUpdating && !_isOld) {
+            [att appendAttributedString:[[NSAttributedString alloc] initWithString:@" / Edit" attributes:@{NSForegroundColorAttributeName: [UIColor inviteGrayColor], NSFontAttributeName: [UIFont inviteTableSmallFont]}]];
         }
     }
     return att;
@@ -945,6 +1003,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     _textViewText = textView.text;
     
+    [AppDelegate user].protoEvent.updatedTitle = [AppDelegate user].protoEvent.existingTitle && ![_event.title isEqualToString:[AppDelegate user].protoEvent.existingTitle];
+    
     if (textView.text.length > 0) {
         _event.title = textView.text;
     } else {
@@ -995,7 +1055,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     _response = response;
 
     [responses addObject:[NSString stringWithFormat:@"%@:%@", [AppDelegate user].email, @(_response)]];
-//    [AppDelegate user].eventToDisplay[EVENT_RESPONSES_KEY] = responses;
     
     _inviteesSectionViewController.responses = responses;
     [_inviteesSectionViewController buildInviteesDictionary];

@@ -65,7 +65,20 @@
         
     } else {
         
-        _events = [User sortEvents:[object objectForKey:EVENTS_KEY]];
+        NSMutableArray *events = [object objectForKey:EVENTS_KEY];
+        NSMutableArray *remove = [NSMutableArray array];
+        
+        for (PFObject *event in events) {
+            if ([event isEqual:[NSNull null]]) {
+                [remove addObject:event];
+            }
+        }
+        
+        if (remove.count) {
+            [events removeObjectsInArray:remove];
+        }
+        
+        _events = [User sortEvents:events];
         
         if ([object objectForKey:FRIENDS_KEY]) {
             _friends = [object objectForKey:FRIENDS_KEY];
@@ -171,20 +184,26 @@
                 
                 [friend[EVENTS_KEY] enumerateObjectsUsingBlock:^(PFObject *event, NSUInteger idx, BOOL *stop) {
                     
-                    EventResponse response = 0;
-                    for (NSString *eventResponse in event[EVENT_RESPONSES_KEY]) {
-                        NSArray *com = [eventResponse componentsSeparatedByString:@":"];
-                        if ([com[0] isEqualToString:friend[EMAIL_KEY]]) {
-                            response = ((NSString *)com[1]).integerValue;
-                        }
+                    if ([event isEqual:[NSNull null]]) {
+                        return;
                     }
                     
-                    if (response == EventResponseGoing || response == EventResponseMaybe) {
-                        [reservations addObject:[Reservation reservationWithUser:friend
-                                                                      eventTitle:event[EVENT_TITLE_KEY]
-                                                                   eventResponse:response
-                                                                  eventStartDate:event[EVENT_START_DATE_KEY]
-                                                                    eventEndDate:event[EVENT_END_DATE_KEY]]];
+                    if (event.allKeys.count) {
+                        EventResponse response = 0;
+                        for (NSString *eventResponse in event[EVENT_RESPONSES_KEY]) {
+                            NSArray *com = [eventResponse componentsSeparatedByString:@":"];
+                            if ([com[0] isEqualToString:friend[EMAIL_KEY]]) {
+                                response = ((NSString *)com[1]).integerValue;
+                            }
+                        }
+                        
+                        if (response == EventResponseGoing || response == EventResponseMaybe) {
+                            [reservations addObject:[Reservation reservationWithUser:friend
+                                                                          eventTitle:event[EVENT_TITLE_KEY]
+                                                                       eventResponse:response
+                                                                      eventStartDate:event[EVENT_START_DATE_KEY]
+                                                                        eventEndDate:event[EVENT_END_DATE_KEY]]];
+                        }
                     }
                 }];
             }

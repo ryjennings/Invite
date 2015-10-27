@@ -20,10 +20,12 @@ enum TimeframeRow: Int {
     case Count
 }
 
-@objc(TimeframePickerViewController) class TimeframePickerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, DatePickerViewDelegate
+@objc(TimeframePickerViewController) class TimeframePickerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, DatePickerViewDelegate, UIScrollViewDelegate
 {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var saveBarButtonItem: UIBarButtonItem!
+    @IBOutlet weak var pullView: UIView!
+    @IBOutlet weak var pullViewHeightConstraint: NSLayoutConstraint!
     
     var conflicts = [Reservation]()
     var startDate: NSDate!
@@ -47,11 +49,16 @@ enum TimeframeRow: Int {
     {
         reservations = AppDelegate.user().reservations
         
-        tableView.tableHeaderView = tableHeaderView()
+        self.view.backgroundColor = UIColor.inviteBackgroundSlateColor()
+
+        self.tableView.tableHeaderView = tableHeaderView()
+        self.tableView.backgroundColor = UIColor.clearColor()
         
         self.navigationItem.title = "Event Time"
 
+        configureNavigationBar()
         configureDatePicker()
+        configurePullView()
         
         if let startDate = AppDelegate.user().protoEvent.startDate {
             self.startDate = startDate
@@ -71,6 +78,29 @@ enum TimeframeRow: Int {
                 self.showDatePicker(true)
             }
         }
+    }
+    
+    private func configureNavigationBar()
+    {
+        UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(named: "navbar_gradient"), forBarMetrics: UIBarMetrics.Default)
+        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.inviteNavigationTitleFont()]
+        self.navigationController?.navigationBar.translucent = true
+    }
+    
+    private func configurePullView()
+    {
+        self.pullView.backgroundColor = UIColor(red: 0.17, green: 0.85, blue: 0.51, alpha: 1)
+        self.pullViewHeightConstraint.constant = 64
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+    }
+    
+    override func viewDidAppear(animated: Bool)
+    {
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     func determineConflicts()
@@ -404,7 +434,23 @@ enum TimeframeRow: Int {
         if startDate != nil && endDate != nil {
             AppDelegate.user().protoEvent.startDate = startDate
             AppDelegate.user().protoEvent.endDate = endDate
+            if let existingStartDate = AppDelegate.user().protoEvent.existingStartDate {
+                if !startDate.isEqualToDate(existingStartDate) || !endDate.isEqualToDate(AppDelegate.user().protoEvent.existingEndDate) {
+                    AppDelegate.user().protoEvent.updatedTimeframe = true
+                }
+            }
         }
         self.navigationController?.popViewControllerAnimated(true)
     }    
+    
+    // MARK: - UIScrollViewDelegate
+    
+    func scrollViewDidScroll(scrollView: UIScrollView)
+    {
+        if scrollView.contentOffset.y < 0 {
+            self.pullViewHeightConstraint.constant = abs(scrollView.contentOffset.y) + 64
+        } else {
+            self.pullViewHeightConstraint.constant = 64
+        }
+    }
 }

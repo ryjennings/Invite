@@ -25,9 +25,12 @@ class Friend
     }
 }
 
-@objc(InviteesViewController) class InviteesViewController: UIViewController, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, InputCellDelegate, UISearchBarDelegate
+@objc(InviteesViewController) class InviteesViewController: UIViewController, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, InputCellDelegate, UISearchBarDelegate, UIScrollViewDelegate
 {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var pullView: UIView!
+    @IBOutlet weak var pullViewHeightConstraint: NSLayoutConstraint!
+    
     var searchController: UISearchController!
     private var adbk: ABAddressBook?
     
@@ -48,7 +51,9 @@ class Friend
     
     private var existingEvent: Event?
     
-    private var emailsAlreadyAdded = [String]()
+    private var emailsAlreadyAdded: [String]?
+    
+    private var showingCurrentlyInvited = false
     
     // MARK: - Lifecycle
     
@@ -67,6 +72,9 @@ class Friend
         buildPreEmails()
         reloadFriends()
         configureNavigationBar()
+        configurePullView()
+        
+        self.view.backgroundColor = UIColor.inviteBackgroundSlateColor()
         
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.sectionIndexColor = UIColor.inviteBlueColor()
@@ -74,12 +82,22 @@ class Friend
         self.tableView.reloadSectionIndexTitles()
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 44
+        self.tableView.backgroundColor = UIColor.clearColor()
+        
         self.definesPresentationContext = true
+    }
+    
+    private func configurePullView()
+    {
+        self.pullView.backgroundColor = UIColor(red: 0.17, green: 0.85, blue: 0.51, alpha: 1)
+        self.pullViewHeightConstraint.constant = 64
+        self.navigationController?.navigationBar.shadowImage = UIImage()
     }
     
     private func configureNavigationBar()
     {
-        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
+        UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
         self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(named: "navbar_gradient"), forBarMetrics: UIBarMetrics.Default)
         self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.inviteNavigationTitleFont()]
@@ -91,6 +109,12 @@ class Friend
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    override func viewDidAppear(animated: Bool)
+    {
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -105,7 +129,6 @@ class Friend
         self.searchController.delegate = self
         self.searchController.dimsBackgroundDuringPresentation = false
         self.searchController.searchBar.sizeToFit()
-        self.searchController.searchBar.backgroundColor = UIColor.inviteDarkBlueColor()
         self.searchController.searchBar.delegate = self
         self.searchController.searchBar.scopeButtonTitles = ["Invite Friends", "All Friends"]
         self.searchController.searchBar.selectedScopeButtonIndex = 1
@@ -138,19 +161,11 @@ class Friend
         label.text = "Who would you like to invite to this event?"
         view.addSubview(label)
         
-        let darkness = UIView()
-        darkness.translatesAutoresizingMaskIntoConstraints = false
-        darkness.backgroundColor = UIColor.inviteDarkBlueColor()
-        view.addSubview(darkness)
+        let views = ["bar": searchBarView, "label": label]
         
-        let views = ["bar": searchBarView, "label": label, "darkness": darkness]
-        
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[darkness]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[darkness(1024)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bar]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-50-[label]-50-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]-34-[label]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        view.addConstraint(NSLayoutConstraint(item: darkness, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: searchBarView, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0))
         
         return view
     }
@@ -166,31 +181,23 @@ class Friend
     {
         if section == 0 {
             return "New Friends"
-        } else if section == 1 {
-            if self.recentFriends.count > 0 {
-                return "Recently Invited Friends"
-            } else {
-                return nil
-            }
         }
 
-        let title = self.groupedFriendsKeys[section - 2]
-        return title == "@" ? "Email Only" : title
+        let title = self.groupedFriendsKeys[section - 1]
+        return title == "•" ? "Currently invited" : title == "@" ? "Email Only" : title
     }
 
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
-        return self.groupedFriendsKeys.count + 2
+        return self.groupedFriendsKeys.count + 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         if section == 0 {
             return 1
-        } else if section == 1 {
-            return self.recentFriends.count > 0 ? self.recentFriends.count : 0
         }
-        return self.groupedFriends[self.groupedFriendsKeys[section - 2]]!.count
+        return self.groupedFriends[self.groupedFriendsKeys[section - 1]]!.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
@@ -209,7 +216,7 @@ class Friend
             return cell
         } else {
             let cell = tableView.dequeueReusableCellWithIdentifier(PROFILE_CELL_IDENTIFIER, forIndexPath: indexPath) as! ProfileCell
-            let friend = self.groupedFriends[self.groupedFriendsKeys[indexPath.section - 2]]![indexPath.row]
+            let friend = self.groupedFriends[self.groupedFriendsKeys[indexPath.section - 1]]![indexPath.row]
             let friendSelected = selectedFriendsContainsFriend(friend)
             
             cell.friend = friend
@@ -246,7 +253,7 @@ class Friend
             return
         } else {
             let cell = tableView.cellForRowAtIndexPath(indexPath) as! ProfileCell
-            let friend = self.groupedFriends[self.groupedFriendsKeys[indexPath.section - 2]]![indexPath.row]
+            let friend = self.groupedFriends[self.groupedFriendsKeys[indexPath.section - 1]]![indexPath.row]
             
             // Before selecting or unselecting row, first check if friend is in existingInvitees
             if let existingEvent = self.existingEvent {
@@ -272,7 +279,12 @@ class Friend
         let footerView = view as! UITableViewHeaderFooterView
         let style = NSMutableParagraphStyle()
         style.lineSpacing = 4
-        let att = NSMutableAttributedString(string: NSLocalizedString("invitees_newfriends_footer", comment: ""), attributes: [NSFontAttributeName: UIFont.inviteTableFooterFont(), NSParagraphStyleAttributeName: style])
+        let att = NSMutableAttributedString()
+        if section == 0 {
+            att.appendAttributedString(NSAttributedString(string: NSLocalizedString("invitees_newfriends_footer", comment: ""), attributes: [NSFontAttributeName: UIFont.inviteTableFooterFont(), NSParagraphStyleAttributeName: style]))
+        } else if section == 1 && self.showingCurrentlyInvited {
+            att.appendAttributedString(NSAttributedString(string: NSLocalizedString("invitees_currentlyinvited_footer", comment: ""), attributes: [NSFontAttributeName: UIFont.inviteTableFooterFont(), NSParagraphStyleAttributeName: style]))
+        }
         footerView.textLabel!.attributedText = att
     }
 
@@ -280,16 +292,22 @@ class Friend
     {
         if section == 0 {
             return NSLocalizedString("invitees_newfriends_footer", comment: "")
+        } else if section == 1 && self.showingCurrentlyInvited {
+            return NSLocalizedString("invitees_currentlyinvited_footer", comment: "")
         }
         return nil
     }
     
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
     {
-        if section == 0 {
-            let style = NSMutableParagraphStyle()
-            style.lineSpacing = 4
-            let text: NSString = NSLocalizedString("invitees_newfriends_footer", comment: "")
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = 4
+        var text: String
+        if section == 1 && self.showingCurrentlyInvited {
+            text = NSLocalizedString("invitees_currentlyinvited_footer", comment: "")
+            return text.boundingRectWithSize(CGSizeMake(self.view.frame.size.width - (self.tableView.separatorInset.left * 2), CGFloat.max), options: [.UsesLineFragmentOrigin, .UsesFontLeading], attributes: [NSFontAttributeName: UIFont.inviteTableFooterFont(), NSParagraphStyleAttributeName: style], context: nil).size.height + 20
+        } else if section == 0 {
+            text = NSLocalizedString("invitees_newfriends_footer", comment: "")
             return text.boundingRectWithSize(CGSizeMake(self.view.frame.size.width - (self.tableView.separatorInset.left * 2), CGFloat.max), options: [.UsesLineFragmentOrigin, .UsesFontLeading], attributes: [NSFontAttributeName: UIFont.inviteTableFooterFont(), NSParagraphStyleAttributeName: style], context: nil).size.height + 20
         }
         return 0
@@ -297,24 +315,7 @@ class Friend
     
     func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]?
     {
-        var extraSections = ["+"]
-        if self.recentFriends.count > 0 {
-            extraSections.append("R")
-        }
-        extraSections.append(" ")
-        
-        return extraSections + self.groupedFriendsKeys
-    }
-    
-    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int
-    {
-        if self.recentFriends.count > 0 && index > 2 {
-            return index - 1
-        }
-        if self.recentFriends.count == 0 && index > 1 {
-            return index - 1
-        }
-        return index
+        return ["+"] + self.groupedFriendsKeys
     }
     
     // MARK: - UITextView
@@ -349,7 +350,11 @@ class Friend
         convertFriendsForSave()
         AppDelegate.user().protoEvent.savedEmailInput = self.textViewText
         AppDelegate.user().protoEvent.invitees = self.eventInvitees
+        if AppDelegate.user().protoEvent.existingInvitees != nil {
+            AppDelegate.user().protoEvent.updatedInvitees = AppDelegate.user().protoEvent.invitees.count != AppDelegate.user().protoEvent.existingInvitees.count
+        }
         AppDelegate.user().protoEvent.emails = self.eventEmails
+        AppDelegate.user().protoEvent.updatedEmails = AppDelegate.user().protoEvent.emails.count > 0
         navigationController?.popViewControllerAnimated(true)
     }
     
@@ -385,10 +390,12 @@ class Friend
     
     private func showInviteFriends()
     {
+        self.emailsAlreadyAdded = [String]()
         self.showInviteFriendsOnly = true
         addExistingFriends()
         sortFriends()
         breakFriendsIntoGroups()
+        self.emailsAlreadyAdded = nil
         self.tableView.reloadData()
     }
     
@@ -398,9 +405,11 @@ class Friend
         if !self.determineStatus() {
             // Not authorized
             // We still want to add existing friends...
+            self.emailsAlreadyAdded = [String]()
             addExistingFriends()
             sortFriends()
             breakFriendsIntoGroups()
+            self.emailsAlreadyAdded = nil
             self.tableView.reloadData()
         } else {
             addAllFriendsAndReload()
@@ -460,11 +469,11 @@ class Friend
                     let nameContainsText = fullName.containsString(searchText!)
                     if searchText == "" || (searchText != "" && (nameContainsText || emailContainsText)) {
                         
-                        self.allFriends.append(friend)
+                        addToAllFriends(friend)
                     }
                 } else {
                     if searchText == "" || (searchText != "" && emailContainsText) {
-                        self.allFriends.append(friend)
+                        addToAllFriends(friend)
                     }
                 }
                 
@@ -481,7 +490,27 @@ class Friend
         self.groupedFriendsKeys.removeAll()
         
         var currentTitle = ""
+
+        var existingInviteeEmails = [String]()
+        if let existingInvitees = AppDelegate.user().protoEvent.existingInvitees as? [PFObject] {
+            self.showingCurrentlyInvited = true
+            for invitee in existingInvitees {
+                existingInviteeEmails.append(invitee[EMAIL_KEY] as! String)
+                if currentTitle != "•" {
+                    currentTitle = "•"
+                    self.groupedFriendsKeys.append(currentTitle)
+                    self.groupedFriends[currentTitle] = [Friend]()
+                }
+                self.groupedFriends[currentTitle]?.append(friendFromInvitee(invitee))
+            }
+        } else {
+            self.showingCurrentlyInvited = false
+        }
+        
         for friend in self.allFriends {
+            if existingInviteeEmails.contains(friend.email) {
+                continue
+            }
             if friend.lastName != nil {
                 let index = friend.lastName!.startIndex
                 var letter = "\(friend.lastName![index])"
@@ -500,6 +529,15 @@ class Friend
             }
             self.groupedFriends[currentTitle]?.append(friend)
         }
+    }
+    
+    func friendFromInvitee(invitee: PFObject) -> Friend
+    {
+        return Friend(
+            fullName: invitee[FULL_NAME_KEY] as? String,
+            lastName: invitee[LAST_NAME_KEY] as? String,
+            email: invitee[EMAIL_KEY] as! String,
+            pfObject: invitee)
     }
     
     func determineStatus() -> Bool {
@@ -549,6 +587,13 @@ class Friend
     
     func addContactsAsFriends()
     {
+        var existingEmails = [String]()
+        if let existingEvent = existingEvent {
+            for invitee in existingEvent.existingInvitees {
+                existingEmails.append(invitee[EMAIL_KEY] as! String)
+            }
+        }
+        
         let people = ABAddressBookCopyArrayOfAllPeople(adbk).takeRetainedValue() as NSArray as [ABRecord]
         for person: ABRecordRef in people {
             let firstName = ABRecordCopyValue(person, kABPersonFirstNameProperty)?.takeRetainedValue() as? String
@@ -577,9 +622,9 @@ class Friend
                         let friend = Friend(fullName: fullName, lastName: lastName ?? " ", email: email as! String, pfObject: nil)
 
                         if searchText == "" || (searchText != "" && (nameContainsText || emailContainsText)) {
-                            self.allFriends.append(friend)
+                            addToAllFriends(friend)
                         }
-                        if self.preEmails.contains(email as! String) {
+                        if self.preEmails.contains(email as! String) && !existingEmails.contains(email as! String) {
                             self.selectedFriends.append(friend)
                         }
                     }
@@ -588,12 +633,22 @@ class Friend
         }
     }
     
+    func addToAllFriends(friend: Friend)
+    {
+        if !self.emailsAlreadyAdded!.contains(friend.email) {
+            self.allFriends.append(friend)
+            self.emailsAlreadyAdded!.append(friend.email)
+        }
+    }
+    
     func addAllFriendsAndReload()
     {
+        self.emailsAlreadyAdded = [String]()
         addContactsAsFriends()
         addExistingFriends()
         sortFriends()
         breakFriendsIntoGroups()
+        self.emailsAlreadyAdded = nil
         self.tableView.reloadData()
     }
     
@@ -658,5 +713,16 @@ class Friend
             self.tableView.contentInset = contentInsets
             self.tableView.scrollIndicatorInsets = contentInsets
         })
+    }
+
+    // MARK: - UIScrollViewDelegate
+    
+    func scrollViewDidScroll(scrollView: UIScrollView)
+    {
+        if scrollView.contentOffset.y < 0 {
+            self.pullViewHeightConstraint.constant = abs(scrollView.contentOffset.y) + 64
+        } else {
+            self.pullViewHeightConstraint.constant = 64
+        }
     }
 }

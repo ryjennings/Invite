@@ -277,7 +277,7 @@ import UIKit
                     self.safe = true
                     self.delegate?.titleDateCellFinishedHideAnimation(self)
             })
-        default:
+        case EventResponse.Sorry:
             self.sorryButtonViewLeadingConstraint.constant = leadingConstraintConstant
             self.sorryButtonView.label.attributedText = self.attributedDate
             UIView.animateWithDuration(0.1) { () -> Void in
@@ -296,6 +296,28 @@ import UIKit
                     self.dateLabel.layer.borderColor = UIColor.inviteRedColor().CGColor
                     self.dateLabel.hidden = false
                     self.dateInsideCircle.hidden = false
+                    self.safe = true
+                    self.delegate?.titleDateCellFinishedHideAnimation(self)
+            })
+        default:
+            self.dateLabel.layer.borderColor = UIColor.inviteBlueColor().CGColor
+            self.dateLabel.alpha = 0
+            self.dateLabel.hidden = false
+            self.dateInsideCircle.alpha = 0
+            self.dateInsideCircle.hidden = false
+            UIView.animateWithDuration(0.1) { () -> Void in
+                self.sorryButtonView.alpha = 0
+                self.goingButtonView.alpha = 0
+                self.maybeButtonView.alpha = 0
+            }
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.layoutIfNeeded()
+                }, completion: nil)
+            UIView.animateWithDuration(0.4, delay: 0.1, options: UIViewAnimationOptions(rawValue: 0), animations: { () -> Void in
+                self.label.alpha = 1
+                self.dateLabel.alpha = 1
+                self.dateInsideCircle.alpha = 1
+                }, completion: { (finished: Bool) -> Void in
                     self.safe = true
                     self.delegate?.titleDateCellFinishedHideAnimation(self)
             })

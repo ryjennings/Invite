@@ -35,9 +35,11 @@ enum LocationSection: Int {
     }
 }
 
-@objc(LocationViewController) class LocationViewController: UIViewController, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, LocationResultsViewControllerDelegate, MapCellDelegate, CLLocationManagerDelegate
+@objc(LocationViewController) class LocationViewController: UIViewController, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, LocationResultsViewControllerDelegate, MapCellDelegate, CLLocationManagerDelegate, UIScrollViewDelegate
 {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var pullView: UIView!
+    @IBOutlet weak var pullViewHeightConstraint: NSLayoutConstraint!
     
     var searchController: UISearchController!
     var searchResultsController: LocationResultsViewController!
@@ -61,6 +63,9 @@ enum LocationSection: Int {
         
         self.navigationItem.title = "Event Location"
         
+        configureNavigationBar()
+        configurePullView()
+
         self.searchResultsController = self.storyboard?.instantiateViewControllerWithIdentifier(LOCATION_RESULTS_VIEW_CONTROLLER) as? LocationResultsViewController
         self.searchResultsController.delegate = self
         
@@ -70,14 +75,16 @@ enum LocationSection: Int {
         self.searchController.searchBar.placeholder = "Search Foursquare for a location"
         self.searchController.searchResultsUpdater = self
         
+        self.view.backgroundColor = UIColor.inviteBackgroundSlateColor()
+
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 44
+        self.tableView.backgroundColor = UIColor.clearColor()
 
         self.definesPresentationContext = true
         
-        let location = AppDelegate.user().protoEvent.protoLocation;
-        if location != nil {
+        if let location = AppDelegate.user().protoEvent.protoLocation {
             if location.pfObject == nil {
                 self.displayedLocation = location
             }
@@ -88,6 +95,29 @@ enum LocationSection: Int {
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    private func configurePullView()
+    {
+        self.pullView.backgroundColor = UIColor(red: 0.17, green: 0.85, blue: 0.51, alpha: 1)
+        self.pullViewHeightConstraint.constant = 64
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+    }
+    
+    override func viewDidAppear(animated: Bool)
+    {
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
+    private func configureNavigationBar()
+    {
+        UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(named: "navbar_gradient"), forBarMetrics: UIBarMetrics.Default)
+        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.inviteNavigationTitleFont()]
+        self.navigationController?.navigationBar.translucent = true
     }
     
     func setupLocationManager()
@@ -231,7 +261,7 @@ enum LocationSection: Int {
             cell.location = location
             
             if let selectedLocation = self.selectedLocation {
-                if selectedLocation.pfObject == location.pfObject {
+                if selectedLocation.pfObject?.objectId == location.pfObject?.objectId {
                     selectProfileCell(cell)
                 } else {
                     unselectProfileCell(cell)
@@ -451,6 +481,14 @@ enum LocationSection: Int {
     {
         if let location = self.selectedLocation {
             AppDelegate.user().protoEvent.protoLocation = location
+            if AppDelegate.user().protoEvent.existingProtoLocation != nil &&
+                (AppDelegate.user().protoEvent.existingProtoLocation.foursquareId != AppDelegate.user().protoEvent.protoLocation.foursquareId ||
+                    AppDelegate.user().protoEvent.existingProtoLocation.name != AppDelegate.user().protoEvent.protoLocation.name ||
+                    AppDelegate.user().protoEvent.existingProtoLocation.latitude != AppDelegate.user().protoEvent.protoLocation.latitude ||
+                    AppDelegate.user().protoEvent.existingProtoLocation.longitude != AppDelegate.user().protoEvent.protoLocation.longitude ||
+                    AppDelegate.user().protoEvent.existingProtoLocation.formattedAddress != AppDelegate.user().protoEvent.protoLocation.formattedAddress) {
+                        AppDelegate.user().protoEvent.updatedLocation = true
+            }
         }
         navigationController?.popViewControllerAnimated(true)
     }
@@ -473,5 +511,16 @@ enum LocationSection: Int {
     func dismissKeyboard()
     {
         self.view.endEditing(true)
+    }
+    
+    // MARK: - UIScrollViewDelegate
+    
+    func scrollViewDidScroll(scrollView: UIScrollView)
+    {
+        if scrollView.contentOffset.y < 0 {
+            self.pullViewHeightConstraint.constant = abs(scrollView.contentOffset.y) + 64
+        } else {
+            self.pullViewHeightConstraint.constant = 64
+        }
     }
 }
