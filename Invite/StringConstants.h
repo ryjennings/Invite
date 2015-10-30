@@ -126,6 +126,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define NO_CELL_IDENTIFIER @"NoCellIdentifier"
 #define BUTTON_CELL_IDENTIFIER @"ButtonCellIdentifier"
 #define LOCATION_CELL_IDENTIFIER @"LocationCellIdentifier"
+#define DASHBOARD_AD_CELL_IDENTIFIER @"DashboardAdCellIdentifier"
 
 // Notifications
 #define USER_CREATED_NOTIFICATION @"UserCreatedNotifcation"

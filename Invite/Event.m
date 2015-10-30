@@ -380,7 +380,6 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
         for (PFObject *invitee in _actualInviteesToInvite) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
-//                [responses addObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)]];
                 [_parseEvent addUniqueObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)] forKey:EVENT_RESPONSES_KEY];
             }
             [Event makeAdjustmentsToPerson:invitee event:_parseEvent];
@@ -485,6 +484,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
                 
                 [self sendPushNotification];
                 [self sendNewEventEmailToCreator];
+                [Notification scheduleNotificationForDate:self.startDate alertBody:[NSString stringWithFormat:@"%@ in 15 mins", self.title] objectId:_parseEvent.objectId];
                 
                 NSDictionary *userInfo = @{@"createdEvent": _parseEvent};
                 [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:nil userInfo:userInfo];

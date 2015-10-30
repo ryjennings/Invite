@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#import <TwitterKit/TwitterKit.h>
+#import <MoPub/MoPub.h>
 
 #import "Invite-Swift.h"
 #import "StringConstants.h"
@@ -22,7 +24,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {    
-    [Fabric with:@[[Crashlytics class]]];
+    [[Crashlytics sharedInstance] setDebugMode:YES];
+    [Fabric with:@[[Crashlytics class], [Twitter class], [MoPub class]]];
 
     [Parse setApplicationId:@"bDCtNhAgLH0h8TClwos5BxTLJ9q2gIs19uG8dSjD"
                   clientKey:@"XRnFQGL8mad8vS1iVt1JDxT1UPInSsffw0JLDOWK"];
@@ -33,9 +36,9 @@
     // Logs 'install' and 'app activate' App Events.
     [FBSDKAppEvents activateApp];
     
-    // Notifications
-    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:nil];
+    // Register for notifications
+    UIUserNotificationType types = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObject:[self notificationCategories]]];
     [application registerUserNotificationSettings:settings];
     [application registerForRemoteNotifications];
     
@@ -47,6 +50,44 @@
     [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor inviteSlateColor];
     
     return YES;
+}
+
+- (UIUserNotificationCategory *)notificationCategories
+{
+    UIMutableUserNotificationAction *viewAction = [[UIMutableUserNotificationAction alloc] init];
+    viewAction.identifier = @"ViewAction";
+    viewAction.destructive = NO;
+    viewAction.title = @"View";
+    viewAction.activationMode = UIUserNotificationActivationModeBackground;
+    viewAction.authenticationRequired = NO;
+
+    UIMutableUserNotificationAction *goingAction = [[UIMutableUserNotificationAction alloc] init];
+    goingAction.identifier = @"GoingAction";
+    goingAction.destructive = NO;
+    goingAction.title = @"Going";
+    goingAction.activationMode = UIUserNotificationActivationModeBackground;
+    goingAction.authenticationRequired = NO;
+
+    UIMutableUserNotificationAction *maybeAction = [[UIMutableUserNotificationAction alloc] init];
+    maybeAction.identifier = @"MaybeAction";
+    maybeAction.destructive = NO;
+    maybeAction.title = @"Maybe";
+    maybeAction.activationMode = UIUserNotificationActivationModeBackground;
+    maybeAction.authenticationRequired = NO;
+
+    UIMutableUserNotificationAction *sorryAction = [[UIMutableUserNotificationAction alloc] init];
+    sorryAction.identifier = @"SorryAction";
+    sorryAction.destructive = NO;
+    sorryAction.title = @"Sorry";
+    sorryAction.activationMode = UIUserNotificationActivationModeBackground;
+    sorryAction.authenticationRequired = NO;
+    
+    UIMutableUserNotificationCategory *category = [[UIMutableUserNotificationCategory alloc] init];
+    category.identifier = @"InviteCategory";
+    [category setActions:@[viewAction] forContext:UIUserNotificationActionContextMinimal];
+    [category setActions:@[viewAction, goingAction, maybeAction, sorryAction] forContext:UIUserNotificationActionContextDefault];
+    
+    return category;
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {

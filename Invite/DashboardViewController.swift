@@ -8,6 +8,8 @@
 
 import UIKit
 import Crashlytics
+import MoPub
+import CoreLocation
 
 @objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate
 {
@@ -38,6 +40,8 @@ import Crashlytics
     var removedIndexPath: NSIndexPath?
     
     var refreshControl: UIRefreshControl!
+
+    var placer: MPTableViewAdPlacer!
     
     override func viewDidLoad()
     {
@@ -50,7 +54,7 @@ import Crashlytics
         }
         
         configurePullView()
-        
+
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         
         self.view.backgroundColor = UIColor.inviteSlateColor()
@@ -96,6 +100,9 @@ import Crashlytics
     
     func refresh(sender: AnyObject)
     {
+        self.placer = nil
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         AppDelegate.user().refreshEvents()
     }
     
@@ -150,6 +157,13 @@ import Crashlytics
 
     private func separateEventsIntoGroups()
     {
+        let targeting = MPNativeAdRequestTargeting()
+        
+        // TODO: Use the device's location
+        targeting.location = CLLocation(latitude: 37.7793, longitude: -122.4175)
+        targeting.desiredAssets = Set([kAdIconImageKey, kAdMainImageKey, kAdCTATextKey, kAdTextKey, kAdTitleKey])
+        let positioning = MPClientAdPositioning()
+
         self.oldEvents.removeAll()
         self.groups.removeAll()
         self.groupKeys.removeAll()
@@ -171,6 +185,7 @@ import Crashlytics
         
         var section = -1
         var row = -1
+        var adRowCount = 0
         
         var eventsToDisplay = [PFObject]()
         if self.searchController.searchBar.selectedScopeButtonIndex == 0 {
@@ -213,9 +228,11 @@ import Crashlytics
             self.groupIndexTitleSections.append(self.groups.count - 1)
             self.nextEvent = AppDelegate.user().needsResponse[EVENT_TITLE_KEY] as? String
             self.groups[new]?.append(AppDelegate.user().needsResponse)
+            adRowCount++
         }
         
         for event in eventsToDisplay {
+            
             let startDate = event[EVENT_START_DATE_KEY] as! NSDate
             let endDate = event[EVENT_END_DATE_KEY] as! NSDate
             let s = calendar.components(components, fromDate: startDate)
@@ -261,11 +278,27 @@ import Crashlytics
                     self.createdEventIndexPath = NSIndexPath(forRow: row, inSection: section)
                 }
                 self.groups[today]?.append(event)
+                adRowCount++
                 lastEventStartDate = startDate
                 continue
             }
-
+            
             if !(s.day == l.day && s.month == l.month && s.year == l.year) {
+
+                if adRowCount > 3 {
+                    adRowCount = 0
+                    
+                    // Ad
+                    section++
+                    positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
+
+                    let ad = "Ad"
+                    self.groupKeys.append(ad)
+                    self.groupIndexTitles.append(" ")
+                    self.groups[ad] = [PFObject]()
+                    self.groupIndexTitleSections.append(self.groups.count - 1)
+                    self.groups[ad]?.append(PFObject(className: CLASS_EVENT_KEY))
+                }
 
                 dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
                 let string = dateFormatter.stringFromDate(startDate)
@@ -293,6 +326,7 @@ import Crashlytics
                 self.createdEventIndexPath = NSIndexPath(forRow: row, inSection: section)
             }
             self.groups[startDateString]?.append(event)
+            adRowCount++
             
             lastEventStartDate = startDate
         }
@@ -310,6 +344,10 @@ import Crashlytics
                 self.groupIndexTitleSections.append(self.groups.count - 1)
             }
         }
+
+        // Ad placer
+        self.placer = MPTableViewAdPlacer(tableView: self.tableView, viewController: self, adPositioning: positioning, defaultAdRenderingClass: AdCell.self)
+        self.placer.loadAdsForAdUnitID("d5566993d01246f3a67b01378bf829ee", targeting: targeting)
     }
     
     deinit
@@ -451,6 +489,9 @@ import Crashlytics
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool
     {
         let event = self.groups[self.groupKeys[indexPath.section]]![indexPath.row]
+        if event[EVENT_TITLE_KEY] == nil {
+            return false
+        }
         return self.groupKeys[indexPath.section] == "Old Events" || EventResponse(rawValue: AppDelegate.user().myResponses[event.objectId!] as! UInt)! == EventResponse.Sorry
     }
     
@@ -491,13 +532,6 @@ import Crashlytics
         return self.groupKeys[section]
     }
     
-//    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath)
-//    {
-//        cell.separatorInset = UIEdgeInsetsZero
-//        cell.preservesSuperviewLayoutMargins = false
-//        cell.layoutMargins = UIEdgeInsetsZero
-//    }
-    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
         return self.groups.count
@@ -511,6 +545,16 @@ import Crashlytics
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         let event = self.groups[self.groupKeys[indexPath.section]]![indexPath.row]
+        
+        if event[EVENT_TITLE_KEY] == nil {
+            let cell = tableView.dequeueReusableCellWithIdentifier(PADDING_CELL_IDENTIFIER, forIndexPath: indexPath) as! PaddingCell
+            cell.heightConstraint.constant = 10
+            cell.selectionStyle = UITableViewCellSelectionStyle.None
+            cell.contentView.backgroundColor = UIColor.clearColor()
+            cell.backgroundColor = UIColor(patternImage: UIImage(named: "adbottom")!)
+            return cell
+        }
+        
         let now = NSDate()
         let end = event[EVENT_END_DATE_KEY] as! NSDate
         let cell = tableView.dequeueReusableCellWithIdentifier(DASHBOARD_CELL_IDENTIFIER, forIndexPath: indexPath) as! DashboardCell
@@ -525,10 +569,13 @@ import Crashlytics
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
+        self.selectedKey = self.groupKeys[indexPath.section]
+        if self.selectedKey == "Ad" {
+            return
+        }
+        self.selectedRow = indexPath.row
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         AppDelegate.user().eventToDisplay = self.groups[self.groupKeys[indexPath.section]]![indexPath.row]
-        self.selectedKey = self.groupKeys[indexPath.section]
-        self.selectedRow = indexPath.row
         dispatch_async(dispatch_get_main_queue(), {
             self.performSegueWithIdentifier(SEGUE_TO_EVENT, sender: self)
         })
@@ -638,6 +685,9 @@ import Crashlytics
     
     func didDismissSearchController(searchController: UISearchController)
     {
+        self.placer = nil
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         separateEventsIntoGroups()
         self.tableView.reloadData()
     }

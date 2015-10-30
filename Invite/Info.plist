@@ -31,7 +31,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>126</string>
+	<string>127</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -43,6 +43,23 @@
 				<dict/>
 				<key>KitName</key>
 				<string>Crashlytics</string>
+			</dict>
+			<dict>
+				<key>KitInfo</key>
+				<dict>
+					<key>consumerKey</key>
+					<string>uEktkkEUOS2QnGrEJd5iaNIUm</string>
+					<key>consumerSecret</key>
+					<string>QXxYNqtvBJrT9UfWFvEhAwnKEVz4xNSVEXbziroZDbEAWUFVY0</string>
+				</dict>
+				<key>KitName</key>
+				<string>Twitter</string>
+			</dict>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>MoPub</string>
 			</dict>
 		</array>
 	</dict>
@@ -129,5 +146,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>    
 </dict>
 </plist>
