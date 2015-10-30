@@ -110,6 +110,9 @@ import CoreLocation
     {
         self.refreshControl.endRefreshing()
         AppDelegate.user().createMyReponses()
+        self.placer = nil
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         separateEventsIntoGroups()
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.reloadData()
@@ -597,6 +600,10 @@ import CoreLocation
             self.createdEvent = createdEvent
         }
 
+        self.placer = nil
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        
         if self.tableView.tableHeaderView == nil {
             configureToDisplayEvents()
         } else {
@@ -631,6 +638,9 @@ import CoreLocation
         AppDelegate.user().eventToDisplay = nil
         AppDelegate.user().protoEvent = nil
         AppDelegate.user().createMyReponses()
+        self.placer = nil
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         separateEventsIntoGroups()
         self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.reloadData()
@@ -671,12 +681,18 @@ import CoreLocation
     
     func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int)
     {
+        self.placer = nil
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         separateEventsIntoGroups()
         self.tableView.reloadData()
     }
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String)
     {
+        self.placer = nil
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         separateEventsIntoGroups()
         self.tableView.reloadData()
     }
