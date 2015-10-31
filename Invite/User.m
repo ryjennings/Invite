@@ -245,6 +245,7 @@
 
 - (void)refreshEvents
 {
+    __weak User *weakSelf = self;
     PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
     [query whereKey:EMAIL_KEY equalTo:self.email];
     [query includeKey:EVENTS_KEY];
@@ -253,7 +254,7 @@
     [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_INVITEES_KEY]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (objects.count) {
-            _events = [User sortEvents:[objects[0] objectForKey:EVENTS_KEY]];
+            weakSelf.events = [User sortEvents:[objects[0] objectForKey:EVENTS_KEY]];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:FINISHED_REFRESHING_EVENTS_NOTIFICATION object:nil];
     }];
@@ -261,6 +262,7 @@
 
 - (void)removeEvent:(PFObject *)event
 {
+    __weak User *weakSelf = self;
     [self.parse removeObject:event forKey:EVENTS_KEY];
     [self.parse saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         PFQuery *query = [PFQuery queryWithClassName:CLASS_PERSON_KEY];
@@ -271,7 +273,7 @@
         [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_INVITEES_KEY]];
         [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (objects.count) {
-                _events = [User sortEvents:[objects[0] objectForKey:EVENTS_KEY]];
+                weakSelf.events = [User sortEvents:[objects[0] objectForKey:EVENTS_KEY]];
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:FINISHED_REMOVING_EVENT_NOTIFICATION object:nil];
         }];

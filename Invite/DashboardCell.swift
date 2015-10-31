@@ -111,7 +111,12 @@ import MapKit
     
     private func configureForEvent()
     {
-        if self.needsResponse {
+        if self.isOld {
+            self.colorView.hidden = false
+            self.startHourLabel.hidden = false
+            self.endDayLabel.hidden = true
+            self.endHourLabel.hidden = false
+        } else if self.needsResponse {
             self.colorView.hidden = true
             self.startHourLabel.hidden = true
             self.endDayLabel.hidden = true

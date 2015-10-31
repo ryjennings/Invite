@@ -24,7 +24,6 @@ import CoreLocation
     var gradientView: OBGradientView!
     var onboarding: DashboardOnboardingView!
     
-    var oldEvents = [String: [PFObject]]()
     var groups = [String: [PFObject]]()
     var groupKeys = [String]()
     var groupIndexTitles = [String]()
@@ -37,7 +36,8 @@ import CoreLocation
     var selectedKey: String?
     var selectedRow: Int?
     
-    var removedIndexPath: NSIndexPath?
+    var removeIndexPath: NSIndexPath?
+    var removeEntireSection = false
     
     var refreshControl: UIRefreshControl!
 
@@ -120,12 +120,17 @@ import CoreLocation
     
     func removedEvent(note: NSNotification)
     {
+//        self.placer = nil
+//        self.tableView.delegate = self
+//        self.tableView.dataSource = self
+        self.tableView.mp_beginUpdates()
         separateEventsIntoGroups()
-        if (self.tableView.numberOfRowsInSection(self.removedIndexPath!.section) > 1) {
-            self.tableView.deleteRowsAtIndexPaths([self.removedIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
+        if self.removeEntireSection {
+            self.tableView.mp_deleteSections(NSIndexSet(index: self.removeIndexPath!.section), withRowAnimation: UITableViewRowAnimation.Fade)
         } else {
-            self.tableView.deleteSections(NSIndexSet(index: self.removedIndexPath!.section), withRowAnimation: UITableViewRowAnimation.Fade)
+            self.tableView.mp_deleteRowsAtIndexPaths([self.removeIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
         }
+        self.tableView.mp_endUpdates()
     }
     
     override func viewWillAppear(animated: Bool)
@@ -160,14 +165,12 @@ import CoreLocation
 
     private func separateEventsIntoGroups()
     {
-        let targeting = MPNativeAdRequestTargeting()
-        
         // TODO: Use the device's location
+        let targeting = MPNativeAdRequestTargeting()
         targeting.location = CLLocation(latitude: 37.7793, longitude: -122.4175)
         targeting.desiredAssets = Set([kAdIconImageKey, kAdMainImageKey, kAdCTATextKey, kAdTextKey, kAdTitleKey])
         let positioning = MPClientAdPositioning()
 
-        self.oldEvents.removeAll()
         self.groups.removeAll()
         self.groupKeys.removeAll()
         self.groupIndexTitles.removeAll()
@@ -277,7 +280,7 @@ import CoreLocation
                     self.groupIndexTitleSections.append(self.groups.count - 1)
                 }
                 row++
-                if self.createdEvent === event {
+                if self.createdEvent?.objectId == event.objectId {
                     self.createdEventIndexPath = NSIndexPath(forRow: row, inSection: section)
                 }
                 self.groups[today]?.append(event)
@@ -295,7 +298,7 @@ import CoreLocation
                     section++
                     positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
 
-                    let ad = "Ad"
+                    let ad = "Ad\(section)"
                     self.groupKeys.append(ad)
                     self.groupIndexTitles.append(" ")
                     self.groups[ad] = [PFObject]()
@@ -325,7 +328,7 @@ import CoreLocation
             }
             
             row++
-            if self.createdEvent === event {
+            if self.createdEvent?.objectId == event.objectId {
                 self.createdEventIndexPath = NSIndexPath(forRow: row, inSection: section)
             }
             self.groups[startDateString]?.append(event)
@@ -349,8 +352,10 @@ import CoreLocation
         }
 
         // Ad placer
-        self.placer = MPTableViewAdPlacer(tableView: self.tableView, viewController: self, adPositioning: positioning, defaultAdRenderingClass: AdCell.self)
-        self.placer.loadAdsForAdUnitID("d5566993d01246f3a67b01378bf829ee", targeting: targeting)
+        if self.placer == nil {
+            self.placer = MPTableViewAdPlacer(tableView: self.tableView, viewController: self, adPositioning: positioning, defaultAdRenderingClass: AdCell.self)
+            self.placer.loadAdsForAdUnitID("d5566993d01246f3a67b01378bf829ee", targeting: targeting)
+        }
     }
     
     deinit
@@ -507,7 +512,8 @@ import CoreLocation
     {
         let deleteButton = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "Delete") { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
             
-            self.removedIndexPath = indexPath
+            self.removeEntireSection = self.tableView.numberOfRowsInSection(indexPath.section) > 1 ? false : true
+            self.removeIndexPath = indexPath
             AppDelegate.user().removeEvent(self.groups[self.groupKeys[indexPath.section]]![indexPath.row])
             
         }
@@ -531,6 +537,9 @@ import CoreLocation
     {
         if section == 0 {
             return nil
+        }
+        if (self.groupKeys[section] as NSString).containsString("Ad") {
+            return "Ad"
         }
         return self.groupKeys[section]
     }

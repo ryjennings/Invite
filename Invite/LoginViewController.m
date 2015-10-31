@@ -11,6 +11,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Parse/Parse.h>
+#import <TwitterKit/TwitterKit.h>
 
 #import "AppDelegate.h"
 #import "StringConstants.h"
@@ -20,18 +21,25 @@
 #define kMessageStartingCenterY -133
 #define kAmountToMoveUp 100
 
+#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)
+
 @interface LoginViewController ()
 
 @property (nonatomic, weak) IBOutlet UIImageView *logo;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *logoCenterYConstraint;
 @property (nonatomic, weak) IBOutlet UIView *messageView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *messageViewCenterYConstraint;
-@property (nonatomic, weak) IBOutlet UIView *facebookView;
-@property (nonatomic, weak) IBOutlet NSLayoutConstraint *facebookViewBottomConstraint;
 @property (nonatomic, weak) IBOutlet UILabel *inviteLabel;
 @property (nonatomic, weak) IBOutlet UILabel *messageLabel;
 @property (nonatomic, weak) IBOutlet UIView *lineView;
+
+@property (nonatomic, weak) IBOutlet UIView *buttonView;
+@property (nonatomic, weak) IBOutlet UIButton *facebookButton;
+@property (nonatomic, weak) IBOutlet UIView *twitterView;
+
 @property (nonatomic, assign) BOOL sentToFacebookLogin;
+
+@property (nonatomic, strong) UIDynamicAnimator *animator;
 
 @end
 
@@ -44,12 +52,43 @@
     _inviteLabel.font = [UIFont proximaNovaLightFontOfSize:36];
     _lineView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
     _messageLabel.font = [UIFont proximaNovaRegularFontOfSize:16];
-    _facebookView.backgroundColor = [UIColor inviteSlateButtonColor];
     
     _sentToFacebookLogin = NO;
-
-    [self showFacebookLogin];
-        
+    
+    TWTRLogInButton *logInButton = [TWTRLogInButton buttonWithLogInCompletion:^(TWTRSession *session, NSError *error) {
+        if (session) {
+            // Callback for login success or failure. The TWTRSession
+            // is also available on the [Twitter sharedInstance]
+            // singleton.
+            //
+            // Here we pop an alert just to give an example of how
+            // to read Twitter user info out of a TWTRSession.
+            //
+            // TODO: Remove alert and use the TWTRSession's userID
+            // with your app's user model
+            NSString *message = [NSString stringWithFormat:@"@%@ logged in! (%@)",
+                                 [session userName], [session userID]];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logged in!"
+                                                            message:message
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        } else {
+            NSLog(@"Login error: %@", [error localizedDescription]);
+        }
+    }];
+    
+    _twitterView.backgroundColor = [UIColor clearColor];
+    _twitterView.clipsToBounds = YES;
+    logInButton.frame = CGRectMake(0, 0, 60, 300);
+    [logInButton setBackgroundImage:[UIImage new] forState:UIControlStateNormal];
+    [logInButton setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"twitter"]]];
+    [logInButton setBackgroundImage:[UIImage new] forState:UIControlStateHighlighted];
+    [logInButton setBackgroundImage:[UIImage new] forState:UIControlStateSelected];
+    [logInButton setBackgroundImage:[UIImage new] forState:UIControlStateDisabled];
+    [_twitterView addSubview:logInButton];
+    
     // Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userCreated:) name:USER_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteUser:) name:DELETE_USER_NOTIFICATION object:nil];
@@ -61,8 +100,9 @@
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     _messageView.alpha = 0;
+    _facebookButton.alpha = 0;
+    _twitterView.alpha = 0;
     _messageViewCenterYConstraint.constant = kMessageStartingCenterY + 35;
-    _facebookViewBottomConstraint.constant = -120;
     _logoCenterYConstraint.constant = 0;
 }
 
@@ -82,10 +122,35 @@
                 _messageView.alpha = 1;
                 [self.view layoutIfNeeded];
             } completion:^(BOOL finished) {
-                _facebookViewBottomConstraint.constant = 0;
-                [UIView animateWithDuration:1 delay:0.25 options:0 animations:^{
-                    [self.view layoutIfNeeded];
-                } completion:nil];
+
+                self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:_buttonView];
+                
+                UIGravityBehavior *gravityBehavior = [[UIGravityBehavior alloc] initWithItems:@[_facebookButton, _twitterView]];
+                
+                UICollisionBehavior *ballCollision = [[UICollisionBehavior alloc] initWithItems:@[_facebookButton, _twitterView]];
+                [ballCollision setTranslatesReferenceBoundsIntoBoundary:YES];
+                
+                UIPushBehavior *facebookPush = [[UIPushBehavior alloc] initWithItems:@[_facebookButton] mode:UIPushBehaviorModeInstantaneous];
+                [facebookPush setAngle:DEGREES_TO_RADIANS(90)];
+                [facebookPush setMagnitude:0.5];
+                
+                UIPushBehavior *twitterPush = [[UIPushBehavior alloc] initWithItems:@[_facebookButton] mode:UIPushBehaviorModeInstantaneous];
+                [twitterPush setAngle:DEGREES_TO_RADIANS(90)];
+                [twitterPush setMagnitude:0.4];
+                
+                UIDynamicItemBehavior *dynamicBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[_facebookButton, _twitterView]];
+                [dynamicBehavior setElasticity:1];
+                [dynamicBehavior setResistance:4];
+                
+                [self.animator addBehavior:gravityBehavior];
+                [self.animator addBehavior:ballCollision];
+                [self.animator addBehavior:facebookPush];
+                [self.animator addBehavior:dynamicBehavior];
+                [self.animator addBehavior:twitterPush];
+                [UIView animateWithDuration:0.33 animations:^{
+                    _facebookButton.alpha = 1;
+                    _twitterView.alpha = 1;
+                }];
             }];
         });
     }
@@ -108,13 +173,6 @@
     [self.navigationController pushViewController:controller animated:YES];
 }
 
-- (void)showFacebookLogin
-{
-//    _loginView = [[FBLoginView alloc] initWithReadPermissions:@[EMAIL_KEY]];
-//    _loginView.frame = CGRectMake(-500, -500, 0, 0);
-//    [self.view addSubview:_loginView];
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
@@ -133,8 +191,7 @@
 - (void)showAlert
 {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"alert_cannotlogin_title", nil) message:NSLocalizedString(@"alert_cannotlogin_message", nil) preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-//        [FBSession.activeSession closeAndClearTokenInformation];
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [alert dismissViewControllerAnimated:YES completion:nil];
     }];
     [alert addAction:ok];
