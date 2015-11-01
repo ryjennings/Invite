@@ -30,6 +30,7 @@ import MapKit
     
     var indexPath: NSIndexPath!
     var needsResponse = false
+    var isSearching = false
     var isOld = false
     var isLast = false
     
@@ -65,7 +66,7 @@ import MapKit
     {
         let patternImageName = self.isOld ? self.isLast ? "topbottomold" : "topold" : self.isLast ? "topbottom" : "top"
         self.backgroundColor = self.needsResponse ? UIColor.inviteLightYellowColor() : UIColor(patternImage: UIImage(named: patternImageName)!)
-        if indexPath.section == 0 && indexPath.row == 0 && !self.needsResponse {
+        if indexPath.section == 0 && indexPath.row == 0 && !self.needsResponse && !self.isSearching {
             self.backgroundColor = UIColor.whiteColor()
         }
         self.titleLable.textColor = self.needsResponse ? UIColor.inviteOrangeColor() : UIColor.inviteTableHeaderColor()

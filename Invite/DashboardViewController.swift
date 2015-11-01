@@ -43,6 +43,8 @@ import CoreLocation
 
     var placer: MPTableViewAdPlacer!
     
+    var isSearching = false
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -69,12 +71,6 @@ import CoreLocation
         self.view.backgroundColor = UIColor.inviteBackgroundSlateColor()
         
         self.definesPresentationContext = true
-
-        self.refreshControl = UIRefreshControl()
-        self.refreshControl.tintColor = UIColor.whiteColor()
-        self.refreshControl.attributedTitle = nil
-        self.refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
-        self.tableView.insertSubview(refreshControl, atIndex: 0)
         
         self.navigationItem.title = "Invite"
         
@@ -85,6 +81,8 @@ import CoreLocation
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "userLoggedOut:", name: USER_LOGGED_OUT_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "finishedRefreshingEvents:", name: FINISHED_REFRESHING_EVENTS_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "removedEvent:", name: FINISHED_REMOVING_EVENT_NOTIFICATION, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
         
         if (AppDelegate.app().deeplinkObjectId != nil) {
             deeplink(nil)
@@ -96,6 +94,25 @@ import CoreLocation
 //            Crashlytics.sharedInstance().crash()
 //        }
         
+    }
+    
+    func addRefreshControl()
+    {
+        if self.refreshControl == nil {
+            self.refreshControl = UIRefreshControl()
+            self.refreshControl.tintColor = UIColor.whiteColor()
+            self.refreshControl.attributedTitle = nil
+            self.refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
+            self.tableView.insertSubview(refreshControl, atIndex: 0)
+        }
+    }
+    
+    func removeRefreshControl()
+    {
+        if self.refreshControl != nil {
+            self.refreshControl.removeFromSuperview()
+            self.refreshControl = nil
+        }
     }
     
     func refresh(sender: AnyObject)
@@ -114,15 +131,11 @@ import CoreLocation
         self.tableView.delegate = self
         self.tableView.dataSource = self
         separateEventsIntoGroups()
-        self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.reloadData()
     }
     
     func removedEvent(note: NSNotification)
     {
-//        self.placer = nil
-//        self.tableView.delegate = self
-//        self.tableView.dataSource = self
         self.tableView.mp_beginUpdates()
         separateEventsIntoGroups()
         if self.removeEntireSection {
@@ -193,28 +206,52 @@ import CoreLocation
         var row = -1
         var adRowCount = 0
         
+        let searchText = self.searchController.searchBar.text
+        var eventsRefinedBySearch = [PFObject]()
         var eventsToDisplay = [PFObject]()
-        if self.searchController.searchBar.selectedScopeButtonIndex == 0 {
-            eventsToDisplay = AppDelegate.user().events as! [PFObject]
+        
+        if self.isSearching {
+            removeRefreshControl()
         } else {
-            for event in AppDelegate.user().events {
+            addRefreshControl()
+        }
+        
+        if searchText != "" {
+            for event in AppDelegate.user().events as! [PFObject] {
+                if ((event["creator"] as! PFObject)["full_name"] as! String).lowercaseString.containsString(searchText!.lowercaseString) {
+                    eventsRefinedBySearch.append(event)
+                } else if (event[EVENT_TITLE_KEY] as! String).lowercaseString.containsString(searchText!.lowercaseString) {
+                    eventsRefinedBySearch.append(event)
+                } else if ((event[EVENT_LOCATION_KEY] as! PFObject)[LOCATION_ADDRESS_KEY] as! String).lowercaseString.containsString(searchText!.lowercaseString) ||
+                    ((event[EVENT_LOCATION_KEY] as! PFObject)[LOCATION_NAME_KEY] as! String).lowercaseString.containsString(searchText!.lowercaseString) {
+                        eventsRefinedBySearch.append(event)
+                }
+            }
+        } else {
+            eventsRefinedBySearch = AppDelegate.user().events as! [PFObject]
+        }
+
+        if self.searchController.searchBar.selectedScopeButtonIndex == 0 {
+            eventsToDisplay = eventsRefinedBySearch
+        } else {
+            for event in eventsRefinedBySearch {
                 switch self.searchController.searchBar.selectedScopeButtonIndex {
                 case 1:
                     if (event[EVENT_CREATOR_KEY] as! PFObject)[FACEBOOK_ID_KEY] as! String == AppDelegate.parseUser()[FACEBOOK_ID_KEY] as! String {
-                        eventsToDisplay.append(event as! PFObject)
+                        eventsToDisplay.append(event)
                     }
                 case 2:
-                    let response = EventMyResponse(rawValue: AppDelegate.user().myResponses[event.objectId!!] as! UInt)!
+                    let response = EventMyResponse(rawValue: AppDelegate.user().myResponses[event.objectId!] as! UInt)!
                     if response == EventMyResponse.Going || response == EventMyResponse.Maybe {
-                        eventsToDisplay.append(event as! PFObject)
+                        eventsToDisplay.append(event)
                     }
                 case 3:
-                    if EventMyResponse(rawValue: AppDelegate.user().myResponses[event.objectId!!] as! UInt)! == EventMyResponse.Sorry {
-                        eventsToDisplay.append(event as! PFObject)
+                    if EventMyResponse(rawValue: AppDelegate.user().myResponses[event.objectId!] as! UInt)! == EventMyResponse.Sorry {
+                        eventsToDisplay.append(event)
                     }
                 case 4:
-                    if EventMyResponse(rawValue: AppDelegate.user().myResponses[event.objectId!!] as! UInt)! == EventMyResponse.NoResponse {
-                        eventsToDisplay.append(event as! PFObject)
+                    if EventMyResponse(rawValue: AppDelegate.user().myResponses[event.objectId!] as! UInt)! == EventMyResponse.NoResponse {
+                        eventsToDisplay.append(event)
                     }
                 default:
                     break
@@ -222,7 +259,7 @@ import CoreLocation
             }
         }
         
-        if AppDelegate.user().needsResponse != nil {
+        if !self.isSearching && self.searchController.searchBar.selectedScopeButtonIndex == 0 && AppDelegate.user().needsResponse != nil {
             // New event
             let new = "New"
             self.groupKeys.append(new)
@@ -291,7 +328,7 @@ import CoreLocation
             
             if !(s.day == l.day && s.month == l.month && s.year == l.year) {
 
-                if adRowCount > 3 {
+                if !self.isSearching && adRowCount > 3 {
                     adRowCount = 0
                     
                     // Ad
@@ -352,7 +389,7 @@ import CoreLocation
         }
 
         // Ad placer
-        if self.placer == nil {
+        if !self.isSearching && self.placer == nil {
             self.placer = MPTableViewAdPlacer(tableView: self.tableView, viewController: self, adPositioning: positioning, defaultAdRenderingClass: AdCell.self)
             self.placer.loadAdsForAdUnitID("d5566993d01246f3a67b01378bf829ee", targeting: targeting)
         }
@@ -410,81 +447,20 @@ import CoreLocation
     
     // MARK: UITableView
     
-    func tableHeaderView() -> UIView
+    func tableHeaderView() -> UIView?
     {
-        let view = OBGradientView(frame: CGRectMake(0, 0, 0, AppDelegate.user().needsResponse != nil ? 115 : 150))
+        let view = UIView(frame: CGRectMake(0, 0, 0, 44))
         view.backgroundColor = UIColor.clearColor()
-        if AppDelegate.user().needsResponse == nil {
-            view.colors = [UIColor.inviteGrayColor(), UIColor.whiteColor()]
-        } else {
-            view.colors = [UIColor.inviteLightYellowGradientColor(), UIColor.inviteLightYellowColor()]
-        }
         
         let searchBarView = UIView()
         searchBarView.translatesAutoresizingMaskIntoConstraints = false
         searchBarView.addSubview(searchController.searchBar)
         view.addSubview(searchBarView)
         
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.backgroundColor = UIColor.clearColor()
-        label.textColor = UIColor.inviteQuestionColor()
-        label.textAlignment = .Center
-        label.preferredMaxLayoutWidth = 300
-        label.numberOfLines = 0
-        label.font = UIFont.inviteQuestionFont()
-        view.addSubview(label)
-        
-        let profile = ProfileImageView()
-        profile.translatesAutoresizingMaskIntoConstraints = false
-        profile.setup()
-        profile.configureForPerson(AppDelegate.parseUser(), responseValue: 0, width: 80, showResponse: false)
-        profile.layer.borderColor = UIColor.whiteColor().CGColor
-        profile.layer.borderWidth = 2
-        profile.layer.cornerRadius = 40
-        profile.clipsToBounds = true
-        view.addSubview(profile)
-        
-        let shadow = OBGradientView()
-        shadow.translatesAutoresizingMaskIntoConstraints = false
-        shadow.backgroundColor = UIColor.clearColor()
-        shadow.colors = [UIColor.inviteYellowColor(), UIColor.inviteYellowColor(), UIColor.darkGrayColor().colorWithAlphaComponent(0.15), UIColor.darkGrayColor().colorWithAlphaComponent(0)]
-        shadow.locations = [0, 0.05, 0.05, 1]
-        if AppDelegate.user().needsResponse != nil {
-            view.addSubview(shadow)
-        }
-        
-        let style = NSMutableParagraphStyle()
-        style.lineSpacing = 4
-        
-        let att = NSMutableAttributedString()
-        
-        if AppDelegate.user().needsResponse != nil {
-            att.appendAttributedString(NSAttributedString(string: "You've been invited to", attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(18), NSForegroundColorAttributeName: UIColor.inviteOrangeColor(), NSParagraphStyleAttributeName: style]))
-            att.appendAttributedString(NSAttributedString(string: "\n\(self.nextEvent!)", attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(24), NSForegroundColorAttributeName: UIColor.darkGrayColor(), NSParagraphStyleAttributeName: style]))
-        } else {
-            att.appendAttributedString(NSAttributedString(string: "Your next event\n", attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(20), NSForegroundColorAttributeName: UIColor.inviteQuestionColor(), NSParagraphStyleAttributeName: style]))
-            att.appendAttributedString(NSAttributedString(string: self.nextEvent!, attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(24), NSForegroundColorAttributeName: UIColor.inviteQuestionColor(), NSParagraphStyleAttributeName: style]))
-        }
-
-        label.attributedText = att
-        label.shadowColor = UIColor.whiteColor()
-        label.shadowOffset = CGSizeMake(0, 1)
-        
-        let views = ["bar": searchBarView, "label": label, "profile": profile, "shadow": shadow]
+        let views = ["bar": searchBarView]
         
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[bar]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[profile(80)]-20-[label]-20-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[profile(80)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        if AppDelegate.user().needsResponse != nil {
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]-34-[label]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[shadow]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-215-[shadow(15)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        } else {
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]-26-[label]-10-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        }
-        view.addConstraint(NSLayoutConstraint(item: profile, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: label, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: AppDelegate.user().needsResponse != nil ? 10 : 0))
-        
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[bar(44)]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         
         return view
     }
@@ -528,14 +504,16 @@ import CoreLocation
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int)
     {
-        let headerView = view as! UITableViewHeaderFooterView
-        headerView.textLabel!.textColor = UIColor.inviteTableHeaderColor()
-        headerView.textLabel!.font = UIFont.proximaNovaSemiboldFontOfSize(13)
+        if section > 0 {
+            let headerView = view as! UITableViewHeaderFooterView
+            headerView.textLabel!.textColor = UIColor.inviteTableHeaderColor()
+            headerView.textLabel!.font = UIFont.proximaNovaSemiboldFontOfSize(13)
+        }
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
-        if section == 0 {
+        if !(self.isSearching || self.searchController.searchBar.selectedScopeButtonIndex > 0) && section == 0 {
             return nil
         }
         if (self.groupKeys[section] as NSString).containsString("Ad") {
@@ -571,9 +549,10 @@ import CoreLocation
         let end = event[EVENT_END_DATE_KEY] as! NSDate
         let cell = tableView.dequeueReusableCellWithIdentifier(DASHBOARD_CELL_IDENTIFIER, forIndexPath: indexPath) as! DashboardCell
         cell.indexPath = indexPath
-        cell.needsResponse = AppDelegate.user().needsResponse != nil && indexPath.section == 0
+        cell.needsResponse = !self.isSearching && self.searchController.searchBar.selectedScopeButtonIndex == 0 && AppDelegate.user().needsResponse != nil && indexPath.section == 0
         cell.isOld = now.earlierDate(end).isEqualToDate(end)
         cell.isLast = indexPath.row == self.groups[self.groupKeys[indexPath.section]]!.count - 1
+        cell.isSearching = self.isSearching || self.searchController.searchBar.selectedScopeButtonIndex > 0
         cell.event = event
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         return cell
@@ -618,7 +597,6 @@ import CoreLocation
         } else {
             dismissOnboarding()
             separateEventsIntoGroups()
-            self.tableView.tableHeaderView = tableHeaderView()
         }
         
         self.tableView.reloadData()
@@ -651,7 +629,6 @@ import CoreLocation
         self.tableView.delegate = self
         self.tableView.dataSource = self
         separateEventsIntoGroups()
-        self.tableView.tableHeaderView = tableHeaderView()
         self.tableView.reloadData()
     }
     
@@ -708,8 +685,19 @@ import CoreLocation
     
     // MARK: - UISearchControllerDelegate
     
+    func didPresentSearchController(searchController: UISearchController)
+    {
+        self.isSearching = true
+        self.placer = nil
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        separateEventsIntoGroups()
+        self.tableView.reloadData()
+    }
+    
     func didDismissSearchController(searchController: UISearchController)
     {
+        self.isSearching = false
         self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -721,10 +709,30 @@ import CoreLocation
     
     func scrollViewDidScroll(scrollView: UIScrollView)
     {
-        if scrollView.contentOffset.y < 0 {
+        if !self.isSearching && scrollView.contentOffset.y < 0 {
             self.pullViewHeightConstraint.constant = abs(scrollView.contentOffset.y)
         } else {
             self.pullViewHeightConstraint.constant = 0
         }
+    }
+
+    // MARK: - Keyboard
+    
+    func keyboardWillShow(notification: NSNotification)
+    {
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+            let contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0)
+            tableView.contentInset = contentInsets
+            tableView.scrollIndicatorInsets = contentInsets
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification)
+    {
+        UIView.animateWithDuration(0.35, animations: {
+            let contentInsets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
+            self.tableView.contentInset = contentInsets
+            self.tableView.scrollIndicatorInsets = contentInsets
+        })
     }
 }
