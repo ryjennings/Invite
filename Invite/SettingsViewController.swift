@@ -96,7 +96,8 @@ enum SettingsSection: Int {
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
-        return SettingsSection.Count.rawValue
+        return 0
+//        return SettingsSection.Count.rawValue
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int

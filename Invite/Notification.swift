@@ -14,7 +14,7 @@ class Notification: NSObject
     {
         let notification = UILocalNotification()
         notification.alertBody = alertBody
-        notification.fireDate = fireDate
+        notification.fireDate = fireDate.dateByAddingTimeInterval(-900)
         notification.soundName = "alert_43.mp3"
         notification.userInfo = ["objectId": objectId]
         notification.category = "InviteCategory"

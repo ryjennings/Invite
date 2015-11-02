@@ -45,6 +45,8 @@ import CoreLocation
     
     var isSearching = false
     
+    var adIndexSets = [NSIndexSet]()
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -188,6 +190,10 @@ import CoreLocation
         self.groupKeys.removeAll()
         self.groupIndexTitles.removeAll()
         self.groupIndexTitleSections.removeAll()
+        
+        if self.searchController.searchBar.selectedScopeButtonIndex == 0 && !self.isSearching {
+            self.adIndexSets.removeAll()
+        }
         
         self.nextEvent = nil
         
@@ -334,6 +340,9 @@ import CoreLocation
                     // Ad
                     section++
                     positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
+                    if self.searchController.searchBar.selectedScopeButtonIndex == 0 && !self.isSearching {
+                        self.adIndexSets.append(NSIndexSet(index: section))
+                    }
 
                     let ad = "Ad\(section)"
                     self.groupKeys.append(ad)
@@ -687,22 +696,54 @@ import CoreLocation
     
     func didPresentSearchController(searchController: UISearchController)
     {
+        let indexSets = self.adIndexSets
+        
         self.isSearching = true
         self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        separateEventsIntoGroups()
-        self.tableView.reloadData()
+        
+        if self.searchController.searchBar.selectedScopeButtonIndex == 0
+        {
+            self.tableView.beginUpdates()
+            separateEventsIntoGroups()
+            
+            self.tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Fade)
+            for indexSet in indexSets {
+                self.tableView.deleteSections(indexSet, withRowAnimation: UITableViewRowAnimation.Fade)
+            }
+            
+            self.tableView.endUpdates()
+        } else {
+            separateEventsIntoGroups()
+            self.tableView.reloadData()
+        }
     }
     
     func didDismissSearchController(searchController: UISearchController)
     {
+        let indexSets = self.adIndexSets
+
         self.isSearching = false
         self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        separateEventsIntoGroups()
-        self.tableView.reloadData()
+        
+        if self.searchController.searchBar.selectedScopeButtonIndex == 0
+        {
+            self.tableView.beginUpdates()
+            separateEventsIntoGroups()
+
+            self.tableView.insertSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Fade)
+            for indexSet in indexSets {
+                self.tableView.insertSections(indexSet, withRowAnimation: UITableViewRowAnimation.Fade)
+            }
+            
+            self.tableView.endUpdates()
+        } else {
+            separateEventsIntoGroups()
+            self.tableView.reloadData()
+        }
     }
     
     // MARK: - UIScrollViewDelegate
