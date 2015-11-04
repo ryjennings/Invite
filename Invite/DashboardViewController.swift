@@ -11,7 +11,7 @@ import Crashlytics
 import MoPub
 import CoreLocation
 
-@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate
+@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate, DashboardOnboardingViewDelegate
 {
     @IBOutlet weak var rightButton: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
@@ -265,8 +265,7 @@ import CoreLocation
             }
         }
         
-        if !self.isSearching && self.searchController.searchBar.selectedScopeButtonIndex == 0 && AppDelegate.user().needsResponse != nil {
-            // New event
+        if !self.isSearching && self.searchController.searchBar.selectedScopeButtonIndex == 0 {
             let new = "New"
             self.groupKeys.append(new)
             self.groupIndexTitles.append("N")
@@ -275,8 +274,13 @@ import CoreLocation
             
             self.groups[new] = [PFObject]()
             self.groupIndexTitleSections.append(self.groups.count - 1)
-            self.nextEvent = AppDelegate.user().needsResponse[EVENT_TITLE_KEY] as? String
-            self.groups[new]?.append(AppDelegate.user().needsResponse)
+
+            if AppDelegate.user().needsResponse != nil {
+                self.nextEvent = AppDelegate.user().needsResponse[EVENT_TITLE_KEY] as? String
+                self.groups[new]?.append(AppDelegate.user().needsResponse)
+            } else {
+                self.groups[new]?.append(PFObject(className: CLASS_EVENT_KEY))
+            }
             adRowCount++
         }
         
@@ -418,6 +422,7 @@ import CoreLocation
     private func configureOnboarding()
     {
         self.onboarding = DashboardOnboardingView()
+        self.onboarding.delegate = self
         self.onboarding.translatesAutoresizingMaskIntoConstraints = false
         self.onboarding.backgroundColor = UIColor.clearColor()
         
@@ -544,6 +549,24 @@ import CoreLocation
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         let event = self.groups[self.groupKeys[indexPath.section]]![indexPath.row]
+        
+        if !self.isSearching && self.searchController.searchBar.selectedScopeButtonIndex == 0 && indexPath.section == 0 && indexPath.row == 0 {
+            if AppDelegate.user().needsResponse != nil {
+                
+                let cell = tableView.dequeueReusableCellWithIdentifier(DASHBOARD_NEEDS_RESPONSE_CELL_IDENTIFIER, forIndexPath: indexPath) as! DashboardNeedsResponseCell
+                cell.event = event
+                cell.selectionStyle = UITableViewCellSelectionStyle.None
+                return cell
+                
+            } else {
+                
+                let cell = tableView.dequeueReusableCellWithIdentifier(DASHBOARD_NEXT_EVENT_CELL_IDENTIFIER, forIndexPath: indexPath) as! DashboardNextEventCell
+                cell.nextEventString = self.nextEvent!
+                cell.selectionStyle = UITableViewCellSelectionStyle.None
+                return cell
+                
+            }
+        }
         
         if event[EVENT_TITLE_KEY] == nil {
             let cell = tableView.dequeueReusableCellWithIdentifier(PADDING_CELL_IDENTIFIER, forIndexPath: indexPath) as! PaddingCell
@@ -774,6 +797,15 @@ import CoreLocation
             let contentInsets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
             self.tableView.contentInset = contentInsets
             self.tableView.scrollIndicatorInsets = contentInsets
+        })
+    }
+    
+    // MARK: - DashboardOnboardingViewDelegate
+    
+    func tappedCreateEventButton()
+    {
+        dispatch_async(dispatch_get_main_queue(), {
+            self.performSegueWithIdentifier(SEGUE_TO_EVENT, sender: self)
         })
     }
 }

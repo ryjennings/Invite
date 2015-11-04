@@ -113,7 +113,6 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define INPUT_CELL_IDENTIFIER @"InputCellIdentifier"
 #define NUMBERED_INPUT_CELL_IDENTIFIER @"NumberedInputCellIdentifier"
 #define RADIO_CELL_IDENTIFIER @"RadioCellIdentifier"
-#define DASHBOARD_CELL_IDENTIFIER @"DashboardCellIdentifier"
 #define PROFILE_CELL_IDENTIFIER @"ProfileCellIdentifier"
 #define INVITEES_CELL_IDENTIFIER @"InviteesCellIdentifier"
 #define INVITEES_COLLECTION_CELL_IDENTIFIER @"InviteesCollectionCellIdentifier"
@@ -126,6 +125,9 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define NO_CELL_IDENTIFIER @"NoCellIdentifier"
 #define BUTTON_CELL_IDENTIFIER @"ButtonCellIdentifier"
 #define LOCATION_CELL_IDENTIFIER @"LocationCellIdentifier"
+#define DASHBOARD_CELL_IDENTIFIER @"DashboardCellIdentifier"
+#define DASHBOARD_NEEDS_RESPONSE_CELL_IDENTIFIER @"DashboardNeedsResponseCellIdentifier"
+#define DASHBOARD_NEXT_EVENT_CELL_IDENTIFIER @"DashboardNextEventCellIdentifier"
 #define DASHBOARD_AD_CELL_IDENTIFIER @"DashboardAdCellIdentifier"
 
 // Notifications

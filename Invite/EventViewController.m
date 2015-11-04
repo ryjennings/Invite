@@ -292,21 +292,18 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     {
         UIBarButtonItem *right;
 
-        [_modeButton setTitle:@"Edit" forState:UIControlStateNormal];
-
         if ([AppDelegate user].protoEvent && !_isUpdating)
         {
-            right = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
+            right = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrow"] style:UIBarButtonItemStylePlain target:self action:@selector(preview:)];
         }
         else
         {
             if (_isUpdating && !_isOld) {
-//                self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
                 self.navigationItem.leftBarButtonItem = nil;
             }
             right = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(close:)];
-            right.tintColor = [UIColor inviteTableHeaderColor];
         }
+        right.tintColor = [UIColor inviteTableHeaderColor];
         self.navigationItem.rightBarButtonItem = right;
     }
     else
@@ -318,8 +315,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         _modeButton.backgroundColor = [[UIColor inviteBlueColor] colorWithAlphaComponent:_modeButton.enabled ? 1 : 0.5];
 
         if (_isCreator) {
-            [_modeButton setTitle:@"Cancel" forState:UIControlStateNormal];
-            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
+            UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrow"] style:UIBarButtonItemStylePlain target:self action:@selector(preview:)];
+            left.tintColor = [UIColor inviteTableHeaderColor];
+            
+            self.navigationItem.leftBarButtonItem = left;
             self.navigationItem.rightBarButtonItem = cancel;
         } else {
             [_modeButton setTitle:@"Preview" forState:UIControlStateNormal];

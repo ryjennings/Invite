@@ -14,6 +14,7 @@
 		071338C31AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */; };
 		071408741AEC9D660081F304 /* DatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071408731AEC9D660081F304 /* DatePickerView.swift */; };
 		0714087B1AEE13FC0081F304 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0714087A1AEE13FC0081F304 /* ProfileCell.swift */; };
+		071C90D21BE89214009126E5 /* DashboardNextEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071C90D11BE89214009126E5 /* DashboardNextEventCell.swift */; };
 		071F694F1A8C1A3D009A8380 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 071F694E1A8C1A3D009A8380 /* Localizable.strings */; };
 		072460E41BE1381700DAA4DB /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 072460E11BE1381700DAA4DB /* TwitterKit.framework */; };
 		072460E51BE1381700DAA4DB /* TwitterKitResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 072460E21BE1381700DAA4DB /* TwitterKitResources.bundle */; };
@@ -50,6 +51,7 @@
 		0728366C1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0728365B1AD2F02000B158AC /* ProximaNovaCond-SemiboldIt.otf */; };
 		0728366E1AD2F1FC00B158AC /* UIFont+Invite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */; };
 		072836761AD315BF00B158AC /* UIView+Invite.m in Sources */ = {isa = PBXBuildFile; fileRef = 072836751AD315BF00B158AC /* UIView+Invite.m */; };
+		072D3D331BE875F6003C1E58 /* DashboardNeedsResponseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072D3D321BE875F6003C1E58 /* DashboardNeedsResponseCell.swift */; };
 		073029ED1BB3954B00E2266E /* Reservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073029EC1BB3954B00E2266E /* Reservation.swift */; };
 		073273F31A892BFB007700B3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F21A892BFB007700B3 /* main.m */; };
 		073273F61A892BFB007700B3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 073273F51A892BFB007700B3 /* AppDelegate.m */; };
@@ -147,6 +149,7 @@
 		071338C21AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		071408731AEC9D660081F304 /* DatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
 		0714087A1AEE13FC0081F304 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		071C90D11BE89214009126E5 /* DashboardNextEventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardNextEventCell.swift; sourceTree = "<group>"; };
 		071F694E1A8C1A3D009A8380 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		072460E11BE1381700DAA4DB /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterKit.framework; path = ../../Documents/Crashlytics/TwitterKit.framework; sourceTree = "<group>"; };
 		072460E21BE1381700DAA4DB /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = ../../Documents/Crashlytics/TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle; sourceTree = "<group>"; };
@@ -184,6 +187,7 @@
 		0728366D1AD2F1FC00B158AC /* UIFont+Invite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Invite.swift"; sourceTree = "<group>"; };
 		072836741AD315BF00B158AC /* UIView+Invite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Invite.h"; sourceTree = "<group>"; };
 		072836751AD315BF00B158AC /* UIView+Invite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Invite.m"; sourceTree = "<group>"; };
+		072D3D321BE875F6003C1E58 /* DashboardNeedsResponseCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardNeedsResponseCell.swift; sourceTree = "<group>"; };
 		073029EC1BB3954B00E2266E /* Reservation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reservation.swift; sourceTree = "<group>"; };
 		073273ED1A892BFB007700B3 /* Invite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Invite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		073273F11A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -651,6 +655,8 @@
 			children = (
 				07C19AD71BC2EA97000FACB4 /* DashboardViewController.swift */,
 				07C19AD91BC2F3C6000FACB4 /* DashboardCell.swift */,
+				072D3D321BE875F6003C1E58 /* DashboardNeedsResponseCell.swift */,
+				071C90D11BE89214009126E5 /* DashboardNextEventCell.swift */,
 				07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */,
 			);
 			name = Dashboard;
@@ -861,6 +867,7 @@
 				077811691AFF237800D5DC4D /* UserDefaults.swift in Sources */,
 				07ADBEA11BE1455E00281096 /* AdCell.swift in Sources */,
 				07C19ADA1BC2F3C6000FACB4 /* DashboardCell.swift in Sources */,
+				072D3D331BE875F6003C1E58 /* DashboardNeedsResponseCell.swift in Sources */,
 				075D10841ADC859D00C86130 /* MKAnnotationView+WebCache.m in Sources */,
 				075D108A1ADC859D00C86130 /* SDWebImageDownloaderOperation.m in Sources */,
 				07C19AE01BC9DFD2000FACB4 /* UIView+Invite.swift in Sources */,
@@ -883,6 +890,7 @@
 				072836761AD315BF00B158AC /* UIView+Invite.m in Sources */,
 				07719E421BB0834800A99E20 /* PaddingCell.swift in Sources */,
 				070C88B61B05227F005E7CDD /* LabelCell.swift in Sources */,
+				071C90D21BE89214009126E5 /* DashboardNextEventCell.swift in Sources */,
 				07F584AD1BBBB7DA00A529FA /* SwiftyJSON.swift in Sources */,
 				07719E401BAFC11200A99E20 /* NumberedInputCell.swift in Sources */,
 				07719E441BB2165800A99E20 /* ButtonCell.swift in Sources */,
@@ -1025,6 +1033,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1054,6 +1063,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
