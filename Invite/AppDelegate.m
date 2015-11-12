@@ -102,6 +102,14 @@
     [PFPush handlePush:userInfo];
 }
 
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    if (notification.userInfo[@"objectId"]) {
+        self.deeplinkObjectId = notification.userInfo[@"objectId"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DEEPLINK_NOTIFICATION object:nil];
+    }
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     [[NSNotificationCenter defaultCenter] postNotificationName:APPLICATION_WILL_RESIGN_ACTIVE_NOTIFICATION object:self];
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

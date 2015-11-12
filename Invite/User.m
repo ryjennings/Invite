@@ -216,14 +216,36 @@
 
 - (void)createMyReponses
 {
+    [Notification cancelAllLocalNotifications];
+    
+    NSUInteger needsResponse = 0;
+    
     _needsResponse = nil;
     if (_events) {
         NSMutableDictionary *myResponses = [NSMutableDictionary dictionary];
         for (PFObject *event in _events) {
+            
+            // First setup location notifications...
+            NSInteger remindMe = 2;
+            if ([UserDefaults objectForKey:event.objectId]) {
+                remindMe = [UserDefaults integerForKey:event.objectId];
+            } else {
+                [UserDefaults setInteger:remindMe key:event.objectId];
+            }
+            
             if ([((PFObject *)event[EVENT_CREATOR_KEY])[EMAIL_KEY] isEqualToString:[AppDelegate user].email]) {
+                
+                if ([[(NSDate *)event[EVENT_START_DATE_KEY] earlierDate:[NSDate date]] isEqualToDate:[NSDate date]]) {
+                    [Notification scheduleLocalNotificationForDate:(NSDate *)event[EVENT_START_DATE_KEY]
+                                                        eventTitle:event[EVENT_TITLE_KEY]
+                                                          remindMe:remindMe
+                                                          objectId:event.objectId];
+                }
+
                 myResponses[event.objectId] = @(EventMyResponseHost);
                 continue;
             }
+
             for (NSString *eventResponse in event[EVENT_RESPONSES_KEY]) {
                 NSArray *com = [eventResponse componentsSeparatedByString:@":"];
                 if ([com[0] isEqualToString:[AppDelegate user].email]) {
@@ -234,12 +256,57 @@
                         ![[now earlierDate:end] isEqualToDate:end]) {
                         _needsResponse = event;
                     }
+                    
+                    if (((NSString *)com[1]).integerValue == EventResponseNoResponse &&
+                        ![[now earlierDate:end] isEqualToDate:end]) {
+                        needsResponse++;
+                    }
                     myResponses[event.objectId] = @(((NSString *)com[1]).integerValue);
+                    
+                    if (((NSString *)com[1]).integerValue != EventResponseSorry) {
+                        
+                        if ([[(NSDate *)event[EVENT_START_DATE_KEY] earlierDate:[NSDate date]] isEqualToDate:[NSDate date]]) {
+                            [Notification scheduleLocalNotificationForDate:(NSDate *)event[EVENT_START_DATE_KEY]
+                                                                eventTitle:event[EVENT_TITLE_KEY]
+                                                                  remindMe:remindMe
+                                                                  objectId:event.objectId];
+                        }
+                    }
+                    
                     break;
                 }
             }
         }
         _myResponses = myResponses;
+    }
+//    if (needsResponse > 0) {
+        [UIApplication sharedApplication].applicationIconBadgeNumber = needsResponse;
+//    }
+}
+
+- (NSTimeInterval)timeIntervalForObjectId:(NSString *)objectId
+{
+    switch ([UserDefaults integerForKey:objectId]) {
+        case 0: return 0;
+        case 1: return 5 * 60 * -1;
+        case 2: return 15 * 60 * -1;
+        case 3: return 30 * 60 * -1;
+        case 4: return 60 * 60 * -1;
+        case 5: return 120 * 60 * -1;
+        default: return 0;
+    }
+}
+
+- (NSString *)textForObjectId:(NSString *)objectId
+{
+    switch ([UserDefaults integerForKey:objectId]) {
+        case 0: return @"happening now";
+        case 1: return @"%@ in 5 mins";
+        case 2: return @"%@ in 15 mins";
+        case 3: return @"%@ in 30 mins";
+        case 4: return @"%@ in 1 hour";
+        case 5: return @"%@ in 2 hours";
+        default: return @"";
     }
 }
 

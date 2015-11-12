@@ -79,6 +79,11 @@ import UIKit
     
     // MARK: - UITextViewDelegate
     
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool
+    {
+        return textView.text.characters.count + (text.characters.count - range.length) <= 60
+    }
+    
     func textViewDidChange(textView: UITextView)
     {
         if textView.text != "" {

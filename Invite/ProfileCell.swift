@@ -53,32 +53,17 @@ import UIKit
     
     var location: Location! {
         didSet {
-            if self.location.name == nil {
-                self.leadingFlexLabelConstraint.constant = -30
-                self.nameLabel.hidden = true
-                self.flexLabel.text = self.location.formattedAddress
-                self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15, 0, 0)
-            } else if self.location.pfObject != nil {
-                self.leadingFlexLabelConstraint.constant = 120
-                self.nameLabel.text = self.location.name
-                self.nameLabel.textColor = UIColor.inviteTableHeaderColor()
-                self.flexLabel.text = self.location.formattedAddress
-                self.flexLabel.textColor = UIColor.inviteGrayColor()
-                self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15, 0, 0)
-            } else {
-                self.leadingFlexLabelConstraint.constant = 120
-                self.nameLabel.hidden = false
-                self.nameLabel.text = self.location.name
-                self.flexLabel.text = self.location.formattedAddress
-                self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 + 40 : 15 + 40, 0, 0)
-            }
+            self.nameLabel.text = self.location.name
+            self.nameLabel.textColor = UIColor.inviteTableHeaderColor()
+            self.flexLabel.text = self.location.formattedAddress
+            self.flexLabel.textColor = UIColor.inviteGrayColor()
+            self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15, 0, 0)
+//                self.separatorInset = UIEdgeInsetsMake(0, SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 + 40 : 15 + 40, 0, 0)
             
             self.accessoryView = UIView(frame: CGRectMake(0, 0, 10, 10))
             self.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
             self.accessoryView?.clipsToBounds = true
             self.accessoryView?.layer.cornerRadius = 5
-            
-            self.profileImageView.hidden = true
         }
     }
     

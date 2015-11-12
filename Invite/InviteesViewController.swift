@@ -139,6 +139,15 @@ class Friend
         self.searchController.searchBar.spellCheckingType = UITextSpellCheckingType.No
     }
     
+    private func showAlert()
+    {
+        let alert = UIAlertController(title: "Error", message: "One of the email addresses you've entered is not formatted correctly, please correct.", preferredStyle: UIAlertControllerStyle.Alert)
+        let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (action: UIAlertAction) -> Void in
+        }
+        alert.addAction(ok)
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     // MARK: - UITableView
     
     func tableHeaderView() -> UIView
@@ -347,15 +356,17 @@ class Friend
     
     @IBAction func save(sender: UIBarButtonItem)
     {
-        convertFriendsForSave()
-        AppDelegate.user().protoEvent.savedEmailInput = self.textViewText
-        AppDelegate.user().protoEvent.invitees = self.eventInvitees
-        if AppDelegate.user().protoEvent.existingInvitees != nil {
-            AppDelegate.user().protoEvent.updatedInvitees = AppDelegate.user().protoEvent.invitees.count != AppDelegate.user().protoEvent.existingInvitees.count
+        if validateEmails() {
+            convertFriendsForSave()
+            AppDelegate.user().protoEvent.savedEmailInput = self.textViewText
+            AppDelegate.user().protoEvent.invitees = self.eventInvitees
+            if AppDelegate.user().protoEvent.existingInvitees != nil {
+                AppDelegate.user().protoEvent.updatedInvitees = AppDelegate.user().protoEvent.invitees.count != AppDelegate.user().protoEvent.existingInvitees.count
+            }
+            AppDelegate.user().protoEvent.emails = self.eventEmails
+            AppDelegate.user().protoEvent.updatedEmails = AppDelegate.user().protoEvent.emails.count > 0
+            navigationController?.popViewControllerAnimated(true)
         }
-        AppDelegate.user().protoEvent.emails = self.eventEmails
-        AppDelegate.user().protoEvent.updatedEmails = AppDelegate.user().protoEvent.emails.count > 0
-        navigationController?.popViewControllerAnimated(true)
     }
     
     // MARK: - InputCellDelegate
@@ -674,6 +685,30 @@ class Friend
         self.selectedFriends = self.selectedFriends.filter({$0.email != friend.email})
     }
 
+    private func validateEmails() -> Bool
+    {
+        if self.textViewText != "" {
+            var components = self.textViewText.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) as NSArray
+            let string = components.componentsJoinedByString("")
+            components = string.componentsSeparatedByString(",")
+            for email in components as! [String] {
+                if !isValidEmail(email) {
+                    showAlert()
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    func isValidEmail(testStr:String) -> Bool {
+        // println("validate calendar: \(testStr)")
+        let emailRegEx = "(?:[a-z0-9!#$%\\&'*+/=?\\^_`{|}~-]+(?:\\.[a-z0-9!#$%\\&'*+/=?\\^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])"
+        
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluateWithObject(testStr)
+    }
+    
     private func convertFriendsForSave()
     {
         // Email addresses from new friends

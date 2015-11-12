@@ -597,7 +597,6 @@
 		078924711AB369CE005EE7FB /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				073273FA1A892BFB007700B3 /* LoginViewController.h */,
 				073273FB1A892BFB007700B3 /* LoginViewController.m */,
 			);
 			name = Login;
@@ -657,6 +656,7 @@
 				07C19AD91BC2F3C6000FACB4 /* DashboardCell.swift */,
 				072D3D321BE875F6003C1E58 /* DashboardNeedsResponseCell.swift */,
 				071C90D11BE89214009126E5 /* DashboardNextEventCell.swift */,
+				073273FA1A892BFB007700B3 /* LoginViewController.h */,
 				07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */,
 			);
 			name = Dashboard;

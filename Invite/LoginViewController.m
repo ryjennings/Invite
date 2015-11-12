@@ -149,7 +149,7 @@
                 [self.animator addBehavior:twitterPush];
                 [UIView animateWithDuration:0.33 animations:^{
                     _facebookButton.alpha = 1;
-                    _twitterView.alpha = 1;
+//                    _twitterView.alpha = 1;
                 }];
             }];
         });

@@ -10,11 +10,9 @@ import UIKit
 
 @objc(DashboardOnboardingView) class DashboardOnboardingView: UIView
 {
-//    var titleLabel = UILabel()
-//    var subtitleLabel = UILabel()
-//    var lineView = UIView()
-    
-    var delegate: DashboardOnboardingViewDelegate?
+    var titleLabel = UILabel()
+    var subtitleLabel = UILabel()
+    var lineView = UIView()
     
     override init(frame: CGRect)
     {
@@ -30,52 +28,12 @@ import UIKit
     
     func prepareView()
     {
-        configureSmallOnboarding()
-//        configureTitle()
-//        configureSubtitle()
-//        configureLine()
-//        configureSteps()
+        configureTitle()
+        configureSubtitle()
+        configureLine()
+        configureSteps()
     }
     
-    func configureSmallOnboarding()
-    {
-        let titleLabel = UILabel()
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.backgroundColor = UIColor.clearColor()
-        titleLabel.textAlignment = .Center
-        titleLabel.font = UIFont.proximaNovaLightFontOfSize(30)
-        titleLabel.textColor = UIColor.inviteTableHeaderColor()
-        titleLabel.shadowColor = UIColor.whiteColor()
-        titleLabel.shadowOffset = CGSizeMake(0, 1)
-        titleLabel.text = "You have no events!"
-        self.addSubview(titleLabel)
-        
-        let button = UIButton(type: UIButtonType.Custom)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Create an event now", forState: UIControlState.Normal)
-        button.layer.cornerRadius = 6
-        button.clipsToBounds = true
-        button.titleLabel?.font = UIFont.proximaNovaRegularFontOfSize(18)
-        button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        button.setBackgroundImage(UIImage.imageWithColor(UIColor.inviteButtonBackgroundColor()), forState: UIControlState.Normal)
-        button.setBackgroundImage(UIImage.imageWithColor(UIColor.inviteDarkBlueColor()), forState: UIControlState.Highlighted)
-        button.addTarget(self, action: "tappedButton", forControlEvents: UIControlEvents.TouchUpInside)
-        self.addSubview(button)
-        
-        let views = ["title": titleLabel, "button": button]
-        
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[title]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[button(290)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[title]-20-[button(44)]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        self.addConstraint(NSLayoutConstraint(item: button, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
-    }
-    
-    func tappedButton()
-    {
-        self.delegate?.tappedCreateEventButton()
-    }
-    
-    /*
     func configureTitle()
     {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -233,10 +191,4 @@ class DashboardStepView: UIView
         self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[number]-10-[text]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
         self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[title]-10-[text]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
     }
-    */
-}
-
-protocol DashboardOnboardingViewDelegate
-{
-    func tappedCreateEventButton()
 }

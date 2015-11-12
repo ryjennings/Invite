@@ -24,6 +24,13 @@ import UIKit
         defaults.synchronize()
     }
     
+    class func setInteger(value: Int, key: String)
+    {
+        let defaults = NSUserDefaults.standardUserDefaults()
+        defaults.setInteger(value, forKey: key)
+        defaults.synchronize()
+    }
+    
     class func setBool(b: Bool, key: String)
     {
         let defaults = NSUserDefaults.standardUserDefaults()
@@ -44,5 +51,11 @@ import UIKit
     {
         let defaults = NSUserDefaults.standardUserDefaults()
         return defaults.boolForKey(key)
+    }
+    
+    class func integerForKey(key: String) -> Int
+    {
+        let defaults = NSUserDefaults.standardUserDefaults()
+        return defaults.integerForKey(key)
     }
 }

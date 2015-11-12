@@ -34,7 +34,7 @@ enum TimeframeRow: Int {
     var reservations: NSSet!
     
     // keyboard height 270.0
-    let kDatePickerViewHeight = CGFloat(314.0)
+    let kDatePickerViewHeight = CGFloat(270.0)
     
     var datePickerView = DatePickerView()
     var datePickerViewBottomConstraint: NSLayoutConstraint!
@@ -49,6 +49,7 @@ enum TimeframeRow: Int {
     {
         reservations = AppDelegate.user().reservations
         
+        self.saveBarButtonItem.enabled = false
         self.view.backgroundColor = UIColor.inviteBackgroundSlateColor()
 
         self.tableView.tableHeaderView = tableHeaderView()
@@ -386,7 +387,6 @@ enum TimeframeRow: Int {
 
     func showDatePicker(show: Bool)
     {
-        self.saveBarButtonItem.enabled = !show
         datePickerViewBottomConstraint.constant = show ? 0 : kDatePickerViewHeight
 
         UIView.beginAnimations(nil, context: nil)
@@ -403,9 +403,7 @@ enum TimeframeRow: Int {
     
     func datePickerView(datePickerView: DatePickerView, hasSelectedDate date: NSDate)
     {
-        unselectRow(TimeframeRow.StartDate)
-        unselectRow(TimeframeRow.EndDate)
-        showDatePicker(false)
+        self.saveBarButtonItem.enabled = true
         if (datePickerView.isSelectingStartDate) {
             startDate = date
             if (endDate == nil || endDate.earlierDate(startDate).isEqualToDate(endDate)) {
@@ -415,13 +413,6 @@ enum TimeframeRow: Int {
             endDate = date
         }
         determineConflicts()
-    }
-    
-    func dismissDatePickerView(datePickerView: DatePickerView)
-    {
-        unselectRow(TimeframeRow.StartDate)
-        unselectRow(TimeframeRow.EndDate)
-        showDatePicker(false)
     }
     
     @IBAction func cancel(sender: UIBarButtonItem)

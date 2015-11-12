@@ -294,7 +294,6 @@ enum LocationSection: Int {
         cell.accessoryView?.backgroundColor = UIColor.whiteColor()
         cell.nameLabel.textColor = UIColor.whiteColor()
         cell.flexLabel.textColor = UIColor.whiteColor()
-        cell.profileImageView.layer.borderWidth = 1
     }
     
     func unselectProfileCell(cell: ProfileCell)
@@ -303,7 +302,6 @@ enum LocationSection: Int {
         cell.accessoryView?.backgroundColor = UIColor.inviteBackgroundSlateColor()
         cell.nameLabel.textColor = UIColor.inviteTableHeaderColor()
         cell.flexLabel.textColor = UIColor.inviteGrayColor()
-        cell.profileImageView.layer.borderWidth = 0
     }
     
     private func selectMapCell(cell: MapCell)

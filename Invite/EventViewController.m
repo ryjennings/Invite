@@ -31,6 +31,7 @@ typedef NS_ENUM(NSUInteger, EventRow)
     EventRowResponse,
     EventRowTimeframe,
     EventRowLocation,
+    EventRowRemindMe,
     EventRowButton
 };
 
@@ -53,6 +54,7 @@ typedef NS_ENUM(NSUInteger, EventViewRow)
     EventViewRowTitle, // contains Date
     EventViewRowHost,
     EventViewRowResponse,
+    EventViewRowRemindMe,
     EventViewRowTimeframe,
     EventViewRowLocation,
     EventViewRowBottomPadding,
@@ -392,8 +394,19 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (BOOL)readyToSend
 {
-    return (!_isUpdating && _event.title && (_event.invitees || _event.emails) && _event.editTimeframe && (_event.location || _event.protoLocation)) ||
+    return (!_isUpdating && _event.title && (_event.invitees || _event.emails) && ![_event.editTimeframe.string isEqualToString:@"Set a time"] && (_event.location || _event.protoLocation)) ||
     (_isUpdating && (_event.updatedTitle || _event.updatedInvitees || _event.updatedEmails || _event.updatedTimeframe || _event.updatedLocation));
+}
+
+- (BOOL)newDetails
+{
+    if (!_isUpdating && !_event.title && !_event.invitees && !_event.emails && [_event.editTimeframe.string isEqualToString:@"Set a time"] && !_event.location && !_event.protoLocation) {
+        return NO;
+    } else if (_isUpdating) {
+        return _event.updatedTitle || _event.updatedInvitees || _event.updatedEmails || _event.updatedTimeframe || _event.updatedLocation;
+    } else {
+        return YES;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -602,6 +615,18 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         return cell;
     }
     
+    if (_mode == EventModeView && indexPath.row == EventViewRowRemindMe)
+    {
+        LabelCell *cell = (LabelCell *)[tableView dequeueReusableCellWithIdentifier:LABEL_CELL_IDENTIFIER];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.cellLabel.text = @"Remind";
+        cell.cellText.text = [AppDelegate user].protoEvent && _mode == EventModeView ? @"15 minutes before" : [self textForObjectId:_event.parseEvent.objectId];
+        cell.cellText.textColor = [UIColor inviteBlueColor];
+        cell.cellText.font = [UIFont proximaNovaSemiboldFontOfSize:16];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        return cell;
+    }
+    
     if (_mode == EventModeView && indexPath.row == EventViewRowHost)
     {
         LabelCell *cell = (LabelCell *)[tableView dequeueReusableCellWithIdentifier:LABEL_CELL_IDENTIFIER];
@@ -618,6 +643,32 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     return cell;
 }
 
+- (NSTimeInterval)timeIntervalForObjectId:(NSString *)objectId
+{
+    switch ([UserDefaults integerForKey:objectId]) {
+        case 0: return 0;
+        case 1: return 5 * 60 * -1;
+        case 2: return 15 * 60 * -1;
+        case 3: return 30 * 60 * -1;
+        case 4: return 60 * 60 * -1;
+        case 5: return 120 * 60 * -1;
+        default: return 0;
+    }
+}
+
+- (NSString *)textForObjectId:(NSString *)objectId
+{
+    switch ([UserDefaults integerForKey:objectId]) {
+        case 0: return @"At time of event";
+        case 1: return @"5 minutes before";
+        case 2: return @"15 minutes before";
+        case 3: return @"30 minutes before";
+        case 4: return @"1 hour before";
+        case 5: return @"2 hours before";
+        default: return @"";
+    }
+}
+
 - (UIColor *)defaultColor
 {
     return [UIColor inviteBlueColor];
@@ -631,6 +682,25 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    if ([AppDelegate user].protoEvent && _mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowRemindMe) {
+        return;
+    }
+
+    if (_mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowRemindMe) {
+
+        NSUInteger val = [UserDefaults integerForKey:_event.parseEvent.objectId];
+        val++;
+        if (val == 6) {
+            val = 0;
+        }
+        [UserDefaults setInteger:val key:_event.parseEvent.objectId];
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        
+        [Notification cancelLocalNotification:_event.parseEvent.objectId];
+        [Notification scheduleLocalNotificationForDate:_event.parseEvent[EVENT_START_DATE_KEY] eventTitle:_event.parseEvent[EVENT_TITLE_KEY] remindMe:val objectId:_event.parseEvent.objectId];
+        
+    }
     
     if (!_isCreator && _mode == EventModeView && indexPath.row == EventViewRowTitle && indexPath.section == EventViewSectionDetails)
     {
@@ -660,6 +730,11 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         }
     }
     
+    if ([AppDelegate user].protoEvent && _mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowLocation)
+    {
+        return;
+    }
+
     if (_mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowLocation)
     {
         [self launchMapsWithAddress:_event.location[LOCATION_ADDRESS_KEY]];
@@ -734,6 +809,16 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (IBAction)close:(id)sender
 {
     if (_startingResponse != _response) {
+        
+        if (_response == EventResponseSorry) {
+            [Notification cancelLocalNotification:[AppDelegate user].eventToDisplay.objectId];
+        } else {
+            [Notification scheduleLocalNotificationForDate:[AppDelegate user].eventToDisplay[EVENT_START_DATE_KEY]
+                                                eventTitle:[AppDelegate user].eventToDisplay[EVENT_TITLE_KEY]
+                                                  remindMe:[UserDefaults integerForKey:[AppDelegate user].eventToDisplay.objectId]
+                                                  objectId:[AppDelegate user].eventToDisplay.objectId];
+        }
+        
         // Send new response to parse
         [[AppDelegate user].eventToDisplay removeObject:[NSString stringWithFormat:@"%@:%ld", [AppDelegate user].email, (long)_startingResponse] forKey:EVENT_RESPONSES_KEY];
         [[AppDelegate user].eventToDisplay saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -744,15 +829,34 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             }];
         }];
     } else {
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CLOSED_NOTIFICATION object:nil];
         [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
+- (void)showAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Are your sure you want to close?" message:@"You are creating a new event and will loose everything if you close. Be careful." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *closeAction = [UIAlertAction actionWithTitle:@"Close" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        [AppDelegate user].protoEvent = nil;
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }];
+    [alert addAction:cancelAction];
+    [alert addAction:closeAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 - (void)cancel:(id)sender
 {
-    [AppDelegate user].protoEvent = nil;
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    if ([self newDetails]) {
+        [self showAlert];
+    } else {
+        [AppDelegate user].protoEvent = nil;
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)preview:(id)sender

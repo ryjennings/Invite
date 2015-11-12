@@ -11,7 +11,7 @@ import Crashlytics
 import MoPub
 import CoreLocation
 
-@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate, DashboardOnboardingViewDelegate
+@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate
 {
     @IBOutlet weak var rightButton: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
@@ -387,6 +387,24 @@ import CoreLocation
             lastEventStartDate = startDate
         }
         
+        if !self.isSearching && adRowCount > 3 {
+            adRowCount = 0
+            
+            // Ad
+            section++
+            positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
+            if self.searchController.searchBar.selectedScopeButtonIndex == 0 && !self.isSearching {
+                self.adIndexSets.append(NSIndexSet(index: section))
+            }
+            
+            let ad = "Ad\(section)"
+            self.groupKeys.append(ad)
+            self.groupIndexTitles.append(" ")
+            self.groups[ad] = [PFObject]()
+            self.groupIndexTitleSections.append(self.groups.count - 1)
+            self.groups[ad]?.append(PFObject(className: CLASS_EVENT_KEY))
+        }
+
         if let oldEvents = oldEvents {
             let old = "Old Events"
             if self.groups[old] == nil {
@@ -422,7 +440,6 @@ import CoreLocation
     private func configureOnboarding()
     {
         self.onboarding = DashboardOnboardingView()
-        self.onboarding.delegate = self
         self.onboarding.translatesAutoresizingMaskIntoConstraints = false
         self.onboarding.backgroundColor = UIColor.clearColor()
         
@@ -504,7 +521,10 @@ import CoreLocation
             
             self.removeEntireSection = self.tableView.numberOfRowsInSection(indexPath.section) > 1 ? false : true
             self.removeIndexPath = indexPath
-            AppDelegate.user().removeEvent(self.groups[self.groupKeys[indexPath.section]]![indexPath.row])
+            let event = self.groups[self.groupKeys[indexPath.section]]![indexPath.row] 
+            AppDelegate.user().removeEvent(event)
+            Notification.cancelLocalNotification(event.objectId!)
+            UserDefaults.removeObjectForKey(event.objectId!)
             
         }
         deleteButton.backgroundColor = UIColor.inviteRedColor()
