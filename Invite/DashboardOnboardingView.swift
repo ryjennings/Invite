@@ -79,7 +79,7 @@ import UIKit
     
     func configureSteps()
     {
-        var titles = ["Enter a title and description", "Choose invitees", "Set a date and time", "Select a location", "Review and send!"]
+        var titles = ["Enter a title", "Choose invitees", "Set a date and time", "Select a location", "Review and send!"]
         var texts = [
             "What will you be calling your event? Is it a birthday? New Years party? Meetup? Give you're guests a reason to attend!",
             "Who are you inviting to the event? Invitees should have a Facebook account, so keep that in mind.",

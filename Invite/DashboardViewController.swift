@@ -449,15 +449,8 @@ import CoreLocation
             self.onboardingScrollView.translatesAutoresizingMaskIntoConstraints = false
             self.onboardingScrollView.backgroundColor = UIColor.clearColor()
             self.onboardingScrollView.indicatorStyle = UIScrollViewIndicatorStyle.White
-            self.view.addSubview(self.onboarding)
-            
-            self.gradientView = OBGradientView()
-            self.gradientView.colors = [UIColor.inviteSlateClearColor(), UIColor.inviteSlateColor()]
-            self.gradientView.translatesAutoresizingMaskIntoConstraints = false
-            self.view.addSubview(self.gradientView)
-            
-            self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[gradientView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["gradientView": self.gradientView]))
-            self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[gradientView(30)]-60-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["gradientView": self.gradientView]))
+            self.view.addSubview(self.onboardingScrollView)
+            self.onboardingScrollView.addSubview(self.onboarding)
             
             self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[scrollView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["scrollView": self.onboardingScrollView]))
             self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-64-[scrollView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["scrollView": self.onboardingScrollView]))
