@@ -226,7 +226,7 @@
         for (PFObject *event in _events) {
             
             // First setup location notifications...
-            NSInteger remindMe = 2;
+            NSInteger remindMe = 0; // Default
             if ([UserDefaults objectForKey:event.objectId]) {
                 remindMe = [UserDefaults integerForKey:event.objectId];
             } else {
@@ -279,9 +279,7 @@
         }
         _myResponses = myResponses;
     }
-//    if (needsResponse > 0) {
-        [UIApplication sharedApplication].applicationIconBadgeNumber = needsResponse;
-//    }
+    [UIApplication sharedApplication].applicationIconBadgeNumber = needsResponse;
 }
 
 - (NSTimeInterval)timeIntervalForObjectId:(NSString *)objectId

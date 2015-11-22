@@ -620,7 +620,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         LabelCell *cell = (LabelCell *)[tableView dequeueReusableCellWithIdentifier:LABEL_CELL_IDENTIFIER];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.cellLabel.text = @"Remind";
-        cell.cellText.text = [AppDelegate user].protoEvent && _mode == EventModeView ? @"15 minutes before" : [self textForObjectId:_event.parseEvent.objectId];
+        cell.cellText.text = _isCreating ? @"15 minutes before" : [self textForObjectId:_event.parseEvent.objectId];
         cell.cellText.textColor = [UIColor inviteBlueColor];
         cell.cellText.font = [UIFont proximaNovaSemiboldFontOfSize:16];
         cell.accessoryType = UITableViewCellAccessoryNone;
@@ -646,12 +646,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (NSTimeInterval)timeIntervalForObjectId:(NSString *)objectId
 {
     switch ([UserDefaults integerForKey:objectId]) {
-        case 0: return 0;
-        case 1: return 5 * 60 * -1;
-        case 2: return 15 * 60 * -1;
-        case 3: return 30 * 60 * -1;
-        case 4: return 60 * 60 * -1;
-        case 5: return 120 * 60 * -1;
+        case 1: return 0;
+        case 2: return 5 * 60 * -1;
+        case 3: return 15 * 60 * -1;
+        case 4: return 30 * 60 * -1;
+        case 5: return 60 * 60 * -1;
+        case 6: return 120 * 60 * -1;
         default: return 0;
     }
 }
@@ -659,13 +659,30 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (NSString *)textForObjectId:(NSString *)objectId
 {
     switch ([UserDefaults integerForKey:objectId]) {
-        case 0: return @"At time of event";
-        case 1: return @"5 minutes before";
-        case 2: return @"15 minutes before";
-        case 3: return @"30 minutes before";
-        case 4: return @"1 hour before";
-        case 5: return @"2 hours before";
-        default: return @"";
+        case 0: return [self textForDefaultRemindMe];
+        case 1: return @"At time of event";
+        case 2: return @"5 minutes before";
+        case 3: return @"15 minutes before";
+        case 4: return @"30 minutes before";
+        case 5: return @"1 hour before";
+        case 6: return @"2 hours before";
+        default: return @"Uh oh...";
+    }
+}
+
+- (NSString *)textForDefaultRemindMe
+{
+    if (![UserDefaults objectForKey:@"DefaultRemindMe"]) {
+        [UserDefaults setInteger:3 key:@"DefaultRemindMe"]; // 15 minutes before
+    }
+    switch ([UserDefaults integerForKey:@"DefaultRemindMe"]) {
+        case 1: return @"At time of event";
+        case 2: return @"5 minutes before";
+        case 3: return @"15 minutes before";
+        case 4: return @"30 minutes before";
+        case 5: return @"1 hour before";
+        case 6: return @"2 hours before";
+        default: return @"Uh oh";
     }
 }
 
@@ -683,22 +700,19 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-    if ([AppDelegate user].protoEvent && _mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowRemindMe) {
+    if (_isCreating && _mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowRemindMe) {
         return;
     }
 
     if (_mode == EventModeView && indexPath.section == EventViewSectionDetails && indexPath.row == EventViewRowRemindMe) {
 
-        NSUInteger val = [UserDefaults integerForKey:_event.parseEvent.objectId];
+        NSUInteger val = [UserDefaults integerForKey:_event.parseEvent.objectId] ? [UserDefaults integerForKey:_event.parseEvent.objectId] : [UserDefaults integerForKey:@"DefaultRemindMe"];
         val++;
-        if (val == 6) {
-            val = 0;
+        if (val > 6) {
+            val = 1;
         }
         [UserDefaults setInteger:val key:_event.parseEvent.objectId];
         [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-        
-        [Notification cancelLocalNotification:_event.parseEvent.objectId];
-        [Notification scheduleLocalNotificationForDate:_event.parseEvent[EVENT_START_DATE_KEY] eventTitle:_event.parseEvent[EVENT_TITLE_KEY] remindMe:val objectId:_event.parseEvent.objectId];
         
     }
     
@@ -809,16 +823,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (IBAction)close:(id)sender
 {
     if (_startingResponse != _response) {
-        
-        if (_response == EventResponseSorry) {
-            [Notification cancelLocalNotification:[AppDelegate user].eventToDisplay.objectId];
-        } else {
-            [Notification scheduleLocalNotificationForDate:[AppDelegate user].eventToDisplay[EVENT_START_DATE_KEY]
-                                                eventTitle:[AppDelegate user].eventToDisplay[EVENT_TITLE_KEY]
-                                                  remindMe:[UserDefaults integerForKey:[AppDelegate user].eventToDisplay.objectId]
-                                                  objectId:[AppDelegate user].eventToDisplay.objectId];
-        }
-        
+                
         // Send new response to parse
         [[AppDelegate user].eventToDisplay removeObject:[NSString stringWithFormat:@"%@:%ld", [AppDelegate user].email, (long)_startingResponse] forKey:EVENT_RESPONSES_KEY];
         [[AppDelegate user].eventToDisplay saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

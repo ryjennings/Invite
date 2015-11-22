@@ -12,32 +12,8 @@ class Notification: NSObject
 {
     class func scheduleLocalNotificationForDate(date: NSDate, eventTitle: String, remindMe: Int, objectId: String)
     {
-        var ti: NSTimeInterval
-        var alertBody = ""
-        
-        switch remindMe {
-        case 0:
-            ti = 0
-            alertBody = "\(eventTitle) happening now"
-        case 1:
-            ti = 5 * 60 * -1
-            alertBody = "\(eventTitle) in 5 mins"
-        case 2:
-            ti = 15 * 60 * -1
-            alertBody = "\(eventTitle) in 15 mins"
-        case 3:
-            ti = 30 * 60 * -1
-            alertBody = "\(eventTitle) in 30 mins"
-        case 4:
-            ti = 60 * 60 * -1
-            alertBody = "\(eventTitle) in 1 hour"
-        case 5:
-            ti = 120 * 60 * -1
-            alertBody = "\(eventTitle) in 2 hours"
-        default:
-            ti = 0
-            alertBody = ""
-        }
+        let ti = self.tiForRemindMe(RemindMe(rawValue: remindMe)!)
+        let alertBody = self.alertBodyForRemindMe(RemindMe(rawValue: remindMe)!, eventTitle: eventTitle)
         
         let notification = UILocalNotification()
         notification.alertBody = alertBody
@@ -70,5 +46,86 @@ class Notification: NSObject
     class func cancelAllLocalNotifications()
     {
         UIApplication.sharedApplication().cancelAllLocalNotifications()
+    }
+    
+    class func tiForRemindMe(remindMe: RemindMe) -> Double
+    {
+        switch remindMe {
+        case .UseDefault:
+            return self.tiForDefaultRemindMe()
+        case .AtTimeOfEvent:
+            return 0
+        case .FiveMinutesBefore:
+            return 5 * 60 * -1
+        case .FifteenMinutesBefore:
+            return 15 * 60 * -1
+        case .ThirtyMinutesBefore:
+            return 30 * 60 * -1
+        case .OneHourBefore:
+            return 60 * 60 * -1
+        case .TwoHoursBefore:
+            return 120 * 60 * -1
+        }
+    }
+    
+    class func tiForDefaultRemindMe() -> Double
+    {
+        if UserDefaults.objectForKey("DefaultRemindMe") == nil {
+            UserDefaults.setInteger(RemindMe.FifteenMinutesBefore.rawValue, key: "DefaultRemindMe")
+        }
+        switch RemindMe(rawValue: UserDefaults.integerForKey("DefaultRemindMe"))! {
+        case .FiveMinutesBefore:
+            return 5 * 60 * -1
+        case .FifteenMinutesBefore:
+            return 15 * 60 * -1
+        case .ThirtyMinutesBefore:
+            return 30 * 60 * -1
+        case .OneHourBefore:
+            return 60 * 60 * -1
+        case .TwoHoursBefore:
+            return 120 * 60 * -1
+        default: return 0
+        }
+    }
+    
+    class func alertBodyForRemindMe(remindMe: RemindMe, eventTitle: String) -> String
+    {
+        switch remindMe {
+        case .UseDefault:
+            return self.alertBodyForRemindMe(RemindMe(rawValue: UserDefaults.integerForKey("DefaultRemindMe"))!, eventTitle: eventTitle)
+        case .AtTimeOfEvent:
+            return "\(eventTitle) happening now"
+        case .FiveMinutesBefore:
+            return "\(eventTitle) in 5 mins"
+        case .FifteenMinutesBefore:
+            return "\(eventTitle) in 15 mins"
+        case .ThirtyMinutesBefore:
+            return "\(eventTitle) in 30 mins"
+        case .OneHourBefore:
+            return "\(eventTitle) in 1 hour"
+        case .TwoHoursBefore:
+            return "\(eventTitle) in 2 hours"
+        }
+    }
+
+    class func alertBodyForDefaultRemindMe(eventTitle: String) -> String
+    {
+        if UserDefaults.objectForKey("DefaultRemindMe") == nil {
+            UserDefaults.setInteger(RemindMe.FifteenMinutesBefore.rawValue, key: "DefaultRemindMe")
+        }
+        switch RemindMe(rawValue: UserDefaults.integerForKey("DefaultRemindMe"))! {
+        case .FiveMinutesBefore:
+            return "\(eventTitle) in 5 mins"
+        case .FifteenMinutesBefore:
+            return "\(eventTitle) in 15 mins"
+        case .ThirtyMinutesBefore:
+            return "\(eventTitle) in 30 mins"
+        case .OneHourBefore:
+            return "\(eventTitle) in 1 hour"
+        case .TwoHoursBefore:
+            return "\(eventTitle) in 2 hours"
+        default:
+            return "\(eventTitle) happening now"
+        }
     }
 }
