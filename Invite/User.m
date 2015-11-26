@@ -225,6 +225,11 @@
         NSMutableDictionary *myResponses = [NSMutableDictionary dictionary];
         for (PFObject *event in _events) {
             
+            BOOL cancelled = NO;
+            if (event[EVENT_CANCELLED_KEY]) {
+                cancelled = ((NSNumber *)event[EVENT_CANCELLED_KEY]).boolValue;
+            }
+
             // First setup location notifications...
             NSInteger remindMe = 0; // Default
             if ([UserDefaults objectForKey:event.objectId]) {
@@ -234,8 +239,10 @@
             }
             
             if ([((PFObject *)event[EVENT_CREATOR_KEY])[EMAIL_KEY] isEqualToString:[AppDelegate user].email]) {
-                
-                if ([[(NSDate *)event[EVENT_START_DATE_KEY] earlierDate:[NSDate date]] isEqualToDate:[NSDate date]]) {
+                NSLog(@"CREATOR %@ %@ %@", event[EVENT_START_DATE_KEY], [NSDate date], event[EVENT_TITLE_KEY]);
+
+                if ([[NSDate date] compare:[Notification actualFireDateForDate:(NSDate *)event[EVENT_START_DATE_KEY] remindMe:remindMe]] == NSOrderedAscending && !cancelled) {
+
                     [Notification scheduleLocalNotificationForDate:(NSDate *)event[EVENT_START_DATE_KEY]
                                                         eventTitle:event[EVENT_TITLE_KEY]
                                                           remindMe:remindMe
@@ -253,7 +260,8 @@
                     NSDate *end = event[EVENT_END_DATE_KEY];
                     if (!_needsResponse &&
                         ((NSString *)com[1]).integerValue == EventResponseNoResponse &&
-                        ![[now earlierDate:end] isEqualToDate:end]) {
+                        ![[now earlierDate:end] isEqualToDate:end] &&
+                        event[EVENT_CANCELLED_KEY] != [NSNumber numberWithBool:YES]) {
                         _needsResponse = event;
                     }
                     
@@ -263,9 +271,10 @@
                     }
                     myResponses[event.objectId] = @(((NSString *)com[1]).integerValue);
                     
-                    if (((NSString *)com[1]).integerValue != EventResponseSorry) {
+                    if (((NSString *)com[1]).integerValue != EventResponseSorry && !cancelled) {
                         
-                        if ([[(NSDate *)event[EVENT_START_DATE_KEY] earlierDate:[NSDate date]] isEqualToDate:[NSDate date]]) {
+                        if ([[NSDate date] compare:[Notification actualFireDateForDate:(NSDate *)event[EVENT_START_DATE_KEY] remindMe:remindMe]] == NSOrderedAscending) {
+                            NSLog(@"scheduleLocalNotificationForDate");
                             [Notification scheduleLocalNotificationForDate:(NSDate *)event[EVENT_START_DATE_KEY]
                                                                 eventTitle:event[EVENT_TITLE_KEY]
                                                                   remindMe:remindMe

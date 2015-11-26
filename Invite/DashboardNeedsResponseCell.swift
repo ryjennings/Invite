@@ -85,7 +85,7 @@ class DashboardNeedsResponseCell: UITableViewCell
         
         let att = NSMutableAttributedString()
         
-        att.appendAttributedString(NSAttributedString(string: "You've been invited to", attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(18), NSForegroundColorAttributeName: UIColor.inviteOrangeColor(), NSParagraphStyleAttributeName: style]))
+        att.appendAttributedString(NSAttributedString(string: "You've been invited to", attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(17), NSForegroundColorAttributeName: UIColor.inviteOrangeColor(), NSParagraphStyleAttributeName: style]))
         att.appendAttributedString(NSAttributedString(string: "\n\(self.event[EVENT_TITLE_KEY] as! String)", attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(24), NSForegroundColorAttributeName: UIColor.darkGrayColor(), NSParagraphStyleAttributeName: style]))
         
         self.upperLable.backgroundColor = UIColor.clearColor()

@@ -22,6 +22,10 @@ import MapKit
     @IBOutlet weak var profileImageView2: ProfileImageView!
     @IBOutlet weak var profileImageView3: ProfileImageView!
     @IBOutlet weak var profileImageView4: ProfileImageView!
+    @IBOutlet weak var profileImageView5: ProfileImageView!
+    @IBOutlet weak var profileImageView6: ProfileImageView!
+    @IBOutlet weak var profileImageView7: ProfileImageView!
+    @IBOutlet weak var cancelledLabel: UILabel!
     
     @IBOutlet weak var colorViewWidthConstraint: NSLayoutConstraint!
     
@@ -33,11 +37,24 @@ import MapKit
     var isSearching = false
     var isOld = false
     var isLast = false
+    var isCancelled = false {
+        didSet {
+            self.cancelledLabel.hidden = false
+            prepareCancelledLabel()
+        }
+    }
     
     var event: PFObject! {
         didSet {
             configureForEvent()
         }
+    }
+    
+    private func prepareCancelledLabel()
+    {
+        self.cancelledLabel.font = UIFont.proximaNovaRegularItalicFontOfSize(12)
+        self.cancelledLabel.text = "This event has been cancelled. Slide to delete."
+        self.cancelledLabel.textColor = UIColor.inviteOrangeColor()
     }
     
     override func awakeFromNib()
@@ -112,21 +129,38 @@ import MapKit
     
     private func configureForEvent()
     {
+        self.cancelledLabel.hidden = !self.isCancelled
+
         if self.isOld {
             self.colorView.hidden = false
             self.startHourLabel.hidden = false
             self.endDayLabel.hidden = true
             self.endHourLabel.hidden = false
+            self.yourLabel.hidden = true
+            self.invitedLabel.hidden = true
+            self.cancelledLabel.hidden = false
+            self.cancelledLabel.text = "This event is over. Slide to delete."
         } else if self.needsResponse {
             self.colorView.hidden = true
             self.startHourLabel.hidden = true
             self.endDayLabel.hidden = true
             self.endHourLabel.hidden = true
+            self.yourLabel.hidden = false
+            self.invitedLabel.hidden = false
+        } else if self.isCancelled {
+            self.colorView.hidden = false
+            self.startHourLabel.hidden = false
+            self.endDayLabel.hidden = false
+            self.endHourLabel.hidden = false
+            self.yourLabel.hidden = true
+            self.invitedLabel.hidden = true
         } else {
             self.colorView.hidden = false
             self.startHourLabel.hidden = false
             self.endDayLabel.hidden = false
             self.endHourLabel.hidden = false
+            self.yourLabel.hidden = false
+            self.invitedLabel.hidden = false
         }
         
         let invitees = inviteesByEmail()
@@ -202,8 +236,11 @@ import MapKit
         self.profileImageView2.hidden = true
         self.profileImageView3.hidden = true
         self.profileImageView4.hidden = true
+        self.profileImageView5.hidden = true
+        self.profileImageView6.hidden = true
+        self.profileImageView7.hidden = true
 
-        var profiles = [self.profileImageView1, self.profileImageView2, self.profileImageView3, self.profileImageView4]
+        var profiles = [self.profileImageView1, self.profileImageView2, self.profileImageView3, self.profileImageView4, self.profileImageView5, self.profileImageView6, self.profileImageView7]
         
         var profileIndex = 0
         
@@ -314,7 +351,7 @@ import MapKit
     {
         super.setHighlighted(highlighted, animated: animated)
 
-        if highlighted && !self.needsResponse {
+        if highlighted && !self.needsResponse && !self.isCancelled {
             selectCell()
         } else {
             unselectCell()

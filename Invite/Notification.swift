@@ -18,11 +18,17 @@ class Notification: NSObject
         let notification = UILocalNotification()
         notification.alertBody = alertBody
         notification.fireDate = date.dateByAddingTimeInterval(ti)
+        print("scheduled \(objectId) notification at \(date.dateByAddingTimeInterval(ti)) \(eventTitle)")
         notification.soundName = "alert_43.mp3"
         notification.userInfo = ["objectId": objectId]
         notification.category = "InviteCategory"
         UIApplication.sharedApplication().scheduleLocalNotification(notification)
-        print("scheduled \(objectId) notification")
+    }
+    
+    class func actualFireDateForDate(date: NSDate, remindMe: Int) -> NSDate
+    {
+        let ti = self.tiForRemindMe(RemindMe(rawValue: remindMe)!)
+        return date.dateByAddingTimeInterval(ti)
     }
     
     class func cancelLocalNotification(objectId: String)

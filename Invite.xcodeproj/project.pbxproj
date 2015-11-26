@@ -60,6 +60,7 @@
 		073274011A892BFB007700B3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 073274001A892BFB007700B3 /* Images.xcassets */; };
 		073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073274021A892BFB007700B3 /* LaunchScreen.xib */; };
 		073274101A892BFB007700B3 /* InviteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0732740F1A892BFB007700B3 /* InviteTests.m */; };
+		073DA1291C062F2600410FDE /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 073DA1281C062F2600410FDE /* MessageUI.framework */; };
 		0741BD921BA897EC0099282F /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD911BA897EC0099282F /* FBSDKCoreKit.framework */; };
 		0741BD941BA898D00099282F /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD931BA898D00099282F /* FBSDKLoginKit.framework */; };
 		0741BD991BA8A6B40099282F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD951BA8A6B40099282F /* Bolts.framework */; };
@@ -69,7 +70,6 @@
 		07426B2D1BE32ACB00E25C0D /* AdCopyLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07426B2C1BE32ACB00E25C0D /* AdCopyLabel.swift */; };
 		074437791AE025D0002A6C4D /* InviteesSectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074437781AE025D0002A6C4D /* InviteesSectionViewController.m */; };
 		0744377B1AE02A37002A6C4D /* InviteesCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */; };
-		0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744377C1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift */; };
 		074AA5931A9C353C009DC152 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 074AA5921A9C353C009DC152 /* LaunchViewController.m */; };
 		074ABE931AE47ACE00C093C7 /* TimeframePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */; };
 		075249E61ACB397C00D279DA /* InviteTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075249E51ACB397C00D279DA /* InviteTheme.swift */; };
@@ -202,6 +202,7 @@
 		073274091A892BFB007700B3 /* InviteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InviteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0732740E1A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0732740F1A892BFB007700B3 /* InviteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InviteTests.m; sourceTree = "<group>"; };
+		073DA1281C062F2600410FDE /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		0741BD911BA897EC0099282F /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../Downloads/FacebookSDKs-iOS-20150910/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		0741BD931BA898D00099282F /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../Downloads/FacebookSDKs-iOS-20150910/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		0741BD951BA8A6B40099282F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "../../Documents/parse-library/Bolts.framework"; sourceTree = "<group>"; };
@@ -212,7 +213,6 @@
 		074437771AE025D0002A6C4D /* InviteesSectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteesSectionViewController.h; sourceTree = "<group>"; };
 		074437781AE025D0002A6C4D /* InviteesSectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteesSectionViewController.m; sourceTree = "<group>"; };
 		0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteesCollectionCell.swift; sourceTree = "<group>"; };
-		0744377C1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteesCollectionHeaderView.swift; sourceTree = "<group>"; };
 		074AA5911A9C353C009DC152 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
 		074AA5921A9C353C009DC152 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		074ABE921AE47ACE00C093C7 /* TimeframePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeframePickerViewController.swift; sourceTree = "<group>"; };
@@ -302,6 +302,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				073DA1291C062F2600410FDE /* MessageUI.framework in Frameworks */,
 				0741BD941BA898D00099282F /* FBSDKLoginKit.framework in Frameworks */,
 				071338C31AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib in Frameworks */,
 				0741BD9C1BA8A6B40099282F /* ParseUI.framework in Frameworks */,
@@ -345,7 +346,6 @@
 				074437771AE025D0002A6C4D /* InviteesSectionViewController.h */,
 				074437781AE025D0002A6C4D /* InviteesSectionViewController.m */,
 				0744377A1AE02A37002A6C4D /* InviteesCollectionCell.swift */,
-				0744377C1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift */,
 			);
 			name = "Invitees Section";
 			sourceTree = "<group>";
@@ -370,6 +370,7 @@
 		0724632E1A8BD44200820834 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				073DA1281C062F2600410FDE /* MessageUI.framework */,
 				072460E71BE1398900DAA4DB /* MoPub.framework */,
 				072460E81BE1398900DAA4DB /* MoPub.bundle */,
 				072460E11BE1381700DAA4DB /* TwitterKit.framework */,
@@ -597,6 +598,7 @@
 		078924711AB369CE005EE7FB /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				073273FA1A892BFB007700B3 /* LoginViewController.h */,
 				073273FB1A892BFB007700B3 /* LoginViewController.m */,
 			);
 			name = Login;
@@ -656,7 +658,6 @@
 				07C19AD91BC2F3C6000FACB4 /* DashboardCell.swift */,
 				072D3D321BE875F6003C1E58 /* DashboardNeedsResponseCell.swift */,
 				071C90D11BE89214009126E5 /* DashboardNextEventCell.swift */,
-				073273FA1A892BFB007700B3 /* LoginViewController.h */,
 				07D2D9C41AE5A6D4008E1733 /* DashboardOnboardingView.swift */,
 			);
 			name = Dashboard;
@@ -845,7 +846,6 @@
 				0755CE491A8D22E500FF05B7 /* User.m in Sources */,
 				07D9DD391AD83E42008FF016 /* RadioCell.swift in Sources */,
 				07B8EE511AAA2F17002B9962 /* EventViewController.m in Sources */,
-				0744377D1AE02B53002A6C4D /* InviteesCollectionHeaderView.swift in Sources */,
 				07C19ADC1BC6DE6A000FACB4 /* UIImage+Invite.swift in Sources */,
 				07E1FD901ACE4EDD00F619D0 /* AppDelegate.swift in Sources */,
 				075D10931ADC859D00C86130 /* UIView+WebCacheOperation.m in Sources */,

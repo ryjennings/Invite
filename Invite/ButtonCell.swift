@@ -18,6 +18,8 @@ import UIKit
         self.button.clipsToBounds = true
         self.button.titleLabel?.font = UIFont.proximaNovaRegularFontOfSize(18)
         self.button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        self.button.backgroundColor = UIColor.inviteButtonBackgroundColor()
+        
+        self.button.setBackgroundImage(UIImage.imageWithColor(UIColor.inviteButtonBackgroundColor()), forState: UIControlState.Normal)
+        self.button.setBackgroundImage(UIImage.imageWithColor(UIColor.inviteDarkBlueColor()), forState: UIControlState.Highlighted)
     }
 }

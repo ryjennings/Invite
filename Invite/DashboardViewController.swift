@@ -11,7 +11,7 @@ import Crashlytics
 import MoPub
 import CoreLocation
 
-@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate
+@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate, CLLocationManagerDelegate
 {
     @IBOutlet weak var rightButton: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
@@ -21,7 +21,6 @@ import CoreLocation
     var searchController: UISearchController!
 
     var onboardingScrollView: UIScrollView!
-    var gradientView: OBGradientView!
     var onboarding: DashboardOnboardingView!
     
     var groups = [String: [PFObject]]()
@@ -47,6 +46,12 @@ import CoreLocation
     
     var adIndexSets = [NSIndexSet]()
     
+    var adFree = true
+    
+    var locationManager: CLLocationManager!
+    var latitude: CLLocationDegrees!
+    var longitude: CLLocationDegrees!
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -75,7 +80,9 @@ import CoreLocation
         self.definesPresentationContext = true
         
         self.navigationItem.title = "Invite"
-        
+
+        setupLocationManager()
+
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventCreated:", name: EVENT_CREATED_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventUpdated:", name: EVENT_UPDATED_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "dismissEventController:", name: DISMISS_EVENT_CONTROLLER_NOTIFICATION, object: nil)
@@ -85,17 +92,44 @@ import CoreLocation
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "removedEvent:", name: FINISHED_REMOVING_EVENT_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "deeplink:", name: DEEPLINK_NOTIFICATION, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "returnedFromSettings", name: CLOSING_SETTINGS_NOTIFICATION, object: nil)
         
         if (AppDelegate.app().deeplinkObjectId != nil) {
             deeplink(nil)
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "deeplink:", name: DEEPLINK_NOTIFICATION, object: nil)
-        
 //        delay(10) {
 //            Crashlytics.sharedInstance().crash()
 //        }
         
+    }
+    
+    func setupLocationManager()
+    {
+        if (self.locationManager == nil) {
+            self.locationManager = CLLocationManager()
+            self.locationManager.requestWhenInUseAuthorization()
+            self.locationManager.startUpdatingLocation()
+            self.locationManager.delegate = self
+        }
+    }
+    
+    // MARK: CLLocationManagerDelegate
+    
+    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation)
+    {
+        self.latitude = newLocation.coordinate.latitude
+        self.longitude = newLocation.coordinate.longitude
+        self.locationManager.delegate = nil
+        separateEventsIntoGroups()
+        self.tableView.reloadData()
+    }
+
+    func returnedFromSettings()
+    {
+        separateEventsIntoGroups()
+        self.tableView.reloadData()
     }
     
     func addRefreshControl()
@@ -156,6 +190,7 @@ import CoreLocation
     
     func configureToDisplayEvents()
     {
+        dismissOnboarding()
         configureSearchController()
         separateEventsIntoGroups()
         self.tableView.tableHeaderView = tableHeaderView()
@@ -180,11 +215,23 @@ import CoreLocation
 
     private func separateEventsIntoGroups()
     {
+        if UserDefaults.boolForKey("adFree") {
+            self.adFree = true
+        }
+
         // TODO: Use the device's location
         let targeting = MPNativeAdRequestTargeting()
-        targeting.location = CLLocation(latitude: 37.7793, longitude: -122.4175)
-        targeting.desiredAssets = Set([kAdIconImageKey, kAdMainImageKey, kAdCTATextKey, kAdTextKey, kAdTitleKey])
         let positioning = MPClientAdPositioning()
+        if !self.adFree {
+            if let _ = self.latitude {
+                
+            } else {
+                self.latitude = 37.7793
+                self.longitude = -122.4175
+            }
+            targeting.location = CLLocation(latitude: self.latitude, longitude: self.longitude)
+            targeting.desiredAssets = Set([kAdIconImageKey, kAdMainImageKey, kAdCTATextKey, kAdTextKey, kAdTitleKey])
+        }
 
         self.groups.removeAll()
         self.groupKeys.removeAll()
@@ -268,12 +315,10 @@ import CoreLocation
         if !self.isSearching && self.searchController.searchBar.selectedScopeButtonIndex == 0 {
             let new = "New"
             self.groupKeys.append(new)
-            self.groupIndexTitles.append("N")
             
             section++
             
             self.groups[new] = [PFObject]()
-            self.groupIndexTitleSections.append(self.groups.count - 1)
 
             if AppDelegate.user().needsResponse != nil {
                 self.nextEvent = AppDelegate.user().needsResponse[EVENT_TITLE_KEY] as? String
@@ -318,13 +363,11 @@ import CoreLocation
                         self.nextEvent = "Today at \(startTime)"
                     }
                     self.groupKeys.append(today)
-                    self.groupIndexTitles.append("T")
                     
                     section++
                     row = -1
                     
                     self.groups[today] = [PFObject]()
-                    self.groupIndexTitleSections.append(self.groups.count - 1)
                 }
                 row++
                 if self.createdEvent?.objectId == event.objectId {
@@ -338,21 +381,21 @@ import CoreLocation
             
             if !(s.day == l.day && s.month == l.month && s.year == l.year) {
 
-                if !self.isSearching && adRowCount > 3 {
+                if !self.isSearching && adRowCount > 2 && !self.adFree {
                     adRowCount = 0
                     
                     // Ad
                     section++
-                    positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
+                    if !self.adFree {
+                        positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
+                    }
                     if self.searchController.searchBar.selectedScopeButtonIndex == 0 && !self.isSearching {
                         self.adIndexSets.append(NSIndexSet(index: section))
                     }
 
                     let ad = "Ad\(section)"
                     self.groupKeys.append(ad)
-                    self.groupIndexTitles.append(" ")
                     self.groups[ad] = [PFObject]()
-                    self.groupIndexTitleSections.append(self.groups.count - 1)
                     self.groups[ad]?.append(PFObject(className: CLASS_EVENT_KEY))
                 }
 
@@ -387,21 +430,21 @@ import CoreLocation
             lastEventStartDate = startDate
         }
         
-        if !self.isSearching && adRowCount > 3 {
+        if !self.isSearching && adRowCount > 2 && !self.adFree {
             adRowCount = 0
             
             // Ad
             section++
-            positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
+            if !self.adFree {
+                positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
+            }
             if self.searchController.searchBar.selectedScopeButtonIndex == 0 && !self.isSearching {
                 self.adIndexSets.append(NSIndexSet(index: section))
             }
             
             let ad = "Ad\(section)"
             self.groupKeys.append(ad)
-            self.groupIndexTitles.append(" ")
             self.groups[ad] = [PFObject]()
-            self.groupIndexTitleSections.append(self.groups.count - 1)
             self.groups[ad]?.append(PFObject(className: CLASS_EVENT_KEY))
         }
 
@@ -409,18 +452,23 @@ import CoreLocation
             let old = "Old Events"
             if self.groups[old] == nil {
 
+                if self.nextEvent == nil {
+                    let event = oldEvents[0]
+                    let startDate = event[EVENT_START_DATE_KEY] as! NSDate
+                    dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
+                    self.nextEvent = dateFormatter.stringFromDate(startDate)
+                }
+
                 self.groupKeys.append(old)
-                self.groupIndexTitles.append("O")
 
                 section++
 
                 self.groups[old] = oldEvents
-                self.groupIndexTitleSections.append(self.groups.count - 1)
             }
         }
 
         // Ad placer
-        if !self.isSearching && self.placer == nil {
+        if !self.isSearching && self.placer == nil && !self.adFree {
             self.placer = MPTableViewAdPlacer(tableView: self.tableView, viewController: self, adPositioning: positioning, defaultAdRenderingClass: AdCell.self)
             self.placer.loadAdsForAdUnitID("d5566993d01246f3a67b01378bf829ee", targeting: targeting)
         }
@@ -500,12 +548,13 @@ import CoreLocation
         if event[EVENT_TITLE_KEY] == nil {
             return false
         }
-        return self.groupKeys[indexPath.section] == "Old Events" || EventResponse(rawValue: AppDelegate.user().myResponses[event.objectId!] as! UInt)! == EventResponse.Sorry
-    }
-    
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath)
-    {
         
+        var isCancelled = false
+        if let cancelled = event[EVENT_CANCELLED_KEY] {
+            isCancelled = (cancelled as! NSNumber).boolValue
+        }
+
+        return self.groupKeys[indexPath.section] == "Old Events" || EventResponse(rawValue: AppDelegate.user().myResponses[event.objectId!] as! UInt)! == EventResponse.Sorry || isCancelled
     }
     
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]?
@@ -574,7 +623,9 @@ import CoreLocation
             } else {
                 
                 let cell = tableView.dequeueReusableCellWithIdentifier(DASHBOARD_NEXT_EVENT_CELL_IDENTIFIER, forIndexPath: indexPath) as! DashboardNextEventCell
-                cell.nextEventString = self.nextEvent!
+                if let nextEvent = self.nextEvent {
+                    cell.nextEventString = nextEvent
+                }
                 cell.selectionStyle = UITableViewCellSelectionStyle.None
                 return cell
                 
@@ -597,6 +648,11 @@ import CoreLocation
         cell.needsResponse = !self.isSearching && self.searchController.searchBar.selectedScopeButtonIndex == 0 && AppDelegate.user().needsResponse != nil && indexPath.section == 0
         cell.isOld = now.earlierDate(end).isEqualToDate(end)
         cell.isLast = indexPath.row == self.groups[self.groupKeys[indexPath.section]]!.count - 1
+        if let cancelled = event[EVENT_CANCELLED_KEY] {
+            cell.isCancelled = (cancelled as! NSNumber).boolValue
+        } else {
+            cell.isCancelled = false
+        }
         cell.isSearching = self.isSearching || self.searchController.searchBar.selectedScopeButtonIndex > 0
         cell.event = event
         cell.selectionStyle = UITableViewCellSelectionStyle.None
@@ -609,9 +665,14 @@ import CoreLocation
         if self.selectedKey == "Ad" {
             return
         }
+        
+        let event = self.groups[self.groupKeys[indexPath.section]]![indexPath.row]
+        if let _ = event[EVENT_CANCELLED_KEY] {
+            return
+        }
         self.selectedRow = indexPath.row
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        AppDelegate.user().eventToDisplay = self.groups[self.groupKeys[indexPath.section]]![indexPath.row]
+        AppDelegate.user().eventToDisplay = event
         dispatch_async(dispatch_get_main_queue(), {
             self.performSegueWithIdentifier(SEGUE_TO_EVENT, sender: self)
         })
@@ -640,7 +701,6 @@ import CoreLocation
         if self.tableView.tableHeaderView == nil {
             configureToDisplayEvents()
         } else {
-            dismissOnboarding()
             separateEventsIntoGroups()
         }
         
@@ -679,12 +739,8 @@ import CoreLocation
     
     private func dismissOnboarding()
     {
-        self.onboardingScrollView?.removeFromSuperview()
-        self.onboarding?.removeFromSuperview()
-        self.gradientView?.removeFromSuperview()
-        self.onboardingScrollView = nil
-        self.onboarding = nil
-        self.gradientView = nil
+        self.onboardingScrollView?.hidden = true
+        self.onboarding?.hidden = true
     }
     
     func userLoggedOut(note: NSNotification)

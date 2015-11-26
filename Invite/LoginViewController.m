@@ -36,6 +36,7 @@
 @property (nonatomic, weak) IBOutlet UIView *buttonView;
 @property (nonatomic, weak) IBOutlet UIButton *facebookButton;
 @property (nonatomic, weak) IBOutlet UIView *twitterView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *spinner;
 
 @property (nonatomic, assign) BOOL sentToFacebookLogin;
 
@@ -54,6 +55,7 @@
     _messageLabel.font = [UIFont proximaNovaRegularFontOfSize:16];
     
     _sentToFacebookLogin = NO;
+    _spinner.hidden = YES;
     
     TWTRLogInButton *logInButton = [TWTRLogInButton buttonWithLogInCompletion:^(TWTRSession *session, NSError *error) {
         if (session) {
@@ -153,7 +155,17 @@
                 }];
             }];
         });
+    } else {
+        _spinner.hidden = NO;
+        [_spinner startAnimating];
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    _spinner.hidden = YES;
+    [_spinner stopAnimating];
 }
 
 - (void)dealloc
@@ -243,7 +255,7 @@
                 }
             }];
         }
-            break;
+        break;
     }
 }
 

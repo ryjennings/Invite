@@ -57,6 +57,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define EVENT_INVITEES_KEY @"invitees"
 #define EVENT_RESPONSES_KEY @"responses"
 #define EVENT_CREATOR_KEY @"creator"
+#define EVENT_CANCELLED_KEY @"cancelled"
 
 // Keys
 #define EMAIL_KEY @"email"
@@ -116,7 +117,6 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define PROFILE_CELL_IDENTIFIER @"ProfileCellIdentifier"
 #define INVITEES_CELL_IDENTIFIER @"InviteesCellIdentifier"
 #define INVITEES_COLLECTION_CELL_IDENTIFIER @"InviteesCollectionCellIdentifier"
-#define INVITEES_COLLECTION_HEADER_VIEW_IDENTIFIER @"InviteesCollectionHeaderViewIdentifier"
 #define CONFLICT_CELL_IDENTIFIER @"ConflictCellIdentifier"
 #define TOGGLE_CELL_IDENTIFIER @"ToggleCellIdentifier"
 #define TITLE_DATE_CELL_IDENTIFIER @"TitleDateCellIdentifier"
@@ -143,3 +143,4 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define DEEPLINK_NOTIFICATION @"DeeplinkNotifcation"
 #define FINISHED_REFRESHING_EVENTS_NOTIFICATION @"FinishedRefreshingEventsNotifcation"
 #define FINISHED_REMOVING_EVENT_NOTIFICATION @"RemovedEventNotifcation"
+#define CLOSING_SETTINGS_NOTIFICATION @"ClosingSettingsNotifcation"

@@ -38,6 +38,8 @@ class Friend
     private var allFriends = [Friend]()
     private var groupedFriends = [String: [Friend]]()
     private var groupedFriendsKeys = [String]()
+    private var indexTitles = [String]()
+    private var sectionForIndexTitles = [Int]()
 
     private var selectedFriends = [Friend]()
     
@@ -324,7 +326,12 @@ class Friend
     
     func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]?
     {
-        return ["+"] + self.groupedFriendsKeys
+        return self.indexTitles
+    }
+    
+    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int
+    {
+        return self.sectionForIndexTitles[index]
     }
     
     // MARK: - UITextView
@@ -530,6 +537,8 @@ class Friend
                     currentTitle = letter
                     self.groupedFriendsKeys.append(currentTitle)
                     self.groupedFriends[currentTitle] = [Friend]()
+                    self.indexTitles.append(letter)
+                    self.sectionForIndexTitles.append(self.groupedFriendsKeys.count)
                 }
             } else {
                 if currentTitle != "@" {

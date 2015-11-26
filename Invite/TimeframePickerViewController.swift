@@ -387,6 +387,11 @@ enum TimeframeRow: Int {
 
     func showDatePicker(show: Bool)
     {
+        let contentInsets = UIEdgeInsetsMake(0.0, 0.0, show ? kDatePickerViewHeight : 0.0, 0.0)
+        self.tableView.contentInset = contentInsets
+        self.tableView.scrollIndicatorInsets = contentInsets
+        self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+        
         datePickerViewBottomConstraint.constant = show ? 0 : kDatePickerViewHeight
 
         UIView.beginAnimations(nil, context: nil)

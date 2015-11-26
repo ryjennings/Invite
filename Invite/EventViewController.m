@@ -16,6 +16,7 @@
 #import "User.h"
 
 #import <MapKit/MapKit.h>
+#import <MessageUI/MessageUI.h>
 
 typedef NS_ENUM(NSUInteger, EventMode)
 {
@@ -74,13 +75,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     EventViewSectionCount
 };
 
-#define kPickerViewHeight 314.0
-
-@interface EventViewController () <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, NumberedInputCellDelegate, TitleDateCellDelegate>
+@interface EventViewController () <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, NumberedInputCellDelegate, TitleDateCellDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet MKMapView *mapView;
 @property (nonatomic, strong) IBOutlet UIView *inviteesContainerView;
+@property (nonatomic, weak) IBOutlet UIView *blueView;
 
 @property (nonatomic, strong) OBGradientView *gradientView;
 
@@ -156,6 +156,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     
     self.view.backgroundColor = [UIColor inviteLightSlateColor];
 
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, 90.0, 0.0);
+    self.tableView.contentInset = contentInsets;
+    self.tableView.scrollIndicatorInsets = contentInsets;
+
     _tableView.rowHeight = UITableViewAutomaticDimension;
     _tableView.estimatedRowHeight = 44;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -181,7 +185,8 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 {
     _tableView.tableHeaderView = nil;
     CGFloat deviceHeight = [[UIScreen mainScreen] bounds].size.height;
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, deviceHeight - [_tableView contentSize].height - (_mode == EventModeView ? 102 : 0))];
+    CGFloat headerHeight = deviceHeight - [_tableView contentSize].height - (_mode == EventModeView ? 102 : 0);
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, headerHeight < 0 ? 0 : headerHeight)];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
@@ -241,6 +246,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     }
     
     if (_event.location || _event.protoLocation) {
+        _blueView.hidden = YES;
         CLLocationDegrees latitude;
         CLLocationDegrees longitude;
         if (_event.location) {
@@ -264,6 +270,9 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             [self.mapView setCenterCoordinate:center animated:NO];
             _lastPlacemark = placemark;
         }];
+    } else {
+        _blueView.hidden = NO;
+        _blueView.backgroundColor = [UIColor inviteBackgroundSlateColor];
     }
 
     [_tableView reloadData];
@@ -300,9 +309,14 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         }
         else
         {
-            if (_isUpdating && !_isOld) {
+            if ((_isUpdating && !_isOld) || (!_isCreating && !_isUpdating && !_isOld)) {
+                UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actions:)];
+                left.tintColor = [UIColor inviteTableHeaderColor];
+                self.navigationItem.leftBarButtonItem = left;
+            } else {
                 self.navigationItem.leftBarButtonItem = nil;
             }
+            
             right = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(close:)];
         }
         right.tintColor = [UIColor inviteTableHeaderColor];
@@ -328,6 +342,85 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             self.navigationItem.leftBarButtonItem = cancel;
         }
     }
+}
+
+- (void)actions:(UIBarButtonItem *)barButton
+{
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    if (!_isCreating && !_isUpdating && !_isOld) {
+        UIAlertAction *flagEventAction = [UIAlertAction actionWithTitle:@"Flag This Event" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self flagEventAlert];
+        }];
+        [actionSheet addAction:flagEventAction];
+    } else if (_isUpdating && !_isOld) {
+        UIAlertAction *cancelEventAction = [UIAlertAction actionWithTitle:@"Cancel This Event" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            [self cancelEventAlert];
+        }];
+        [actionSheet addAction:cancelEventAction];
+    }
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }];
+    [actionSheet addAction:cancelAction];
+
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
+- (void)flagEventAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Flag This Event" message:@"Does this event have an inappropriate title? Let us know." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *flagEventAction = [UIAlertAction actionWithTitle:@"Flag Event" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self flagEvent];
+    }];
+    [alert addAction:flagEventAction];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)flagEvent
+{
+    if ([MFMailComposeViewController canSendMail])
+    {
+        MFMailComposeViewController *mail = [[MFMailComposeViewController alloc] init];
+        mail.mailComposeDelegate = self;
+        [mail setSubject:[NSString stringWithFormat:@"Flagged Event %@", [AppDelegate user].eventToDisplay.objectId]];
+        [mail setMessageBody:[NSString stringWithFormat:@"Event %@ has been flagged. Please check the title for improper language.", [AppDelegate user].eventToDisplay.objectId] isHTML:NO];
+        [mail setToRecipients:@[@"flag@appuous.com"]];
+        [self presentViewController:mail animated:YES completion:nil];
+    }
+    else
+    {
+        NSLog(@"This device cannot send email");
+    }
+}
+
+- (void)cancelEventAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Cancel This Event" message:@"Are you sure you want to cancel this event? This action cannot be undone." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelEventAction = [UIAlertAction actionWithTitle:@"Cancel Event" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        [self cancelEvent];
+    }];
+    [alert addAction:cancelEventAction];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)cancelEvent
+{
+    _event.parseEvent[EVENT_CANCELLED_KEY] = [NSNumber numberWithBool:YES];
+    [_event.parseEvent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CLOSED_NOTIFICATION object:nil];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -632,7 +725,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         LabelCell *cell = (LabelCell *)[tableView dequeueReusableCellWithIdentifier:LABEL_CELL_IDENTIFIER];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.cellLabel.text = @"Host";
-        cell.cellText.text = [self textForRow:EventRowHost];
+        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        style.lineSpacing = 4;
+        NSAttributedString *att = [[NSAttributedString alloc] initWithString:[_event host] attributes:@{NSForegroundColorAttributeName: [UIColor inviteTableHeaderColor], NSFontAttributeName: [UIFont inviteTableSmallFont], NSParagraphStyleAttributeName: style}];
+        cell.cellText.attributedText = att;
         cell.accessoryType = UITableViewCellAccessoryNone;
         return cell;
     }
@@ -812,7 +908,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (void)keyboardWillHide:(NSNotification *)notification
 {
     [UIView animateWithDuration:0.35 animations:^{
-        UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, 0.0, 0.0);
+        UIEdgeInsets contentInsets = UIEdgeInsetsMake(self.tableView.contentInset.top, 0.0, 90.0, 0.0);
         self.tableView.contentInset = contentInsets;
         self.tableView.scrollIndicatorInsets = contentInsets;
     } completion:nil];
