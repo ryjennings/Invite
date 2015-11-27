@@ -60,32 +60,11 @@
     viewAction.title = @"View";
     viewAction.activationMode = UIUserNotificationActivationModeBackground;
     viewAction.authenticationRequired = NO;
-
-    UIMutableUserNotificationAction *goingAction = [[UIMutableUserNotificationAction alloc] init];
-    goingAction.identifier = @"GoingAction";
-    goingAction.destructive = NO;
-    goingAction.title = @"Going";
-    goingAction.activationMode = UIUserNotificationActivationModeBackground;
-    goingAction.authenticationRequired = NO;
-
-    UIMutableUserNotificationAction *maybeAction = [[UIMutableUserNotificationAction alloc] init];
-    maybeAction.identifier = @"MaybeAction";
-    maybeAction.destructive = NO;
-    maybeAction.title = @"Maybe";
-    maybeAction.activationMode = UIUserNotificationActivationModeBackground;
-    maybeAction.authenticationRequired = NO;
-
-    UIMutableUserNotificationAction *sorryAction = [[UIMutableUserNotificationAction alloc] init];
-    sorryAction.identifier = @"SorryAction";
-    sorryAction.destructive = NO;
-    sorryAction.title = @"Sorry";
-    sorryAction.activationMode = UIUserNotificationActivationModeBackground;
-    sorryAction.authenticationRequired = NO;
     
     UIMutableUserNotificationCategory *category = [[UIMutableUserNotificationCategory alloc] init];
     category.identifier = @"InviteCategory";
     [category setActions:@[viewAction] forContext:UIUserNotificationActionContextMinimal];
-    [category setActions:@[viewAction, goingAction, maybeAction, sorryAction] forContext:UIUserNotificationActionContextDefault];
+    [category setActions:@[viewAction] forContext:UIUserNotificationActionContextDefault];
     
     return category;
 }

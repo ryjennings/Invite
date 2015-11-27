@@ -242,7 +242,7 @@
                 NSLog(@"CREATOR %@ %@ %@", event[EVENT_START_DATE_KEY], [NSDate date], event[EVENT_TITLE_KEY]);
 
                 if ([[NSDate date] compare:[Notification actualFireDateForDate:(NSDate *)event[EVENT_START_DATE_KEY] remindMe:remindMe]] == NSOrderedAscending && !cancelled) {
-
+                    NSLog(@"scheduleLocalNotificationForDate");
                     [Notification scheduleLocalNotificationForDate:(NSDate *)event[EVENT_START_DATE_KEY]
                                                         eventTitle:event[EVENT_TITLE_KEY]
                                                           remindMe:remindMe
