@@ -219,17 +219,16 @@ import CoreLocation
             self.adFree = true
         }
 
-        // TODO: Use the device's location
         let targeting = MPNativeAdRequestTargeting()
         let positioning = MPClientAdPositioning()
+        var latitude = 37.7793
+        var longitude = -122.4175
         if !self.adFree {
-            if let _ = self.latitude {
-                
-            } else {
-                self.latitude = 37.7793
-                self.longitude = -122.4175
+            if let lat = self.latitude, long = self.longitude {
+                latitude = lat
+                longitude = long
             }
-            targeting.location = CLLocation(latitude: self.latitude, longitude: self.longitude)
+            targeting.location = CLLocation(latitude: latitude, longitude: longitude)
             targeting.desiredAssets = Set([kAdIconImageKey, kAdMainImageKey, kAdCTATextKey, kAdTextKey, kAdTitleKey])
         }
 

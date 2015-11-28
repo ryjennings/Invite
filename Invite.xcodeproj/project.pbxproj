@@ -100,10 +100,7 @@
 		0786EB7D1A8E70ED006FDCA6 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 0786EB7C1A8E70ED006FDCA6 /* Event.m */; };
 		078924741AB36DCE005EE7FB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078924731AB36DCE005EE7FB /* MapKit.framework */; };
 		078B35CE1BE02BC100ACDB5F /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078B35CD1BE02BC100ACDB5F /* Notification.swift */; };
-		078B35D01BE0320200ACDB5F /* LookingUp.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 078B35CF1BE0320200ACDB5F /* LookingUp.mp3 */; };
-		078B35D31BE07E1200ACDB5F /* JumpUp.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 078B35D21BE07E1200ACDB5F /* JumpUp.mp3 */; };
 		078B35D61BE0843000ACDB5F /* alert_43.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 078B35D41BE0843000ACDB5F /* alert_43.mp3 */; };
-		078B35D71BE0843000ACDB5F /* alert_24.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 078B35D51BE0843000ACDB5F /* alert_24.mp3 */; };
 		078C0E151BCF11F800DA8915 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078C0E131BCF11F800DA8915 /* Crashlytics.framework */; };
 		078C0E161BCF11F800DA8915 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 078C0E141BCF11F800DA8915 /* Fabric.framework */; };
 		07ADBEA11BE1455E00281096 /* AdCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07ADBEA01BE1455E00281096 /* AdCell.swift */; };
@@ -264,10 +261,7 @@
 		0786EB7C1A8E70ED006FDCA6 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		078924731AB36DCE005EE7FB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		078B35CD1BE02BC100ACDB5F /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
-		078B35CF1BE0320200ACDB5F /* LookingUp.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = LookingUp.mp3; sourceTree = "<group>"; };
-		078B35D21BE07E1200ACDB5F /* JumpUp.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = JumpUp.mp3; sourceTree = "<group>"; };
 		078B35D41BE0843000ACDB5F /* alert_43.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alert_43.mp3; sourceTree = "<group>"; };
-		078B35D51BE0843000ACDB5F /* alert_24.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alert_24.mp3; sourceTree = "<group>"; };
 		078C0E131BCF11F800DA8915 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = ../../Documents/Crashlytics/Crashlytics.framework; sourceTree = "<group>"; };
 		078C0E141BCF11F800DA8915 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = ../../Documents/Crashlytics/Fabric.framework; sourceTree = "<group>"; };
 		07ADBEA01BE1455E00281096 /* AdCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdCell.swift; sourceTree = "<group>"; };
@@ -617,9 +611,6 @@
 			isa = PBXGroup;
 			children = (
 				078B35D41BE0843000ACDB5F /* alert_43.mp3 */,
-				078B35D51BE0843000ACDB5F /* alert_24.mp3 */,
-				078B35D21BE07E1200ACDB5F /* JumpUp.mp3 */,
-				078B35CF1BE0320200ACDB5F /* LookingUp.mp3 */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -777,7 +768,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				078B35D61BE0843000ACDB5F /* alert_43.mp3 in Resources */,
-				078B35D71BE0843000ACDB5F /* alert_24.mp3 in Resources */,
 				072460E51BE1381700DAA4DB /* TwitterKitResources.bundle in Resources */,
 				0728366A1AD2F02000B158AC /* ProximaNovaCond-RegularIt.otf in Resources */,
 				072836611AD2F02000B158AC /* ProximaNova-LightItalic.otf in Resources */,
@@ -786,13 +776,11 @@
 				072836681AD2F02000B158AC /* ProximaNovaCond-LightIt.otf in Resources */,
 				0728365D1AD2F02000B158AC /* ProximaNova-Bold.otf in Resources */,
 				072836641AD2F02000B158AC /* ProximaNova-RegularItalic.otf in Resources */,
-				078B35D31BE07E1200ACDB5F /* JumpUp.mp3 in Resources */,
 				0728366B1AD2F02000B158AC /* ProximaNovaCond-Semibold.otf in Resources */,
 				07426B2B1BE16D6900E25C0D /* AdCell.xib in Resources */,
 				072460EA1BE1398900DAA4DB /* MoPub.bundle in Resources */,
 				0728365C1AD2F02000B158AC /* ProximaNova-Black.otf in Resources */,
 				072836651AD2F02000B158AC /* ProximaNova-Semibold.otf in Resources */,
-				078B35D01BE0320200ACDB5F /* LookingUp.mp3 in Resources */,
 				072836601AD2F02000B158AC /* ProximaNova-Light.otf in Resources */,
 				072836691AD2F02000B158AC /* ProximaNovaCond-Regular.otf in Resources */,
 				0728365E1AD2F02000B158AC /* ProximaNova-BoldIt.otf in Resources */,
