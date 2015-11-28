@@ -57,6 +57,7 @@ import CoreLocation
         super.viewDidLoad()
         
         if AppDelegate.user().events != nil && AppDelegate.user().events.count > 0 {
+            setupLocationManager()
             configureToDisplayEvents()
         } else {
             configureOnboarding()
@@ -80,8 +81,6 @@ import CoreLocation
         self.definesPresentationContext = true
         
         self.navigationItem.title = "Invite"
-
-        setupLocationManager()
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventCreated:", name: EVENT_CREATED_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eventUpdated:", name: EVENT_UPDATED_NOTIFICATION, object: nil)
@@ -698,6 +697,7 @@ import CoreLocation
         self.tableView.dataSource = self
         
         if self.tableView.tableHeaderView == nil {
+            setupLocationManager()
             configureToDisplayEvents()
         } else {
             separateEventsIntoGroups()
