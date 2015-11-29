@@ -58,18 +58,29 @@
     viewAction.identifier = @"ViewAction";
     viewAction.destructive = NO;
     viewAction.title = @"View";
-    viewAction.activationMode = UIUserNotificationActivationModeBackground;
+    viewAction.activationMode = UIUserNotificationActivationModeForeground;
     viewAction.authenticationRequired = NO;
     
     UIMutableUserNotificationCategory *category = [[UIMutableUserNotificationCategory alloc] init];
     category.identifier = @"InviteCategory";
-    [category setActions:@[viewAction] forContext:UIUserNotificationActionContextMinimal];
     [category setActions:@[viewAction] forContext:UIUserNotificationActionContextDefault];
     
     return category;
 }
 
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void(^)())completionHandler
+{
+    if ([identifier isEqualToString:@"ViewAction"]) {
+        self.deeplinkObjectId = notification.userInfo[@"objectId"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DEEPLINK_NOTIFICATION object:nil];
+    }
+    if (completionHandler) {
+        completionHandler();
+    }
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
     // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
@@ -77,7 +88,8 @@
     [currentInstallation saveInBackground];
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
     [PFPush handlePush:userInfo];
 }
 

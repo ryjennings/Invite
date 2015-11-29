@@ -189,14 +189,16 @@ import MapKit
         
         var going = 0
         
-        for response in self.event[EVENT_RESPONSES_KEY] as! [String] {
-            let com = response.componentsSeparatedByString(":")
-            let eventResponse = EventResponse(rawValue: UInt(com[1])!)
-            if eventResponse == EventResponse.Going {
-                going++
+        if self.event[EVENT_RESPONSES_KEY] != nil {
+            for response in self.event[EVENT_RESPONSES_KEY] as! [String] {
+                let com = response.componentsSeparatedByString(":")
+                let eventResponse = EventResponse(rawValue: UInt(com[1])!)
+                if eventResponse == EventResponse.Going {
+                    going++
+                }
+                responseGroups[eventResponse!]!.append(invitees[com[0]]!)
+                self.responses[com[0]] = UInt(com[1])
             }
-            responseGroups[eventResponse!]!.append(invitees[com[0]]!)
-            self.responses[com[0]] = UInt(com[1])
         }
 
         self.invitedLabel.text = "\(going) going, \(self.event[EVENT_INVITEES_KEY].count) invited"
@@ -204,18 +206,20 @@ import MapKit
         configureProfiles(responseGroups)
 
         // My response
-        self.myResponse = EventMyResponse(rawValue: AppDelegate.user().myResponses[self.event.objectId!] as! UInt)!
-        switch self.myResponse {
-        case EventMyResponse.Going:
-            self.yourLabel.text = "Going"
-        case EventMyResponse.Maybe:
-            self.yourLabel.text = "Maybe"
-        case EventMyResponse.Sorry:
-            self.yourLabel.text = "Sorry"
-        case EventMyResponse.NoResponse:
-            self.yourLabel.text = "Respond now!"
-        case EventMyResponse.Host:
-            self.yourLabel.text = "Your event"
+        if AppDelegate.user().myResponses[self.event.objectId!] != nil {
+            self.myResponse = EventMyResponse(rawValue: AppDelegate.user().myResponses[self.event.objectId!] as! UInt)!
+            switch self.myResponse {
+            case EventMyResponse.Going:
+                self.yourLabel.text = "Going"
+            case EventMyResponse.Maybe:
+                self.yourLabel.text = "Maybe"
+            case EventMyResponse.Sorry:
+                self.yourLabel.text = "Sorry"
+            case EventMyResponse.NoResponse:
+                self.yourLabel.text = "Respond now!"
+            case EventMyResponse.Host:
+                self.yourLabel.text = "Your event"
+            }
         }
         
         unselectCell()

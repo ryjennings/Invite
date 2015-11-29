@@ -52,11 +52,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175531.94085"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "306"
-            endingLineNumber = "306"
+            startingLineNumber = "324"
+            endingLineNumber = "324"
             landmarkName = "-configureNavigationBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -100,11 +100,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175531.94085"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "628"
-            endingLineNumber = "628"
+            startingLineNumber = "670"
+            endingLineNumber = "670"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -244,11 +244,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175803.079581"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "797"
-            endingLineNumber = "797"
+            startingLineNumber = "841"
+            endingLineNumber = "841"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -324,11 +324,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175803.079581"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "826"
-            endingLineNumber = "826"
+            startingLineNumber = "870"
+            endingLineNumber = "870"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -483,22 +483,6 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Invite/AppDelegate.m"
-            timestampString = "470362129.869104"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
-            landmarkName = "-application:didReceiveRemoteNotification:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Invite/DashboardAdCell.swift"
             timestampString = "467752168.431709"
             startingColumnNumber = "9223372036854775807"
@@ -548,11 +532,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "651"
-            endingLineNumber = "651"
+            startingLineNumber = "667"
+            endingLineNumber = "667"
             landmarkName = "tableView(_:cellForRowAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -564,11 +548,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "870"
-            endingLineNumber = "870"
+            startingLineNumber = "887"
+            endingLineNumber = "887"
             landmarkName = "DashboardViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -580,11 +564,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "882"
-            endingLineNumber = "882">
+            startingLineNumber = "899"
+            endingLineNumber = "899">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -594,11 +578,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "639"
-            endingLineNumber = "639"
+            startingLineNumber = "655"
+            endingLineNumber = "655"
             landmarkName = "tableView(_:cellForRowAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -610,27 +594,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "492"
-            endingLineNumber = "492"
-            landmarkName = "configureOnboarding()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "383"
-            endingLineNumber = "383"
+            startingLineNumber = "394"
+            endingLineNumber = "394"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -642,11 +610,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "449"
-            endingLineNumber = "449"
+            startingLineNumber = "460"
+            endingLineNumber = "460"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -658,11 +626,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "463"
-            endingLineNumber = "463"
+            startingLineNumber = "474"
+            endingLineNumber = "474"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -674,11 +642,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "602"
-            endingLineNumber = "602"
+            startingLineNumber = "618"
+            endingLineNumber = "618"
             landmarkName = "numberOfSectionsInTableView(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -706,11 +674,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "314"
-            endingLineNumber = "314"
+            startingLineNumber = "325"
+            endingLineNumber = "325"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -722,11 +690,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "333"
-            endingLineNumber = "333"
+            startingLineNumber = "344"
+            endingLineNumber = "344"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -738,11 +706,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "372"
-            endingLineNumber = "372"
+            startingLineNumber = "383"
+            endingLineNumber = "383"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -754,11 +722,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "423"
-            endingLineNumber = "423"
+            startingLineNumber = "434"
+            endingLineNumber = "434"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -770,11 +738,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "777"
-            endingLineNumber = "777"
+            startingLineNumber = "794"
+            endingLineNumber = "794"
             landmarkName = "searchBar(_:textDidChange:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -786,11 +754,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "768"
-            endingLineNumber = "768"
+            startingLineNumber = "785"
+            endingLineNumber = "785"
             landmarkName = "searchBar(_:selectedScopeButtonIndexDidChange:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -802,11 +770,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "273"
-            endingLineNumber = "273"
+            startingLineNumber = "284"
+            endingLineNumber = "284"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -818,11 +786,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "582"
-            endingLineNumber = "582"
+            startingLineNumber = "598"
+            endingLineNumber = "598"
             landmarkName = "tableView(_:willDisplayHeaderView:forSection:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -866,11 +834,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "265"
-            endingLineNumber = "265"
+            startingLineNumber = "276"
+            endingLineNumber = "276"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -882,11 +850,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "825"
-            endingLineNumber = "825"
+            startingLineNumber = "842"
+            endingLineNumber = "842"
             landmarkName = "didDismissSearchController(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -898,11 +866,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "358"
-            endingLineNumber = "358"
+            startingLineNumber = "369"
+            endingLineNumber = "369"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -914,11 +882,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "410"
-            endingLineNumber = "410"
+            startingLineNumber = "421"
+            endingLineNumber = "421"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -930,11 +898,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "626"
-            endingLineNumber = "626"
+            startingLineNumber = "642"
+            endingLineNumber = "642"
             landmarkName = "tableView(_:cellForRowAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -978,11 +946,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175531.94085"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "717"
-            endingLineNumber = "717"
+            startingLineNumber = "759"
+            endingLineNumber = "759"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -994,11 +962,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175803.079581"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "921"
-            endingLineNumber = "921"
+            startingLineNumber = "965"
+            endingLineNumber = "965"
             landmarkName = "-close:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1010,11 +978,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175803.079581"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "955"
-            endingLineNumber = "955"
+            startingLineNumber = "999"
+            endingLineNumber = "999"
             landmarkName = "-cancel:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1026,11 +994,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175531.94085"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "496"
-            endingLineNumber = "496"
+            startingLineNumber = "538"
+            endingLineNumber = "538"
             landmarkName = "-newDetails"
             landmarkType = "5">
          </BreakpointContent>
@@ -1042,11 +1010,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175803.079581"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "774"
-            endingLineNumber = "774"
+            startingLineNumber = "818"
+            endingLineNumber = "818"
             landmarkName = "-textForDefaultRemindMe"
             landmarkType = "5">
          </BreakpointContent>
@@ -1106,11 +1074,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "186"
-            endingLineNumber = "186"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
             landmarkName = "viewWillAppear(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1122,11 +1090,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "702"
-            endingLineNumber = "702"
+            startingLineNumber = "719"
+            endingLineNumber = "719"
             landmarkName = "eventCreated(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1134,7 +1102,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
@@ -1154,11 +1122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
+            startingLineNumber = "228"
+            endingLineNumber = "228"
             landmarkName = "separateEventsIntoGroups()"
             landmarkType = "5">
          </BreakpointContent>
@@ -1166,15 +1134,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470175470.10174"
+            timestampString = "470473723.740876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
+            startingLineNumber = "207"
+            endingLineNumber = "207"
             landmarkName = "-tableHeaderView"
             landmarkType = "5">
          </BreakpointContent>
@@ -1182,7 +1150,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
@@ -1198,7 +1166,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
@@ -1234,11 +1202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "removedEvent(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1246,15 +1214,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "configureToDisplayEvents()"
             landmarkType = "5">
          </BreakpointContent>
@@ -1266,11 +1234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "734"
-            endingLineNumber = "734"
+            startingLineNumber = "751"
+            endingLineNumber = "751"
             landmarkName = "eventClosed(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1282,11 +1250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "772"
-            endingLineNumber = "772"
+            startingLineNumber = "789"
+            endingLineNumber = "789"
             landmarkName = "searchBar(_:selectedScopeButtonIndexDidChange:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1298,11 +1266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "781"
-            endingLineNumber = "781"
+            startingLineNumber = "798"
+            endingLineNumber = "798"
             landmarkName = "searchBar(_:textDidChange:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1314,11 +1282,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "799"
-            endingLineNumber = "799"
+            startingLineNumber = "816"
+            endingLineNumber = "816"
             landmarkName = "didPresentSearchController(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1330,11 +1298,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "808"
-            endingLineNumber = "808"
+            startingLineNumber = "825"
+            endingLineNumber = "825"
             landmarkName = "didPresentSearchController(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1346,12 +1314,60 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "470368777.278499"
+            timestampString = "470467801.603573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "834"
-            endingLineNumber = "834"
+            startingLineNumber = "851"
+            endingLineNumber = "851"
             landmarkName = "didDismissSearchController(_:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Invite/AppDelegate.m"
+            timestampString = "470471271.179343"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "-application:handleActionWithIdentifier:forLocalNotification:completionHandler:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Invite/DashboardCell.swift"
+            timestampString = "470473041.53052"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "209"
+            endingLineNumber = "209"
+            landmarkName = "configureForEvent()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Invite/EventViewController.m"
+            timestampString = "470473389.101784"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "184"
+            endingLineNumber = "184"
+            landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -144,3 +144,9 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define FINISHED_REFRESHING_EVENTS_NOTIFICATION @"FinishedRefreshingEventsNotifcation"
 #define FINISHED_REMOVING_EVENT_NOTIFICATION @"RemovedEventNotifcation"
 #define CLOSING_SETTINGS_NOTIFICATION @"ClosingSettingsNotifcation"
+
+// Error submitting event notifications
+#define STEP1_CREATED_ERROR_NOTIFICATION @"Step1CreatedErrorNotification"
+#define STEP2_CREATED_ERROR_NOTIFICATION @"Step2CreatedErrorNotification"
+#define STEP1_UPDATED_ERROR_NOTIFICATION @"Step1UpdatedErrorNotification"
+#define STEP2_UPDATED_ERROR_NOTIFICATION @"Step2UpdatedErrorNotification"

@@ -171,14 +171,25 @@ import CoreLocation
     
     func removedEvent(note: NSNotification)
     {
-        self.tableView.mp_beginUpdates()
-        separateEventsIntoGroups()
-        if self.removeEntireSection {
-            self.tableView.mp_deleteSections(NSIndexSet(index: self.removeIndexPath!.section), withRowAnimation: UITableViewRowAnimation.Fade)
+        if AppDelegate.user().events.count > 0 {
+            self.tableView.mp_beginUpdates()
+            separateEventsIntoGroups()
+            if self.removeEntireSection {
+                self.tableView.mp_deleteSections(NSIndexSet(index: self.removeIndexPath!.section), withRowAnimation: UITableViewRowAnimation.Fade)
+            } else {
+                self.tableView.mp_deleteRowsAtIndexPaths([self.removeIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
+            }
+            self.tableView.mp_endUpdates()
         } else {
-            self.tableView.mp_deleteRowsAtIndexPaths([self.removeIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
+            self.tableView.reloadData()
+            revertToOnboarding()
         }
-        self.tableView.mp_endUpdates()
+    }
+    
+    private func revertToOnboarding()
+    {
+        self.tableView.tableHeaderView = nil
+        configureOnboarding()
     }
     
     override func viewWillAppear(animated: Bool)
@@ -485,33 +496,38 @@ import CoreLocation
     
     private func configureOnboarding()
     {
-        self.onboarding = DashboardOnboardingView()
-        self.onboarding.translatesAutoresizingMaskIntoConstraints = false
-        self.onboarding.backgroundColor = UIColor.clearColor()
-        
-        if SDiPhoneVersion.deviceSize() == DeviceSize.iPhone35inch || SDiPhoneVersion.deviceSize() == DeviceSize.iPhone4inch {
+        if self.onboarding == nil {
+            self.onboarding = DashboardOnboardingView()
+            self.onboarding.translatesAutoresizingMaskIntoConstraints = false
+            self.onboarding.backgroundColor = UIColor.clearColor()
             
-            self.onboardingScrollView = UIScrollView()
-            self.onboardingScrollView.translatesAutoresizingMaskIntoConstraints = false
-            self.onboardingScrollView.backgroundColor = UIColor.clearColor()
-            self.onboardingScrollView.indicatorStyle = UIScrollViewIndicatorStyle.White
-            self.view.addSubview(self.onboardingScrollView)
-            self.onboardingScrollView.addSubview(self.onboarding)
-            
-            self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[scrollView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["scrollView": self.onboardingScrollView]))
-            self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-64-[scrollView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["scrollView": self.onboardingScrollView]))
-            
-            self.onboardingScrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[onboarding(280)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["onboarding": self.onboarding]))
-            self.onboardingScrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[onboarding]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["onboarding": self.onboarding]))
-            self.onboardingScrollView.addConstraint(NSLayoutConstraint(item: self.onboarding, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: self.onboardingScrollView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
-            
+            if SDiPhoneVersion.deviceSize() == DeviceSize.iPhone35inch || SDiPhoneVersion.deviceSize() == DeviceSize.iPhone4inch {
+                
+                self.onboardingScrollView = UIScrollView()
+                self.onboardingScrollView.translatesAutoresizingMaskIntoConstraints = false
+                self.onboardingScrollView.backgroundColor = UIColor.clearColor()
+                self.onboardingScrollView.indicatorStyle = UIScrollViewIndicatorStyle.White
+                self.view.addSubview(self.onboardingScrollView)
+                self.onboardingScrollView.addSubview(self.onboarding)
+                
+                self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[scrollView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["scrollView": self.onboardingScrollView]))
+                self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-64-[scrollView]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["scrollView": self.onboardingScrollView]))
+                
+                self.onboardingScrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[onboarding(280)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["onboarding": self.onboarding]))
+                self.onboardingScrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[onboarding]|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["onboarding": self.onboarding]))
+                self.onboardingScrollView.addConstraint(NSLayoutConstraint(item: self.onboarding, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: self.onboardingScrollView, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+                
+            } else {
+                
+                self.view.addSubview(self.onboarding)
+                self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[onboarding(300)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["onboarding": self.onboarding]))
+                self.view.addConstraint(NSLayoutConstraint(item: self.onboarding, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: self.view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
+                self.view.addConstraint(NSLayoutConstraint(item: self.onboarding, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: self.view, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: 30))
+                
+            }
         } else {
-            
-            self.view.addSubview(self.onboarding)
-            self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[onboarding(300)]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["onboarding": self.onboarding]))
-            self.view.addConstraint(NSLayoutConstraint(item: self.onboarding, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: self.view, attribute: NSLayoutAttribute.CenterX, multiplier: 1, constant: 0))
-            self.view.addConstraint(NSLayoutConstraint(item: self.onboarding, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: self.view, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: 30))
-            
+            self.onboardingScrollView?.hidden = false
+            self.onboarding?.hidden = false
         }
     }
     
@@ -598,7 +614,7 @@ import CoreLocation
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
-        return self.groups.count
+        return AppDelegate.user().events.count > 0 ? self.groups.count : 0
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int

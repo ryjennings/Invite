@@ -39,7 +39,7 @@ class DashboardNextEventCell: UITableViewCell
         style.lineSpacing = 4
         let att = NSMutableAttributedString()
         att.appendAttributedString(NSAttributedString(string: "Your next event\n", attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(20), NSForegroundColorAttributeName: UIColor.inviteQuestionColor(), NSParagraphStyleAttributeName: style]))
-        att.appendAttributedString(NSAttributedString(string: self.nextEventString, attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(24), NSForegroundColorAttributeName: UIColor.inviteQuestionColor(), NSParagraphStyleAttributeName: style]))
+        att.appendAttributedString(NSAttributedString(string: self.nextEventString, attributes: [NSFontAttributeName: SDiPhoneVersion.deviceSize() == DeviceSize.iPhone35inch || SDiPhoneVersion.deviceSize() == DeviceSize.iPhone4inch ? UIFont.proximaNovaSemiboldFontOfSize(20) : UIFont.proximaNovaSemiboldFontOfSize(24), NSForegroundColorAttributeName: UIColor.inviteQuestionColor(), NSParagraphStyleAttributeName: style]))
         self.nextLabel.attributedText = att
         self.nextLabel.shadowColor = UIColor.whiteColor()
         self.nextLabel.shadowOffset = CGSizeMake(0, 1)

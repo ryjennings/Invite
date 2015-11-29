@@ -421,11 +421,11 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_UPDATED_NOTIFICATION object:nil userInfo:nil];
                 
             } else {
-                NSLog(@"ERRRRRRRROR!!!");
+                [[NSNotificationCenter defaultCenter] postNotificationName:STEP2_UPDATED_ERROR_NOTIFICATION object:nil userInfo:nil];
             }
         }];
     } else {
-        NSLog(@"ERRRRRRRROR!!!");
+        [[NSNotificationCenter defaultCenter] postNotificationName:STEP1_UPDATED_ERROR_NOTIFICATION object:nil userInfo:nil];
     }
 }
 
@@ -489,11 +489,11 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:nil userInfo:userInfo];
                 
             } else {
-                NSLog(@"ERRRRRRRROR!!!");
+                [[NSNotificationCenter defaultCenter] postNotificationName:STEP2_CREATED_ERROR_NOTIFICATION object:nil userInfo:nil];
             }
         }];
     } else {
-        NSLog(@"ERRRRRRRROR!!!");
+        [[NSNotificationCenter defaultCenter] postNotificationName:STEP1_CREATED_ERROR_NOTIFICATION object:nil userInfo:nil];
     }
 }
 

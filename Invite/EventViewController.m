@@ -179,6 +179,24 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     } else {
         _isOld = NO;
     }
+    
+    if (!_isCreating && !_event.parseEvent[EVENT_RESPONSES_KEY]) {
+        [self recreateResponses];
+    }
+}
+
+- (void)recreateResponses
+{
+    // Responses are empty for some reason. Recreate.
+    NSMutableArray *responses = [NSMutableArray array];
+    for (PFObject *invitee in _event.parseEvent[EVENT_INVITEES_KEY]) {
+        NSString *email = [invitee objectForKey:EMAIL_KEY];
+        if (email && email.length > 0) {
+            [responses addObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)]];
+        }
+    }
+    _event.parseEvent[EVENT_RESPONSES_KEY] = responses;
+    [_event.parseEvent saveInBackground];
 }
 
 - (UIView *)tableHeaderView
@@ -439,6 +457,30 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_CREATED_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventCreated:) name:EVENT_UPDATED_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(step1CreatedError:) name:STEP1_CREATED_ERROR_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(step1CreatedError:) name:STEP2_CREATED_ERROR_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(step1UpdatedError:) name:STEP1_UPDATED_ERROR_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(step1UpdatedError:) name:STEP2_UPDATED_ERROR_NOTIFICATION object:nil];
+}
+
+- (void)step1CreatedError:(NSNotification *)note
+{
+    [_alert dismissViewControllerAnimated:YES completion:^{
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"There was a problem creating this event. Please try again." preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [alert addAction:okAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    }];
+}
+
+- (void)step1UpdatedError:(NSNotification *)note
+{
+    [_alert dismissViewControllerAnimated:YES completion:^{
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"There was a problem updating this event. Please try again." preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [alert addAction:okAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    }];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -727,8 +769,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         cell.cellLabel.text = @"Host";
         NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
         style.lineSpacing = 4;
-        NSAttributedString *att = [[NSAttributedString alloc] initWithString:[_event host] attributes:@{NSForegroundColorAttributeName: [UIColor inviteTableHeaderColor], NSFontAttributeName: [UIFont inviteTableSmallFont], NSParagraphStyleAttributeName: style}];
-        cell.cellText.attributedText = att;
+        if ([_event host]) {
+            NSAttributedString *att = [[NSAttributedString alloc] initWithString:[_event host] attributes:@{NSForegroundColorAttributeName: [UIColor inviteTableHeaderColor], NSFontAttributeName: [UIFont inviteTableSmallFont], NSParagraphStyleAttributeName: style}];
+            cell.cellText.attributedText = att;
+        }
         cell.accessoryType = UITableViewCellAccessoryNone;
         return cell;
     }
