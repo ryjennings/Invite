@@ -46,7 +46,7 @@ import CoreLocation
     
     var adIndexSets = [NSIndexSet]()
     
-    var adFree = true
+    var adFree = false
     
     var locationManager: CLLocationManager!
     var latitude: CLLocationDegrees!
@@ -190,12 +190,6 @@ import CoreLocation
     {
         self.tableView.tableHeaderView = nil
         configureOnboarding()
-    }
-    
-    override func viewWillAppear(animated: Bool)
-    {
-        super.viewWillAppear(animated)
-        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
     }
     
     func configureToDisplayEvents()
@@ -704,6 +698,7 @@ import CoreLocation
     
     func eventCreated(note: NSNotification)
     {
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
         if let createdEvent = note.userInfo?["createdEvent"] as? PFObject {
             self.createdEvent = createdEvent
         }
@@ -734,6 +729,7 @@ import CoreLocation
     
     func eventUpdated(note: NSNotification)
     {
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
         AppDelegate.user().refreshEvents()
         AppDelegate.user().protoEvent = nil
         AppDelegate.user().findReservations()
@@ -742,6 +738,7 @@ import CoreLocation
     
     func eventClosed(note: NSNotification)
     {
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
         AppDelegate.user().eventToDisplay = nil
         AppDelegate.user().protoEvent = nil
         AppDelegate.user().createMyReponses()

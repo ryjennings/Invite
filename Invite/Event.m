@@ -31,6 +31,8 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
 @property (nonatomic, strong) PFObject *locationToSave;
 @property (nonatomic, strong) NSMutableArray *addressesForNewUsers;
 
+@property (nonatomic, assign) BOOL onlySendToNewGuests;
+
 @end
 
 @implementation Event
@@ -214,8 +216,8 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
 
 - (void)submitEvent
 {
-    _actualEmailsToInvite = [_emails mutableCopy];
-    _actualInviteesToInvite = [_invitees mutableCopy];
+    _actualEmailsToInvite = [self.emails mutableCopy];
+    _actualInviteesToInvite = [self.invitees mutableCopy];
     _inviteeEmails = [NSMutableArray array];
     
     [self prepareToSubmit];
@@ -229,8 +231,8 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
 
 - (void)updateEvent
 {
-    _actualEmailsToInvite = [_emails mutableCopy];
-    _actualInviteesToInvite = [_invitees mutableCopy];
+    _actualEmailsToInvite = [self.emails mutableCopy];
+    _actualInviteesToInvite = [self.invitees mutableCopy];
     _inviteeEmails = [NSMutableArray array];
 
     [self prepareToSubmit];
@@ -244,7 +246,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
 
 - (void)prepareToSubmit
 {
-    [_invitees enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    [self.invitees enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [_inviteeEmails addObject:[((PFObject *)obj) objectForKey:EMAIL_KEY]];
     }];
 }
@@ -381,7 +383,9 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
         NSMutableArray *save = [_actualInviteesToInvite mutableCopy];
 
         // For some reason addUniqueObject is not adding to an existing array, but wiping the array first...
-        _parseEvent[EVENT_INVITEES_KEY] = [_actualInviteesToInvite arrayByAddingObjectsFromArray:[AppDelegate user].protoEvent.existingInvitees];
+        if (_updatedInvitees) {
+            _parseEvent[EVENT_INVITEES_KEY] = [_actualInviteesToInvite arrayByAddingObjectsFromArray:[AppDelegate user].protoEvent.existingInvitees];
+        }
         
         // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
         
@@ -414,15 +418,19 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
                 
                 [self sendEventEmailUsingTemplate:kUpdatedEventCreator];
                 
-                if (_updatedLocation || _updatedTimeframe || _updatedInvitees || _updatedEmails) {
+                if (_addressesForNewUsers.count) {
+                    [self sendEventEmailUsingTemplate:kNewEventNewUsers];
+                }
+                
+                if (_updatedLocation || _updatedTimeframe) {
 
                     if (_inviteeEmails.count && _sendEmails) {
                         [self sendEventEmailUsingTemplate:kUpdatedEventInviteUsers];
                     }
-                    if (_addressesForNewUsers.count && _sendEmails) {
-                        [self sendEventEmailUsingTemplate:kNewEventNewUsers];
-                    }
                     
+                } else if (_updatedInvitees && _sendEmails) {
+                    self.onlySendToNewGuests = YES;
+                    [self sendEventEmailUsingTemplate:kUpdatedEventInviteUsers];
                 }
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_UPDATED_NOTIFICATION object:nil userInfo:nil];
@@ -454,6 +462,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
 
             if (!invitee[FACEBOOK_ID_KEY]) {
                 [_addressesForNewUsers addObject:invitee[EMAIL_KEY]];
+                [_inviteeEmails removeObject:invitee[EMAIL_KEY]];
             }
             
             NSString *email = [invitee objectForKey:EMAIL_KEY];
@@ -488,7 +497,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
                 if (_inviteeEmails.count && _sendEmails) {
                     [self sendEventEmailUsingTemplate:kNewEventInviteUsers];
                 }
-                if (_addressesForNewUsers.count && _sendEmails) {
+                if (_addressesForNewUsers.count) {
                     [self sendEventEmailUsingTemplate:kNewEventNewUsers];
                 }
                 
@@ -629,8 +638,15 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
     if ([template isEqualToString:kNewEventCreator] || [template isEqualToString:kUpdatedEventCreator]) {
         [to addObject:@{@"email": self.creator[EMAIL_KEY]}];
     } else if ([template isEqualToString:kNewEventInviteUsers] || [template isEqualToString:kUpdatedEventInviteUsers]) {
-        for (NSString *email in _inviteeEmails) {
-            [to addObject:@{@"email": email}];
+        
+        if (self.onlySendToNewGuests) {
+            for (PFObject *invitee in _addedInvitees) {
+                [to addObject:@{@"email": invitee[EMAIL_KEY]}];
+            }
+        } else {
+            for (NSString *email in _inviteeEmails) {
+                [to addObject:@{@"email": email}];
+            }
         }
     } else if ([template isEqualToString:kNewEventNewUsers]) {
         for (NSString *email in _addressesForNewUsers) {

@@ -1030,7 +1030,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         }
     }
     
-    if ([AppDelegate user].protoEvent.invitees) {
+    if ([AppDelegate user].protoEvent.invitees.count) {
         [self createSendEmailAlert];
     } else {
         [self actuallyCreateEvent];
@@ -1102,14 +1102,18 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     if (remove.count) {
         NSMutableArray *mut = [[AppDelegate user].protoEvent.invitees mutableCopy];
         [mut removeObjectsInArray:remove];
-        [AppDelegate user].protoEvent.invitees = mut;
+        [AppDelegate user].protoEvent.addedInvitees = mut;
     }
 
-    if ([AppDelegate user].protoEvent.invitees) {
-        [self updateSendEmailAlert];
-    } else {
-        [self actuallyUpdateEvent];
-    }
+    if ([AppDelegate user].protoEvent.invitees.count &&
+        ([AppDelegate user].protoEvent.updatedEmails ||
+         [AppDelegate user].protoEvent.updatedInvitees ||
+         [AppDelegate user].protoEvent.updatedLocation ||
+         [AppDelegate user].protoEvent.updatedTimeframe)) {
+            [self updateSendEmailAlert];
+        } else {
+            [self actuallyUpdateEvent];
+        }
 }
 
 - (void)actuallyUpdateEvent
