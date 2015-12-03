@@ -79,10 +79,10 @@ import UIKit
     
     func configureSteps()
     {
-        var titles = ["Enter a title", "Choose invitees", "Set a date and time", "Select a location", "Review and send!"]
+        var titles = ["Enter a title", "Choose guests", "Set a date and time", "Select a location", "Review and send!"]
         var texts = [
             "What will you be calling your event? Is it a birthday? New Years party? Meetup? Give you're guests a reason to attend!",
-            "Who are you inviting to the event? Invitees should have a Facebook account, so keep that in mind.",
+            "Who are you inviting to the event? Guests should have a Facebook account, so keep that in mind.",
             "When is the event starting and ending? Are you scheduling an overnight study group, you hooligan? Events can span multiple days!",
             "Where will you be having the event? School? Work? Aunt Edna's spooky cabin in the woods? We've made it easy for you to choose!",
             "If something changes later, you can always come back and make changes. No worries."

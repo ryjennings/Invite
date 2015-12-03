@@ -44,6 +44,8 @@
 
 @property (nonatomic, strong) NSString *savedEmailInput;
 
+@property (nonatomic, assign) BOOL sendEmails;
+
 + (Event *)createEvent;
 + (Event *)eventFromPFObject:(PFObject *)object;
 

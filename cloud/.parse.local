@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Invite": {
+      "applicationId": "bDCtNhAgLH0h8TClwos5BxTLJ9q2gIs19uG8dSjD"
+    },
+    "_default": {
+      "link": "Invite"
+    }
+  }
+}

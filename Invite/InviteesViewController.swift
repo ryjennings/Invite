@@ -506,6 +506,8 @@ class Friend
     {
         self.groupedFriends.removeAll()
         self.groupedFriendsKeys.removeAll()
+        self.indexTitles.removeAll()
+        self.sectionForIndexTitles.removeAll()
         
         var currentTitle = ""
 

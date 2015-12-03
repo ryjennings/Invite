@@ -11,6 +11,12 @@
 #import "AppDelegate.h"
 #import "StringConstants.h"
 
+#define kNewEventCreator @"new-event-creator"
+#define kNewEventInviteUsers @"new-event-invite-users"
+#define kNewEventNewUsers @"new-event-new-users"
+#define kUpdatedEventCreator @"updated-event-creator"
+#define kUpdatedEventInviteUsers @"updated-event-invite-users"
+
 typedef NS_ENUM(NSUInteger, WeedOutReason) {
     WeedOutReasonInitialSubmit,
     WeedOutReasonUpdate
@@ -23,6 +29,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
 @property (nonatomic, strong) NSMutableArray *inviteeEmails;
 
 @property (nonatomic, strong) PFObject *locationToSave;
+@property (nonatomic, strong) NSMutableArray *addressesForNewUsers;
 
 @end
 
@@ -377,7 +384,15 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
         _parseEvent[EVENT_INVITEES_KEY] = [_actualInviteesToInvite arrayByAddingObjectsFromArray:[AppDelegate user].protoEvent.existingInvitees];
         
         // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
+        
+        _addressesForNewUsers = [NSMutableArray arrayWithArray:_actualEmailsToInvite];
+        
         for (PFObject *invitee in _actualInviteesToInvite) {
+            
+            if (!invitee[FACEBOOK_ID_KEY]) {
+                [_addressesForNewUsers addObject:invitee[EMAIL_KEY]];
+            }
+            
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
                 [_parseEvent addUniqueObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)] forKey:EVENT_RESPONSES_KEY];
@@ -395,28 +410,20 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
         [PFObject saveAllInBackground:save block:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
                 
-                if (_updatedLocation || _updatedTimeframe) {
-                    NSLog(@"Update all");
-                    [self sendPushNotification];
-                } else if (_updatedInvitees || _updatedEmails) {
-                    NSMutableString *inviteeString = [[NSMutableString alloc] initWithString:@"Update Invite users: "];
-                    NSMutableString *emailString = [[NSMutableString alloc] initWithString:@"Update new users: "];
-                    for (PFObject *invitee in _actualInviteesToInvite) {
-                        if (invitee[FULL_NAME_KEY]) {
-                            [inviteeString appendFormat:@"%@, ", invitee[EMAIL_KEY]];
-                        } else {
-                            [emailString appendFormat:@"%@, ", invitee[EMAIL_KEY]];
-                        }
-                    }
-                    NSLog(@"%@", inviteeString);
-                    NSLog(@"%@", emailString);
-                }
-                
                 // Do not email if only title was updated
                 
-                NSLog(@"Update creator: %@", [AppDelegate user].email);
+                [self sendEventEmailUsingTemplate:kUpdatedEventCreator];
                 
-                [self sendNewEventEmailToCreator];
+                if (_updatedLocation || _updatedTimeframe || _updatedInvitees || _updatedEmails) {
+
+                    if (_inviteeEmails.count && _sendEmails) {
+                        [self sendEventEmailUsingTemplate:kUpdatedEventInviteUsers];
+                    }
+                    if (_addressesForNewUsers.count && _sendEmails) {
+                        [self sendEventEmailUsingTemplate:kNewEventNewUsers];
+                    }
+                    
+                }
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_UPDATED_NOTIFICATION object:nil userInfo:nil];
                 
@@ -440,7 +447,15 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
         
         // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
         NSMutableArray *responses = [NSMutableArray array];
+
+        _addressesForNewUsers = [NSMutableArray arrayWithArray:_actualEmailsToInvite];
+        
         for (PFObject *invitee in _actualInviteesToInvite) {
+
+            if (!invitee[FACEBOOK_ID_KEY]) {
+                [_addressesForNewUsers addObject:invitee[EMAIL_KEY]];
+            }
+            
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
                 [responses addObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)]];
@@ -467,23 +482,15 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
                 [events addObject:_parseEvent];
                 [AppDelegate user].events = [User sortEvents:events];
                 
-                // DEBUG ONLY
-                NSMutableString *inviteeString = [[NSMutableString alloc] initWithString:@"Emailing Invite users: "];
-                NSMutableString *emailString = [[NSMutableString alloc] initWithString:@"Emailing new users: "];
-                for (PFObject *invitee in _actualInviteesToInvite) {
-                    if (invitee[FULL_NAME_KEY]) {
-                        [inviteeString appendFormat:@"%@, ", invitee[EMAIL_KEY]];
-                    } else {
-                        [emailString appendFormat:@"%@, ", invitee[EMAIL_KEY]];
-                    }
-                }
-                NSLog(@"%@", inviteeString);
-                NSLog(@"%@", emailString);
-                NSLog(@"Emailing creator: %@", [AppDelegate user].email);
-                // DEBUG ONLY
-                
                 [self sendPushNotification];
-                [self sendNewEventEmailToCreator];
+                
+                [self sendEventEmailUsingTemplate:kNewEventCreator];
+                if (_inviteeEmails.count && _sendEmails) {
+                    [self sendEventEmailUsingTemplate:kNewEventInviteUsers];
+                }
+                if (_addressesForNewUsers.count && _sendEmails) {
+                    [self sendEventEmailUsingTemplate:kNewEventNewUsers];
+                }
                 
                 NSDictionary *userInfo = @{@"createdEvent": _parseEvent};
                 [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CREATED_NOTIFICATION object:nil userInfo:userInfo];
@@ -581,35 +588,63 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
         return att;
 }
 
-- (void)sendNewEventEmailToCreator
+- (void)sendEventEmailUsingTemplate:(NSString *)template
 {
-    NSMutableArray *mergeVars = [NSMutableArray array];
     NSMutableArray *vars = [NSMutableArray array];
     NSMutableArray *inviteesContent = [NSMutableArray array];
     
     for (PFObject *invitee in _actualInviteesToInvite) {
         NSString *display = invitee[FULL_NAME_KEY] ? invitee[FULL_NAME_KEY] : invitee[EMAIL_KEY];
-        [inviteesContent addObject:@{@"display": display, @"facebook_id": invitee[FACEBOOK_ID_KEY] ? invitee[FACEBOOK_ID_KEY] : @"" , @"response": @(EventResponseNoResponse)}];
+        [inviteesContent addObject:@{@"display": display}];
     }
     
-    [vars addObject:@{@"name": @"event_title", @"content": self.title}];
-    [vars addObject:@{@"name": @"host", @"content": self.host}];
-    [vars addObject:@{@"name": @"my_response", @"content": @(EventResponseHost)}];
-    [vars addObject:@{@"name": @"time", @"content": [AppDelegate viewTimeframeForStartDate:self.startDate endDate:self.endDate]}];
-    [vars addObject:@{@"name": @"location", @"content": [self locationText]}];
-    [vars addObject:@{@"name": @"invitees", @"content": inviteesContent}];
-    [vars addObject:@{@"name": @"deeplink", @"content": [NSString stringWithFormat:@"invite://%@", self.parseEvent.objectId]}];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"MMMM"];
+    NSString *month = [[formatter stringFromDate:self.startDate] uppercaseString];
+    [formatter setDateFormat:@"dd"];
+    NSString *day = [formatter stringFromDate:self.startDate];
+
+    [vars addObject:@{@"name": @"event_title",  @"content": self.title}];
+    [vars addObject:@{@"name": @"host",         @"content": self.host}];
+    [vars addObject:@{@"name": @"host_email",   @"content": self.creator[EMAIL_KEY]}];
+    [vars addObject:@{@"name": @"time",         @"content": [AppDelegate viewTimeframeForStartDate:self.startDate endDate:self.endDate]}];
+    [vars addObject:@{@"name": @"location",     @"content": [self locationText]}];
+    [vars addObject:@{@"name": @"invitees",     @"content": inviteesContent}];
+    [vars addObject:@{@"name": @"deeplink",     @"content": [NSString stringWithFormat:@"invite://%@", self.parseEvent.objectId]}];
+    [vars addObject:@{@"name": @"time_month",   @"content": month}];
+    [vars addObject:@{@"name": @"time_day",     @"content": day}];
     
-    [mergeVars addObject:@{@"rcpt": self.creator[EMAIL_KEY], @"vars": vars}];
+    NSString *subject;
     
-    NSArray *to = @[@{@"email": self.creator[EMAIL_KEY], @"name": self.creator[FULL_NAME_KEY]}];
+    if ([template isEqualToString:kNewEventCreator]) {
+        subject = @"New event: %@";
+    } else if ([template isEqualToString:kNewEventInviteUsers] || [template isEqualToString:kNewEventNewUsers]) {
+        subject = @"You've been invited: %@";
+    } else if ([template isEqualToString:kUpdatedEventCreator] || [template isEqualToString:kUpdatedEventInviteUsers]) {
+        subject = @"Updated event: %@";
+    }
+    
+    NSMutableArray *to = [NSMutableArray array];
+    
+    if ([template isEqualToString:kNewEventCreator] || [template isEqualToString:kUpdatedEventCreator]) {
+        [to addObject:@{@"email": self.creator[EMAIL_KEY]}];
+    } else if ([template isEqualToString:kNewEventInviteUsers] || [template isEqualToString:kUpdatedEventInviteUsers]) {
+        for (NSString *email in _inviteeEmails) {
+            [to addObject:@{@"email": email}];
+        }
+    } else if ([template isEqualToString:kNewEventNewUsers]) {
+        for (NSString *email in _addressesForNewUsers) {
+            [to addObject:@{@"email": email}];
+        }
+    }
+    
     [PFCloud callFunctionInBackground:@"email_template"
-                       withParameters:@{@"template": @"new-event-creator",
+                       withParameters:@{@"template": template,
                                         @"to": to,
-                                        @"merge_vars": mergeVars,
-                                        @"subject": [NSString stringWithFormat:@"New Invite Event: %@", self.title],
+                                        @"global_merge_vars": vars,
+                                        @"subject": [NSString stringWithFormat:subject, self.title],
                                         @"from_email": @"invite@appuous.com",
-                                        @"from_name": @"Invite App"
+                                        @"from_name": @"Invite for iOS"
                                         } block:^(id object, NSError *error) {
                                             if (error) {
                                                 NSLog(@"%@", error.localizedDescription);

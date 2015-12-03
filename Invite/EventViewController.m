@@ -319,26 +319,26 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
     if (_mode == EventModeView)
     {
-        UIBarButtonItem *right;
+        UIBarButtonItem *left;
 
         if ([AppDelegate user].protoEvent && !_isUpdating)
         {
-            right = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrow"] style:UIBarButtonItemStylePlain target:self action:@selector(preview:)];
+            left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrow"] style:UIBarButtonItemStylePlain target:self action:@selector(preview:)];
         }
         else
         {
             if ((_isUpdating && !_isOld) || (!_isCreating && !_isUpdating && !_isOld)) {
-                UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actions:)];
-                left.tintColor = [UIColor inviteTableHeaderColor];
-                self.navigationItem.leftBarButtonItem = left;
+                UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actions:)];
+                right.tintColor = [UIColor inviteTableHeaderColor];
+                self.navigationItem.rightBarButtonItem = right;
             } else {
-                self.navigationItem.leftBarButtonItem = nil;
+                self.navigationItem.rightBarButtonItem = nil;
             }
             
-            right = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(close:)];
+            left = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(close:)];
         }
-        right.tintColor = [UIColor inviteTableHeaderColor];
-        self.navigationItem.rightBarButtonItem = right;
+        left.tintColor = [UIColor inviteTableHeaderColor];
+        self.navigationItem.leftBarButtonItem = left;
     }
     else
     {
@@ -349,15 +349,15 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         _modeButton.backgroundColor = [[UIColor inviteBlueColor] colorWithAlphaComponent:_modeButton.enabled ? 1 : 0.5];
 
         if (_isCreator) {
-            UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrow"] style:UIBarButtonItemStylePlain target:self action:@selector(preview:)];
-            left.tintColor = [UIColor inviteTableHeaderColor];
+            UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"arrow"] style:UIBarButtonItemStylePlain target:self action:@selector(preview:)];
+            right.tintColor = [UIColor inviteTableHeaderColor];
             
-            self.navigationItem.leftBarButtonItem = left;
-            self.navigationItem.rightBarButtonItem = cancel;
+            self.navigationItem.rightBarButtonItem = right;
+            self.navigationItem.leftBarButtonItem = cancel;
         } else {
             [_modeButton setTitle:@"Preview" forState:UIControlStateNormal];
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
-            self.navigationItem.leftBarButtonItem = cancel;
+            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_modeButton];
+            self.navigationItem.rightBarButtonItem = cancel;
         }
     }
 }
@@ -1021,17 +1021,64 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (IBAction)createEvent:(id)sender
 {
+    BOOL alert = NO;
+    
+    for (PFObject *invitee in [AppDelegate user].protoEvent.invitees) {
+        if (!invitee[FACEBOOK_ID_KEY]) {
+            alert = YES;
+            break;
+        }
+    }
+    
+    if ([AppDelegate user].protoEvent.invitees) {
+        [self createSendEmailAlert];
+    } else {
+        [self actuallyCreateEvent];
+    }
+}
+
+- (void)actuallyCreateEvent
+{
     _alert = [UIAlertController alertControllerWithTitle:@"Creating your new event!" message:nil preferredStyle:UIAlertControllerStyleAlert];
     [self presentViewController:_alert animated:YES completion:nil];
     
     [[AppDelegate user].protoEvent submitEvent];
 }
 
+- (void)createSendEmailAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Event Email" message:@"An event email will automatically be sent to guests who have not previously used this app. Do you also want to send the event email to you're other guests?" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [AppDelegate user].protoEvent.sendEmails = NO;
+        [self actuallyCreateEvent];
+    }];
+    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [AppDelegate user].protoEvent.sendEmails = YES;
+        [self actuallyCreateEvent];
+    }];
+    [alert addAction:noAction];
+    [alert addAction:yesAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)updateSendEmailAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Event Email" message:@"An event email will automatically be sent to guests who have not previously used this app. Do you also want to send an update to you're other guests?" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [AppDelegate user].protoEvent.sendEmails = NO;
+        [self actuallyUpdateEvent];
+    }];
+    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [AppDelegate user].protoEvent.sendEmails = YES;
+        [self actuallyUpdateEvent];
+    }];
+    [alert addAction:noAction];
+    [alert addAction:yesAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 - (IBAction)updateEvent:(id)sender
 {
-    _alert = [UIAlertController alertControllerWithTitle:@"Updating your event!" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [self presentViewController:_alert animated:YES completion:nil];
-    
     BOOL breakAllLoops = NO;
     int count = 0;
     
@@ -1057,6 +1104,18 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         [mut removeObjectsInArray:remove];
         [AppDelegate user].protoEvent.invitees = mut;
     }
+
+    if ([AppDelegate user].protoEvent.invitees) {
+        [self updateSendEmailAlert];
+    } else {
+        [self actuallyUpdateEvent];
+    }
+}
+
+- (void)actuallyUpdateEvent
+{
+    _alert = [UIAlertController alertControllerWithTitle:@"Updating your event!" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:_alert animated:YES completion:nil];
     
     [[AppDelegate user].protoEvent updateEvent];
 }
