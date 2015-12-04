@@ -42,6 +42,7 @@ class Friend
     private var sectionForIndexTitles = [Int]()
 
     private var selectedFriends = [Friend]()
+    private var updatedFriends = [Friend]()
     
     private var textViewText = ""
     private var showInviteFriendsOnly = false
@@ -49,6 +50,9 @@ class Friend
     
     private var eventInvitees = [PFObject]()
     private var eventEmails = [String]()
+    private var addedInvitees = [PFObject]()
+    private var addedEmails = [String]()
+
     private var preEmails = [String]()
     
     private var existingEvent: Event?
@@ -56,6 +60,8 @@ class Friend
     private var emailsAlreadyAdded: [String]?
     
     private var showingCurrentlyInvited = false
+    
+    var isUpdating = false
     
     // MARK: - Lifecycle
     
@@ -87,6 +93,9 @@ class Friend
         self.tableView.backgroundColor = UIColor.clearColor()
         
         self.definesPresentationContext = true
+        if let savedEmailInput = AppDelegate.user().protoEvent.savedEmailInput {
+            self.textViewText = savedEmailInput
+        }
     }
     
     private func configurePullView()
@@ -275,12 +284,22 @@ class Friend
                     return;
                 }
             }
-            if selectedFriendsContainsFriend(friend) {
-                removeFriend(friend)
-                unselectCell(cell, friend: friend)
+            if (self.isUpdating) {
+                if updatedFriendsContainsFriend(friend) {
+                    removeUpdatedFriend(friend)
+                    unselectCell(cell, friend: friend)
+                } else {
+                    self.updatedFriends.append(friend)
+                    selectCell(cell, friend: friend)
+                }
             } else {
-                self.selectedFriends.append(friend)
-                selectCell(cell, friend: friend)
+                if selectedFriendsContainsFriend(friend) {
+                    removeFriend(friend)
+                    unselectCell(cell, friend: friend)
+                } else {
+                    self.selectedFriends.append(friend)
+                    selectCell(cell, friend: friend)
+                }
             }
         }
     }
@@ -366,12 +385,23 @@ class Friend
         if validateEmails() {
             convertFriendsForSave()
             AppDelegate.user().protoEvent.savedEmailInput = self.textViewText
-            AppDelegate.user().protoEvent.invitees = self.eventInvitees
-            if AppDelegate.user().protoEvent.existingInvitees != nil {
-                AppDelegate.user().protoEvent.updatedInvitees = AppDelegate.user().protoEvent.invitees.count != AppDelegate.user().protoEvent.existingInvitees.count
+            if self.isUpdating {
+                if self.addedInvitees.count > 0 {
+                    AppDelegate.user().protoEvent.updatedInvitees = true
+                    AppDelegate.user().protoEvent.addedInvitees = self.addedInvitees
+                }
+                if self.addedEmails.count > 0 {
+                    AppDelegate.user().protoEvent.updatedEmails = true
+                    AppDelegate.user().protoEvent.addedEmails = self.addedEmails
+                }
+            } else {
+                if self.eventInvitees.count > 0 {
+                    AppDelegate.user().protoEvent.invitees = self.eventInvitees
+                }
+                if self.eventEmails.count > 0 {
+                    AppDelegate.user().protoEvent.emails = self.eventEmails
+                }
             }
-            AppDelegate.user().protoEvent.emails = self.eventEmails
-            AppDelegate.user().protoEvent.updatedEmails = AppDelegate.user().protoEvent.emails.count > 0
             navigationController?.popViewControllerAnimated(true)
         }
     }
@@ -466,7 +496,6 @@ class Friend
                 let e = email
                 self.preEmails.append(e)
             }
-            self.textViewText = AppDelegate.user().protoEvent.savedEmailInput
         }
     }
     
@@ -690,12 +719,27 @@ class Friend
         }
         return false
     }
-
+    
+    private func updatedFriendsContainsFriend(aFriend: Friend) -> Bool
+    {
+        for friend in self.updatedFriends {
+            if friend.email == aFriend.email {
+                return true
+            }
+        }
+        return false
+    }
+    
     private func removeFriend(friend: Friend)
     {
         self.selectedFriends = self.selectedFriends.filter({$0.email != friend.email})
     }
-
+    
+    private func removeUpdatedFriend(friend: Friend)
+    {
+        self.selectedFriends = self.selectedFriends.filter({$0.email != friend.email})
+    }
+    
     private func validateEmails() -> Bool
     {
         if self.textViewText != "" {
@@ -726,17 +770,33 @@ class Friend
         if self.textViewText != "" {
             let components = self.textViewText.componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) as NSArray
             let string = components.componentsJoinedByString("")
-            self.eventEmails = string.componentsSeparatedByString(",")
+            if self.isUpdating {
+                self.addedEmails = string.componentsSeparatedByString(",")
+            } else {
+                self.eventEmails = string.componentsSeparatedByString(",")
+            }
         }
         
         // Email addresses and invitees from selected friends
-        for friend in self.selectedFriends {
-            if friend.pfObject != nil {
-                // Invitee
-                self.eventInvitees.append(friend.pfObject!)
-            } else {
-                // Email
-                self.eventEmails.append(friend.email)
+        if (self.isUpdating) {
+            for friend in self.updatedFriends {
+                if friend.pfObject != nil {
+                    // Invitee
+                    self.addedInvitees.append(friend.pfObject!)
+                } else {
+                    // Email
+                    self.addedEmails.append(friend.email)
+                }
+            }
+        } else {
+            for friend in self.selectedFriends {
+                if friend.pfObject != nil {
+                    // Invitee
+                    self.eventInvitees.append(friend.pfObject!)
+                } else {
+                    // Email
+                    self.eventEmails.append(friend.email)
+                }
             }
         }
     }

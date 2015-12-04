@@ -68,6 +68,17 @@
     return category;
 }
 
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())completionHandler
+{
+    if ([identifier isEqualToString:@"ViewAction"]) {
+        self.deeplinkObjectId = userInfo[@"objectId"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DEEPLINK_NOTIFICATION object:nil];
+    }
+    if (completionHandler) {
+        completionHandler();
+    }
+}
+
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void(^)())completionHandler
 {
     if ([identifier isEqualToString:@"ViewAction"]) {

@@ -51,6 +51,8 @@ import CoreLocation
     var locationManager: CLLocationManager!
     var latitude: CLLocationDegrees!
     var longitude: CLLocationDegrees!
+    
+    var alert: UIAlertController!
 
     override func viewDidLoad()
     {
@@ -93,6 +95,7 @@ import CoreLocation
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "deeplink:", name: DEEPLINK_NOTIFICATION, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "returnedFromSettings", name: CLOSING_SETTINGS_NOTIFICATION, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dismissRemoveEventAlert", name: REMOVE_EVENT_ERROR_NOTIFICATION, object: nil)
         
         if (AppDelegate.app().deeplinkObjectId != nil) {
             deeplink(nil)
@@ -171,6 +174,7 @@ import CoreLocation
     
     func removedEvent(note: NSNotification)
     {
+        dismissRemoveEventAlert()
         if AppDelegate.user().events.count > 0 {
             self.tableView.mp_beginUpdates()
             separateEventsIntoGroups()
@@ -569,6 +573,7 @@ import CoreLocation
     {
         let deleteButton = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: "Delete") { (action: UITableViewRowAction, indexPath: NSIndexPath) -> Void in
             
+            self.deleteAlert()
             self.removeEntireSection = self.tableView.numberOfRowsInSection(indexPath.section) > 1 ? false : true
             self.removeIndexPath = indexPath
             let event = self.groups[self.groupKeys[indexPath.section]]![indexPath.row] 
@@ -579,6 +584,17 @@ import CoreLocation
         }
         deleteButton.backgroundColor = UIColor.inviteRedColor()
         return [deleteButton]
+    }
+    
+    private func deleteAlert()
+    {
+        self.alert = UIAlertController(title: "Deleting event...", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
+        self.presentViewController(self.alert, animated: true, completion: nil)
+    }
+    
+    func dismissRemoveEventAlert()
+    {
+        self.alert.dismissViewControllerAnimated(true, completion: nil);
     }
     
     func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int
@@ -608,7 +624,7 @@ import CoreLocation
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
-        return AppDelegate.user().events.count > 0 ? self.groups.count : 0
+        return AppDelegate.user().events?.count > 0 ? self.groups.count : 0
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int

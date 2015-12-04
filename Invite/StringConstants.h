@@ -143,6 +143,7 @@ typedef NS_ENUM(NSUInteger, EventResponse) {
 #define DEEPLINK_NOTIFICATION @"DeeplinkNotifcation"
 #define FINISHED_REFRESHING_EVENTS_NOTIFICATION @"FinishedRefreshingEventsNotifcation"
 #define FINISHED_REMOVING_EVENT_NOTIFICATION @"RemovedEventNotifcation"
+#define REMOVE_EVENT_ERROR_NOTIFICATION @"RemoveEventErrorNotifcation"
 #define CLOSING_SETTINGS_NOTIFICATION @"ClosingSettingsNotifcation"
 
 // Error submitting event notifications

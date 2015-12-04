@@ -667,6 +667,12 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
                 if (_event.invitees && _event.invitees.count) {
                     inviteeCount += _event.invitees.count;
                 }
+                if (_event.addedEmails && _event.addedEmails.count) {
+                    inviteeCount += _event.addedEmails.count;
+                }
+                if (_event.addedInvitees && _event.addedInvitees.count) {
+                    inviteeCount += _event.addedInvitees.count;
+                }
                 if (inviteeCount > 0) {
                     cell.guidance.text = [NSString stringWithFormat:@"%lu people invited", (unsigned long)inviteeCount];
                     cell.guidance.textColor = [self valueColor];
@@ -1129,6 +1135,10 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     if ([segue.identifier isEqualToString:SEGUE_TO_INVITEES_SECTION])
     {
         _inviteesSectionViewController = (InviteesSectionViewController *)segue.destinationViewController;
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_TO_INVITEES])
+    {
+        ((InviteesViewController *)segue.destinationViewController).isUpdating = self.isUpdating;
     }
 }
 

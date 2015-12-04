@@ -161,7 +161,6 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:USER_CREATED_NOTIFICATION object:self];
             } else {
                 [[NSNotificationCenter defaultCenter] postNotificationName:DELETE_USER_NOTIFICATION object:self];
-                NSLog(@"ERRRRRRRROR!!!");
             }
         }];
     }];
@@ -354,10 +353,14 @@
         [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_CREATOR_KEY]];
         [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_INVITEES_KEY]];
         [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            if (objects.count) {
-                weakSelf.events = [User sortEvents:[objects[0] objectForKey:EVENTS_KEY]];
+            if (error) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:REMOVE_EVENT_ERROR_NOTIFICATION object:nil];
+            } else {
+                if (objects.count) {
+                    weakSelf.events = [User sortEvents:[objects[0] objectForKey:EVENTS_KEY]];
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:FINISHED_REMOVING_EVENT_NOTIFICATION object:nil];
             }
-            [[NSNotificationCenter defaultCenter] postNotificationName:FINISHED_REMOVING_EVENT_NOTIFICATION object:nil];
         }];
     }];
 }

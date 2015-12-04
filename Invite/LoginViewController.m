@@ -113,52 +113,58 @@
     [super viewDidAppear:animated];
     
     if (!_sentToFacebookLogin) {
-        _logoCenterYConstraint.constant = kAmountToMoveUp;
-        [UIView animateWithDuration:1 animations:^{
-            [self.view layoutIfNeeded];
-        }];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            _messageViewCenterYConstraint.constant = kMessageStartingCenterY + kAmountToMoveUp;
-            [UIView animateWithDuration:1 animations:^{
-                _messageView.alpha = 1;
-                [self.view layoutIfNeeded];
-            } completion:^(BOOL finished) {
-
-                self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:_buttonView];
-                
-                UIGravityBehavior *gravityBehavior = [[UIGravityBehavior alloc] initWithItems:@[_facebookButton, _twitterView]];
-                
-                UICollisionBehavior *ballCollision = [[UICollisionBehavior alloc] initWithItems:@[_facebookButton, _twitterView]];
-                [ballCollision setTranslatesReferenceBoundsIntoBoundary:YES];
-                
-                UIPushBehavior *facebookPush = [[UIPushBehavior alloc] initWithItems:@[_facebookButton] mode:UIPushBehaviorModeInstantaneous];
-                [facebookPush setAngle:DEGREES_TO_RADIANS(90)];
-                [facebookPush setMagnitude:0.5];
-                
-                UIPushBehavior *twitterPush = [[UIPushBehavior alloc] initWithItems:@[_facebookButton] mode:UIPushBehaviorModeInstantaneous];
-                [twitterPush setAngle:DEGREES_TO_RADIANS(90)];
-                [twitterPush setMagnitude:0.4];
-                
-                UIDynamicItemBehavior *dynamicBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[_facebookButton, _twitterView]];
-                [dynamicBehavior setElasticity:1];
-                [dynamicBehavior setResistance:4];
-                
-                [self.animator addBehavior:gravityBehavior];
-                [self.animator addBehavior:ballCollision];
-                [self.animator addBehavior:facebookPush];
-                [self.animator addBehavior:dynamicBehavior];
-                [self.animator addBehavior:twitterPush];
-                [UIView animateWithDuration:0.33 animations:^{
-                    _facebookButton.alpha = 1;
-//                    _twitterView.alpha = 1;
-                }];
-            }];
-        });
+        [self animateIntoPlace];
     } else {
         _spinner.hidden = NO;
         [_spinner startAnimating];
     }
+}
+
+- (void)animateIntoPlace
+{
+    _spinner.hidden = YES;
+    _logoCenterYConstraint.constant = kAmountToMoveUp;
+    [UIView animateWithDuration:1 animations:^{
+        [self.view layoutIfNeeded];
+    }];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _messageViewCenterYConstraint.constant = kMessageStartingCenterY + kAmountToMoveUp;
+        [UIView animateWithDuration:1 animations:^{
+            _messageView.alpha = 1;
+            [self.view layoutIfNeeded];
+        } completion:^(BOOL finished) {
+            
+            self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:_buttonView];
+            
+            UIGravityBehavior *gravityBehavior = [[UIGravityBehavior alloc] initWithItems:@[_facebookButton, _twitterView]];
+            
+            UICollisionBehavior *ballCollision = [[UICollisionBehavior alloc] initWithItems:@[_facebookButton, _twitterView]];
+            [ballCollision setTranslatesReferenceBoundsIntoBoundary:YES];
+            
+            UIPushBehavior *facebookPush = [[UIPushBehavior alloc] initWithItems:@[_facebookButton] mode:UIPushBehaviorModeInstantaneous];
+            [facebookPush setAngle:DEGREES_TO_RADIANS(90)];
+            [facebookPush setMagnitude:0.5];
+            
+            UIPushBehavior *twitterPush = [[UIPushBehavior alloc] initWithItems:@[_facebookButton] mode:UIPushBehaviorModeInstantaneous];
+            [twitterPush setAngle:DEGREES_TO_RADIANS(90)];
+            [twitterPush setMagnitude:0.4];
+            
+            UIDynamicItemBehavior *dynamicBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[_facebookButton, _twitterView]];
+            [dynamicBehavior setElasticity:1];
+            [dynamicBehavior setResistance:4];
+            
+            [self.animator addBehavior:gravityBehavior];
+            [self.animator addBehavior:ballCollision];
+            [self.animator addBehavior:facebookPush];
+            [self.animator addBehavior:dynamicBehavior];
+            [self.animator addBehavior:twitterPush];
+            [UIView animateWithDuration:0.33 animations:^{
+                _facebookButton.alpha = 1;
+                //                    _twitterView.alpha = 1;
+            }];
+        }];
+    });
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -196,7 +202,6 @@
 
 - (void)deleteUser:(NSNotification *)notification
 {
-    [AppDelegate clearUser];
     [self showAlert];
 }
 
@@ -204,7 +209,7 @@
 {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"alert_cannotlogin_title", nil) message:NSLocalizedString(@"alert_cannotlogin_message", nil) preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [alert dismissViewControllerAnimated:YES completion:nil];
+        [self animateIntoPlace];
     }];
     [alert addAction:ok];
     [self presentViewController:alert animated:YES completion:nil];

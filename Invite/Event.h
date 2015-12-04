@@ -42,8 +42,8 @@
 @property (nonatomic, assign) BOOL updatedEmails;
 @property (nonatomic, assign) BOOL updatedLocation;
 
-@property (nonatomic, assign) NSArray *addedInvitees;
-@property (nonatomic, assign) NSArray *addedEmails;
+@property (nonatomic, strong) NSArray *addedInvitees;
+@property (nonatomic, strong) NSArray *addedEmails;
 
 @property (nonatomic, strong) NSString *savedEmailInput;
 

@@ -10,8 +10,8 @@
 
 "dashboard_button_addnewevent" = "Add a new event";
 "navigation_button_settings" = "Settings";
-"alert_cannotlogin_title" = "Unable to Log In to Facebook";
-"alert_cannotlogin_message" = "Please try to again.";
+"alert_cannotlogin_title" = "Unable to Log In";
+"alert_cannotlogin_message" = "Please try again.";
 "invitees_nopreviousfriends" = "Haven't sent an event before? That's okay. Enter the email addresses of the friends you would like to invite to this event in the \"New Friends\" section below. We'll remember them so that you can easily invite them to new events in the future!";
 "invitees_newfriends_footer" = "To invite someone not listed below, enter their email address above. Separate multiple email addresses with a comma. Ex: jsmith@appuous.com, jdoe@appuous.com\n";
 "invitees_currentlyinvited_footer" = "You can not remove friends that you have already invited to this event.\n";
