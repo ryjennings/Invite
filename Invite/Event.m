@@ -411,6 +411,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
                 
                 if (self.updatedLocation || self.updatedTimeframe) {
 
+                    [self sendUpdatedNotification];
                     if (self.inviteeEmails.count && self.sendEmails) {
                         [self sendEventEmailUsingTemplate:kUpdatedEventInviteUsers];
                     }
@@ -469,7 +470,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
                 [events addObject:self.parseEvent];
                 [AppDelegate user].events = [User sortEvents:events];
                 
-                [self sendPushNotification];
+                [self sendCreatedNotification];
                 
                 [self sendEventEmailUsingTemplate:kNewEventCreator];
                 if (self.inviteeEmails.count && self.sendEmails) {
@@ -547,7 +548,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
     [AppDelegate user].locations = locations;
 }
 
-- (void)sendPushNotification
+- (void)sendCreatedNotification
 {
     if (self.inviteeEmails) {
         PFQuery *query = [PFInstallation query];
@@ -556,6 +557,18 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
         // Send push notification to query
         [PFPush sendPushMessageToQueryInBackground:query
                                        withMessage:[NSString stringWithFormat:@"%@ sent you a new event: %@", self.host, self.title]];
+    }
+}
+
+- (void)sendUpdatedNotification
+{
+    if (self.inviteeEmails) {
+        PFQuery *query = [PFInstallation query];
+        [query whereKey:EMAIL_KEY containedIn:self.inviteeEmails];
+        
+        // Send push notification to query
+        [PFPush sendPushMessageToQueryInBackground:query
+                                       withMessage:[NSString stringWithFormat:@"Event update: %@", self.title]];
     }
 }
 

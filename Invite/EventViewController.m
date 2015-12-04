@@ -284,7 +284,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
             [_mapView addAnnotation:placemark];
             [_mapView showAnnotations:@[placemark] animated:NO];
             CLLocationCoordinate2D center = self.mapView.region.center;
-            center.latitude -= self.mapView.region.span.latitudeDelta * 0.485;
+            center.latitude -= self.mapView.region.span.latitudeDelta * 0.475;
             [self.mapView setCenterCoordinate:center animated:NO];
             _lastPlacemark = placemark;
         }];
