@@ -59,5 +59,6 @@
 - (NSAttributedString *)editTimeframe;
 - (NSString *)viewTimeframe;
 - (NSString *)host;
+- (NSString *)locationText;
 
 @end

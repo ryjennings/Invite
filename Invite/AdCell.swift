@@ -23,10 +23,14 @@ class AdCell: UITableViewCell, MPNativeAdRendering
     {
         super.awakeFromNib()
         
+        self.selectionStyle = UITableViewCellSelectionStyle.None
+        self.leadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
+
         self.titleLabel.textColor = UIColor.inviteTableHeaderColor()
         self.titleLabel.font = UIFont.proximaNovaRegularFontOfSize(20)
         
-        self.leadingConstraint.constant = SDiPhoneVersion.deviceSize() == DeviceSize.iPhone55inch ? 20 : 15
+        self.copyLabel.textColor = UIColor.grayColor()
+        self.copyLabel.font = UIFont.proximaNovaRegularFontOfSize(12)
         
         self.iconStrokeView.layer.cornerRadius = 12
         self.iconStrokeView.clipsToBounds = true
@@ -35,37 +39,33 @@ class AdCell: UITableViewCell, MPNativeAdRendering
         
         self.iconImageView.layer.cornerRadius = 9
         self.iconImageView.clipsToBounds = true
-        
-        self.selectionStyle = UITableViewCellSelectionStyle.None        
     }
 
     override func setSelected(selected: Bool, animated: Bool)
     {
         super.setSelected(selected, animated: animated)
     }
+    
+    func nativeMainTextLabel() -> UILabel!
+    {
+        return self.copyLabel
+    }
+    
+    func nativeIconImageView() -> UIImageView!
+    {
+        return self.iconImageView
+    }
+    
+    func nativeMainImageView() -> UIImageView!
+    {
+        return self.mainImageView
+    }
+    
+    func nativeTitleTextLabel() -> UILabel!
+    {
+        return self.titleLabel
+    }
 
-    func layoutAdAssets(adObject: MPNativeAd!)
-    {
-        let style = NSMutableParagraphStyle()
-        style.lineSpacing = 2
-        let copyLabel = UILabel()
-        let ctaLabel = UILabel()
-        adObject.loadTitleIntoLabel(self.titleLabel)
-        adObject.loadTextIntoLabel(copyLabel)
-        adObject.loadCallToActionTextIntoLabel(ctaLabel)
-        adObject.loadIconIntoImageView(self.iconImageView)
-        adObject.loadImageIntoImageView(self.mainImageView)
-        let att = NSMutableAttributedString()
-        att.appendAttributedString(NSAttributedString(string: copyLabel.text!, attributes: [NSFontAttributeName: UIFont.proximaNovaRegularFontOfSize(12), NSForegroundColorAttributeName: UIColor.grayColor(), NSParagraphStyleAttributeName: style]))
-        att.appendAttributedString(NSAttributedString(string: " \(ctaLabel.text!)", attributes: [NSFontAttributeName: UIFont.proximaNovaSemiboldFontOfSize(12), NSForegroundColorAttributeName: UIColor.inviteBlueColor(), NSParagraphStyleAttributeName: style]))
-        self.copyLabel.attributedText = att
-    }
-    
-    static func sizeWithMaximumWidth(maximumWidth: CGFloat) -> CGSize
-    {
-        return CGSizeMake(maximumWidth, 190)
-    }
-    
     class func nibForAd() -> UINib!
     {
         return UINib(nibName: "AdCell", bundle: nil)

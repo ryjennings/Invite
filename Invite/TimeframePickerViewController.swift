@@ -411,9 +411,9 @@ enum TimeframeRow: Int {
         self.saveBarButtonItem.enabled = true
         if (datePickerView.isSelectingStartDate) {
             startDate = date
-            if (endDate == nil || endDate.earlierDate(startDate).isEqualToDate(endDate)) {
+//            if (endDate == nil || endDate.earlierDate(startDate).isEqualToDate(endDate)) {
                 endDate = startDate
-            }
+//            }
         } else {
             endDate = date
         }

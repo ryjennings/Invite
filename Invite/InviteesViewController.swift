@@ -148,6 +148,7 @@ class Friend
         self.searchController.searchBar.autocapitalizationType = UITextAutocapitalizationType.None
         self.searchController.searchBar.autocorrectionType = UITextAutocorrectionType.No
         self.searchController.searchBar.spellCheckingType = UITextSpellCheckingType.No
+        convertButtonTitle("Cancel", to: "Done", view: self.searchController.searchBar)
     }
     
     private func showAlert()
@@ -829,6 +830,35 @@ class Friend
             self.pullViewHeightConstraint.constant = abs(scrollView.contentOffset.y) + 64
         } else {
             self.pullViewHeightConstraint.constant = 64
+        }
+    }
+    
+//    - (void)convertButtonTitle:(NSString *)from toTitle:(NSString *)to inView:(UIView *)view
+//    {
+//    if ([view isKindOfClass:[UIButton class]])
+//    {
+//    UIButton *button = (UIButton *)view;
+//    if ([[button titleForState:UIControlStateNormal] isEqualToString:from])
+//    {
+//    [button setTitle:to forState:UIControlStateNormal];
+//    }
+//    }
+//    
+//    for (UIView *subview in view.subviews)
+//    {
+//    [self convertButtonTitle:from toTitle:to inView:subview];
+//    }
+//    }
+    func convertButtonTitle(from: String, to: String, view: UIView)
+    {
+        if view.isKindOfClass(UIButton.self) {
+            let button = view as! UIButton
+            if button.titleForState(UIControlState.Normal) == from {
+                button.setTitle(to, forState: UIControlState.Normal)
+            }
+        }
+        for subview in view.subviews as [UIView] {
+            convertButtonTitle(from, to: to, view: subview)
         }
     }
 }

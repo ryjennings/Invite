@@ -46,7 +46,7 @@ import CoreLocation
     
     var adIndexSets = [NSIndexSet]()
     
-    var adFree = false
+    var adFree = true
     
     var locationManager: CLLocationManager!
     var latitude: CLLocationDegrees!
@@ -194,6 +194,12 @@ import CoreLocation
     {
         self.tableView.tableHeaderView = nil
         configureOnboarding()
+    }
+    
+    override func viewWillAppear(animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
     }
     
     func configureToDisplayEvents()
@@ -476,7 +482,23 @@ import CoreLocation
 
         // Ad placer
         if !self.isSearching && self.placer == nil && !self.adFree {
-            self.placer = MPTableViewAdPlacer(tableView: self.tableView, viewController: self, adPositioning: positioning, defaultAdRenderingClass: AdCell.self)
+
+//            let videoSettings = MOPUBNativeVideoAdRendererSettings()
+//            videoSettings.renderingViewClass = MPVideoNativeAdView.self
+//            videoSettings.viewSizeHandler = {(maxWidth: CGFloat) -> CGSize in
+//                return CGSizeMake(maxWidth, 190)
+//            };
+            
+            let staticSettings = MPStaticNativeAdRendererSettings()
+            staticSettings.renderingViewClass = AdCell.self
+            staticSettings.viewSizeHandler = {(maxWidth: CGFloat) -> CGSize in
+                return CGSizeMake(maxWidth, 190)
+            };
+
+//            let videoConfig = MOPUBNativeVideoAdRenderer.rendererConfigurationWithRendererSettings(videoSettings)
+            let staticConfig = MPStaticNativeAdRenderer.rendererConfigurationWithRendererSettings(staticSettings)
+   
+            self.placer = MPTableViewAdPlacer(tableView: self.tableView, viewController: self, adPositioning: positioning, rendererConfigurations: [staticConfig])
             self.placer.loadAdsForAdUnitID("d5566993d01246f3a67b01378bf829ee", targeting: targeting)
         }
     }

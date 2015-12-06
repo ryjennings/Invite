@@ -43,6 +43,7 @@
     [application registerForRemoteNotifications];
     
     [InviteTheme customizeAppAppearance];
+    [[UIButton appearanceWhenContainedIn:[UISearchBar class], [InviteesViewController class], nil] setTitle:@"Done" forState:UIControlStateNormal];
         
     _reachability = [Reachability reachabilityForInternetConnection];
     [_reachability startNotifier];

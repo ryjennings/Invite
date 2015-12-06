@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470879217.738092"
+            timestampString = "471070860.868159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1039"
-            endingLineNumber = "1039"
+            startingLineNumber = "1040"
+            endingLineNumber = "1040"
             landmarkName = "-createEvent:"
             landmarkType = "5">
          </BreakpointContent>
@@ -80,15 +80,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470879217.738092"
+            timestampString = "471070860.868159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1048"
-            endingLineNumber = "1048"
+            startingLineNumber = "1049"
+            endingLineNumber = "1049"
             landmarkName = "-actuallyCreateEvent"
             landmarkType = "5">
          </BreakpointContent>
@@ -148,11 +148,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/InviteesViewController.swift"
-            timestampString = "470879609.074662"
+            timestampString = "471065922.995063"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "272"
-            endingLineNumber = "272"
+            startingLineNumber = "273"
+            endingLineNumber = "273"
             landmarkName = "tableView(_:didSelectRowAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -164,11 +164,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/InviteesViewController.swift"
-            timestampString = "470879609.074662"
+            timestampString = "471065922.995063"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "405"
-            endingLineNumber = "405"
+            startingLineNumber = "406"
+            endingLineNumber = "406"
             landmarkName = "save(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -180,11 +180,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/InviteesViewController.swift"
-            timestampString = "470879609.074662"
+            timestampString = "471065922.995063"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "388"
-            endingLineNumber = "388"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
             landmarkName = "save(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -196,11 +196,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/InviteesViewController.swift"
-            timestampString = "470879609.074662"
+            timestampString = "471065922.995063"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "305"
-            endingLineNumber = "305"
+            startingLineNumber = "306"
+            endingLineNumber = "306"
             landmarkName = "tableView(_:didSelectRowAtIndexPath:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -212,11 +212,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/InviteesViewController.swift"
-            timestampString = "470879609.074662"
+            timestampString = "471065922.995063"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "802"
-            endingLineNumber = "802"
+            startingLineNumber = "803"
+            endingLineNumber = "803"
             landmarkName = "convertFriendsForSave()"
             landmarkType = "5">
          </BreakpointContent>
@@ -356,11 +356,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/InviteesViewController.swift"
-            timestampString = "470879609.074662"
+            timestampString = "471065922.995063"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "770"
-            endingLineNumber = "770"
+            startingLineNumber = "771"
+            endingLineNumber = "771"
             landmarkName = "convertFriendsForSave()"
             landmarkType = "5">
          </BreakpointContent>
@@ -372,11 +372,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "470879395.165108"
+            timestampString = "471070860.868159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "549"
-            endingLineNumber = "549"
+            startingLineNumber = "550"
+            endingLineNumber = "550"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -452,7 +452,7 @@
                   moduleName = "Invite"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/Event.m"
-                  timestampString = "470880977.268366"
+                  timestampString = "471071423.774709"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "401"
@@ -467,7 +467,7 @@
                   moduleName = "Invite"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/Event.m"
-                  timestampString = "470880977.268578"
+                  timestampString = "471071423.774953"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "401"

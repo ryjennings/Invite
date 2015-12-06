@@ -432,6 +432,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     _event.parseEvent[EVENT_CANCELLED_KEY] = [NSNumber numberWithBool:YES];
     [_event.parseEvent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         [[NSNotificationCenter defaultCenter] postNotificationName:EVENT_CLOSED_NOTIFICATION object:nil];
+        [self sendCancellationEmail];
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
 }
@@ -1036,7 +1037,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         }
     }
     
-    if ([AppDelegate user].protoEvent.invitees.count) {
+    if (alert) {
         [self createSendEmailAlert];
     } else {
         [self actuallyCreateEvent];
@@ -1111,7 +1112,16 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
         [AppDelegate user].protoEvent.addedInvitees = mut;
     }
 
-    if ([AppDelegate user].protoEvent.invitees.count &&
+    BOOL alert = NO;
+
+    for (PFObject *invitee in [AppDelegate user].protoEvent.invitees) {
+        if (!invitee[FACEBOOK_ID_KEY]) {
+            alert = YES;
+            break;
+        }
+    }
+
+    if (alert &&
         ([AppDelegate user].protoEvent.updatedEmails ||
          [AppDelegate user].protoEvent.updatedInvitees ||
          [AppDelegate user].protoEvent.updatedLocation ||
@@ -1388,6 +1398,52 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 - (void)titleDateCellFinishedHideAnimation:(TitleDateCell *)cell
 {
     _showingResponseSelection = NO;
+}
+
+- (void)sendCancellationEmail
+{
+    NSMutableArray *vars = [NSMutableArray array];
+    NSMutableArray *inviteesContent = [NSMutableArray array];
+    
+    for (PFObject *invitee in _event.invitees) {
+        NSString *display = invitee[FULL_NAME_KEY] ? invitee[FULL_NAME_KEY] : invitee[EMAIL_KEY];
+        [inviteesContent addObject:@{@"display": display}];
+    }
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"MMMM"];
+    NSString *month = [[formatter stringFromDate:_event.startDate] uppercaseString];
+    [formatter setDateFormat:@"dd"];
+    NSString *day = [formatter stringFromDate:_event.startDate];
+    
+    [vars addObject:@{@"name": @"event_title",  @"content": _event.title}];
+    [vars addObject:@{@"name": @"host",         @"content": _event.host}];
+    [vars addObject:@{@"name": @"host_email",   @"content": _event.parseEvent[EVENT_CREATOR_KEY][EMAIL_KEY]}];
+    [vars addObject:@{@"name": @"time",         @"content": [AppDelegate viewTimeframeForStartDate:_event.startDate endDate:_event.endDate]}];
+    [vars addObject:@{@"name": @"location",     @"content": [_event locationText]}];
+    [vars addObject:@{@"name": @"invitees",     @"content": inviteesContent}];
+    [vars addObject:@{@"name": @"deeplink",     @"content": [NSString stringWithFormat:@"invite://%@", _event.parseEvent.objectId]}];
+    [vars addObject:@{@"name": @"time_month",   @"content": month}];
+    [vars addObject:@{@"name": @"time_day",     @"content": day}];
+    
+    NSMutableArray *to = [NSMutableArray array];
+    [to addObject:@{@"email": _event.creator[EMAIL_KEY]}];
+    for (PFObject *invitee in _event.invitees) {
+        [to addObject:@{@"email": invitee[EMAIL_KEY]}];
+    }
+    
+    [PFCloud callFunctionInBackground:@"email_template"
+                       withParameters:@{@"template": @"cancelled-event",
+                                        @"to": to,
+                                        @"global_merge_vars": vars,
+                                        @"subject": [NSString stringWithFormat:@"Event cancellation: %@", _event.title],
+                                        @"from_email": @"invite@appuous.com",
+                                        @"from_name": @"Invite for iOS"
+                                        } block:^(id object, NSError *error) {
+                                            if (error) {
+                                                NSLog(@"%@", error.localizedDescription);
+                                            }
+                                        }];
 }
 
 @end
