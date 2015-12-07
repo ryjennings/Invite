@@ -130,8 +130,11 @@ import CoreLocation
 
     func returnedFromSettings()
     {
-        separateEventsIntoGroups()
-        self.tableView.reloadData()
+        if UserDefaults.boolForKey("adFree") {
+            self.adFree = true
+            separateEventsIntoGroups()
+            self.tableView.reloadData()
+        }
     }
     
     func addRefreshControl()
@@ -229,10 +232,6 @@ import CoreLocation
 
     private func separateEventsIntoGroups()
     {
-        if UserDefaults.boolForKey("adFree") {
-            self.adFree = true
-        }
-
         let targeting = MPNativeAdRequestTargeting()
         let positioning = MPClientAdPositioning()
         var latitude = 37.7793

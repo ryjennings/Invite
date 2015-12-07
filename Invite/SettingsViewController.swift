@@ -47,6 +47,19 @@ enum SettingsSection: Int {
         }
         requestProductInfo()
         SKPaymentQueue.defaultQueue().addTransactionObserver(self)
+        
+        self.tableView.tableFooterView = tableFooterView()
+    }
+    
+    private func tableFooterView() -> UIView
+    {
+        let label = UILabel(frame: CGRectMake(0, 0, 0, 50))
+        label.textColor = UIColor.inviteTableHeaderColor()
+        label.textAlignment = NSTextAlignment.Center
+        label.font = UIFont.inviteTableSmallFont()
+        label.backgroundColor = UIColor.clearColor()
+        label.text = "Invite for iOS, version \(NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]!) (\(NSBundle.mainBundle().infoDictionary!["CFBundleVersion"]!))"
+        return label
     }
     
     func requestProductInfo()
