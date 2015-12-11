@@ -61,6 +61,7 @@
 		073274041A892BFB007700B3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 073274021A892BFB007700B3 /* LaunchScreen.xib */; };
 		073274101A892BFB007700B3 /* InviteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0732740F1A892BFB007700B3 /* InviteTests.m */; };
 		073DA1291C062F2600410FDE /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 073DA1281C062F2600410FDE /* MessageUI.framework */; };
+		07409EF11C1B68D20015C47B /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07409EF01C1B68D20015C47B /* iAd.framework */; };
 		0741BD921BA897EC0099282F /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD911BA897EC0099282F /* FBSDKCoreKit.framework */; };
 		0741BD941BA898D00099282F /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD931BA898D00099282F /* FBSDKLoginKit.framework */; };
 		0741BD991BA8A6B40099282F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0741BD951BA8A6B40099282F /* Bolts.framework */; };
@@ -200,6 +201,7 @@
 		0732740E1A892BFB007700B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0732740F1A892BFB007700B3 /* InviteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InviteTests.m; sourceTree = "<group>"; };
 		073DA1281C062F2600410FDE /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		07409EF01C1B68D20015C47B /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		0741BD911BA897EC0099282F /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../../Downloads/FacebookSDKs-iOS-20150910/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		0741BD931BA898D00099282F /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../../Downloads/FacebookSDKs-iOS-20150910/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		0741BD951BA8A6B40099282F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "../../Documents/parse-library/Bolts.framework"; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07409EF11C1B68D20015C47B /* iAd.framework in Frameworks */,
 				073DA1291C062F2600410FDE /* MessageUI.framework in Frameworks */,
 				0741BD941BA898D00099282F /* FBSDKLoginKit.framework in Frameworks */,
 				071338C31AFC7CF1002B07D3 /* libstdc++.6.0.9.dylib in Frameworks */,
@@ -364,6 +367,7 @@
 		0724632E1A8BD44200820834 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				07409EF01C1B68D20015C47B /* iAd.framework */,
 				073DA1281C062F2600410FDE /* MessageUI.framework */,
 				072460E71BE1398900DAA4DB /* MoPub.framework */,
 				072460E81BE1398900DAA4DB /* MoPub.bundle */,
@@ -736,6 +740,11 @@
 					073273EC1A892BFB007700B3 = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = ALEG5397F7;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					073274081A892BFB007700B3 = {
 						CreatedOnToolsVersion = 6.2;

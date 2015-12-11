@@ -675,7 +675,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
                     inviteeCount += _event.addedInvitees.count;
                 }
                 if (inviteeCount > 0) {
-                    cell.guidance.text = [NSString stringWithFormat:@"%lu people invited", (unsigned long)inviteeCount];
+                    cell.guidance.text = [NSString stringWithFormat:inviteeCount == 1 ? @"%lu person invited" : @"%lu people invited", (unsigned long)inviteeCount];
                     cell.guidance.textColor = [self valueColor];
                     [cell showCheckmark];
                 } else {

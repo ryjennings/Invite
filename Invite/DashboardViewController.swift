@@ -8,10 +8,10 @@
 
 import UIKit
 import Crashlytics
-import MoPub
 import CoreLocation
+import iAd
 
-@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate, CLLocationManagerDelegate
+@objc(DashboardViewController) class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate, ADBannerViewDelegate
 {
     @IBOutlet weak var rightButton: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
@@ -40,26 +40,22 @@ import CoreLocation
     
     var refreshControl: UIRefreshControl!
 
-    var placer: MPTableViewAdPlacer!
-    
     var isSearching = false
     
-    var adIndexSets = [NSIndexSet]()
+    var adFree = false
     
-    var adFree = true
-    
-    var locationManager: CLLocationManager!
-    var latitude: CLLocationDegrees!
-    var longitude: CLLocationDegrees!
+    let iAdHeight: CGFloat = UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone ? 50.0 : 66.0
     
     var alert: UIAlertController!
+    
+    var adIsVisible = true
+    var adView: ADBannerView!
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
         if AppDelegate.user().events != nil && AppDelegate.user().events.count > 0 {
-            setupLocationManager()
             configureToDisplayEvents()
         } else {
             configureOnboarding()
@@ -101,39 +97,18 @@ import CoreLocation
             deeplink(nil)
         }
         
-//        delay(10) {
-//            Crashlytics.sharedInstance().crash()
-//        }
-        
-    }
-    
-    func setupLocationManager()
-    {
-        if (self.locationManager == nil) {
-            self.locationManager = CLLocationManager()
-            self.locationManager.requestWhenInUseAuthorization()
-            self.locationManager.startUpdatingLocation()
-            self.locationManager.delegate = self
+        // Ad
+        if !UserDefaults.boolForKey("adFree") {
+            self.adView = ADBannerView(frame: CGRect(x: 0, y: self.view.frame.size.height, width: self.view.frame.size.width, height: self.iAdHeight))
+            self.adView.delegate = self
         }
     }
     
-    // MARK: CLLocationManagerDelegate
-    
-    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation)
-    {
-        self.latitude = newLocation.coordinate.latitude
-        self.longitude = newLocation.coordinate.longitude
-        self.locationManager.delegate = nil
-        separateEventsIntoGroups()
-        self.tableView.reloadData()
-    }
-
     func returnedFromSettings()
     {
         if UserDefaults.boolForKey("adFree") {
             self.adFree = true
-            separateEventsIntoGroups()
-            self.tableView.reloadData()
+            removeAdsCompletely()
         }
     }
     
@@ -158,7 +133,6 @@ import CoreLocation
     
     func refresh(sender: AnyObject)
     {
-        self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
         AppDelegate.user().refreshEvents()
@@ -168,7 +142,6 @@ import CoreLocation
     {
         self.refreshControl.endRefreshing()
         AppDelegate.user().createMyReponses()
-        self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
         separateEventsIntoGroups()
@@ -179,14 +152,14 @@ import CoreLocation
     {
         dismissRemoveEventAlert()
         if AppDelegate.user().events.count > 0 {
-            self.tableView.mp_beginUpdates()
+            self.tableView.beginUpdates()
             separateEventsIntoGroups()
             if self.removeEntireSection {
-                self.tableView.mp_deleteSections(NSIndexSet(index: self.removeIndexPath!.section), withRowAnimation: UITableViewRowAnimation.Fade)
+                self.tableView.deleteSections(NSIndexSet(index: self.removeIndexPath!.section), withRowAnimation: UITableViewRowAnimation.Fade)
             } else {
-                self.tableView.mp_deleteRowsAtIndexPaths([self.removeIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
+                self.tableView.deleteRowsAtIndexPaths([self.removeIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
             }
-            self.tableView.mp_endUpdates()
+            self.tableView.endUpdates()
         } else {
             self.tableView.reloadData()
             revertToOnboarding()
@@ -203,6 +176,53 @@ import CoreLocation
     {
         super.viewWillAppear(animated)
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
+    }
+    
+    func bannerViewDidLoadAd(banner: ADBannerView!)
+    {
+        if self.adView.superview == nil {
+            self.view.addSubview(self.adView)
+        }
+        showAds()
+    }
+    
+    func bannerView(banner: ADBannerView!, didFailToReceiveAdWithError error: NSError!)
+    {
+        if self.adView.superview == nil {
+            return
+        }
+        hideAds()
+    }
+    
+    private func showAds()
+    {
+        if !self.adIsVisible {
+            UIView.animateWithDuration(0.5, animations: { () -> Void in
+                self.adView.frame = CGRect(x: 0, y: self.view.frame.size.height - self.iAdHeight, width: self.view.frame.size.width, height: self.iAdHeight)
+                }, completion: { finished -> Void in
+                    self.adIsVisible = true
+            })
+        }
+    }
+    
+    private func hideAds()
+    {
+        if self.adIsVisible {
+            UIView.animateWithDuration(0.5, animations: { () -> Void in
+                self.adView.frame = CGRect(x: 0, y: self.view.frame.size.height, width: self.view.frame.size.width, height: self.iAdHeight)
+                }, completion: { finished -> Void in
+                    self.adIsVisible = false
+            })
+        }
+    }
+    
+    private func removeAdsCompletely()
+    {
+        if self.adView != nil {
+            self.adView.removeFromSuperview()
+            self.adView.delegate = nil
+            self.adView = nil
+        }
     }
     
     func configureToDisplayEvents()
@@ -232,27 +252,10 @@ import CoreLocation
 
     private func separateEventsIntoGroups()
     {
-        let targeting = MPNativeAdRequestTargeting()
-        let positioning = MPClientAdPositioning()
-        var latitude = 37.7793
-        var longitude = -122.4175
-        if !self.adFree {
-            if let lat = self.latitude, long = self.longitude {
-                latitude = lat
-                longitude = long
-            }
-            targeting.location = CLLocation(latitude: latitude, longitude: longitude)
-            targeting.desiredAssets = Set([kAdIconImageKey, kAdMainImageKey, kAdCTATextKey, kAdTextKey, kAdTitleKey])
-        }
-
         self.groups.removeAll()
         self.groupKeys.removeAll()
         self.groupIndexTitles.removeAll()
         self.groupIndexTitleSections.removeAll()
-        
-        if self.searchController.searchBar.selectedScopeButtonIndex == 0 && !self.isSearching {
-            self.adIndexSets.removeAll()
-        }
         
         self.nextEvent = nil
         
@@ -269,7 +272,6 @@ import CoreLocation
         
         var section = -1
         var row = -1
-        var adRowCount = 0
         
         let searchText = self.searchController.searchBar.text
         var eventsRefinedBySearch = [PFObject]()
@@ -338,7 +340,6 @@ import CoreLocation
             } else {
                 self.groups[new]?.append(PFObject(className: CLASS_EVENT_KEY))
             }
-            adRowCount++
         }
         
         for event in eventsToDisplay {
@@ -386,30 +387,11 @@ import CoreLocation
                     self.createdEventIndexPath = NSIndexPath(forRow: row, inSection: section)
                 }
                 self.groups[today]?.append(event)
-                adRowCount++
                 lastEventStartDate = startDate
                 continue
             }
             
             if !(s.day == l.day && s.month == l.month && s.year == l.year) {
-
-                if !self.isSearching && adRowCount > 2 && !self.adFree {
-                    adRowCount = 0
-                    
-                    // Ad
-                    section++
-                    if !self.adFree {
-                        positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
-                    }
-                    if self.searchController.searchBar.selectedScopeButtonIndex == 0 && !self.isSearching {
-                        self.adIndexSets.append(NSIndexSet(index: section))
-                    }
-
-                    let ad = "Ad\(section)"
-                    self.groupKeys.append(ad)
-                    self.groups[ad] = [PFObject]()
-                    self.groups[ad]?.append(PFObject(className: CLASS_EVENT_KEY))
-                }
 
                 dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
                 let string = dateFormatter.stringFromDate(startDate)
@@ -437,29 +419,10 @@ import CoreLocation
                 self.createdEventIndexPath = NSIndexPath(forRow: row, inSection: section)
             }
             self.groups[startDateString]?.append(event)
-            adRowCount++
             
             lastEventStartDate = startDate
         }
         
-        if !self.isSearching && adRowCount > 2 && !self.adFree {
-            adRowCount = 0
-            
-            // Ad
-            section++
-            if !self.adFree {
-                positioning.addFixedIndexPath(NSIndexPath(forRow: 0, inSection: section))
-            }
-            if self.searchController.searchBar.selectedScopeButtonIndex == 0 && !self.isSearching {
-                self.adIndexSets.append(NSIndexSet(index: section))
-            }
-            
-            let ad = "Ad\(section)"
-            self.groupKeys.append(ad)
-            self.groups[ad] = [PFObject]()
-            self.groups[ad]?.append(PFObject(className: CLASS_EVENT_KEY))
-        }
-
         if let oldEvents = oldEvents {
             let old = "Old Events"
             if self.groups[old] == nil {
@@ -477,28 +440,6 @@ import CoreLocation
 
                 self.groups[old] = oldEvents
             }
-        }
-
-        // Ad placer
-        if !self.isSearching && self.placer == nil && !self.adFree {
-
-//            let videoSettings = MOPUBNativeVideoAdRendererSettings()
-//            videoSettings.renderingViewClass = MPVideoNativeAdView.self
-//            videoSettings.viewSizeHandler = {(maxWidth: CGFloat) -> CGSize in
-//                return CGSizeMake(maxWidth, 190)
-//            };
-            
-            let staticSettings = MPStaticNativeAdRendererSettings()
-            staticSettings.renderingViewClass = AdCell.self
-            staticSettings.viewSizeHandler = {(maxWidth: CGFloat) -> CGSize in
-                return CGSizeMake(maxWidth, 190)
-            };
-
-//            let videoConfig = MOPUBNativeVideoAdRenderer.rendererConfigurationWithRendererSettings(videoSettings)
-            let staticConfig = MPStaticNativeAdRenderer.rendererConfigurationWithRendererSettings(staticSettings)
-   
-            self.placer = MPTableViewAdPlacer(tableView: self.tableView, viewController: self, adPositioning: positioning, rendererConfigurations: [staticConfig])
-            self.placer.loadAdsForAdUnitID("d5566993d01246f3a67b01378bf829ee", targeting: targeting)
         }
     }
     
@@ -740,12 +681,10 @@ import CoreLocation
             self.createdEvent = createdEvent
         }
 
-        self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
         if self.tableView.tableHeaderView == nil {
-            setupLocationManager()
             configureToDisplayEvents()
         } else {
             separateEventsIntoGroups()
@@ -779,7 +718,6 @@ import CoreLocation
         AppDelegate.user().eventToDisplay = nil
         AppDelegate.user().protoEvent = nil
         AppDelegate.user().createMyReponses()
-        self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
         separateEventsIntoGroups()
@@ -817,7 +755,6 @@ import CoreLocation
     
     func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int)
     {
-        self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
         separateEventsIntoGroups()
@@ -826,7 +763,6 @@ import CoreLocation
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String)
     {
-        self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
         separateEventsIntoGroups()
@@ -837,10 +773,7 @@ import CoreLocation
     
     func didPresentSearchController(searchController: UISearchController)
     {
-        let indexSets = self.adIndexSets
-        
         self.isSearching = true
-        self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
@@ -850,9 +783,6 @@ import CoreLocation
             separateEventsIntoGroups()
             
             self.tableView.deleteSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Fade)
-            for indexSet in indexSets {
-                self.tableView.deleteSections(indexSet, withRowAnimation: UITableViewRowAnimation.Fade)
-            }
             
             self.tableView.endUpdates()
         } else {
@@ -863,10 +793,7 @@ import CoreLocation
     
     func didDismissSearchController(searchController: UISearchController)
     {
-        let indexSets = self.adIndexSets
-
         self.isSearching = false
-        self.placer = nil
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
@@ -876,9 +803,6 @@ import CoreLocation
             separateEventsIntoGroups()
 
             self.tableView.insertSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.Fade)
-            for indexSet in indexSets {
-                self.tableView.insertSections(indexSet, withRowAnimation: UITableViewRowAnimation.Fade)
-            }
             
             self.tableView.endUpdates()
         } else {

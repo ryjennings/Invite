@@ -57,6 +57,7 @@
     _sentToFacebookLogin = NO;
     _spinner.hidden = YES;
     
+    /*
     TWTRLogInButton *logInButton = [TWTRLogInButton buttonWithLogInCompletion:^(TWTRSession *session, NSError *error) {
         if (session) {
             // Callback for login success or failure. The TWTRSession
@@ -90,6 +91,7 @@
     [logInButton setBackgroundImage:[UIImage new] forState:UIControlStateSelected];
     [logInButton setBackgroundImage:[UIImage new] forState:UIControlStateDisabled];
     [_twitterView addSubview:logInButton];
+    */
     
     // Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userCreated:) name:USER_CREATED_NOTIFICATION object:nil];
@@ -235,9 +237,9 @@
             _sentToFacebookLogin = YES;
             [login logInWithReadPermissions:@[EMAIL_KEY] fromViewController:self handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
                 if (error) {
-                    // Error
+                    [self animateIntoPlace];
                 } else if (result.isCancelled) {
-                    // Cancelled
+                    [self animateIntoPlace];
                     _sentToFacebookLogin = NO;
                 } else {
                     // Logged in
@@ -278,6 +280,11 @@
     [query includeKey:[NSString stringWithFormat:@"%@.%@", EVENTS_KEY, EVENT_INVITEES_KEY]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
+        if (error) {
+            [self animateIntoPlace];
+            return;
+        }
+        
         if (objects.count) {
             
             PFObject *person = objects[0];
@@ -291,6 +298,12 @@
                 person[FULL_NAME_KEY] = user[FULL_NAME_KEY];
                 person[FIRST_NAME_KEY] = user[FIRST_NAME_KEY];
                 [person saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    
+                    if (error) {
+                        [self animateIntoPlace];
+                        return;
+                    }
+                    
                     [self loginUser:user]; // Recall this method after setting the facebook details so that they are reflected in event invitees
                 }];
 
