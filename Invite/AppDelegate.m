@@ -10,7 +10,6 @@
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <TwitterKit/TwitterKit.h>
-#import <MoPub/MoPub.h>
 
 #import "Invite-Swift.h"
 #import "StringConstants.h"
@@ -25,7 +24,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {    
     [[Crashlytics sharedInstance] setDebugMode:YES];
-    [Fabric with:@[[Crashlytics class], [Twitter class], [MoPub class]]];
+    [Fabric with:@[[Crashlytics class], [Twitter class]]];
 
     [Parse setApplicationId:@"bDCtNhAgLH0h8TClwos5BxTLJ9q2gIs19uG8dSjD"
                   clientKey:@"XRnFQGL8mad8vS1iVt1JDxT1UPInSsffw0JLDOWK"];

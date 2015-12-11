@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import MoPub
 
-class AdCell: UITableViewCell, MPNativeAdRendering
+class AdCell: UITableViewCell
 {
     @IBOutlet weak var mainImageView: UIImageView!
     @IBOutlet weak var iconStrokeView: UIView!

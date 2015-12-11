@@ -55,12 +55,6 @@
 				<key>KitName</key>
 				<string>Twitter</string>
 			</dict>
-			<dict>
-				<key>KitInfo</key>
-				<dict/>
-				<key>KitName</key>
-				<string>MoPub</string>
-			</dict>
 		</array>
 	</dict>
 	<key>FacebookAppID</key>

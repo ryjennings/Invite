@@ -19,8 +19,6 @@
 		072460E41BE1381700DAA4DB /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 072460E11BE1381700DAA4DB /* TwitterKit.framework */; };
 		072460E51BE1381700DAA4DB /* TwitterKitResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 072460E21BE1381700DAA4DB /* TwitterKitResources.bundle */; };
 		072460E61BE1381700DAA4DB /* TwitterCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 072460E31BE1381700DAA4DB /* TwitterCore.framework */; };
-		072460E91BE1398900DAA4DB /* MoPub.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 072460E71BE1398900DAA4DB /* MoPub.framework */; };
-		072460EA1BE1398900DAA4DB /* MoPub.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 072460E81BE1398900DAA4DB /* MoPub.bundle */; };
 		072463191A8BD3C400820834 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 072463181A8BD3C400820834 /* AudioToolbox.framework */; };
 		0724631B1A8BD3D000820834 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0724631A1A8BD3D000820834 /* CFNetwork.framework */; };
 		0724631D1A8BD3D800820834 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0724631C1A8BD3D800820834 /* CoreGraphics.framework */; };
@@ -152,8 +150,6 @@
 		072460E11BE1381700DAA4DB /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterKit.framework; path = ../../Documents/Crashlytics/TwitterKit.framework; sourceTree = "<group>"; };
 		072460E21BE1381700DAA4DB /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = ../../Documents/Crashlytics/TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle; sourceTree = "<group>"; };
 		072460E31BE1381700DAA4DB /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterCore.framework; path = ../../Documents/Crashlytics/TwitterCore.framework; sourceTree = "<group>"; };
-		072460E71BE1398900DAA4DB /* MoPub.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoPub.framework; path = ../../Documents/Crashlytics/MoPub.framework; sourceTree = "<group>"; };
-		072460E81BE1398900DAA4DB /* MoPub.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = MoPub.bundle; path = ../../Documents/Crashlytics/MoPub.framework/Versions/A/Resources/MoPub.bundle; sourceTree = "<group>"; };
 		072463181A8BD3C400820834 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		0724631A1A8BD3D000820834 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		0724631C1A8BD3D800820834 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -322,7 +318,6 @@
 				0724631F1A8BD3E100820834 /* CoreLocation.framework in Frameworks */,
 				0724631D1A8BD3D800820834 /* CoreGraphics.framework in Frameworks */,
 				0724631B1A8BD3D000820834 /* CFNetwork.framework in Frameworks */,
-				072460E91BE1398900DAA4DB /* MoPub.framework in Frameworks */,
 				072463191A8BD3C400820834 /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,8 +364,6 @@
 			children = (
 				07409EF01C1B68D20015C47B /* iAd.framework */,
 				073DA1281C062F2600410FDE /* MessageUI.framework */,
-				072460E71BE1398900DAA4DB /* MoPub.framework */,
-				072460E81BE1398900DAA4DB /* MoPub.bundle */,
 				072460E11BE1381700DAA4DB /* TwitterKit.framework */,
 				072460E21BE1381700DAA4DB /* TwitterKitResources.bundle */,
 				072460E31BE1381700DAA4DB /* TwitterCore.framework */,
@@ -787,7 +780,6 @@
 				072836641AD2F02000B158AC /* ProximaNova-RegularItalic.otf in Resources */,
 				0728366B1AD2F02000B158AC /* ProximaNovaCond-Semibold.otf in Resources */,
 				07426B2B1BE16D6900E25C0D /* AdCell.xib in Resources */,
-				072460EA1BE1398900DAA4DB /* MoPub.bundle in Resources */,
 				0728365C1AD2F02000B158AC /* ProximaNova-Black.otf in Resources */,
 				072836651AD2F02000B158AC /* ProximaNova-Semibold.otf in Resources */,
 				072836601AD2F02000B158AC /* ProximaNova-Light.otf in Resources */,

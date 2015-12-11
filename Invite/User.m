@@ -33,9 +33,6 @@
 {
     _parse = user;
     [self createUserFromObject:user];
-    [self findReservations];
-    [self createMyReponses];
-    [[NSNotificationCenter defaultCenter] postNotificationName:PARSE_LOADED_NOTIFICATION object:self];
 }
 
 - (void)createParseUserFromFacebookUser:(NSDictionary *)user
@@ -66,6 +63,32 @@
     } else {
         
         NSMutableArray *events = [object objectForKey:EVENTS_KEY];
+        
+        // Fix for weird state that Austin got his account into
+        if (events.count && [events[0] isKindOfClass:[NSDictionary class]]) {
+            NSMutableArray *newEvents = [NSMutableArray array];
+            NSMutableArray *objectIds = [NSMutableArray array];
+            for (NSDictionary *event in events) {
+                PFObject *newEvent = [PFObject objectWithoutDataWithClassName:CLASS_EVENT_KEY objectId:event[@"objectId"]];
+                [newEvents addObject:newEvent];
+                [objectIds addObject:event[@"objectId"]];
+            }
+            [_parse removeObjectsInArray:events forKey:EVENTS_KEY];
+            [_parse save];
+            [_parse addUniqueObjectsFromArray:newEvents forKey:EVENTS_KEY];
+            [_parse save];
+            PFQuery *query = [PFQuery queryWithClassName:CLASS_EVENT_KEY];
+            [query whereKey:@"objectId" containedIn:objectIds];
+            [query includeKey:EVENT_LOCATION_KEY];
+            [query includeKey:EVENT_CREATOR_KEY];
+            [query includeKey:EVENT_INVITEES_KEY];
+            [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                [object setObject:objects forKey:EVENTS_KEY];
+                [self createUserFromObject:object];
+            }];
+            return;
+        }
+        
         NSMutableArray *remove = [NSMutableArray array];
         
         for (PFObject *event in events) {
@@ -98,6 +121,12 @@
             _locations = [[NSArray alloc] init];
         }
         _reservations = [[NSSet alloc] init];
+    }
+    
+    if (parseObject) {
+        [self findReservations];
+        [self createMyReponses];
+        [[NSNotificationCenter defaultCenter] postNotificationName:PARSE_LOADED_NOTIFICATION object:self];
     }
 }
 
