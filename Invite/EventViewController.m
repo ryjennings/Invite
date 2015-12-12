@@ -179,24 +179,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     } else {
         _isOld = NO;
     }
-    
-    if (!_isCreating && !_event.parseEvent[EVENT_RESPONSES_KEY]) {
-        [self recreateResponses];
-    }
-}
-
-- (void)recreateResponses
-{
-    // Responses are empty for some reason. Recreate.
-    NSMutableArray *responses = [NSMutableArray array];
-    for (PFObject *invitee in _event.parseEvent[EVENT_INVITEES_KEY]) {
-        NSString *email = [invitee objectForKey:EMAIL_KEY];
-        if (email && email.length > 0) {
-            [responses addObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)]];
-        }
-    }
-    _event.parseEvent[EVENT_RESPONSES_KEY] = responses;
-    [_event.parseEvent saveInBackground];
 }
 
 - (UIView *)tableHeaderView

@@ -382,7 +382,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
         self.parseEvent[EVENT_INVITEES_KEY] = [self.actualInviteesToInvite arrayByAddingObjectsFromArray:[AppDelegate user].protoEvent.existingInvitees];
         
         // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
-        for (PFObject *invitee in self.actualInviteesToInvite) {
+        for (PFObject *invitee in self.parseEvent[EVENT_INVITEES_KEY]) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
                 [self.parseEvent addUniqueObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)] forKey:EVENT_RESPONSES_KEY];

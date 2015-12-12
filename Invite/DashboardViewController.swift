@@ -67,6 +67,9 @@ import iAd
         
         self.view.backgroundColor = UIColor.inviteSlateColor()
 
+        let contentInsets = UIEdgeInsetsMake(0.0, 0.0, 50.0, 0.0)
+        self.tableView.contentInset = contentInsets
+        self.tableView.scrollIndicatorInsets = contentInsets
         self.tableView.sectionIndexColor = UIColor.inviteBlueColor()
         self.tableView.sectionIndexBackgroundColor = UIColor.clearColor()
         self.tableView.reloadSectionIndexTitles()
@@ -836,7 +839,7 @@ import iAd
     func keyboardWillHide(notification: NSNotification)
     {
         UIView.animateWithDuration(0.35, animations: {
-            let contentInsets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
+            let contentInsets = UIEdgeInsetsMake(0.0, 0.0, 50.0, 0.0)
             self.tableView.contentInset = contentInsets
             self.tableView.scrollIndicatorInsets = contentInsets
         })

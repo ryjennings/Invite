@@ -257,7 +257,19 @@
             if (event[EVENT_CANCELLED_KEY]) {
                 cancelled = ((NSNumber *)event[EVENT_CANCELLED_KEY]).boolValue;
             }
-
+            
+            // Make sure there's a response for each invitee
+            if (((NSArray *)event[EVENT_INVITEES_KEY]).count != ((NSArray *)event[EVENT_RESPONSES_KEY]).count) {
+                for (PFObject *invitee in event[EVENT_INVITEES_KEY]) {
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF contains[c] %@", invitee[EMAIL_KEY]];
+                    NSArray *results = [event[EVENT_RESPONSES_KEY] filteredArrayUsingPredicate:predicate];
+                    if (!results.count) {
+                        [event[EVENT_RESPONSES_KEY] addObject:[NSString stringWithFormat:@"%@:%@", invitee[EMAIL_KEY], @(EventResponseNoResponse)]];
+                    }
+                }
+                [event saveInBackground];
+            }
+            
             // First setup location notifications...
             NSInteger remindMe = 0; // Default
             if ([UserDefaults objectForKey:event.objectId]) {

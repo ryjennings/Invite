@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "471070860.868159"
+            timestampString = "471589658.140872"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1040"
-            endingLineNumber = "1040"
+            startingLineNumber = "1022"
+            endingLineNumber = "1022"
             landmarkName = "-createEvent:"
             landmarkType = "5">
          </BreakpointContent>
@@ -84,11 +84,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "471070860.868159"
+            timestampString = "471589658.140872"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1049"
-            endingLineNumber = "1049"
+            startingLineNumber = "1031"
+            endingLineNumber = "1031"
             landmarkName = "-actuallyCreateEvent"
             landmarkType = "5">
          </BreakpointContent>
@@ -372,11 +372,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/EventViewController.m"
-            timestampString = "471070860.868159"
+            timestampString = "471589658.140872"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "550"
-            endingLineNumber = "550"
+            startingLineNumber = "532"
+            endingLineNumber = "532"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -452,12 +452,12 @@
                   moduleName = "Invite"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/Event.m"
-                  timestampString = "471569918.334477"
+                  timestampString = "471589659.240012"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "401"
                   endingLineNumber = "401"
-                  offsetFromSymbolStart = "1844">
+                  offsetFromSymbolStart = "1896">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -467,7 +467,7 @@
                   moduleName = "Invite"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rjennings/Developer/Invite/Invite/Event.m"
-                  timestampString = "471569918.334603"
+                  timestampString = "471589659.240152"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "401"
@@ -480,7 +480,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/User.m"
@@ -500,11 +500,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/User.m"
-            timestampString = "471570549.425648"
+            timestampString = "471589973.067302"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "269"
-            endingLineNumber = "269"
+            startingLineNumber = "281"
+            endingLineNumber = "281"
             landmarkName = "-createMyReponses"
             landmarkType = "5">
          </BreakpointContent>
@@ -532,11 +532,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "471564635.836424"
+            timestampString = "471590192.26651"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "183"
-            endingLineNumber = "183"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
             landmarkName = "bannerViewDidLoadAd(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -548,11 +548,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Invite/DashboardViewController.swift"
-            timestampString = "471564635.836424"
+            timestampString = "471590192.26651"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "191"
-            endingLineNumber = "191"
+            startingLineNumber = "194"
+            endingLineNumber = "194"
             landmarkName = "bannerView(_:didFailToReceiveAdWithError:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -586,6 +586,54 @@
             startingLineNumber = "87"
             endingLineNumber = "87"
             landmarkName = "-createUserFromObject:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Invite/User.m"
+            timestampString = "471589973.067302"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "320"
+            endingLineNumber = "320"
+            landmarkName = "-createMyReponses"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Invite/User.m"
+            timestampString = "471589973.067302"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "293"
+            endingLineNumber = "293"
+            landmarkName = "-createMyReponses"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Invite/User.m"
+            timestampString = "471589973.067302"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "301"
+            endingLineNumber = "301"
+            landmarkName = "-createMyReponses"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
