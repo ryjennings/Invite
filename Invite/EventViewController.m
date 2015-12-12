@@ -1068,32 +1068,6 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
 
 - (IBAction)updateEvent:(id)sender
 {
-    BOOL breakAllLoops = NO;
-    int count = 0;
-    
-    NSMutableArray *remove = [NSMutableArray array];
-    for (PFObject *old in [AppDelegate user].protoEvent.invitees) {
-        for (PFObject *new in [AppDelegate user].protoEvent.existingInvitees) {
-            if ([old.objectId isEqualToString:new.objectId]) {
-                [remove addObject:old];
-                count++;
-                if (count == [AppDelegate user].protoEvent.existingInvitees.count) {
-                    breakAllLoops = YES;
-                }
-                break;
-            }
-        }
-        if (breakAllLoops) {
-            break;
-        }
-    }
-    
-    if (remove.count) {
-        NSMutableArray *mut = [[AppDelegate user].protoEvent.invitees mutableCopy];
-        [mut removeObjectsInArray:remove];
-        [AppDelegate user].protoEvent.addedInvitees = mut;
-    }
-
     BOOL alert = NO;
 
     for (PFObject *invitee in [AppDelegate user].protoEvent.invitees) {

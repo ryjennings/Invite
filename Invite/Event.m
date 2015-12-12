@@ -338,18 +338,19 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
     if (self.protoLocation) {
         // First, check if user is using saved location
         
+        BOOL foundInSavedLocations = NO;
+        
         for (PFObject *location in [AppDelegate user].locations) {
             if (location.objectId == self.protoLocation.pfObject.objectId) {
                 self.parseEvent[EVENT_LOCATION_KEY] = location;
+                foundInSavedLocations = YES;
                 break;
             }
         }
         
-        // Next, if it's a foursquare location, check if it already exists on parse
-        
-        if (!self.parseEvent[EVENT_LOCATION_KEY]) {
+        if (!foundInSavedLocations) {
             
-            // If location does not exist in user's saved locations, and does not exist on parse, create
+            // If location does not exist in user's saved locations, create
             PFObject *location = [PFObject objectWithClassName:CLASS_LOCATION_KEY];
             if (self.protoLocation.foursquareId) {
                 location[LOCATION_FOURSQUARE_ID_KEY] = self.protoLocation.foursquareId;
@@ -382,7 +383,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
         self.parseEvent[EVENT_INVITEES_KEY] = [self.actualInviteesToInvite arrayByAddingObjectsFromArray:[AppDelegate user].protoEvent.existingInvitees];
         
         // Iterate through _invitee and pull out emails so that searching for busy times is easier later...
-        for (PFObject *invitee in self.parseEvent[EVENT_INVITEES_KEY]) {
+        for (PFObject *invitee in self.actualInviteesToInvite) {
             NSString *email = [invitee objectForKey:EMAIL_KEY];
             if (email && email.length > 0) {
                 [self.parseEvent addUniqueObject:[NSString stringWithFormat:@"%@:%@", email, @(EventResponseNoResponse)] forKey:EVENT_RESPONSES_KEY];
