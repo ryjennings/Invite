@@ -42,7 +42,7 @@ class Friend
     private var sectionForIndexTitles = [Int]()
 
     private var selectedFriends = [Friend]()
-    private var updatedFriends = [Friend]()
+    private var addedFriends = [Friend]()
     
     private var textViewText = ""
     private var showInviteFriendsOnly = false
@@ -53,7 +53,8 @@ class Friend
     private var addedInvitees = [PFObject]()
     private var addedEmails = [String]()
 
-    private var preEmails = [String]()
+    private var formerlyInvitedEmailCollection = [String]()
+    private var addedEmailCollection = [String]()
     
     private var existingEvent: Event?
     
@@ -286,11 +287,11 @@ class Friend
                 }
             }
             if (self.isUpdating) {
-                if updatedFriendsContainsFriend(friend) {
-                    removeUpdatedFriend(friend)
+                if addedFriendsContainsFriend(friend) {
+                    removeAddedFriend(friend)
                     unselectCell(cell, friend: friend)
                 } else {
-                    self.updatedFriends.append(friend)
+                    self.addedFriends.append(friend)
                     selectCell(cell, friend: friend)
                 }
             } else {
@@ -387,21 +388,13 @@ class Friend
             convertFriendsForSave()
             AppDelegate.user().protoEvent.savedEmailInput = self.textViewText
             if self.isUpdating {
-                if self.addedInvitees.count > 0 {
-                    AppDelegate.user().protoEvent.updatedInvitees = true
-                    AppDelegate.user().protoEvent.addedInvitees = self.addedInvitees
-                }
-                if self.addedEmails.count > 0 {
-                    AppDelegate.user().protoEvent.updatedEmails = true
-                    AppDelegate.user().protoEvent.addedEmails = self.addedEmails
-                }
+                AppDelegate.user().protoEvent.updatedInvitees = self.addedInvitees.count > 0
+                AppDelegate.user().protoEvent.addedInvitees = self.addedInvitees
+                AppDelegate.user().protoEvent.updatedEmails = self.addedEmails.count > 0
+                AppDelegate.user().protoEvent.addedEmails = self.addedEmails
             } else {
-                if self.eventInvitees.count > 0 {
-                    AppDelegate.user().protoEvent.invitees = self.eventInvitees
-                }
-                if self.eventEmails.count > 0 {
-                    AppDelegate.user().protoEvent.emails = self.eventEmails
-                }
+                AppDelegate.user().protoEvent.invitees = self.eventInvitees
+                AppDelegate.user().protoEvent.emails = self.eventEmails
             }
             navigationController?.popViewControllerAnimated(true)
         }
@@ -487,15 +480,23 @@ class Friend
             return
         }
         if let invitees = event!.invitees {
-            for invitee in invitees {
-                let i = invitee as! PFObject
-                self.preEmails.append(i[EMAIL_KEY] as! String)
+            for invitee in invitees as! [PFObject] {
+                self.formerlyInvitedEmailCollection.append(invitee[EMAIL_KEY] as! String)
             }
         }
         if let emails = event!.emails as? [String] {
             for email in emails {
-                let e = email
-                self.preEmails.append(e)
+                self.formerlyInvitedEmailCollection.append(email)
+            }
+        }
+        if let invitees = event!.addedInvitees {
+            for invitee in invitees as! [PFObject] {
+                self.addedEmailCollection.append(invitee[EMAIL_KEY] as! String)
+            }
+        }
+        if let emails = event!.addedEmails as? [String] {
+            for email in emails {
+                self.addedEmailCollection.append(email)
             }
         }
     }
@@ -525,8 +526,10 @@ class Friend
                     }
                 }
                 
-                if self.preEmails.contains(email) {
+                if self.formerlyInvitedEmailCollection.contains(email) {
                     self.selectedFriends.append(friend)
+                } else if self.addedEmailCollection.contains(email) {
+                    self.addedFriends.append(friend)
                 }
             }
         }
@@ -676,8 +679,11 @@ class Friend
                         if searchText == "" || (searchText != "" && (nameContainsText || emailContainsText)) {
                             addToAllFriends(friend)
                         }
-                        if self.preEmails.contains(email as! String) && !existingEmails.contains(email as! String) {
+                        if self.formerlyInvitedEmailCollection.contains(email as! String) && !existingEmails.contains(email as! String) {
                             self.selectedFriends.append(friend)
+                        }
+                        if self.addedEmailCollection.contains(email as! String) && !existingEmails.contains(email as! String) {
+                            self.addedFriends.append(friend)
                         }
                     }
                 }
@@ -718,12 +724,17 @@ class Friend
                 return true
             }
         }
+        for friend in self.addedFriends {
+            if friend.email == aFriend.email {
+                return true
+            }
+        }
         return false
     }
     
-    private func updatedFriendsContainsFriend(aFriend: Friend) -> Bool
+    private func addedFriendsContainsFriend(aFriend: Friend) -> Bool
     {
-        for friend in self.updatedFriends {
+        for friend in self.addedFriends {
             if friend.email == aFriend.email {
                 return true
             }
@@ -736,9 +747,9 @@ class Friend
         self.selectedFriends = self.selectedFriends.filter({$0.email != friend.email})
     }
     
-    private func removeUpdatedFriend(friend: Friend)
+    private func removeAddedFriend(friend: Friend)
     {
-        self.selectedFriends = self.selectedFriends.filter({$0.email != friend.email})
+        self.addedFriends = self.addedFriends.filter({$0.email != friend.email})
     }
     
     private func validateEmails() -> Bool
@@ -780,7 +791,7 @@ class Friend
         
         // Email addresses and invitees from selected friends
         if (self.isUpdating) {
-            for friend in self.updatedFriends {
+            for friend in self.addedFriends {
                 if friend.pfObject != nil {
                     // Invitee
                     self.addedInvitees.append(friend.pfObject!)
@@ -833,22 +844,6 @@ class Friend
         }
     }
     
-//    - (void)convertButtonTitle:(NSString *)from toTitle:(NSString *)to inView:(UIView *)view
-//    {
-//    if ([view isKindOfClass:[UIButton class]])
-//    {
-//    UIButton *button = (UIButton *)view;
-//    if ([[button titleForState:UIControlStateNormal] isEqualToString:from])
-//    {
-//    [button setTitle:to forState:UIControlStateNormal];
-//    }
-//    }
-//    
-//    for (UIView *subview in view.subviews)
-//    {
-//    [self convertButtonTitle:from toTitle:to inView:subview];
-//    }
-//    }
     func convertButtonTitle(from: String, to: String, view: UIView)
     {
         if view.isKindOfClass(UIButton.self) {

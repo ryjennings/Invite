@@ -55,7 +55,7 @@
     _messageLabel.font = [UIFont proximaNovaRegularFontOfSize:16];
     
     _sentToFacebookLogin = NO;
-    _spinner.hidden = YES;
+    [self hideSpinner];
     
     /*
     TWTRLogInButton *logInButton = [TWTRLogInButton buttonWithLogInCompletion:^(TWTRSession *session, NSError *error) {
@@ -117,14 +117,26 @@
     if (!_sentToFacebookLogin) {
         [self animateIntoPlace];
     } else {
-        _spinner.hidden = NO;
-        [_spinner startAnimating];
+        [self showSpinner];
     }
+}
+
+- (void)showSpinner
+{
+    self.spinner.hidden = NO;
+    [self.spinner startAnimating];
+}
+
+- (void)hideSpinner
+{
+    self.spinner.hidden = YES;
+    [self.spinner stopAnimating];
 }
 
 - (void)animateIntoPlace
 {
-    _spinner.hidden = YES;
+    [self hideSpinner];
+    
     _logoCenterYConstraint.constant = kAmountToMoveUp;
     [UIView animateWithDuration:1 animations:^{
         [self.view layoutIfNeeded];
@@ -164,6 +176,8 @@
             [UIView animateWithDuration:0.33 animations:^{
                 _facebookButton.alpha = 1;
                 //                    _twitterView.alpha = 1;
+            } completion:^(BOOL finished) {
+                [self hideSpinner];
             }];
         }];
     });
@@ -172,8 +186,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    _spinner.hidden = YES;
-    [_spinner stopAnimating];
+    [self hideSpinner];
 }
 
 - (void)dealloc
