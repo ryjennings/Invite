@@ -632,7 +632,7 @@ class Friend
         var err: Unmanaged<CFError>? = nil
         let adbk: ABAddressBook? = ABAddressBookCreateWithOptions(nil, &err).takeRetainedValue()
         if adbk == nil {
-            print(err)
+//            print(err)
             self.adbk = nil
             return false
         }

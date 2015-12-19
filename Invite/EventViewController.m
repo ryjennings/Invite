@@ -392,7 +392,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
     }
     else
     {
-        NSLog(@"This device cannot send email");
+//        NSLog(@"This device cannot send email");
     }
 }
 
@@ -1397,7 +1397,7 @@ typedef NS_ENUM(NSUInteger, EventViewSection)
                                         @"from_name": @"Invite for iOS"
                                         } block:^(id object, NSError *error) {
                                             if (error) {
-                                                NSLog(@"%@", error.localizedDescription);
+//                                                NSLog(@"%@", error.localizedDescription);
                                             }
                                         }];
 }

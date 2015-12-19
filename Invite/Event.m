@@ -673,7 +673,7 @@ typedef NS_ENUM(NSUInteger, WeedOutReason) {
                                         @"from_name": @"Invite for iOS"
                                         } block:^(id object, NSError *error) {
                                             if (error) {
-                                                NSLog(@"%@", error.localizedDescription);
+//                                                NSLog(@"%@", error.localizedDescription);
                                             }
                                         }];
 }

@@ -280,10 +280,10 @@
             
             if ([((PFObject *)event[EVENT_CREATOR_KEY])[EMAIL_KEY] isEqualToString:[AppDelegate user].email]) {
 
-                NSLog(@"CREATOR event.objectId %@", event.objectId);
+//                NSLog(@"CREATOR event.objectId %@", event.objectId);
 
                 if ([[NSDate date] compare:[Notification actualFireDateForDate:(NSDate *)event[EVENT_START_DATE_KEY] remindMe:remindMe]] == NSOrderedAscending && !cancelled) {
-                    NSLog(@"scheduleLocalNotificationForDate");
+//                    NSLog(@"scheduleLocalNotificationForDate");
                     [Notification scheduleLocalNotificationForDate:(NSDate *)event[EVENT_START_DATE_KEY]
                                                         eventTitle:event[EVENT_TITLE_KEY]
                                                           remindMe:remindMe
@@ -300,7 +300,7 @@
                 
                 if ([com[0] isEqualToString:[AppDelegate user].email]) {
                     
-                    NSLog(@"INVITEE event.objectId %@", event.objectId);
+//                    NSLog(@"INVITEE event.objectId %@", event.objectId);
 
                     NSDate *now = [NSDate date];
                     NSDate *end = event[EVENT_END_DATE_KEY];
@@ -322,7 +322,7 @@
                     if (((NSString *)com[1]).integerValue != EventResponseSorry && !cancelled) {
                         
                         if ([[NSDate date] compare:[Notification actualFireDateForDate:(NSDate *)event[EVENT_START_DATE_KEY] remindMe:remindMe]] == NSOrderedAscending) {
-                            NSLog(@"scheduleLocalNotificationForDate");
+//                            NSLog(@"scheduleLocalNotificationForDate");
                             [Notification scheduleLocalNotificationForDate:(NSDate *)event[EVENT_START_DATE_KEY]
                                                                 eventTitle:event[EVENT_TITLE_KEY]
                                                                   remindMe:remindMe

@@ -18,7 +18,7 @@ class Notification: NSObject
         let notification = UILocalNotification()
         notification.alertBody = alertBody
         notification.fireDate = date.dateByAddingTimeInterval(ti)
-        print("scheduled \(objectId) notification at \(date.dateByAddingTimeInterval(ti)) \(eventTitle)")
+//        print("scheduled \(objectId) notification at \(date.dateByAddingTimeInterval(ti)) \(eventTitle)")
         notification.soundName = "alert_43.mp3"
         notification.userInfo = ["objectId": objectId]
         notification.category = "InviteCategory"
@@ -39,7 +39,7 @@ class Notification: NSObject
             for note in scheduledLocalNotifications {
                 if note.userInfo!["objectId"] as! String == objectId {
                     notification = note
-                    print("canceled \(objectId) notification")
+//                    print("canceled \(objectId) notification")
                     break
                 }
             }

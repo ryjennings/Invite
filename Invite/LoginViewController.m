@@ -250,7 +250,9 @@
             _sentToFacebookLogin = YES;
             [login logInWithReadPermissions:@[EMAIL_KEY] fromViewController:self handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
                 if (error) {
-                    [self animateIntoPlace];
+                    
+                    // animateIntoPlace here will result in endless loop
+                    
                 } else if (result.isCancelled) {
                     [self animateIntoPlace];
                     _sentToFacebookLogin = NO;

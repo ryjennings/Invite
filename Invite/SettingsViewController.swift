@@ -31,6 +31,7 @@ enum SettingsSection: Int {
     
     var productsArray = [SKProduct]()
     var upgradePurchased = false
+    var productRequest: SKProductsRequest!
     
     let kInAppPurchaseAdFreeProductId = "invite_adfree"
     
@@ -66,13 +67,12 @@ enum SettingsSection: Int {
     {
         if SKPaymentQueue.canMakePayments() {
             let productIdentifiers = Set([kInAppPurchaseAdFreeProductId])
-            let productRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
-            
-            productRequest.delegate = self
-            productRequest.start()
+            self.productRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
+            self.productRequest.delegate = self
+            self.productRequest.start()
         }
         else {
-            print("Cannot perform In App Purchases.")
+//            print("Cannot perform In App Purchases.")
         }
     }
     
@@ -220,6 +220,7 @@ enum SettingsSection: Int {
     
     @IBAction func logout(button: UIBarButtonItem)
     {
+        self.productRequest.delegate = nil
         NSNotificationCenter.defaultCenter().postNotificationName(USER_LOGGED_OUT_NOTIFICATION, object: nil)
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -237,10 +238,10 @@ enum SettingsSection: Int {
             self.tableView.endUpdates()
         }
         else {
-            print("There are no products.")
+//            print("There are no products.")
         }
         if response.invalidProductIdentifiers.count != 0 {
-            print(response.invalidProductIdentifiers.description)
+//            print(response.invalidProductIdentifiers.description)
         }
     }
     
@@ -283,7 +284,7 @@ enum SettingsSection: Int {
     
     func purchasedTransaction(transaction: SKPaymentTransaction)
     {
-        print("Transaction completed successfully")
+//        print("Transaction completed successfully")
         
         self.recordTransaction(transaction)
         self.provideContent(transaction.payment.productIdentifier)
@@ -295,7 +296,7 @@ enum SettingsSection: Int {
     
     func restoredTransaction(transaction: SKPaymentTransaction)
     {
-        print("Transaction restored successfully")
+//        print("Transaction restored successfully")
         
         if let originalTransaction = transaction.originalTransaction {
             self.recordTransaction(originalTransaction)
@@ -314,7 +315,7 @@ enum SettingsSection: Int {
     
     func failedTransaction(transaction: SKPaymentTransaction)
     {
-        print("Transaction failed");
+//        print("Transaction failed");
         
         if transaction.error?.code != SKErrorPaymentCancelled {
             // error!
@@ -343,7 +344,8 @@ enum SettingsSection: Int {
                 failedTransaction(transaction)
                 
             default:
-                print(transaction.transactionState.rawValue)
+                break
+//                print(transaction.transactionState.rawValue)
             }
         }
     }
@@ -379,7 +381,8 @@ enum SettingsSection: Int {
                 restoredTransaction(transaction)
                 
             default:
-                print(transaction.transactionState.rawValue)
+                break
+//                print(transaction.transactionState.rawValue)
             }
         }
     }
